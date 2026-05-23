@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Unit 0 → Foundations of Reinforcement Learning</title>
+  <style>
+    :root {
+      --bg:       #0f1117;
+      --surface:  #1a1d27;
+      --surface2: #22263a;
+      --border:   #2e3350;
+      --accent:   #6c8ef7;
+      --accent2:  #4ecca3;
+      --warn:     #f7c86c;
+      --danger:   #f76c6c;
+      --text:     #e2e8f0;
+      --muted:    #8892b0;
+      --code-bg:  #0d1117;
+      --code-fg:  #cdd6f4;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      font-size: 15px;
+      line-height: 1.75;
+    }
+
+    /* ── Layout ── */
+    .layout { display: flex; min-height: 100vh; }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      width: 260px;
+      flex-shrink: 0;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      padding: 1.5rem 1rem;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
+    .sidebar-title {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1rem;
+    }
+    .sidebar nav a {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.35rem 0.6rem;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 0.85rem;
+      color: var(--muted);
+      transition: background 0.15s, color 0.15s;
+    }
+    .sidebar nav a:hover { background: var(--surface2); color: var(--text); }
+    .sidebar nav .section-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      padding: 0.8rem 0.6rem 0.25rem;
+    }
+    .sidebar nav .num {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 1.4rem; height: 1.4rem;
+      background: var(--surface2); border-radius: 50%;
+      font-size: 0.7rem; font-weight: 700; color: var(--accent);
+      flex-shrink: 0;
+    }
+
+    /* ── Main content ── */
+    .content { flex: 1; max-width: 820px; padding: 2.5rem 2.5rem 6rem; }
+
+    /* ── Hero ── */
+    .hero {
+      background: linear-gradient(135deg, #1a1d27 0%, #141829 100%);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 2rem 2.5rem;
+      margin-bottom: 2.5rem;
+    }
+    .hero .tag {
+      display: inline-block;
+      background: var(--accent);
+      color: #0f1117;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.2rem 0.6rem;
+      border-radius: 99px;
+      margin-bottom: 0.75rem;
+    }
+    .hero h1 { font-size: 1.75rem; font-weight: 800; line-height: 1.25; margin-bottom: 0.5rem; }
+    .hero p { color: var(--muted); max-width: 560px; }
+
+    /* ── Progress bar row ── */
+    .progress-row {
+      display: flex; gap: 0.4rem; margin-bottom: 2.5rem; flex-wrap: wrap;
+    }
+    .progress-step {
+      flex: 1; min-width: 80px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 8px; padding: 0.5rem 0.75rem;
+      font-size: 0.75rem; color: var(--muted); text-align: center;
+    }
+    .progress-step.active { border-color: var(--accent); color: var(--accent); background: #1a1d27; }
+
+    /* ── Section ── */
+    .section { margin-bottom: 3rem; }
+    .section-header {
+      display: flex; align-items: center; gap: 0.75rem;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .section-num {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 2rem; height: 2rem;
+      background: var(--accent); color: #0f1117;
+      font-size: 0.85rem; font-weight: 800;
+      border-radius: 50%; flex-shrink: 0;
+    }
+    .section-header h2 { font-size: 1.15rem; font-weight: 700; }
+
+    /* ── Step / card ── */
+    .step {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.1rem 1.25rem;
+      margin-bottom: 1rem;
+    }
+    .step-title {
+      font-size: 0.9rem; font-weight: 700;
+      margin-bottom: 0.5rem;
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+    .step-title .check {
+      width: 1.1rem; height: 1.1rem;
+      border: 2px solid var(--border); border-radius: 3px;
+      flex-shrink: 0; cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .step p, .step li { font-size: 0.88rem; color: var(--muted); }
+    .step ul, .step ol { padding-left: 1.25rem; margin-top: 0.4rem; }
+    .step li { margin-bottom: 0.3rem; }
+    .step p + p { margin-top: 0.5rem; }
+    .step strong.term { color: var(--text); }
+
+    /* ── Code block ── */
+    pre {
+      background: var(--code-bg);
+      color: var(--code-fg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem 1.1rem;
+      font-family: "JetBrains Mono", "Fira Mono", "Consolas", monospace;
+      font-size: 0.8rem;
+      line-height: 1.65;
+      overflow-x: auto;
+      margin: 0.6rem 0;
+    }
+    code {
+      background: var(--code-bg);
+      color: var(--accent2);
+      padding: 0.15em 0.4em;
+      border-radius: 4px;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.82em;
+    }
+    pre code { background: none; color: inherit; padding: 0; font-size: inherit; }
+
+    /* ── Callouts ── */
+    .callout {
+      border-radius: 8px; padding: 0.8rem 1rem;
+      font-size: 0.85rem; margin: 0.75rem 0;
+      border-left: 3px solid;
+    }
+    .callout.tip   { background: #12202e; border-color: var(--accent);  color: #93c5fd; }
+    .callout.warn  { background: #201e12; border-color: var(--warn);    color: #fde68a; }
+    .callout.info  { background: #12201a; border-color: var(--accent2); color: #6ee7b7; }
+    .callout strong { display: block; margin-bottom: 0.2rem; }
+
+    /* ── Table ── */
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; margin: 0.6rem 0; }
+    th { background: var(--surface2); color: var(--accent); padding: 0.5rem 0.75rem; text-align: left; font-weight: 700; }
+    td { padding: 0.45rem 0.75rem; border-bottom: 1px solid var(--border); color: var(--muted); }
+    tr:last-child td { border-bottom: none; }
+    td strong { color: var(--text); }
+
+    /* ── Diagram wrapper ── */
+    .diagram {
+      background: var(--code-bg); border: 1px solid var(--border);
+      border-radius: 10px; padding: 1rem; margin: 0.6rem 0;
+    }
+    .diagram svg { display: block; width: 100%; height: auto; }
+
+    /* ── Divider ── */
+    hr { border: none; border-top: 1px solid var(--border); margin: 2.5rem 0; }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  </style>
+</head>
+<body>
+<div class="layout">
+
+  <!-- ─────────────── SIDEBAR ─────────────── -->
+  <aside class="sidebar">
+    <div class="sidebar-title">Contents</div>
+    <nav>
+      <div class="section-label">Start here</div>
+      <a href="#overview"><span class="num">★</span> Welcome &amp; objectives</a>
+
+      <div class="section-label">Core concepts</div>
+      <a href="#s1"><span class="num">1</span> What is Reinforcement Learning?</a>
+      <a href="#s2"><span class="num">2</span> The RL process loop</a>
+      <a href="#s3"><span class="num">3</span> The building blocks</a>
+      <a href="#s4"><span class="num">4</span> How an agent learns</a>
+
+      <div class="section-label">In Godot</div>
+      <a href="#s5"><span class="num">5</span> How Godot RL fits together</a>
+
+      <div class="section-label">Hands-on</div>
+      <a href="#s6"><span class="num">6</span> Quick win: run Lunar Lander</a>
+
+      <div class="section-label">Reference</div>
+      <a href="#glossary">Glossary</a>
+      <a href="#next">What's next</a>
+    </nav>
+  </aside>
+
+  <!-- ─────────────── MAIN ─────────────── -->
+  <main class="content">
+
+    <!-- Hero -->
+    <div class="hero" id="overview">
+      <div class="tag">Unit 0 · Foundations</div>
+      <h1>Foundations of Reinforcement Learning</h1>
+      <p>Before you build anything, get the mental model. This unit explains what
+         Reinforcement Learning is, the vocabulary you'll use throughout the course,
+         and how it all maps onto the Godot game engine — then you'll watch a finished
+         agent train, live.</p>
+    </div>
+
+    <!-- Progress pills -->
+    <div class="progress-row">
+      <div class="progress-step active">1–4 Concepts</div>
+      <div class="progress-step">5 Architecture</div>
+      <div class="progress-step">6 Hands-on</div>
+    </div>
+
+    <!-- ── Objectives & prerequisites ── -->
+    <div class="step">
+      <div class="step-title">🎯 What you'll be able to do after this unit</div>
+      <ul>
+        <li>Explain the Reinforcement Learning loop — <em>state, action, reward, next state</em></li>
+        <li>Define the core terms: agent, environment, observation, action space, reward, return, policy, episode</li>
+        <li>Tell the difference between policy-based and value-based methods, and say what "Deep" adds</li>
+        <li>Describe how Godot and Python cooperate to train an agent</li>
+        <li>Run a complete training session and read its progress</li>
+      </ul>
+    </div>
+    <div class="step">
+      <div class="step-title">📋 Prerequisites</div>
+      <ul>
+        <li>Basic Python familiarity (running scripts, installing packages) — you will <em>not</em> write a training loop</li>
+        <li>Comfort using a terminal</li>
+        <li><strong>No</strong> prior Godot, game-dev, or machine-learning experience needed</li>
+      </ul>
+      <div class="callout info">
+        <strong>ℹ Time &amp; difficulty</strong>
+        Reading: ~25 minutes. The hands-on quick win (Section 6): ~30 minutes of setup,
+        then training runs on its own. This unit is conceptual — nothing to build yet.
+      </div>
+    </div>
+
+    <hr>
+
+    <!-- ════════════════════════════════════
+         SECTION 1 – What is RL
+    ════════════════════════════════════ -->
+    <div class="section" id="s1">
+      <div class="section-header">
+        <span class="section-num">1</span>
+        <h2>What is Reinforcement Learning?</h2>
+      </div>
+
+      <div class="step">
+        <p><strong class="term">Reinforcement Learning (RL)</strong> is a way of teaching software to
+        make good decisions: an <strong class="term">agent</strong> learns <em>how to behave</em> in an
+        <strong class="term">environment</strong> by <em>performing actions</em> and <em>seeing the
+        results</em>. There is no answer key — the agent learns purely by trial and error, guided by a
+        single number called the <strong class="term">reward</strong>.</p>
+        <p>Think of training a dog. You can't explain the rules; you let it try things and give it a
+        treat when it does well. Over many attempts it learns the behaviour that earns the most treats.
+        RL is that idea, made precise enough for a computer.</p>
+        <div class="callout info">
+          <strong>ℹ How RL differs from "normal" machine learning</strong>
+          Supervised learning needs labelled examples ("this image is a cat"). RL has no labels —
+          only the reward signal. The agent must <em>discover</em> good behaviour itself, and its
+          own actions decide what data it sees next.
+        </div>
+        <p>In this course, the agent is a <strong>lunar lander</strong>. Its environment is a 2D world
+        with gravity and a landing pad. By the end of Unit 1 it will have taught itself to fire its
+        thrusters and touch down gently — without anyone scripting how.</p>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════
+         SECTION 2 – The RL loop
+    ════════════════════════════════════ -->
+    <div class="section" id="s2">
+      <div class="section-header">
+        <span class="section-num">2</span>
+        <h2>The RL process loop</h2>
+      </div>
+
+      <div class="step">
+        <div class="step-title">The loop: state → action → reward → next state</div>
+        <p>RL always runs as the same loop, repeated thousands of times. Following the course
+        notation, at each time step:</p>
+        <ul>
+          <li>The agent receives a <strong class="term">state Sₜ</strong> from the environment
+            (e.g. the lander's position and velocity).</li>
+          <li>Based on that state, the agent takes an <strong class="term">action Aₜ</strong>
+            (e.g. fire the main engine).</li>
+          <li>The environment moves to a <strong class="term">new state Sₜ₊₁</strong>.</li>
+          <li>The environment returns a <strong class="term">reward Rₜ₊₁</strong> — a number saying
+            how good that was.</li>
+        </ul>
+        <p>This loop outputs a stream of <em>state, action, reward, next state</em>. Repeat, and the
+        agent gradually shifts toward actions that earn more reward.</p>
+        <div class="diagram">
+          <svg viewBox="0 0 660 200" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, sans-serif">
+            <defs>
+              <marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0 1 L10 5 L0 9 z" fill="#8892b0"/>
+              </marker>
+            </defs>
+            <rect x="60" y="70" width="200" height="64" rx="12" fill="#1a1d27" stroke="#6c8ef7" stroke-width="1.5"/>
+            <text x="160" y="96" text-anchor="middle" fill="#e2e8f0" font-size="15" font-weight="700">AGENT</text>
+            <text x="160" y="116" text-anchor="middle" fill="#8892b0" font-size="11">the lander's brain</text>
+            <rect x="400" y="70" width="200" height="64" rx="12" fill="#1a1d27" stroke="#4ecca3" stroke-width="1.5"/>
+            <text x="500" y="96" text-anchor="middle" fill="#e2e8f0" font-size="15" font-weight="700">ENVIRONMENT</text>
+            <text x="500" y="116" text-anchor="middle" fill="#8892b0" font-size="11">the Godot game world</text>
+            <path d="M260 84 C320 84, 340 84, 400 84" fill="none" stroke="#8892b0" stroke-width="1.6" marker-end="url(#ar)"/>
+            <text x="330" y="74" text-anchor="middle" fill="#6c8ef7" font-size="11" font-weight="700">action Aₜ</text>
+            <path d="M400 120 C340 120, 320 120, 260 120" fill="none" stroke="#8892b0" stroke-width="1.6" marker-end="url(#ar)"/>
+            <text x="330" y="148" text-anchor="middle" fill="#4ecca3" font-size="11" font-weight="700">state Sₜ₊₁ + reward Rₜ₊₁</text>
+          </svg>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-title">The goal: maximise the expected return</div>
+        <p>The agent's goal is not to grab one big reward — it is to maximise the
+        <strong class="term">cumulative reward</strong> over time, called the
+        <strong class="term">expected return</strong>.</p>
+        <div class="callout info">
+          <strong>ℹ The reward hypothesis</strong>
+          RL rests on one bold idea: <em>every</em> goal can be expressed as maximising expected
+          cumulative reward. "Land softly on the pad" becomes "collect the most reward" once you
+          design the reward function — which is exactly what you'll do in Unit 1.
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-title">Markov property &amp; MDPs</div>
+        <p>In papers this loop is called a <strong class="term">Markov Decision Process (MDP)</strong>.
+        The one thing to remember today: the <strong class="term">Markov property</strong> means the
+        agent needs <em>only the current state</em> to choose its action — not the full history of
+        everything that happened before. So the state must contain everything that matters
+        <em>right now</em>.</p>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════
+         SECTION 3 – Building blocks
+    ════════════════════════════════════ -->
+    <div class="section" id="s3">
+      <div class="section-header">
+        <span class="section-num">3</span>
+        <h2>The building blocks</h2>
+      </div>
+
+      <div class="step">
+        <div class="step-title">Observations &amp; states</div>
+        <p>Both are the information the agent gets from the environment — but there's a distinction:</p>
+        <ul>
+          <li><strong class="term">State</strong> — a <em>complete</em> description of the world, nothing
+            hidden (e.g. a chess board: you see everything).</li>
+          <li><strong class="term">Observation</strong> — a <em>partial</em> description (e.g. Super Mario:
+            you only see the part of the level near the player).</li>
+        </ul>
+        <p>The course uses "state" loosely for both, but distinguishes them in code. Our lander reports
+        an <em>observation</em>: 8 numbers (position, velocity, angle, leg contact). The set of all
+        possible observations is the <strong class="term">observation/state space</strong>.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-title">Action space — discrete vs continuous</div>
+        <p>The <strong class="term">action space</strong> is the set of all actions the agent can take:</p>
+        <table>
+          <thead><tr><th>Type</th><th>Meaning</th><th>Example</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Discrete</strong></td><td>A finite list of actions</td><td>Lunar lander: <em>do nothing / left thruster / main engine / right thruster</em> — 4 actions</td></tr>
+            <tr><td><strong>Continuous</strong></td><td>Infinitely many actions</td><td>A self-driving car: steer 20.0°, 20.1°, 20.15°, …</td></tr>
+          </tbody>
+        </table>
+        <p>Our lander uses a <strong>discrete</strong> action space of size 4. Whether a space is
+        discrete or continuous influences which RL algorithm you pick later.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-title">Rewards, return &amp; discounting</div>
+        <p>The reward is the <em>only</em> feedback the agent gets — it's how the agent knows an action
+        was good or bad. The <strong class="term">return</strong> is the sum of all future rewards.</p>
+        <p>But future rewards are uncertain, so we <strong class="term">discount</strong> them: a reward
+        far in the future counts for less than one right now. We multiply by a
+        <strong class="term">discount rate γ (gamma)</strong>, between 0 and 1 — usually
+        <strong>0.95–0.99</strong>.</p>
+        <ul>
+          <li>γ close to 1 → the agent cares about the <em>long term</em>.</li>
+          <li>γ smaller → the agent cares about <em>immediate</em> reward.</li>
+        </ul>
+        <div class="callout tip">
+          <strong>💡 The classic intuition: mouse, cheese, cat</strong>
+          A mouse wants cheese. Cheese near the cat is worth more — but it's risky and far off, so its
+          reward is <em>discounted</em>. Nearby cheese is a surer bet. Discounting captures
+          "a reward I might never reach is worth less."
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-title">Episodic vs continuing tasks</div>
+        <ul>
+          <li><strong class="term">Episodic</strong> — there's a clear start and end (an
+            <strong class="term">episode</strong>). Our lander: an episode ends when it lands, crashes,
+            or times out, then resets.</li>
+          <li><strong class="term">Continuing</strong> — no end; the task runs forever (e.g. a stock-trading
+            agent).</li>
+        </ul>
+        <p>Everything in this course is <strong>episodic</strong>.</p>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════
+         SECTION 4 – How an agent learns
+    ════════════════════════════════════ -->
+    <div class="section" id="s4">
+      <div class="section-header">
+        <span class="section-num">4</span>
+        <h2>How an agent learns</h2>
+      </div>
+
+      <div class="step">
+        <div class="step-title">The policy π — the agent's brain</div>
+        <p>The <strong class="term">policy π</strong> is the function that tells the agent what action
+        to take in a given state. It <em>is</em> the agent's behaviour. Training has one job: find the
+        <strong class="term">optimal policy π*</strong> — the one that earns the most expected return.</p>
+        <p>A policy can be <strong>deterministic</strong> (a state always gives the same action) or
+        <strong>stochastic</strong> (it outputs a probability distribution over actions). The lander
+        you'll train uses a stochastic policy.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-title">Two ways to find the optimal policy</div>
+        <table>
+          <thead><tr><th>Approach</th><th>What it learns</th><th>How it acts</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Policy-based</strong></td><td>The policy directly — a state → action mapping</td><td>Ask the policy for an action</td></tr>
+            <tr><td><strong>Value-based</strong></td><td>A value function — how good each state is</td><td>Move toward the highest-value state</td></tr>
+          </tbody>
+        </table>
+        <p>Both aim at the same optimal policy π*; they just get there differently. Unit 1 uses
+        <strong>PPO</strong>, a policy-based method. Later units explore value-based methods like DQN.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-title">Exploration vs exploitation</div>
+        <p>An agent that only ever does what worked before (<strong class="term">exploitation</strong>)
+        may never discover something better. An agent that only tries random things
+        (<strong class="term">exploration</strong>) never cashes in what it learned. Good learning
+        balances the two — explore early, exploit more as you improve.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-title">What "Deep" means — and one word on PPO</div>
+        <p>The policy has to be <em>some</em> function. In <strong class="term">Deep</strong> RL, that
+        function is a <strong>neural network</strong>: it takes the observation as input and outputs an
+        action. "Deep" simply means a neural network is doing the learning.</p>
+        <div class="callout info">
+          <strong>ℹ PPO in one sentence</strong>
+          <strong>Proximal Policy Optimization (PPO)</strong> is a popular policy-based algorithm that
+          improves the policy in small, safe steps so training stays stable. You won't implement it —
+          the <code>stable-baselines3</code> library provides it, and <code>godot-rl</code> wires it up.
+        </div>
+      </div>
+    </div>
+
+    <hr>
+
+    <!-- ════════════════════════════════════
+         SECTION 5 – How Godot RL fits together
+    ════════════════════════════════════ -->
+    <div class="section" id="s5">
+      <div class="section-header">
+        <span class="section-num">5</span>
+        <h2>How Godot RL Agents fits together</h2>
+      </div>
+
+      <div class="step">
+        <div class="step-title">A split architecture: game engine + Python brain</div>
+        <p>Godot RL Agents uses two programs that run side by side and talk over a fast local network
+        socket. The <strong>Godot engine</strong> is the environment — it renders the world, runs the
+        physics, and reports observations and rewards. <strong>Python</strong> is the brain — it runs
+        PPO and decides the actions.</p>
+        <div class="diagram">
+          <svg viewBox="0 0 660 320" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, sans-serif">
+            <defs>
+              <marker id="ar2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0 1 L10 5 L0 9 z" fill="#8892b0"/>
+              </marker>
+              <marker id="ar3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0 1 L10 5 L0 9 z" fill="#f7c86c"/>
+              </marker>
+            </defs>
+            <!-- Godot box -->
+            <rect x="30" y="50" width="260" height="200" rx="14" fill="#1a1d27" stroke="#4ecca3" stroke-width="1.5"/>
+            <text x="160" y="78" text-anchor="middle" fill="#e2e8f0" font-size="14" font-weight="700">Godot Engine — Environment</text>
+            <rect x="52" y="100" width="216" height="52" rx="8" fill="#22263a" stroke="#2e3350"/>
+            <text x="160" y="121" text-anchor="middle" fill="#e2e8f0" font-size="12">Lander scene + AIController2D</text>
+            <text x="160" y="138" text-anchor="middle" fill="#8892b0" font-size="10">observations · actions · reward</text>
+            <rect x="52" y="168" width="216" height="52" rx="8" fill="#22263a" stroke="#2e3350"/>
+            <text x="160" y="189" text-anchor="middle" fill="#e2e8f0" font-size="12">Sync node</text>
+            <text x="160" y="206" text-anchor="middle" fill="#8892b0" font-size="10" font-family="monospace">godot_rl_agents plugin</text>
+            <!-- Python box -->
+            <rect x="370" y="50" width="260" height="200" rx="14" fill="#1a1d27" stroke="#6c8ef7" stroke-width="1.5"/>
+            <text x="500" y="78" text-anchor="middle" fill="#e2e8f0" font-size="14" font-weight="700">Python — Agent's Brain</text>
+            <rect x="392" y="100" width="216" height="52" rx="8" fill="#22263a" stroke="#2e3350"/>
+            <text x="500" y="121" text-anchor="middle" fill="#e2e8f0" font-size="12">godot-rl wrapper</text>
+            <text x="500" y="138" text-anchor="middle" fill="#8892b0" font-size="10" font-family="monospace">gdrl</text>
+            <rect x="392" y="168" width="216" height="52" rx="8" fill="#22263a" stroke="#2e3350"/>
+            <text x="500" y="189" text-anchor="middle" fill="#e2e8f0" font-size="12">Stable-Baselines3</text>
+            <text x="500" y="206" text-anchor="middle" fill="#8892b0" font-size="10">PPO · neural-net policy</text>
+            <!-- arrows -->
+            <path d="M290 118 L370 118" fill="none" stroke="#8892b0" stroke-width="1.8" marker-end="url(#ar2)"/>
+            <text x="330" y="108" text-anchor="middle" fill="#4ecca3" font-size="10" font-weight="700">obs + reward</text>
+            <path d="M370 196 L290 196" fill="none" stroke="#8892b0" stroke-width="1.8" marker-end="url(#ar2)"/>
+            <text x="330" y="212" text-anchor="middle" fill="#6c8ef7" font-size="10" font-weight="700">actions</text>
+            <text x="330" y="160" text-anchor="middle" fill="#8892b0" font-size="9">socket · port 11008</text>
+            <!-- ONNX export -->
+            <path d="M500 250 C500 292, 160 292, 160 252" fill="none" stroke="#f7c86c" stroke-width="1.6" stroke-dasharray="5,4" marker-end="url(#ar3)"/>
+            <text x="330" y="288" text-anchor="middle" fill="#f7c86c" font-size="10" font-weight="700">after training: ONNX model runs inside Godot — no Python</text>
+          </svg>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-title">Every concept has a home in Godot</div>
+        <table>
+          <thead><tr><th>RL concept</th><th>Where it lives in Godot RL</th></tr></thead>
+          <tbody>
+            <tr><td>Environment</td><td>Your Godot scene (the lander, ground, landing pad)</td></tr>
+            <tr><td>Observation</td><td><code>get_obs()</code> in the AIController script</td></tr>
+            <tr><td>Action space</td><td><code>get_action_space()</code> in the AIController script</td></tr>
+            <tr><td>Reward</td><td><code>reward</code> updated in your game logic</td></tr>
+            <tr><td>Episode end</td><td>The <code>done</code> / <code>needs_reset</code> flags</td></tr>
+            <tr><td>Agent / policy</td><td>The PPO neural network, in Python during training</td></tr>
+            <tr><td>The communication loop</td><td>The <strong>Sync</strong> node ↔ Python socket</td></tr>
+          </tbody>
+        </table>
+        <p>This is exactly what you'll create, piece by piece, in <a href="Unit-01.html" style="color:var(--accent)">Unit 1</a>.
+        After training, the policy is exported to an <strong class="term">ONNX</strong> file and runs
+        directly inside Godot — no Python needed to play the finished game.</p>
+      </div>
+    </div>
+
+    <hr>
+
+    <!-- ════════════════════════════════════
+         SECTION 6 – Quick win
+    ════════════════════════════════════ -->
+    <div class="section" id="s6">
+      <div class="section-header">
+        <span class="section-num">6</span>
+        <h2>Quick win: run the Lunar Lander before you build it</h2>
+      </div>
+
+      <div class="callout tip">
+        <strong>💡 See it work first, understand it second</strong>
+        You learn faster when you've seen the goal. Here you'll run a <em>finished</em> Lunar Lander
+        project and watch it train — no building yet. In Unit 1 you'll recreate this same project from
+        an empty scene, and every step will already make sense.
+      </div>
+
+      <div class="step">
+        <div class="step-title"><span class="check" onclick="this.style.background=this.style.background?'':'var(--accent)'"></span> Install the toolchain</div>
+        <p>You need the Godot 4 <strong>.NET edition</strong> (from godotengine.org) plus the
+        <a href="https://dotnet.microsoft.com/download" style="color:var(--accent)">.NET SDK</a>, and
+        a Python environment. Using Miniconda:</p>
+<pre>conda create --name godot_env python=3.10 -y
+conda activate godot_env
+pip install "godot-rl[sb3]" tensorboard</pre>
+        <div class="callout info">
+          <strong>ℹ Don't worry about the details yet</strong>
+          <a href="Unit-01.html#s1" style="color:var(--accent)">Unit 1, Section 1</a> explains each
+          tool and why. For now, just get the commands to run.
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-title"><span class="check" onclick="this.style.background=this.style.background?'':'var(--accent)'"></span> Open the completed Lunar Lander project</div>
+        <p>Open the <strong>finished Lunar Lander project provided with this course</strong> in the
+        Godot .NET editor: in the Project Manager click <strong>Import</strong>, find the project
+        folder, and select its <code>project.godot</code> file.</p>
+        <div class="callout info">
+          <strong>ℹ Where to get it</strong>
+          Use the completed project supplied by your instructor (the reference build of Unit 1). If
+          you don't have it yet, you can instead run any ready-made environment from the official
+          <a href="https://github.com/edbeeching/godot_rl_agents_examples" style="color:var(--accent)">godot_rl_agents_examples</a>
+          repo — the workflow below is identical.
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-title"><span class="check" onclick="this.style.background=this.style.background?'':'var(--accent)'"></span> Start training and connect Godot</div>
+        <p>In your activated environment, start the trainer:</p>
+<pre>conda activate godot_env
+gdrl --experiment_name=unit0-quickrun --timesteps=200_000</pre>
+        <p>It will pause on <code>waiting for remote GODOT connection on port 11008</code>. Switch to
+        Godot, open the training scene, and press <strong>Play Scene (F6)</strong>. Training begins.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-title"><span class="check" onclick="this.style.background=this.style.background?'':'var(--accent)'"></span> Watch it learn</div>
+        <p>Every rollout, Stable-Baselines3 prints a table. Watch <code>ep_rew_mean</code> — the mean
+        episode reward, i.e. the <em>expected return</em> from Section 2. It should climb as the agent
+        improves:</p>
+        <table>
+          <thead><tr><th>ep_rew_mean</th><th>What it means</th></tr></thead>
+          <tbody>
+            <tr><td>&lt; 0</td><td>Still crashing and drifting — normal at the start</td></tr>
+            <tr><td>50–150</td><td>Has learned to stay stable, working on the landing</td></tr>
+            <tr><td>≥ 200</td><td>Landing consistently — a solved agent</td></tr>
+          </tbody>
+        </table>
+        <p>You just watched the loop from Section 2 run thousands of times. Brief freezes while the
+        weights update are normal — not a crash.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-title">✅ Checkpoint — you're ready for Unit 1</div>
+        <p>If you saw <code>ep_rew_mean</code> rise, your toolchain works and you've seen RL end to end:
+        the agent, the environment, the loop, the reward going up. Now it's time to build it yourself.</p>
+      </div>
+    </div>
+
+    <hr>
+
+    <!-- ── Glossary ── -->
+    <div class="section" id="glossary">
+      <div class="section-header">
+        <span style="font-size:1.3rem">📖</span>
+        <h2>Glossary</h2>
+      </div>
+      <table>
+        <thead><tr><th>Term</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Agent</strong></td><td>The learner / decision-maker — here, the lander.</td></tr>
+          <tr><td><strong>Environment</strong></td><td>The world the agent acts in — here, the Godot scene.</td></tr>
+          <tr><td><strong>State / observation</strong></td><td>The information the agent receives. A state is complete; an observation is partial.</td></tr>
+          <tr><td><strong>Action</strong></td><td>A choice the agent makes that changes the environment.</td></tr>
+          <tr><td><strong>Action space</strong></td><td>The set of all possible actions — discrete (finite) or continuous (infinite).</td></tr>
+          <tr><td><strong>Reward</strong></td><td>The single number scoring how good an action was — the agent's only feedback.</td></tr>
+          <tr><td><strong>Return</strong></td><td>The (discounted) sum of all future rewards — what the agent maximises.</td></tr>
+          <tr><td><strong>Discount rate γ</strong></td><td>0–1 factor making future rewards count less than immediate ones.</td></tr>
+          <tr><td><strong>Policy π</strong></td><td>The agent's brain — the function mapping a state to an action.</td></tr>
+          <tr><td><strong>Episode</strong></td><td>One run from start to a terminal state (land, crash, or timeout).</td></tr>
+          <tr><td><strong>MDP</strong></td><td>Markov Decision Process — the formal name for the RL loop.</td></tr>
+          <tr><td><strong>Policy-based / value-based</strong></td><td>The two families of methods for finding the optimal policy.</td></tr>
+          <tr><td><strong>PPO</strong></td><td>Proximal Policy Optimization — the stable policy-based algorithm used in Unit 1.</td></tr>
+          <tr><td><strong>Deep RL</strong></td><td>RL where the policy is a neural network.</td></tr>
+          <tr><td><strong>Rollout</strong></td><td>A batch of experience collected before each PPO update.</td></tr>
+          <tr><td><strong>ONNX</strong></td><td>A portable model format — lets the trained policy run inside Godot without Python.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ── What's next ── -->
+    <div class="section" id="next">
+      <div class="section-header">
+        <span style="font-size:1.3rem">➡️</span>
+        <h2>What's next</h2>
+      </div>
+      <div class="step">
+        <p>You now have the vocabulary and the mental model, and you've seen a real agent learn. In
+        <strong>Unit 1</strong> you'll build that Lunar Lander yourself — the scene, the observation and
+        action code, the reward function — and train it from scratch.</p>
+        <p style="margin-top:0.6rem">
+          <a href="Unit-01.html" style="color:var(--accent); font-weight:700">→ Continue to Unit 1: Convert LunarLander to Godot RL Agents</a>
+        </p>
+        <div class="callout info">
+          <strong>ℹ Self-check before you move on</strong>
+          Can you answer these in your own words? (1) What are the four parts of the RL loop?
+          (2) What's the difference between an observation and a state? (3) What does the discount
+          rate γ control? (4) What is a policy? If yes — you're ready.
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+</body>
+</html>

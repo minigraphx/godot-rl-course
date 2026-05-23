@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Godot RL Agents — Reference</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;600;800&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d1117;
+    --bg2: #161b22;
+    --bg3: #1c2330;
+    --border: #30363d;
+    --accent: #3fb950;
+    --accent2: #58a6ff;
+    --accent3: #f78166;
+    --text: #e6edf3;
+    --text-muted: #8b949e;
+    --code-bg: #161b22;
+    --tag-bg: #21262d;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  /* Layout */
+  .layout {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    min-height: 100vh;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    padding: 32px 0;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+
+  .sidebar-logo {
+    padding: 0 24px 28px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 24px;
+  }
+
+  .sidebar-logo .product {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 17px;
+    color: var(--accent);
+    letter-spacing: -0.02em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .sidebar-logo .product::before {
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background: var(--accent);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--accent);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 8px var(--accent); }
+    50% { opacity: 0.5; box-shadow: 0 0 2px var(--accent); }
+  }
+
+  .sidebar-logo .sub {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 4px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .nav-section {
+    padding: 0 16px 20px;
+  }
+
+  .nav-label {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    padding: 0 8px;
+    margin-bottom: 6px;
+  }
+
+  .nav-link {
+    display: block;
+    padding: 6px 8px;
+    border-radius: 6px;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 13.5px;
+    transition: all 0.15s;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .nav-link:hover {
+    background: var(--bg3);
+    color: var(--text);
+  }
+
+  .nav-link.active {
+    background: rgba(63, 185, 80, 0.1);
+    color: var(--accent);
+  }
+
+  /* Main content */
+  .main {
+    padding: 48px 64px;
+    max-width: 900px;
+  }
+
+  .page-header {
+    margin-bottom: 56px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .page-header h1 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 38px;
+    letter-spacing: -0.03em;
+    color: var(--text);
+    line-height: 1.1;
+    margin-bottom: 12px;
+  }
+
+  .page-header h1 span {
+    color: var(--accent);
+  }
+
+  .page-header p {
+    color: var(--text-muted);
+    font-size: 15px;
+    max-width: 560px;
+  }
+
+  .badges {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+  }
+
+  .badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    background: var(--tag-bg);
+  }
+
+  .badge.green { border-color: rgba(63,185,80,0.4); color: var(--accent); background: rgba(63,185,80,0.08); }
+  .badge.blue  { border-color: rgba(88,166,255,0.4); color: var(--accent2); background: rgba(88,166,255,0.08); }
+  .badge.red   { border-color: rgba(247,129,102,0.4); color: var(--accent3); background: rgba(247,129,102,0.08); }
+
+  /* Sections */
+  .section {
+    margin-bottom: 56px;
+    scroll-margin-top: 32px;
+  }
+
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 24px;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .section-title .num {
+    font-size: 12px;
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    border: 1px solid rgba(63,185,80,0.3);
+    padding: 2px 7px;
+    border-radius: 4px;
+    background: rgba(63,185,80,0.06);
+  }
+
+  .section-desc {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin-bottom: 24px;
+    max-width: 600px;
+  }
+
+  .subsection {
+    margin-bottom: 32px;
+  }
+
+  .subsection-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-size: 12px;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* Code blocks */
+  .code-block {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+
+  .code-block-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 14px;
+    background: var(--bg3);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .code-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .copy-btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 2px 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .copy-btn:hover { color: var(--accent); border-color: rgba(63,185,80,0.4); }
+  .copy-btn.copied { color: var(--accent); border-color: rgba(63,185,80,0.4); }
+
+  pre {
+    padding: 16px 18px;
+    overflow-x: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--text);
+  }
+
+  .code-block code .cmd { color: #79c0ff; }
+  .code-block code .flag { color: var(--accent); }
+  .code-block code .val { color: #ffa657; }
+  .code-block code .comment { color: var(--text-muted); font-style: italic; }
+  .code-block code .path { color: #d2a8ff; }
+
+  /* Inline code */
+  p code, li code, td code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    background: var(--tag-bg);
+    border: 1px solid var(--border);
+    padding: 1px 6px;
+    border-radius: 4px;
+    color: var(--accent2);
+  }
+
+  /* Parameter table */
+  .param-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 16px;
+    font-size: 13.5px;
+  }
+
+  .param-table thead tr {
+    background: var(--bg3);
+  }
+
+  .param-table th {
+    text-align: left;
+    padding: 10px 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+    font-weight: 600;
+  }
+
+  .param-table td {
+    padding: 9px 14px;
+    border-bottom: 1px solid rgba(48,54,61,0.5);
+    vertical-align: top;
+  }
+
+  .param-table tr:last-child td { border-bottom: none; }
+
+  .param-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+  .param-table td:first-child {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    color: var(--accent2);
+    white-space: nowrap;
+    width: 220px;
+  }
+
+  .param-table td:last-child {
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  .param-table .opt {
+    font-size: 10px;
+    padding: 1px 6px;
+    border-radius: 3px;
+    background: rgba(88,166,255,0.1);
+    border: 1px solid rgba(88,166,255,0.2);
+    color: var(--accent2);
+    margin-left: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    vertical-align: middle;
+  }
+
+  .param-table .req {
+    font-size: 10px;
+    padding: 1px 6px;
+    border-radius: 3px;
+    background: rgba(247,129,102,0.1);
+    border: 1px solid rgba(247,129,102,0.2);
+    color: var(--accent3);
+    margin-left: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    vertical-align: middle;
+  }
+
+  /* Note / callout */
+  .callout {
+    border-left: 3px solid var(--accent);
+    background: rgba(63,185,80,0.06);
+    border-radius: 0 6px 6px 0;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    font-size: 13.5px;
+    color: var(--text-muted);
+  }
+
+  .callout strong { color: var(--accent); font-weight: 600; }
+
+  .callout-warn {
+    border-left-color: #d29922;
+    background: rgba(210,153,34,0.06);
+  }
+  .callout-warn strong { color: #d29922; }
+
+  .callout-info {
+    border-left-color: var(--accent2);
+    background: rgba(88,166,255,0.06);
+  }
+  .callout-info strong { color: var(--accent2); }
+
+  /* Prose */
+  p { margin-bottom: 12px; color: var(--text-muted); font-size: 14px; }
+
+  ul { padding-left: 20px; margin-bottom: 16px; }
+  li { color: var(--text-muted); font-size: 14px; margin-bottom: 5px; }
+  li::marker { color: var(--accent); }
+
+  /* Two-col install grid */
+  .install-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  .install-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+  }
+
+  .install-card .card-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--accent2);
+    margin-bottom: 10px;
+  }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    .layout { grid-template-columns: 1fr; }
+    .sidebar { display: none; }
+    .main { padding: 32px 24px; }
+    .install-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- Sidebar Nav -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="product">godot-rl</div>
+      <div class="sub">v0.8.x · Godot 4 · Python 3.10+</div>
+    </div>
+
+    <nav>
+      <div class="nav-section">
+        <div class="nav-label">Getting Started</div>
+        <a href="#installation" class="nav-link">Installation</a>
+        <a href="#examples" class="nav-link">Example Environments</a>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-label">Training</div>
+        <a href="#sb3" class="nav-link">Stable Baselines 3</a>
+        <a href="#sf" class="nav-link">Sample Factory</a>
+        <a href="#cleanrl" class="nav-link">CleanRL</a>
+        <a href="#editor-mode" class="nav-link">Editor / Debug Mode</a>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-label">Headless & Parallel</div>
+        <a href="#headless" class="nav-link">Godot Headless Flags</a>
+        <a href="#parallel" class="nav-link">Parallel Training</a>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-label">Recording</div>
+        <a href="#moviewriter" class="nav-link">MovieWriter</a>
+        <a href="#ffmpeg" class="nav-link">ffmpeg</a>
+        <a href="#callback" class="nav-link">Auto-Record Callback</a>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-label">Platform</div>
+        <a href="#macos" class="nav-link">macOS Notes</a>
+        <a href="#refs" class="nav-link">References</a>
+      </div>
+    </nav>
+  </aside>
+
+  <!-- Main -->
+  <main class="main">
+
+    <div class="page-header">
+      <h1>Godot RL Agents<br><span>Reference</span></h1>
+      <p>Command reference, flags, headless training, parallel environments, and video recording on macOS.</p>
+      <div class="badges">
+        <span class="badge green">Godot 4</span>
+        <span class="badge blue">Python 3.10+</span>
+        <span class="badge blue">SB3</span>
+        <span class="badge blue">Sample Factory</span>
+        <span class="badge blue">CleanRL</span>
+        <span class="badge">MIT License</span>
+        <span class="badge red">macOS</span>
+      </div>
+    </div>
+
+
+    <!-- 1. Installation -->
+    <section class="section" id="installation">
+      <div class="section-title"><span class="num">01</span> Installation</div>
+      <p class="section-desc">Install the Python package with the backend of your choice.</p>
+
+      <div class="subsection">
+        <div class="subsection-title">Base Package</div>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-label">shell</span>
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          </div>
+          <pre><code>pip install godot-rl</code></pre>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <div class="subsection-title">Install with Backend</div>
+        <div class="install-grid">
+          <div class="install-card">
+            <div class="card-title">Stable Baselines 3</div>
+            <div class="code-block" style="margin-bottom:0">
+              <pre><code>pip install godot-rl[sb3]</code></pre>
+            </div>
+          </div>
+          <div class="install-card">
+            <div class="card-title">Sample Factory</div>
+            <div class="code-block" style="margin-bottom:0">
+              <pre><code>pip install godot-rl[sf]</code></pre>
+            </div>
+          </div>
+          <div class="install-card">
+            <div class="card-title">Ray RLLib</div>
+            <div class="code-block" style="margin-bottom:0">
+              <pre><code>pip install godot-rl[rllib]</code></pre>
+            </div>
+          </div>
+          <div class="install-card">
+            <div class="card-title">All Backends</div>
+            <div class="code-block" style="margin-bottom:0">
+              <pre><code>pip install godot-rl[sb3,sf,rllib]</code></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <div class="subsection-title">Download Godot Editor via CLI</div>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-label">shell</span>
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          </div>
+          <pre><code>gdrl.download_editor</code></pre>
+        </div>
+        <div class="callout-info callout"><strong>Note:</strong> Downloads a compatible Godot 4 binary. Works on Linux, Mac and Windows.</div>
+      </div>
+    </section>
+
+
+    <!-- 2. Examples -->
+    <section class="section" id="examples">
+      <div class="section-title"><span class="num">02</span> Example Environments</div>
+      <p class="section-desc">Download and prepare official example environments from the Hugging Face hub.</p>
+
+      <div class="code-block">
+        <div class="code-block-header">
+          <span class="code-label">shell</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <pre><code><span class="comment"># Download example — replace ENV_NAME with one of the options below</span>
+gdrl.env_from_hub -r edbeeching/godot_rl_&lt;ENV_NAME&gt;
+
+<span class="comment"># Set executable permissions (Linux / macOS)</span>
+chmod +x examples/godot_rl_&lt;ENV_NAME&gt;/bin/&lt;ENV_NAME&gt;.x86_64</code></pre>
+      </div>
+
+      <div class="callout-info callout"><strong>Two sources:</strong> Pre-built binaries on the HuggingFace hub (download with <code>gdrl.env_from_hub</code>), and source projects in the separate <a href="https://github.com/edbeeching/godot_rl_agents_examples" style="color:var(--accent2)">godot_rl_agents_examples</a> GitHub repo (requires Godot .NET + Blender for some).</div>
+
+      <div class="subsection">
+        <div class="subsection-title">HuggingFace Hub — Pre-built Binaries</div>
+        <div class="code-block">
+          <div class="code-block-header"><span class="code-label">shell</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+          <pre><code>gdrl.env_from_hub -r edbeeching/godot_rl_&lt;ENV_NAME&gt;</code></pre>
+        </div>
+        <table class="param-table">
+          <thead><tr><th>ENV_NAME</th><th>Description</th><th>Documented</th></tr></thead>
+          <tbody>
+            <tr><td>BallChase</td><td>Agent chasing a ball — simplest starting point</td><td><span class="badge green" style="font-size:11px">yes</span></td></tr>
+            <tr><td>JumperHard</td><td>Jump between platforms, good benchmark environment</td><td><span class="badge green" style="font-size:11px">yes</span></td></tr>
+            <tr><td>FlyBy</td><td>3D aerial navigation, waypoint-based, raycasts</td><td><span class="badge green" style="font-size:11px">yes</span></td></tr>
+            <tr><td>Racer</td><td>Top-down car racing</td><td><span class="badge green" style="font-size:11px">yes (SF docs)</span></td></tr>
+            <tr><td>VirtualCamera</td><td>Camera control agent — unusual observation space</td><td><span class="badge green" style="font-size:11px">yes (HF)</span></td></tr>
+            <tr><td>FPS</td><td>First-person shooter agent, complex action space</td><td><span class="badge" style="font-size:11px">partial (SF docs)</span></td></tr>
+            <tr><td>Ships</td><td>Naval combat / movement</td><td><span class="badge" style="font-size:11px">no</span></td></tr>
+            <tr><td>ZombieGame</td><td>Survival / zombie avoidance</td><td><span class="badge" style="font-size:11px">no</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="subsection">
+        <div class="subsection-title">godot_rl_agents_examples Repo — Source Projects</div>
+        <p style="margin-bottom:12px">Clone or download from <a href="https://github.com/edbeeching/godot_rl_agents_examples/tree/main/examples" style="color:var(--accent2)">github.com/edbeeching/godot_rl_agents_examples</a>. Open directly in Godot editor for training.</p>
+        <table class="param-table">
+          <thead><tr><th>Example</th><th>Description</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>JumperHard</td><td>Platform jumping — the canonical example</td><td>GDScript + C# variants</td></tr>
+            <tr><td>SimpleReachGoal</td><td>Reach green goal, avoid red obstacle — good for testing sensors and reward shaping. Includes raycast setup.</td><td>GDScript, CSharp, CSharpAll variants</td></tr>
+            <tr><td>BallChase</td><td>Ball chasing in 3D room</td><td>Simple obs/action space</td></tr>
+            <tr><td>FlyBy</td><td>Aerial waypoint navigation</td><td>Continuous action space</td></tr>
+            <tr><td>Racer</td><td>Car racing environment</td><td>Mixed action space</td></tr>
+            <tr><td>FPS</td><td>First-person shooter with multi-agent support</td><td>Complex; requires LSTM / RNN for good results</td></tr>
+            <tr><td>Ships</td><td>Naval movement / combat</td><td>Source available, no docs</td></tr>
+            <tr><td>ZombieGame</td><td>Survival environment</td><td>Source available, no docs</td></tr>
+          </tbody>
+        </table>
+        <div class="callout-warn callout"><strong>Requirements:</strong> All examples require Godot with .NET/Mono. Some additionally require Blender (for asset generation). Check individual project folders for specifics.</div>
+      </div>
+    </section>
+
+
+    <!-- 3. SB3 -->
+    <section class="section" id="sb3">
+      <div class="section-title"><span class="num">03</span> Stable Baselines 3</div>
+      <p class="section-desc">Most common backend for Godot RL. PPO is the default algorithm and works well for most environments.</p>
+
+      <div class="subsection">
+        <div class="subsection-title">Train with Visualization</div>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-label">shell</span>
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          </div>
+          <pre><code>python examples/stable_baselines3_example.py \
+  --env_path=examples/godot_rl_BallChase/bin/BallChase.x86_64 \
+  --experiment_name=Experiment_01 \
+  --viz</code></pre>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <div class="subsection-title">Train Headless</div>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-label">shell</span>
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          </div>
+          <pre><code>python examples/stable_baselines3_example.py \
+  --env_path=examples/godot_rl_BallChase/bin/BallChase.x86_64 \
+  --experiment_name=Experiment_01 \
+  --speedup=8 \
+  --n_parallel=4</code></pre>
+        </div>
+        <div class="callout"><strong>Headless:</strong> Simply omit <code>--viz</code>. All training commands support headless mode this way.</div>
+      </div>
+
+      <div class="subsection">
+        <div class="subsection-title">Resume from Checkpoint</div>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-label">shell</span>
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          </div>
+          <pre><code>python examples/stable_baselines3_example.py \
+  --env_path=./MyGame \
+  --experiment_name=Experiment_02 \
+  --resume_model_path=logs/Experiment_01/best_model.zip</code></pre>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <div class="subsection-title">SB3 Parameters</div>
+        <table class="param-table">
+          <thead><tr><th>Parameter</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td>--env_path</td><td>Path to exported Godot binary <span class="req">required</span></td></tr>
+            <tr><td>--experiment_name</td><td>Name for this run, used for saving logs and checkpoints</td></tr>
+            <tr><td>--viz</td><td>Enable visualization window — omit for headless training</td></tr>
+            <tr><td>--speedup</td><td>Simulation speedup factor (e.g. <code>8</code> = 8x faster than realtime)</td></tr>
+            <tr><td>--n_parallel</td><td>Number of parallel Godot instances to spawn</td></tr>
+            <tr><td>--timesteps</td><td>Total training timesteps <span class="opt">default: 1_000_000</span></td></tr>
+            <tr><td>--onnx_export_path</td><td>Export trained model to ONNX format after training</td></tr>
+            <tr><td>--resume_model_path</td><td>Path to saved model zip to continue training from</td></tr>
+            <tr><td>--seed</td><td>Random seed for reproducibility</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+
+    <!-- 4. Sample Factory -->
+    <section class="section" id="sf">
+      <div class="section-title"><span class="num">04</span> Sample Factory</div>
+      <p class="section-desc">Higher throughput, especially with many parallel workers. Good for scale.</p>
+
+      <div class="code-block">
+        <div class="code-block-header">
+          <span class="code-label">shell</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <pre><code>gdrl --trainer=sf --env=gdrl \
+  --env_path=examples/godot_rl_BallChase/bin/BallChase.x86_64 \
+  --num_workers=10 \
+  --experiment=BallChase \
+  --speedup=8 \
+  --batched_sampling=True \
+  --viz</code></pre>
+      </div>
+
+      <table class="param-table">
+        <thead><tr><th>Parameter</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>--trainer=sf</td><td>Select Sample Factory backend</td></tr>
+          <tr><td>--env=gdrl</td><td>Environment name (always <code>gdrl</code> for Godot)</td></tr>
+          <tr><td>--num_workers</td><td>Number of parallel worker processes</td></tr>
+          <tr><td>--experiment</td><td>Experiment name for checkpointing</td></tr>
+          <tr><td>--speedup</td><td>Simulation speedup multiplier</td></tr>
+          <tr><td>--batched_sampling</td><td>Enable batched sampling for better GPU utilization</td></tr>
+          <tr><td>--viz</td><td>Show visualization — omit for headless</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+
+    <!-- 5. CleanRL -->
+    <section class="section" id="cleanrl">
+      <div class="section-title"><span class="num">05</span> CleanRL</div>
+      <p class="section-desc">Single-file implementations. Great for learning and research where you want full control.</p>
+
+      <div class="code-block">
+        <div class="code-block-header">
+          <span class="code-label">shell</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <pre><code>python examples/clean_rl_example.py \
+  --env_path=examples/godot_rl_BallChase/bin/BallChase.x86_64 \
+  --speedup=8</code></pre>
+      </div>
+    </section>
+
+
+    <!-- 6. Editor Mode -->
+    <section class="section" id="editor-mode">
+      <div class="section-title"><span class="num">06</span> Editor / Debug Mode</div>
+      <p class="section-desc">Connect to a running Godot editor instance for interactive testing before committing to a full training run.</p>
+
+      <div class="code-block">
+        <div class="code-block-header">
+          <span class="code-label">shell — run after pressing Play in the Godot editor</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <pre><code>gdrl</code></pre>
+      </div>
+      <div class="callout"><strong>What this does:</strong> Steps through 1000 random actions in the running editor. Use this to verify observations, action spaces, and reward signals before training.</div>
+    </section>
+
+
+    <!-- 7. Headless -->
+    <section class="section" id="headless">
+      <div class="section-title"><span class="num">07</span> Godot Headless Flags</div>
+      <p class="section-desc">Godot command-line flags for running without a display.</p>
+
+      <div class="subsection">
+        <div class="subsection-title">Run Exported Binary Headless</div>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-label">shell</span>
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          </div>
+          <pre><code>./MyGame.x86_64 --headless</code></pre>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <div class="subsection-title">Run Godot Editor from Terminal (macOS)</div>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-label">shell</span>
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          </div>
+          <pre><code>/Applications/Godot.app/Contents/MacOS/Godot \
+  --headless \
+  --path /path/to/your/project</code></pre>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <div class="subsection-title">Godot CLI Flags Reference</div>
+        <table class="param-table">
+          <thead><tr><th>Flag</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td>--headless</td><td>Run without display or rendering — fastest for training</td></tr>
+            <tr><td>--path &lt;dir&gt;</td><td>Path to Godot project directory</td></tr>
+            <tr><td>--write-movie &lt;file&gt;</td><td>Record gameplay to video via MovieWriter (Godot 4)</td></tr>
+            <tr><td>--fixed-fps &lt;n&gt;</td><td>Lock simulation to fixed FPS — required for consistent MovieWriter output</td></tr>
+            <tr><td>--quit-after &lt;n&gt;</td><td>Automatically quit after N frames</td></tr>
+            <tr><td>--verbose</td><td>Enable verbose engine logging</td></tr>
+            <tr><td>--no-window</td><td>Legacy flag for windowless mode — prefer <code>--headless</code> in Godot 4</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+
+    <!-- 8. Parallel Training -->
+    <section class="section" id="parallel">
+      <div class="section-title"><span class="num">08</span> Parallel Training</div>
+      <p class="section-desc">Two approaches — pick based on your environment complexity and scale needs.</p>
+
+      <div class="subsection">
+        <div class="subsection-title">Option A — Multiple Agents in One Scene</div>
+        <p>Place multiple <code>AIController</code> nodes in a single Godot scene. All agents share one process and batch observations/actions together. Simpler to set up.</p>
+        <div class="callout"><strong>Best for:</strong> Quick setup, lower overhead, smaller environments.</div>
+      </div>
+
+      <div class="subsection">
+        <div class="subsection-title">Option B — Multiple Parallel Processes (SB3)</div>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-label">shell</span>
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          </div>
+          <pre><code>python examples/stable_baselines3_example.py \
+  --env_path=./MyGame \
+  --n_parallel=4 \
+  --speedup=8 \
+  --experiment_name=Parallel_Run</code></pre>
+        </div>
+        <div class="callout"><strong>Best for:</strong> Large-scale training, better isolation between environments, more stable experience collection. Each instance communicates on a separate TCP port.</div>
+      </div>
+
+      <div class="subsection">
+        <div class="subsection-title">Option B — Multiple Parallel Workers (Sample Factory)</div>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-label">shell</span>
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          </div>
+          <pre><code>gdrl --trainer=sf --env=gdrl \
+  --env_path=./MyGame \
+  --num_workers=10 \
+  --batched_sampling=True</code></pre>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- 9. MovieWriter -->
+    <section class="section" id="moviewriter">
+      <div class="section-title"><span class="num">09</span> MovieWriter</div>
+      <p class="section-desc">Godot 4's built-in video recorder. Works natively on macOS — no Xvfb needed.</p>
+
+      <div class="subsection">
+        <div class="subsection-title">Basic Recording (Exported Binary)</div>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-label">shell</span>
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          </div>
+          <pre><code>./MyGame --write-movie output.avi --fixed-fps 60 --quit-after 1800</code></pre>
+        </div>
+        <div class="callout-warn callout"><strong>Note:</strong> <code>--fixed-fps</code> is required for consistent video output. Without it frames may drop or duplicate.</div>
+      </div>
+
+      <div class="subsection">
+        <div class="subsection-title">Recording from Godot Editor (macOS)</div>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-label">shell</span>
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          </div>
+          <pre><code>/Applications/Godot.app/Contents/MacOS/Godot \
+  --path /path/to/project \
+  --write-movie checkpoint_100.avi \
+  --fixed-fps 60 \
+  --quit-after 1800</code></pre>
+        </div>
+      </div>
+
+      <table class="param-table">
+        <thead><tr><th>Parameter</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>--write-movie &lt;file&gt;</td><td>Output file path (.avi recommended)</td></tr>
+          <tr><td>--fixed-fps &lt;n&gt;</td><td>Lock FPS for consistent frame timing (60 is standard)</td></tr>
+          <tr><td>--quit-after &lt;n&gt;</td><td>Stop after N frames — at 60fps: 1800 = 30 seconds</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+
+    <!-- 10. ffmpeg -->
+    <section class="section" id="ffmpeg">
+      <div class="section-title"><span class="num">10</span> ffmpeg</div>
+      <p class="section-desc">Convert and process video output from MovieWriter.</p>
+
+      <div class="subsection">
+        <div class="subsection-title">Install (macOS)</div>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-label">shell</span>
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          </div>
+          <pre><code>brew install ffmpeg</code></pre>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <div class="subsection-title">Convert AVI to MP4</div>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-label">shell</span>
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          </div>
+          <pre><code>ffmpeg -i checkpoint_100.avi -c:v libx264 -crf 23 checkpoint_100.mp4</code></pre>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <div class="subsection-title">Concatenate Checkpoint Videos</div>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-label">shell</span>
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          </div>
+          <pre><code><span class="comment"># Create a filelist.txt with one file per line:</span>
+<span class="comment"># file 'checkpoint_100.mp4'</span>
+<span class="comment"># file 'checkpoint_200.mp4'</span>
+<span class="comment"># ...</span>
+
+ffmpeg -f concat -safe 0 -i filelist.txt -c copy training_progress.mp4</code></pre>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <div class="subsection-title">Resize / Downscale</div>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-label">shell</span>
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          </div>
+          <pre><code>ffmpeg -i output.avi -vf scale=1280:720 -c:v libx264 -crf 23 output_720p.mp4</code></pre>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- 11. Auto-Record Callback -->
+    <section class="section" id="callback">
+      <div class="section-title"><span class="num">11</span> Auto-Record Callback (SB3)</div>
+      <p class="section-desc">Record a video automatically every N training steps using a Stable Baselines 3 callback.</p>
+
+      <div class="code-block">
+        <div class="code-block-header">
+          <span class="code-label">python — record_callback.py</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <pre><code>import subprocess
+from stable_baselines3.common.callbacks import BaseCallback
+
+class RecordCallback(BaseCallback):
+    def __init__(self, record_every=100, env_path="./MyGame",
+                 fps=60, duration_frames=600, verbose=0):
+        super().__init__(verbose)
+        self.record_every = record_every
+        self.env_path = env_path
+        self.fps = fps
+        self.duration_frames = duration_frames
+
+    def _on_step(self) -> bool:
+        if self.n_calls % self.record_every == 0:
+            outfile = f"recordings/checkpoint_{self.n_calls}.avi"
+            subprocess.run([
+                self.env_path,
+                f"--write-movie={outfile}",
+                f"--fixed-fps={self.fps}",
+                f"--quit-after={self.duration_frames}",
+                "--headless",
+            ])
+        return True
+
+<span class="comment"># Usage in training script:</span>
+from stable_baselines3 import PPO
+
+model = PPO("MlpPolicy", env)
+callback = RecordCallback(record_every=100, env_path="./MyGame")
+model.learn(total_timesteps=1_000_000, callback=callback)</code></pre>
+      </div>
+
+      <div class="callout-warn callout"><strong>Important:</strong> To record inference (not random actions), save the current model weights before spawning the recording process, and load them inside Godot via ONNX export or a custom inference script.</div>
+    </section>
+
+
+    <!-- 12. macOS Notes -->
+    <section class="section" id="macos">
+      <div class="section-title"><span class="num">12</span> macOS Notes</div>
+
+      <div class="subsection">
+        <div class="subsection-title">Gatekeeper — Unsigned Binaries</div>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-label">shell</span>
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          </div>
+          <pre><code><span class="comment"># Remove quarantine attribute from exported Godot binary</span>
+xattr -dr com.apple.quarantine ./MyGame.app
+
+<span class="comment"># Or for a raw binary:</span>
+xattr -dr com.apple.quarantine ./MyGame</code></pre>
+        </div>
+      </div>
+
+      <ul>
+        <li>Use <strong>Godot 4 with .NET (Mono)</strong> version if you need to run the official example environments — they require it.</li>
+        <li>For your own GDScript-only project, the standard (non-.NET) Godot binary is lighter and sufficient.</li>
+        <li>On <strong>Apple Silicon (M1/M2/M3)</strong>, use the arm64 Godot binary for best performance.</li>
+        <li>MovieWriter works natively on macOS — <strong>no Xvfb needed</strong> (Xvfb is Linux-only).</li>
+        <li>If training with many headless processes, monitor thermal throttling — fan-heavy workloads can affect M-series chips.</li>
+      </ul>
+    </section>
+
+
+    <!-- 13. References -->
+    <section class="section" id="refs">
+      <div class="section-title"><span class="num">13</span> References</div>
+
+      <table class="param-table">
+        <thead><tr><th>Resource</th><th>URL</th></tr></thead>
+        <tbody>
+          <tr><td>GitHub</td><td><a href="https://github.com/edbeeching/godot_rl_agents" style="color:var(--accent2)">github.com/edbeeching/godot_rl_agents</a></td></tr>
+          <tr><td>PyPI</td><td><a href="https://pypi.org/project/godot-rl/" style="color:var(--accent2)">pypi.org/project/godot-rl</a></td></tr>
+          <tr><td>HuggingFace Course</td><td><a href="https://huggingface.co/learn/deep-rl-course/unitbonus3/godotrl" style="color:var(--accent2)">huggingface.co — Deep RL Course Unit Bonus 3</a></td></tr>
+          <tr><td>Godot CLI Docs</td><td><a href="https://docs.godotengine.org/en/stable/tutorials/editor/command_line_tutorial.html" style="color:var(--accent2)">docs.godotengine.org — Command Line Tutorial</a></td></tr>
+          <tr><td>MovieWriter Docs</td><td><a href="https://docs.godotengine.org/en/stable/tutorials/animation/creating_movies.html" style="color:var(--accent2)">docs.godotengine.org — Creating Movies</a></td></tr>
+          <tr><td>SB3 Callbacks</td><td><a href="https://stable-baselines3.readthedocs.io/en/master/guide/callbacks.html" style="color:var(--accent2)">stable-baselines3.readthedocs.io — Callbacks</a></td></tr>
+          <tr><td>Examples Repo</td><td><a href="https://github.com/edbeeching/godot_rl_agents_examples" style="color:var(--accent2)">github.com/edbeeching/godot_rl_agents_examples</a></td></tr>
+          <tr><td>DeepWiki (auto-docs)</td><td><a href="https://deepwiki.com/edbeeching/godot_rl_agents_examples" style="color:var(--accent2)">deepwiki.com/edbeeching/godot_rl_agents_examples</a></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+  </main>
+</div>
+
+<script>
+  function copyCode(btn) {
+    const pre = btn.closest('.code-block').querySelector('pre');
+    const text = pre.innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = 'copied!';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = 'copy';
+        btn.classList.remove('copied');
+      }, 1800);
+    });
+  }
+
+  // Highlight active nav link on scroll
+  const sections = document.querySelectorAll('.section');
+  const navLinks = document.querySelectorAll('.nav-link');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        navLinks.forEach(l => l.classList.remove('active'));
+        const active = document.querySelector(`.nav-link[href="#${entry.target.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { threshold: 0.3 });
+
+  sections.forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>
