@@ -8,6 +8,9 @@ Learn the RL mental model and map it onto Godot — but don't wait until the end
     - Explain the RL loop — *state, action, reward, next state*
     - Define the core terms: agent, environment, observation, action space, reward, return, policy, episode
     - Tell the difference between policy-based and value-based methods, and say what "Deep" adds
+    - Distinguish Monte Carlo from Temporal Difference learning, and know which one PPO uses
+    - Explain the exploration–exploitation trade-off and name the mechanisms PPO and DQN use
+    - Place Q-Learning, DQN, REINFORCE, PPO, and MuZero in a single taxonomy table
     - Describe how Godot and Python cooperate to train an agent
     - Run a complete training session and read its progress
 
@@ -17,17 +20,17 @@ Learn the RL mental model and map it onto Godot — but don't wait until the end
     - Comfort using a terminal
     - **No** prior Godot, game-dev, or machine-learning experience needed
 
-    **Time:** Fast path ~15 min skim + ~20 min reward tweak + training in background. Full read of Sections 1–5: add ~25 minutes. Nothing to build from scratch yet.
+    **Time:** Fast path ~15 min skim + ~20 min reward tweak + training in background. Full read of Sections 1–6: add ~40 minutes. Nothing to build from scratch yet.
 
 ---
 
 ## ⚡ Fast path (recommended first hour) { #fast-path }
 
 1. Read [Section 1](#1-what-is-reinforcement-learning) and [Section 2](#2-the-rl-process-loop) only (~15 min) — agent, environment, reward, loop.
-2. Jump to [Section 6](#6-quick-win-ballchase-recap) — change one reward in BallChase, start training with `--viz`.
-3. While it trains, read Sections 3–5 and the [glossary](#glossary).
+2. Jump to [Section 7](#7-quick-win-ballchase-recap) — change one reward in BallChase, start training with `--viz`.
+3. While it trains, read Sections 3–6 and the [glossary](#glossary).
 
-*Prefer linear reading? Follow Sections 1–6 in order — Section 6 still includes the reward tweak.*
+*Prefer linear reading? Follow Sections 1–7 in order — Section 7 still includes the reward tweak.*
 
 ---
 
@@ -95,7 +98,83 @@ In papers this loop is called a **Markov Decision Process (MDP)**. The one thing
 
 ---
 
-## 3 · The building blocks
+## 3 · Monte Carlo vs Temporal Difference
+
+Once the agent collects experience, it has to *learn from it* — that is, update its estimate of how good each state is. There are two fundamentally different strategies for doing this.
+
+### Monte Carlo (MC)
+
+The idea: **wait until the episode is finished**, then use the real return to update.
+
+At the end of an episode, you know the actual total reward collected from step *t* onward:
+
+```
+Gₜ = rₜ + γ rₜ₊₁ + γ² rₜ₊₂ + … + γᵀ rᵀ
+```
+
+You then push your value estimate V(sₜ) a bit toward that real return Gₜ.
+
+**Pros:**
+- **Unbiased** — you used the real return, no approximation.
+- Easy to understand and implement.
+
+**Cons:**
+- Must wait for the **complete episode** before any update — slow.
+- **High variance** — a single lucky or unlucky episode can swing your estimates wildly.
+- Can't work in **continuing tasks** (no episode end).
+
+### Temporal Difference (TD)
+
+The idea: **update after every single step** using a *bootstrapped* estimate — that is, use your *current* value estimate for the next state instead of waiting for the real return.
+
+The **TD target** is:
+
+```
+rₜ + γ V(sₜ₊₁)
+```
+
+The **TD error** δₜ measures how wrong your current estimate was:
+
+```
+δₜ = rₜ + γ V(sₜ₊₁) − V(sₜ)
+```
+
+You then nudge V(sₜ) by a small step in the direction of δₜ.
+
+**Pros:**
+- Works in **continuing tasks** — no episode end needed.
+- **Online learning** — updates flow in as the agent acts.
+- **Lower variance** than MC because you don't wait for a full noisy trajectory.
+
+**Cons:**
+- **Biased** — you're bootstrapping on an imperfect V estimate. Early in training that estimate is wrong, so the target is wrong too.
+
+### The intuition
+
+!!! info "MC vs TD in plain English"
+    **Monte Carlo** is like waiting until the chess game is over and then updating your mental model of every position you played through.
+
+    **Temporal Difference** is like updating your assessment of your position *after every single move*, based on how good the position looks *right now*.
+
+    Neither is always better — the right choice depends on task structure, episode length, and how much variance you can tolerate.
+
+### Which one does this course use?
+
+| Algorithm | Family | Used in |
+|-----------|--------|---------|
+| PPO (RecurrentPPO) | Multi-step TD | Units 2, 5 |
+| Q-Learning | Single-step TD | Unit 3 (theory) |
+| DQN | Single-step TD | Unit 3 |
+| REINFORCE | Monte Carlo | Background reading |
+
+PPO collects a fixed-length **rollout** (a window of steps, not a full episode) and then updates — that makes it a multi-step TD method. You'll see `n_steps` in the PPO config; that's the rollout length.
+
+!!! tip "Reading TensorBoard"
+    The `ep_rew_mean` curve is the averaged episodic return — a Monte Carlo quantity. But the *learning signal* inside PPO is TD-based. When `ep_rew_mean` climbs slowly at first and then accelerates, you're watching TD bootstrapping gradually improve as the value estimate gets better. We explore this in depth in the [Q-Learning unit](unit-03.md).
+
+---
+
+## 4 · The building blocks
 
 **Observations & states**
 
@@ -136,13 +215,65 @@ Everything in this course is **episodic**.
 
 ---
 
-## 4 · How an agent learns
+## 5 · How an agent learns
 
 **The policy π — the agent's brain**
 
 The **policy π** is the function that tells the agent what action to take in a given state. Training has one job: find the **optimal policy π\*** — the one that earns the most expected return.
 
 A policy can be **deterministic** (a state always gives the same action) or **stochastic** (it outputs a probability distribution over actions). The lander you'll train uses a stochastic policy.
+
+---
+
+### Exploration vs Exploitation
+
+Before the agent can exploit a good policy, it must first *discover* what is good — and that requires exploration. This tension is one of the most fundamental challenges in RL.
+
+**The dilemma in one sentence:** exploit known-good actions and collect reward *now*, or explore unknown actions that might be even better.
+
+#### ε-greedy exploration
+
+The classical solution, used in **DQN** (Unit 3):
+
+- With probability **ε**, take a *random* action (explore).
+- With probability **1 − ε**, take the *best known* action (exploit).
+
+| ε value | Behaviour |
+|---------|-----------|
+| 1.0 | Pure random exploration — the agent ignores everything it has learned |
+| 0.5 | Half random, half greedy |
+| 0.05 | Mostly exploiting, with a small chance of trying something new |
+| 0.0 | Pure exploitation — greedy, never explores |
+
+In practice, ε is **annealed** (decayed) during training: start at 1.0, finish at 0.05. This lets the agent explore the state space freely early on, then commit to the policy it has learned.
+
+#### Entropy-based exploration (PPO)
+
+PPO does *not* use ε-greedy. Instead, it works with **stochastic policies** — the network outputs a probability distribution over actions, not a single action.
+
+The **entropy** of this distribution measures how spread out it is:
+
+- **High entropy** = the distribution is flat = the agent explores many actions equally.
+- **Low entropy** = the distribution is peaked = the agent is confident and commits to one action.
+
+PPO adds an **entropy bonus** to the loss function. This penalises the policy for collapsing too early to a narrow distribution, keeping exploration alive throughout training.
+
+```
+PPO loss = policy gradient − c_entropy × entropy
+```
+
+The coefficient `c_entropy` (often called `ent_coef` in stable-baselines3) controls how hard you push for exploration. You'll tune this in later units.
+
+#### Curiosity-driven exploration (bonus concept)
+
+A third family of methods gives the agent an **intrinsic reward** for visiting novel states — states it hasn't seen before or can't predict well. This is especially useful when the extrinsic reward is very sparse (e.g. a puzzle game where reward only arrives at the very end). We don't use curiosity in this course, but it's worth knowing the idea exists.
+
+!!! info "Which method is used where"
+    - **DQN** (Unit 3) — ε-greedy with linear ε decay
+    - **PPO** (Units 2, 5) — entropy bonus via `ent_coef`
+    - **Curiosity / RND** — advanced, not covered in this course
+
+---
 
 **Two ways to find the optimal policy**
 
@@ -153,20 +284,62 @@ A policy can be **deterministic** (a state always gives the same action) or **st
 
 Both aim at the same optimal policy π\*. Unit 2 uses **PPO**, a policy-based method. Later units explore value-based methods like DQN.
 
-**Exploration vs exploitation**
+---
 
-An agent that only ever does what worked before (**exploitation**) may never discover something better. An agent that only tries random things (**exploration**) never cashes in what it learned. Good learning balances the two — explore early, exploit more as you improve.
+### Value-Based vs Policy-Based vs Actor-Critic: the full taxonomy
 
-**What "Deep" means — and one word on PPO**
+In practice, RL algorithms fall into four families. Knowing the map helps you read papers, choose algorithms, and understand TensorBoard metrics.
 
-The policy has to be *some* function. In **Deep** RL, that function is a **neural network**: it takes the observation as input and outputs an action. "Deep" simply means a neural network is doing the learning.
+| Family | What it learns | Representative algorithms | When to use |
+|--------|---------------|--------------------------|-------------|
+| **Value-based** | Q(s,a) or V(s) — how good each state/action is | Q-Learning, DQN, Double DQN | Discrete actions; sample-efficient; good for simple environments |
+| **Policy-based** | π_θ(a\|s) directly — the policy as a neural network | REINFORCE, TRPO | Continuous or stochastic action spaces; no value function needed |
+| **Actor-Critic** | Both π and V simultaneously — the actor acts, the critic evaluates | A2C, PPO, SAC | Best of both families; lower variance than pure policy-based; the standard today |
+| **Model-based** | A dynamics model p(s'\|s,a) — predict what happens next | Dyna, World Models, MuZero | Highly sample-efficient; useful when simulation is expensive |
 
-!!! info "PPO in one sentence"
-    **Proximal Policy Optimization (PPO)** is a popular policy-based algorithm that improves the policy in small, safe steps so training stays stable. You won't implement it — the `stable-baselines3` library provides it, and `godot-rl` wires it up.
+**This course** focuses on **Actor-Critic** (PPO) because it is the industry standard for game AI. Unit 3 also teaches **DQN** (value-based) so you can feel the contrast. Model-based methods are covered briefly in the advanced section.
+
+!!! info "Why Actor-Critic?"
+    A pure policy-based method (REINFORCE) has high variance — each update is based on a single noisy trajectory. A pure value-based method (DQN) doesn't work easily with continuous actions. Actor-Critic gets low variance (from the critic's value estimate) *and* handles any action space (from the actor's policy). PPO is the most popular Actor-Critic algorithm in games because it is also stable and sample-efficient.
 
 ---
 
-## 5 · How Godot RL Agents fits together
+**What "Deep" means in Deep RL**
+
+Traditional RL maintained a **lookup table**: one row per state, one column per action, storing Q-values or V-values. This works fine for small problems — a chess endgame with a few thousand positions, or a simple grid world.
+
+It fails completely once the state space is large. A Godot game with 8 continuous sensor values has *infinite* possible states. You can't have a row for each one.
+
+**Deep RL** replaces the table with a **neural network**:
+
+- **Input:** the raw observation vector (8 numbers for the lander, pixel arrays for vision-based agents, raycast distances for a robot).
+- **Output:** action probabilities (for an actor/policy network) *or* a value estimate (for a critic/value network).
+
+The network *generalises* — it learns to give similar outputs for similar observations, which is exactly what a table cannot do.
+
+**Why "deep"?** Because the network has multiple hidden layers (it's "deep" in the neural-network sense). A shallow one-layer network can't represent the complex non-linear functions that most game policies require.
+
+!!! info "The trade-off you buy into with Deep RL"
+    | Tabular RL | Deep RL |
+    |------------|---------|
+    | Exact, provably converges | Approximate, may diverge |
+    | Only tiny state spaces | Any state space (pixels, sensors) |
+    | No hyperparameters | Learning rate, architecture, ent_coef, … |
+    | Instant updates | Needs thousands of gradient steps |
+
+    For any game environment beyond toy problems, Deep RL is the only practical option.
+
+!!! tip "What this means for debugging"
+    When training stalls, it's often not the RL algorithm that's wrong — it's the neural network failing to learn a useful representation. Check: (1) observation scale (inputs should be roughly −1 to 1), (2) reward scale (very large rewards cause gradient explosion), (3) network size (too small = underfitting, too large = slow and unstable).
+
+**One word on PPO**
+
+!!! info "PPO in one sentence"
+    **Proximal Policy Optimization (PPO)** is a popular Actor-Critic algorithm that improves the policy in small, safe steps so training stays stable. You won't implement it — the `stable-baselines3` library provides it, and `godot-rl` wires it up.
+
+---
+
+## 6 · How Godot RL Agents fits together
 
 Godot RL Agents uses two programs that run side by side and talk over a fast local network socket. The **Godot engine** is the environment — it renders the world, runs the physics, and reports observations and rewards. **Python** is the brain — it runs PPO and decides the actions.
 
@@ -232,7 +405,7 @@ This is exactly what you'll create, piece by piece, in Unit 2. After training, t
 
 ---
 
-## 6 · Quick win: BallChase recap
+## 7 · Quick win: BallChase recap
 
 !!! tip "Your first ownership moment"
     In Unit 0 you ran BallChase. Here you change the reward signal and see behavior shift — that connects vocabulary to code.
@@ -279,9 +452,19 @@ python examples/stable_baselines3_example.py \
 | **Policy π** | The agent's brain — the function mapping a state to an action. |
 | **Episode** | One run from start to a terminal state (land, crash, or timeout). |
 | **MDP** | Markov Decision Process — the formal name for the RL loop. |
-| **Policy-based / value-based** | The two families of methods for finding the optimal policy. |
-| **PPO** | Proximal Policy Optimization — the stable policy-based algorithm used in Unit 2. |
-| **Deep RL** | RL where the policy is a neural network. |
+| **Monte Carlo (MC)** | Learning from complete episodes; unbiased but high variance and slow. |
+| **Temporal Difference (TD)** | Learning after every step using bootstrapped estimates; lower variance, works online. |
+| **TD error δ** | The difference between the TD target and current value estimate: rₜ + γ V(sₜ₊₁) − V(sₜ). |
+| **Bootstrapping** | Using your current estimate of future value as a target, instead of waiting for the real return. |
+| **Exploration** | Trying actions you don't know well, to discover better strategies. |
+| **Exploitation** | Using what you already know to collect reward. |
+| **ε-greedy** | Exploration strategy: random action with probability ε, best-known action otherwise. |
+| **Entropy bonus** | PPO's exploration mechanism: penalises overly confident policies to keep exploration alive. |
+| **Policy-based** | Methods that learn the policy π directly (e.g. REINFORCE, PPO). |
+| **Value-based** | Methods that learn Q(s,a) or V(s) and derive behaviour from it (e.g. DQN). |
+| **Actor-Critic** | Methods that learn both π and V simultaneously (e.g. A2C, PPO). |
+| **PPO** | Proximal Policy Optimization — the stable Actor-Critic algorithm used in Unit 2. |
+| **Deep RL** | RL where the policy or value function is a neural network. |
 | **Rollout** | A batch of experience collected before each PPO update. |
 | **ONNX** | A portable model format — lets the trained policy run inside Godot without Python. |
 
@@ -292,6 +475,16 @@ python examples/stable_baselines3_example.py \
 You have the vocabulary, a reward tweak under your belt, and a trained run to reference. In **Unit 2**, start with **SimpleReachGoal** (run + tweak), then build Lunar Lander from scratch.
 
 !!! info "Self-check before you move on"
-    Can you answer these in your own words? (1) What are the four parts of the RL loop? (2) What's the difference between an observation and a state? (3) What does the discount rate γ control? (4) What is a policy? If yes — you're ready.
+    Can you answer these in your own words?
+
+    1. What are the four parts of the RL loop?
+    2. What's the difference between an observation and a state?
+    3. What does the discount rate γ control?
+    4. What is a policy?
+    5. What is the key difference between Monte Carlo and TD learning?
+    6. How does PPO encourage exploration without ε-greedy?
+    7. Name one algorithm from each of the four RL families (value-based, policy-based, Actor-Critic, model-based).
+
+    If you can answer all seven — you're ready.
 
 [→ Unit 2: Build Lunar Lander in Godot](unit-02.md)

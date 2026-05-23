@@ -7,7 +7,7 @@ Study the official **CrossTheRoad** example — discrete 2D navigation with spar
 ---
 
 !!! warning "Console-first from here"
-    Units 0–2 used the editor for building and debugging. From Unit 3 on, train with an exported binary and omit `--viz` for speed — then run a short **viz checkpoint** when training finishes (see [Section 5](#5-tweak-viz-checkpoint)).
+    Units 0–2 used the editor for building and debugging. From Unit 3 on, train with an exported binary and omit `--viz` for speed — then run a short **viz checkpoint** when training finishes (see Section 9).
 
 !!! info "Three ways to see your AI"
     Godot (viz checkpoint) · TensorBoard (DQN vs Unit 2 PPO) · `AIController` reward tweaks
@@ -38,7 +38,189 @@ Use DQN when the action space is **discrete** and rewards are sparse — like cr
 
 ---
 
-## 2 · Open CrossTheRoad
+## 2 · From Q-tables to neural networks
+
+If you haven't read the Q-Learning unit yet, now is the time — the tabular foundations make everything here click: [Q-Learning unit](unit-q-learning.md).
+
+**The problem with Q-tables**
+
+Classical Q-Learning builds a lookup table: every row is a state, every column is an action, every cell holds a Q-value. That works perfectly when the state space is small. The moment you move to real environments, it breaks:
+
+- **CrossTheRoad (this unit):** position on a grid — manageable, maybe a few thousand states
+- **Atari Pong:** raw pixel frames — 210 × 160 pixels × 3 channels → approximately 10^18,000 possible states
+- **Godot RayCast observations:** floating-point vectors — literally infinite states
+
+A table with 10^18,000 rows cannot exist. We need a function approximator that *generalises* across similar states.
+
+**Enter the Deep Q-Network**
+
+Replace the table with a neural network:
+
+```
+Input layer:   observation  (pixels / raycasts / any vector)
+Hidden layers: learned feature extraction
+Output layer:  one Q-value per action
+               Q(s, a_1), Q(s, a_2), ..., Q(s, a_n)
+```
+
+The network maps a state *s* to a vector of Q-values — one per action. The agent picks the action with the highest Q-value (when being greedy). The Bellman update rule is unchanged from tabular Q-Learning; we just apply it to the network's outputs instead of a table cell.
+
+**The Atari breakthrough (2013/2015)**
+
+DeepMind's 2013 paper "Playing Atari with Deep Reinforcement Learning" and the 2015 Nature paper that followed showed a *single* DQN architecture — the same network weights, the same algorithm — could learn to play 49 Atari games directly from raw pixel input, reaching human-level or better on many of them. The key ingredients were exactly the two tricks listed in Section 1: experience replay and a target network. Before those tricks, training was wildly unstable.
+
+!!! info "Why does scaling Q-learning to deep networks create new problems?"
+    Neural network training assumes i.i.d. (independent and identically distributed) data. RL transitions are neither — consecutive frames are nearly identical, and the target values we train toward keep shifting as the network learns. Experience replay and the target network are engineering solutions to both problems. We cover each in depth below.
+
+---
+
+## 3 · Experience Replay
+
+**Why consecutive transitions are a problem**
+
+Imagine the agent taking steps *s_t → s_{t+1} → s_{t+2}* across a road. These three observations are nearly identical — slightly different positions on the same road. If you train on them in order, each mini-batch contains only one type of experience. The network overfits to "being near position X" and forgets everything it learned about positions A, B, and C earlier.
+
+This is **catastrophic forgetting** — the neural network version of a student who crams one topic so hard they forget the others.
+
+**The replay buffer**
+
+The fix is simple in concept: store every transition the agent ever experiences, then train on *random* mini-batches drawn from the whole history.
+
+A single transition is a tuple:
+
+```
+(s, a, r, s', done)
+ │   │   │   │    └── did the episode end?
+ │   │   │   └─────── next state
+ │   │   └─────────── reward received
+ │   └─────────────── action taken
+ └─────────────────── current state
+```
+
+In Python pseudocode:
+
+```python
+from collections import deque
+import random
+
+class ReplayBuffer:
+    def __init__(self, capacity=100_000):
+        self.buffer = deque(maxlen=capacity)  # circular: old entries drop off
+
+    def push(self, state, action, reward, next_state, done):
+        self.buffer.append((state, action, reward, next_state, done))
+
+    def sample(self, batch_size=64):
+        batch = random.sample(self.buffer, batch_size)
+        states, actions, rewards, next_states, dones = zip(*batch)
+        return states, actions, rewards, next_states, dones
+
+    def __len__(self):
+        return len(self.buffer)
+```
+
+**Key design choices:**
+
+- **Capacity:** 10k–1M transitions. Larger buffers keep older, more diverse experiences in the pool. CrossTheRoad can use 50k; Atari-scale tasks use 1M.
+- **Random sampling:** Each training step draws a random mini-batch. Transitions from 100 episodes ago mix with transitions from 5 episodes ago — no temporal correlation.
+- **Circular (deque):** When the buffer is full, the oldest entry drops off. This prevents the buffer from filling with stale pre-trained experience.
+
+!!! tip "Buffer size vs. memory"
+    Storing raw pixel observations at 1M capacity costs gigabytes of RAM. For godot-rl-agents tasks, raycast observations are small floats — 100k capacity is usually fine and keeps memory manageable.
+
+---
+
+## 4 · Target Network
+
+**The moving target problem**
+
+The DQN loss function is:
+
+```
+L = (r + γ · max_a' Q(s', a') − Q(s, a))²
+         └── bootstrap target ──┘
+```
+
+Both `Q(s, a)` (the prediction) and `Q(s', a')` (the target) come from the *same* network. Every time we update the network to reduce this loss, *both sides move*. We're chasing a target that runs away with every step — like trying to hit a ball that moves every time you swing.
+
+In practice this causes training to oscillate or diverge entirely.
+
+**The solution: freeze the target**
+
+Keep *two* copies of the network:
+
+| Network | Role | Updated how often |
+|---------|------|-------------------|
+| **Q-network** (online) | Makes predictions, trained every step | Every gradient step |
+| **Target network Q̂** | Provides bootstrap targets | Every C steps (hard copy) or continuous soft update |
+
+The loss becomes:
+
+```
+L = (r + γ · max_a' Q̂(s', a') − Q(s, a))²
+                   ↑ frozen target network
+```
+
+Now the target side is stable for C steps, giving the online network something fixed to converge toward.
+
+**Hard update vs. soft update**
+
+```python
+# Hard update — copy weights every C steps (e.g., C = 1000)
+if step % 1000 == 0:
+    target_net.load_state_dict(q_net.state_dict())
+
+# Soft update — blend weights every step (more stable, slower lag)
+tau = 0.005
+for p, pt in zip(q_net.parameters(), target_net.parameters()):
+    pt.data = tau * p.data + (1 - tau) * pt.data
+```
+
+SB3's DQN uses a soft update by default (`tau=1.0` means hard update; lower values give soft). The `target_update_interval` parameter controls how often updates happen.
+
+!!! info "Two networks, same architecture"
+    Target and online network share the exact same architecture — only the weights differ. The target network does not receive gradient updates directly; it only receives periodic copies of the online network's weights.
+
+---
+
+## 5 · Epsilon-Greedy Exploration in DQN
+
+**The exploration-exploitation dilemma**
+
+A purely greedy agent always picks the action with the highest current Q-value. Early in training those Q-values are random noise — greedy means randomly bad choices that never improve. Purely random is safe for learning but never converges.
+
+ε-greedy threads the needle:
+
+```
+With probability ε:     take a random action  (explore)
+With probability 1-ε:   take argmax Q(s, a)  (exploit)
+```
+
+**The decay schedule**
+
+Start with heavy exploration, decay toward exploitation as the agent accumulates experience:
+
+```
+ε_start = 1.0      # 100% random at step 0
+ε_end   = 0.05     # 5% random after decay period
+decay_steps = 100_000
+
+ε(t) = ε_end + (ε_start - ε_end) × max(0, 1 - t / decay_steps)
+```
+
+At step 0 the agent acts randomly, discovering diverse crossings. By step 100k it mostly exploits its learned Q-values, with 5% random exploration to avoid getting stuck in local optima.
+
+**Training vs. evaluation**
+
+- **During training:** use the ε schedule — lots of exploration early
+- **During evaluation:** set ε = 0 (fully greedy) or use `deterministic=True` — you want the agent's *best* behavior, not random exploration
+
+!!! tip "Watching ε decay in CrossTheRoad"
+    The DQN agent exploring CrossTheRoad is trying random moves early — you'll see it fall off the road constantly in the first few thousand steps. As ε decays toward 0.05, the agent starts exploiting its learned Q-values and you'll see it make purposeful crossing attempts. The flat → sharp-jump curve in TensorBoard corresponds directly to ε decay meeting a sufficient amount of replay buffer experience.
+
+---
+
+## 6 · Open CrossTheRoad
 
 **Clone and import**
 
@@ -75,7 +257,7 @@ gdrl --env_path=./CrossTheRoad.x86_64 \
 
 ---
 
-## 3 · Read the code
+## 7 · Read the code
 
 Trace these in order — same rhythm as SimpleReachGoal in Unit 2:
 
@@ -88,7 +270,7 @@ Trace these in order — same rhythm as SimpleReachGoal in Unit 2:
 
 ---
 
-## 4 · Train headless
+## 8 · Train headless
 
 ```bash
 conda activate godot_env
@@ -108,7 +290,7 @@ Watch `ep_rew_mean` — sparse rewards may stay flat for thousands of episodes, 
 
 ---
 
-## 5 · Tweak & viz checkpoint
+## 9 · Tweak & viz checkpoint
 
 **Viz checkpoint (~5 min)**
 
@@ -119,6 +301,51 @@ Re-run the trained policy with `--viz` or Play Scene in Godot. Screenshot behavi
 - Increase crash penalty by 2× — does learning speed up or stall?
 - Add a small reward for forward progress — compare to pure sparse setup
 - Train the same env with PPO — which algorithm reaches reliable crossings first?
+
+---
+
+## 10 · DQN limitations
+
+DQN is elegant but has real constraints you will hit in later units.
+
+**Discrete actions only**
+
+Q-values are defined over a finite set of actions: Q(s, a_1), Q(s, a_2), ..., Q(s, a_n). Taking the max is O(n) — tractable when n is 5 (CrossTheRoad) or 18 (Atari). With *continuous* actions (e.g., joint torques in JumperHard or throttle in FlyBy), n is infinite. You cannot enumerate and maximise over infinitely many actions. This is why value-based methods are mostly restricted to discrete control.
+
+**Overestimation bias**
+
+The `max` operator is optimistic: it tends to overestimate Q-values because it always picks the highest noisy estimate. Over time, overestimated values bootstrap into each other and Q-values become inflated. This can slow learning or destabilize late training.
+
+**Double DQN — the fix**
+
+Decouple action *selection* from action *evaluation*:
+
+```
+# Standard DQN (biased):
+target = r + γ · max_a' Q̂(s', a')                     # target net picks AND evaluates
+
+# Double DQN (unbiased):
+a_star = argmax_a' Q(s', a')                            # online net selects best action
+target = r + γ · Q̂(s', a_star)                         # target net evaluates that action
+```
+
+Using the online network to choose the action and the target network to evaluate it removes the systematic upward bias.
+
+**Dueling DQN — the extension**
+
+Split the network's final layers into two streams:
+
+- **Value stream** V(s) — how good is this state regardless of action?
+- **Advantage stream** A(s, a) — how much better is action a than average?
+- Combine: Q(s, a) = V(s) + (A(s, a) − mean_a A(s, a))
+
+This helps the agent learn that some states are simply bad regardless of what it does — useful for CrossTheRoad where falling into traffic is catastrophically bad no matter what move you make next.
+
+!!! info "SB3 handles these automatically"
+    Stable-Baselines3's `DQN` class supports Double DQN via `policy_kwargs={"optimize_memory_usage": False}` and Dueling networks via `policy_kwargs={"dueling": True}`. You don't need to implement them from scratch.
+
+!!! tip "Bridge to continuous control"
+    For continuous actions — Unit 6 FlyBy, JumperHard with joint torques — we need policy-based methods that output action *distributions* rather than Q-value tables. That is exactly what PPO does, and why the next unit focuses on it. See [Unit 4: JumperHard & PPO](unit-04.md).
 
 ---
 

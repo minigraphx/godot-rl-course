@@ -31,16 +31,24 @@ markdown_extensions:
 nav:
   - Home: index.md
   - Setup: setup.md
-  - Units:
-    - "Unit 0: Setup & First Run": unit-00.md
-    - "Unit 1: RL Foundations": unit-01.md
-    - "Unit 2: Lunar Lander Build": unit-02.md
-    - "Unit 3: CrossTheRoad & DQN": unit-03.md
-    - "Unit 4: JumperHard & PPO": unit-04.md
-    - "Unit 5: Parallel Training": unit-05.md
-    - "Unit 6: Continuous 3D": unit-06.md
-    - "Unit 7: Multi-Agent": unit-07.md
-    - "Unit 8: Memory & POMDPs": unit-08.md
-    - "Unit 9: Imitation Learning": unit-09.md
-    - "Unit 10: Ship Your Brain": unit-10.md
+  - "Phase 1 — Foundations":
+    - "Unit 0 — Setup & First Run": unit-00.md
+    - "Unit 1 — RL Foundations": unit-01.md
+    - "Unit 2 — Build Your First Env": unit-02.md
+  - "Phase 2 — Value-Based Methods":
+    - "Q-Learning": unit-q-learning.md
+    - "Deep Q-Learning (DQN)": unit-03.md
+  - "Phase 3 — Policy-Based Methods":
+    - "Policy Gradients & REINFORCE": unit-policy-gradients.md
+    - "Actor-Critic": unit-actor-critic.md
+    - "PPO Deep Dive": unit-ppo-deep.md
+    - "PPO in Practice (JumperHard)": unit-04.md
+  - "Phase 4 — Scale & Complexity":
+    - "Parallel Training": unit-05.md
+    - "Continuous 3D": unit-06.md
+    - "Multi-Agent": unit-07.md
+    - "Memory & POMDPs": unit-08.md
+  - "Phase 5 — Beyond Reward":
+    - "Imitation Learning": unit-09.md
+    - "Ship Your Brain": unit-10.md
   - Reference: reference.md
