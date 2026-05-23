@@ -30,6 +30,7 @@ markdown_extensions:
 
 nav:
   - Home: index.md
+  - Setup: setup.md
   - Units:
     - "Unit 0: Setup & First Run": unit-00.md
     - "Unit 1: RL Foundations": unit-01.md

@@ -58,40 +58,9 @@ Then continue to Phase B — you are copying these patterns, not discovering the
 
 ## 1 · Install the required tools
 
-**Godot 4 — .NET edition**
+If you completed Unit 0 your tools are already installed — skip to [Section 4](#4-build-the-lander-scene-landertscn).
 
-Download the **.NET / Mono** build of Godot 4 from **godotengine.org** (not the standard build). Tested with Godot 4.3+.
-
-!!! warning "Use the .NET edition for the whole workflow"
-    The godot-rl plugin layer compiles native C# tasks (with NuGet references) that bridge Godot to the model parsers and the ONNX runtime. The standard Godot build cannot resolve these — use the **.NET edition** from the start: building the scene, training, and inference all rely on it. You must also install the [.NET SDK](https://dotnet.microsoft.com/download).
-
-**Miniconda**
-
-If you don't already have it, install **Miniconda** from **docs.conda.io**. We use a Conda environment instead of a plain `venv` to pin an exact Python version and keep the ML packages cleanly isolated.
-
-**Create & activate the Conda environment**
-
-```bash
-# Create an isolated environment with Python 3.10
-conda create --name godot_env python=3.10 -y
-
-# Activate it (run this in every new terminal)
-conda activate godot_env
-```
-
-!!! info "Why Python 3.10?"
-    godot-rl and its Stable-Baselines3 dependencies are most reliable on Python 3.10. Pinning it inside a dedicated Conda environment avoids version conflicts with other projects.
-
-**Install the Python packages**
-
-```bash
-pip install "godot-rl[sb3]" tensorboard
-```
-
-!!! info "What this installs"
-    `godot-rl[sb3]` — the Python bridge, the Stable-Baselines3 wrappers, and the `gdrl` training command.
-    `tensorboard` — training-curve visualisation.
-    Keep the double quotes around `"godot-rl[sb3]"` so the shell does not expand the brackets.
+Otherwise follow [Setup](setup.md) for Godot .NET, Miniconda, `godot_env`, and the plugin, then come back here.
 
 ---
 
@@ -106,31 +75,7 @@ pip install "godot-rl[sb3]" tensorboard
 
 ## 3 · Install the godot-rl Godot plugin
 
-**Option A — AssetLib (easiest)**
-
-- In the Godot editor, open the **AssetLib** tab (top center)
-- Search for **rl** and pick **Godot RL Agents**
-- Click **Download**, unselect the `LICENSE` and `README.md` files, then click **Install**
-
-**Option B — Manual (always up to date)**
-
-- Clone or download the plugin repo (separate from the Python package): [github.com/edbeeching/godot_rl_agents_plugin](https://github.com/edbeeching/godot_rl_agents_plugin)
-- Copy its `addons/godot_rl_agents` folder into your project's `addons/` directory
-
-!!! warning "Two different repos"
-    `godot_rl_agents` is the *Python* package (installed with `pip`). The Godot-side plugin lives in the separate `godot_rl_agents_plugin` repo.
-
-**Enable the plugin**
-
-- Open **Project → Project Settings → Plugins**
-- Find *Godot RL Agents* and set its status to **Enabled**
-- Let the background **MSBuild** process finish compiling the plugin's C# layer before you continue
-
-!!! warning "Common first-time issue"
-    On first import Godot may report a C# build or plugin-load error. Close the project completely and reopen it — the C# assemblies build correctly on the second open.
-
-!!! tip "Verify the nodes are available"
-    Open **Add Node** and search for `Sync` and `AIController2D`. If they appear, the plugin is installed correctly.
+See [Setup → Godot plugin](setup.md#godot-plugin-godot-rl-agents) for installation and enabling steps. Verify that Add Node shows `Sync` and `AIController2D` before continuing.
 
 ---
 

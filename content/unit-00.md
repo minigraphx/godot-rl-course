@@ -35,50 +35,14 @@ Two runtimes talk over a local socket — Godot sends observations and receives 
 
 ## 2 · Conda environment
 
-### What Conda is
+!!! info "First time here?"
+    Full installation instructions — Miniconda, `godot_env`, and the Godot plugin — are in [Setup](setup.md). Complete that page first, then return here.
 
-**Conda** is a tool that installs Python and libraries into **isolated environments** — separate folders on disk, so one project's packages do not clash with another's.
-
-In this course, Python runs the training loop (PPO/DQN via Stable-Baselines3) while Godot runs the game (see [Section 1](#1-split-architecture)). You need a working Python setup before any training command will run.
-
-**Miniconda** is a small installer that includes Conda. You do **not** need the full Anaconda distribution.
-
-### Install Miniconda
-
-If you do not already have Conda, install **Miniconda** from the [Miniconda install guide](https://docs.conda.io/en/latest/miniconda.html) (choose the installer for macOS, Windows, or Linux).
-
-After installation, **open a new terminal** and verify:
-
-```bash
-conda --version
-```
-
-!!! tip "Already installed?"
-    If that prints a version number, skip to [Why `godot_env`](#why-godot_env) below. If you see `command not found`, finish the installer and restart the terminal. On macOS/Linux, the installer may ask you to run `conda init` — follow the on-screen prompt, then open a new terminal.
-
-### Why `godot_env` { #why-godot_env }
-
-!!! info "Why a dedicated environment?"
-    - **Python 3.10** — godot-rl and Stable-Baselines3 are most reliable on 3.10; newer versions (3.12+) often break package wheels.
-    - **Isolation** — ML packages stay separate from your system Python and other projects.
-    - **Every session** — run `conda activate godot_env` in **every new terminal** before training commands in this course.
-
-### Create environment, install packages, verify
-
-**One-time** — create the environment:
-
-```bash
-conda create --name godot_env python=3.10 -y
-```
-
-**Every new terminal** — activate it, then install course packages:
+Quick reminder for every new terminal:
 
 ```bash
 conda activate godot_env
-pip install "godot-rl[sb3]" tensorboard
 ```
-
-Verify: `python -c "import godot_rl; print('ok')"`
 
 ---
 
