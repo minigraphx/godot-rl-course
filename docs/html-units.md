@@ -32,6 +32,11 @@ Variables defined in `:root`:
 - **First success checklist** — Unit 0 (`🎯 After this unit`)
 - **Three ways to see your AI** — Godot · TensorBoard · `AIController` (index + units 0–3+)
 - **Fast path / Phase A** — Unit 1 (theory ↔ tweak early); Unit 2 (SimpleReachGoal before Lander build)
+- **Training stalled?** — `.callout.warn#training-stalled` (Units 1–3; link from 4+)
+- **After this course** — sequel alignment pointer (`index.html` + `docs/curriculum.md` only, not per-unit)
+- **Exploration** — ε-greedy / entropy tip (Unit 3+)
+- **Eval protocol** — deterministic eval over N episodes (Units 5+)
+- **Normalization note** — continuous obs/action scaling (Unit 6+)
 
 ## Adding a New Unit
 

@@ -31,3 +31,10 @@ Learn deep reinforcement learning by building and training agents inside real Go
 - [Unit 8 — Memory & POMDPs](unit-08.md)
 - [Unit 9 — Imitation Learning](unit-09.md)
 - [Unit 10 — Ship Your Brain](unit-10.md)
+
+## After this course
+
+!!! info "Follow-on: model alignment (separate course)"
+    This course ends at ONNX vector policies. A planned sequel covers language-model alignment (SFT, preferences, RLHF/DPO). Unit 9 imitation learning is the on-ramp. Optional — Units 0–10 are complete on their own.
+
+    Alignment course repository: *coming soon*.

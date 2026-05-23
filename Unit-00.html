@@ -63,6 +63,7 @@
       <a href="#s3"><span class="num">3</span> Godot .NET + plugin</a>
       <a href="#s4"><span class="num">4</span> First training run</a>
       <a href="#s5"><span class="num">5</span> Training modes</a>
+      <a href="#first-evening"><span class="num">🌙</span> First evening script</a>
       <a href="#next">What's next</a>
     </nav>
   </aside>
@@ -84,13 +85,23 @@
     </div>
 
     <div class="step">
-      <div class="step-title">🎯 After this unit</div>
-      <ul>
-        <li>Conda env with <code>godot-rl[sb3]</code> installed</li>
-        <li>Godot 4 .NET editor with the RL Agents plugin enabled</li>
-        <li>One successful training run (BallChase hub binary or in-editor)</li>
-        <li>Understand when to use editor vs headless training (Units 2+ default to headless)</li>
-      </ul>
+      <div class="step-title">🎯 First success (one session)</div>
+      <ol>
+        <li><strong>Godot</strong> — agent moving (hub binary or <code>--viz</code>)</li>
+        <li><strong>Python</strong> — terminal shows steps; <code>ep_rew_mean</code> trends up</li>
+        <li><strong>TensorBoard</strong> (optional) — <code>tensorboard --logdir=logs</code> shows a curve</li>
+        <li><strong>Unit 1</strong> — you will tweak one reward and see behavior change</li>
+      </ol>
+    </div>
+
+    <div class="callout info">
+      <strong>Three ways to see your AI (every unit)</strong>
+      Godot behavior · TensorBoard curves · what you change in <code>AIController</code>
+    </div>
+
+    <div class="callout tip">
+      <strong>🌙 Short on time?</strong>
+      Follow the <a href="#first-evening" style="color:#93c5fd">first evening script</a> (~2½–3 h) to finish Unit 0 and start Unit 1 in one sitting.
     </div>
 
     <hr>
@@ -170,7 +181,7 @@ chmod +x examples/godot_rl_BallChase/bin/BallChase.x86_64</code></pre>
 
       <div class="callout tip">
         <strong>✓ Success criteria</strong>
-        Episode reward trends upward over a few minutes; no socket connection errors; TensorBoard shows a curve (if enabled).
+        Agent visible in Godot (or hub window); episode reward trends upward; no socket errors; TensorBoard curve optional but recommended.
       </div>
     </div>
 
@@ -191,10 +202,83 @@ chmod +x examples/godot_rl_BallChase/bin/BallChase.x86_64</code></pre>
       </div>
     </div>
 
+    <div class="section" id="first-evening">
+      <div class="section-header"><span style="font-size:1.3rem">🌙</span><h2>First evening script (~2½–3 hours)</h2></div>
+      <p style="color:var(--muted);margin-bottom:1rem;font-size:0.9rem">
+        One sitting: tooling works, agent learns, you change a reward. Times are guides — install steps vary by machine.
+        Use <strong>Option A (hub binary)</strong> in Section 3 unless you already have Godot .NET open.
+      </p>
+
+      <table>
+        <thead><tr><th>Block</th><th>Time</th><th>Do this</th><th>Done when</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>1 · Install</strong></td>
+            <td>45–75 min</td>
+            <td>
+              <a href="#s2" style="color:var(--accent)">Section 2</a> — Conda + <code>godot-rl[sb3]</code><br>
+              <a href="#s3" style="color:var(--accent)">Section 3</a> — hub download BallChase (<code>env_from_hub</code>)
+            </td>
+            <td><code>import godot_rl</code> prints ok; binary path exists</td>
+          </tr>
+          <tr>
+            <td><strong>2 · First train</strong></td>
+            <td>30–45 min</td>
+            <td>
+              <a href="#s4" style="color:var(--accent)">Section 4B</a> — <code>gdrl --viz</code> + Godot F6, <em>or</em> 4A headless if you prefer terminal-only<br>
+              Second terminal: <code>tensorboard --logdir=logs</code>
+            </td>
+            <td>Agent moves; <code>ep_rew_mean</code> rises; no socket errors</td>
+          </tr>
+          <tr>
+            <td><strong>3 · Start Unit 1</strong></td>
+            <td>45–60 min</td>
+            <td>
+              Open <a href="Unit-01.html#fastpath" style="color:var(--accent)">Unit 1 fast path</a><br>
+              Skim MDP loop (~15 min) → open BallChase source → tweak one reward → retrain with <code>--viz</code><br>
+              While training: read Unit 1 Sections 3–5
+            </td>
+            <td>You can name which line you changed; behavior or curve shifted</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="step">
+        <div class="step-title">Minimal command cheat sheet (Block 2)</div>
+<pre><code>conda activate godot_env
+tensorboard --logdir=logs &
+
+gdrl --experiment_name=evening_ballchase --viz \
+  --save_model_path=ballchase_brain \
+  --onnx_export_path=ballchase_brain.onnx
+
+# Godot: BallChase training scene → F6 (Play Scene)</code></pre>
+        <p>Headless alternative (no Godot window): Section 4A with <code>--timesteps=50000 --speedup=8</code>.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-title">End-of-evening checklist</div>
+        <ul>
+          <li>☐ Godot — saw the agent act</li>
+          <li>☐ Python — training ran without connection errors</li>
+          <li>☐ TensorBoard — opened at least once (localhost:6006)</li>
+          <li>☐ Code — edited one reward line in BallChase</li>
+        </ul>
+        <p style="margin-top:0.5rem">Tomorrow: finish Unit 1 reading + glossary, then Unit 2 Phase A (SimpleReachGoal).</p>
+      </div>
+
+      <div class="callout warn">
+        <strong>Stuck?</strong>
+        Most first-evening blockers: wrong Godot build (need <strong>.NET</strong>), plugin not enabled, Python started before Godot F6, or firewall blocking localhost socket. Re-read Section 1 if the split architecture is unclear.
+      </div>
+    </div>
+
+    <hr>
+
     <div class="section" id="next">
       <div class="section-header"><span style="font-size:1.3rem">➡️</span><h2>What's next</h2></div>
       <div class="step">
-        <p>Tooling works. In <strong>Unit 1</strong> you'll learn RL vocabulary and watch an agent learn with the mental model in place.</p>
+        <p>Tooling works. In <strong>Unit 1</strong> you'll skim the MDP loop, tweak one BallChase reward, then deepen the theory while training runs.</p>
         <p style="margin-top:0.6rem">
           <a href="Unit-01.html" style="color:var(--accent);font-weight:700">→ Unit 1: RL Foundations</a>
           · <a href="index.html" style="color:var(--muted)">Course home</a>

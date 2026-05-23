@@ -89,9 +89,9 @@ Example-driven progression through official **godot-rl-agents** environments. St
 
 | Unit | Topic | Example | Training mode |
 |------|-------|---------|---------------|
-| 0 | Setup & first run | BallChase | Hub binary / in-editor |
-| 1 | RL foundations | BallChase recap | `--viz` optional |
-| 2 | Build Lunar Lander | SimpleReachGoal patterns | Editor + in-editor train |
+| 0 | Setup & first run | BallChase | Hub binary / in-editor — first success checklist |
+| 1 | RL foundations + tweak | BallChase | Fast path: skim MDP → reward tweak → theory |
+| 2 | SimpleReachGoal → Lunar Lander | SimpleReachGoal, Lander | Phase A warm-up, then build |
 | 3 | DQN & discrete spaces | CrossTheRoad | Headless binary |
 | 4 | PPO & platforms | JumperHard | Headless |
 | 5 | Parallel training | BallChase (source) | `n_parallel` |
@@ -99,8 +99,10 @@ Example-driven progression through official **godot-rl-agents** environments. St
 | 7 | Multi-agent | Racer, MultiAgentSimple | Headless |
 | 8 | Memory / POMDPs | FPS, RobotFPS | RecurrentPPO |
 | 9 | Imitation learning | MultiLevelRobot | Expert demos |
-| 10 | Deploy to web | Any model | ONNX + WASM |
+| 10 | Ship your brain into the game | Any model | ONNX in Godot; optional WASM |
 
 **Extensions:** CleanRL / Sample Factory · capstone from stretch pool · self-play (AirHockey).
 
-**Rhythm (every unit):** run → open source → read `AIController` → tweak → retrain.
+**Three views (every unit):** Godot behavior · TensorBoard · `AIController` changes.
+
+**Rhythm (every unit):** run → open source → read `AIController` → tweak → retrain → viz checkpoint (Units 3+).

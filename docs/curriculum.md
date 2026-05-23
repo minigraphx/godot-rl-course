@@ -58,6 +58,35 @@ Optional stretch: inspect exported **ONNX** in [Netron](https://netron.app) befo
 | 12 | Capstone (stretch pool) |
 | 13 | Self-play (AirHockey, RobotVolleyball) |
 
+## After this course
+
+This course teaches **Godot + godot-rl-agents + SB3/CleanRL → ONNX**. It does **not** include LLM APIs, Hugging Face training, or RLHF labs.
+
+A separate follow-on course will cover **language-model alignment** (SFT, preference modeling, RLHF/DPO). **Unit 9** (imitation / BC) is the conceptual bridge. Finishing Units 0–10 here is a complete path; the sequel is optional.
+
+| Godot RL | Alignment sequel |
+|----------|------------------|
+| Reward \(r_t\) | Preference / learned reward model |
+| Policy \(\pi(a \mid s)\) | LM policy \(\pi(y \mid x)\) |
+| Expert demos (Unit 9) | Supervised fine-tuning |
+| PPO improvement | RLHF / DPO |
+
+Alignment course repository: *coming soon* (separate repo when published).
+
+## RL concepts checklist (authoring Units 4–10)
+
+When writing each unit HTML, include:
+
+| Unit | Required content |
+|------|------------------|
+| 4 | Hyperparameters (learning rate, `n_steps`, clip range); link to [training-stalled](Unit-03.html#training-stalled) callout |
+| 5 | **Eval protocol**: fixed seed, deterministic policy, report mean episodic return over N episodes |
+| 6 | **Normalization**: clip/scale observations and actions for continuous 3D |
+| 9 | One sentence: BC demos ↔ SFT in alignment sequel (optional enrollment) |
+| 10 | Load checkpoint and resume training; ONNX export |
+
+Do not add LLM, Hugging Face, or RLHF content to Units 0–10.
+
 ## Training workflow
 
 | Phase | Units | Godot | Python |

@@ -51,6 +51,7 @@
       <p class="section-label">Start</p>
       <a href="#overview"><span class="num">H</span> Overview</a>
       <a href="#units"><span class="num">U</span> Units</a>
+      <a href="#after-this-course"><span class="num">→</span> After this course</a>
       <p class="section-label">Available</p>
       <a href="Unit-00.html" class="done"><span class="num">0</span> Setup</a>
       <a href="Unit-01.html" class="done"><span class="num">1</span> Foundations</a>
@@ -65,8 +66,25 @@
     <header class="hero" id="overview">
       <p class="tag">Godot 4 · godot-rl-agents · Stable-Baselines3</p>
       <h1>Deep Reinforcement Learning with Godot</h1>
-      <p>Official examples, step-by-step from BallChase to multi-agent FPS. Train locally with Python; deploy via ONNX to the browser.</p>
+      <p>Official examples, step-by-step from BallChase to multi-agent FPS. Train locally with Python; ship the trained policy into Godot via ONNX.</p>
     </header>
+
+    <section class="section" id="three-views">
+      <h2 class="section-header">Three ways to see your AI</h2>
+      <div class="callout">
+        <strong>Every unit uses the same feedback loop:</strong>
+        <ol style="margin:0.5rem 0 0 1.25rem;color:var(--muted);font-size:0.9rem">
+          <li><strong style="color:var(--text)">Godot</strong> — watch the agent in the world (editor or <code>--viz</code>)</li>
+          <li><strong style="color:var(--text)">TensorBoard</strong> — learning curves (<code>tensorboard --logdir=logs</code>)</li>
+          <li><strong style="color:var(--text)">AIController</strong> — observations, actions, and rewards you changed in code</li>
+        </ol>
+      </div>
+      <p style="color:var(--muted);font-size:0.88rem;margin-top:0.75rem">
+        <strong>First evening (~2½–3 h):</strong>
+        <a href="Unit-00.html#first-evening" style="color:var(--accent)">timed script in Unit 0</a>
+        — moving agent, TensorBoard, one reward tweak.
+      </p>
+    </section>
 
     <section class="section" id="units">
       <h2 class="section-header">Course units</h2>
@@ -77,11 +95,11 @@
         </a>
         <a class="unit-card" href="Unit-01.html">
           <span class="u-num">Unit 1</span>
-          <span><h3>RL foundations</h3><p>MDP loop, vocabulary, BallChase recap.</p></span>
+          <span><h3>RL foundations</h3><p>MDP loop, early BallChase reward tweak, then deeper theory.</p></span>
         </a>
         <a class="unit-card" href="Unit-02.html">
           <span class="u-num">Unit 2</span>
-          <span><h3>Build Lunar Lander</h3><p>SimpleReachGoal patterns, PPO, ONNX intro.</p></span>
+          <span><h3>Build Lunar Lander</h3><p>SimpleReachGoal warm-up, then Lander from scratch.</p></span>
         </a>
         <a class="unit-card" href="Unit-03.html">
           <span class="u-num">Unit 3</span>
@@ -93,7 +111,7 @@
         </span>
         <span class="unit-card planned">
           <span class="u-num">Unit 5</span>
-          <span><h3>Parallel training</h3><p>BallChase source, n_parallel.</p></span>
+          <span><h3>Parallel training</h3><p>Same BallChase — faster rollouts with n_parallel.</p></span>
         </span>
         <span class="unit-card planned">
           <span class="u-num">Unit 6</span>
@@ -113,8 +131,24 @@
         </span>
         <span class="unit-card planned">
           <span class="u-num">Unit 10</span>
-          <span><h3>Deploy to web</h3><p>ONNX, HTML5/WASM.</p></span>
+          <span><h3>Ship your brain into the game</h3><p>ONNX in Godot; optional HTML5/WASM export.</p></span>
         </span>
+      </div>
+    </section>
+
+    <section class="section" id="after-this-course">
+      <h2 class="section-header">After this course</h2>
+      <div class="callout">
+        <strong>Follow-on: model alignment (separate course)</strong>
+        <p style="margin:0.5rem 0 0;color:var(--muted);font-size:0.9rem">
+          This course stops at vector policies shipped with ONNX. A planned sequel covers
+          <strong style="color:var(--text)">language-model alignment</strong> (SFT, preferences, RLHF/DPO) —
+          same ideas as here (demonstrations, reward signal, policy improvement) on token sequences instead of game observations.
+          <strong style="color:var(--text)">Unit 9 imitation learning</strong> is the best on-ramp. Enrollment is optional; finishing Units 0–10 is complete on its own.
+        </p>
+        <p style="margin:0.75rem 0 0;color:var(--muted);font-size:0.85rem">
+          Alignment course repository: <em>coming soon</em>.
+        </p>
       </div>
     </section>
 

@@ -236,6 +236,7 @@
 
       <div class="section-label">Overview</div>
       <a href="#overview"><span class="num">★</span> What you're building</a>
+      <a href="#warmup"><span class="num">A</span> Phase A: SimpleReachGoal</a>
       <a href="#mapping"><span class="num">~</span> Gymnasium → Godot map</a>
 
       <div class="section-label">Setup</div>
@@ -275,23 +276,58 @@
     <div class="hero" id="overview">
       <div class="tag">Unit 2 · Godot .NET Edition</div>
       <h1>Convert LunarLander to Godot RL Agents</h1>
-      <p>Build a Lunar Lander environment from scratch in Godot, applying the same
-         patterns you saw in <strong>SimpleReachGoal</strong> and the
-         <strong>BallChase</strong> quick win. Train with Stable-Baselines3 via
-         <strong>godot-rl</strong> — Godot 4 .NET editor and a Conda Python environment.</p>
+      <p>Two wins in one unit: <strong>Phase A</strong> — run and tweak
+         <strong>SimpleReachGoal</strong> (raycasts, discrete actions). <strong>Phase B</strong> — build
+         Lunar Lander from scratch using the same <code>AIController</code> patterns. Train with
+         Stable-Baselines3 via <strong>godot-rl</strong>.</p>
       <p style="margin-top:0.75rem"><a href="Unit-01.html" style="color:var(--accent); font-weight:700">← Unit 1: Foundations</a>
          · <a href="index.html" style="color:var(--muted); font-weight:600">Course home</a></p>
     </div>
 
     <!-- Progress pills -->
     <div class="progress-row">
-      <div class="progress-step active">1–3 Setup</div>
+      <div class="progress-step active">A SimpleReachGoal</div>
+      <div class="progress-step">1–3 Setup</div>
       <div class="progress-step">4–7 Scene</div>
       <div class="progress-step">8 Test</div>
       <div class="progress-step">9–10 Train</div>
       <div class="progress-step">11 Deploy</div>
       <div class="progress-step">12 Optional</div>
     </div>
+
+    <div class="callout info" style="margin-bottom:1.5rem">
+      <strong>Three ways to see your AI</strong>
+      Godot (<code>--viz</code> or editor) · TensorBoard · reward/obs lines in <code>ai_controller.gd</code> / <code>lander.gd</code>
+    </div>
+
+    <!-- ── Phase A: SimpleReachGoal ── -->
+    <div class="section" id="warmup">
+      <div class="section-header">
+        <span class="section-num" style="background:var(--accent2);color:#0f1117">A</span>
+        <h2>Phase A — SimpleReachGoal warm-up (~30–45 min)</h2>
+      </div>
+      <div class="step">
+        <div class="step-title">Run before you build</div>
+        <p>Get a second quick win before the Lunar Lander build. Use the hub binary or clone
+           <a href="https://github.com/edbeeching/godot_rl_agents_examples/tree/main/examples/SimpleReachGoal" style="color:var(--accent)">SimpleReachGoal</a>.</p>
+<pre>python -c "from godot_rl.env_from_hub import env_from_hub; env_from_hub('edbeeching/godot_rl_SimpleReachGoal')"
+
+python examples/stable_baselines3_example.py \
+  --env_path=examples/godot_rl_SimpleReachGoal/bin/SimpleReachGoal.x86_64 \
+  --experiment_name=unit2-warmup --timesteps=100000 --viz</pre>
+      </div>
+      <div class="step">
+        <div class="step-title">Study → tweak → retrain</div>
+        <ol>
+          <li>Open the project in Godot; trace <code>AIController</code>, raycasts, and the training scene.</li>
+          <li>Change one sensor distance or reward term (same idea as Unit 1).</li>
+          <li>Retrain briefly; compare Godot behavior and TensorBoard to your prediction.</li>
+        </ol>
+        <p style="margin-top:0.5rem">Then continue to Phase B below — you are copying these patterns, not discovering them from zero.</p>
+      </div>
+    </div>
+
+    <hr>
 
     <!-- ── Mapping overview ── -->
     <div class="section" id="mapping">
@@ -313,10 +349,10 @@
         </tbody>
       </table>
       <div class="callout info" style="margin-top:1rem">
-        <strong>Before you build:</strong> Clone
-        <a href="https://github.com/edbeeching/godot_rl_agents_examples/tree/main/examples/SimpleReachGoal" style="color:var(--accent)">SimpleReachGoal</a>
-        from the examples repo. Open it in Godot, trace <code>ai_controller.gd</code> and the training scene — this unit applies the same patterns to a Lunar Lander you build yourself. See the
-        <a href="index.html#ladder" style="color:var(--accent)">example progression ladder</a>.
+        <strong>Phase B — build:</strong> If you completed
+        <a href="#warmup" style="color:var(--accent)">Phase A</a>, you already traced SimpleReachGoal.
+        This map shows how Gymnasium concepts become Godot nodes for the Lunar Lander you create next.
+        See <a href="docs/example-progression.md" style="color:var(--accent)">example-progression.md</a>.
       </div>
     </div>
 
@@ -519,6 +555,14 @@ conda activate godot_env</pre>
       <div class="section-header">
         <span class="section-num">5</span>
         <h2>Write <code>lander.gd</code> (physics + reward)</h2>
+      </div>
+
+      <div class="callout warn" id="training-stalled">
+        <strong>Training stalled?</strong>
+        Check in order: (1) reward sign and scale — is “good” actually positive?
+        (2) sparse rewards — does the agent get any signal before the goal?
+        (3) observation bugs — are sensors updating after resets?
+        (4) TensorBoard flat but Godot looks fine — you may need longer training or a viz checkpoint.
       </div>
 
       <div class="step">

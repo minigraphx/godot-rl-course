@@ -228,6 +228,7 @@
       <a href="Unit-00.html"><span class="num">←</span> Unit 0: Setup</a>
       <div class="section-label">Start here</div>
       <a href="#overview"><span class="num">★</span> Welcome &amp; objectives</a>
+      <a href="#fastpath"><span class="num">⚡</span> Fast path (first hour)</a>
 
       <div class="section-label">Core concepts</div>
       <a href="#s1"><span class="num">1</span> What is Reinforcement Learning?</a>
@@ -254,17 +255,23 @@
     <div class="hero" id="overview">
       <div class="tag">Unit 1 · Foundations</div>
       <h1>Foundations of Reinforcement Learning</h1>
-      <p>Before you build anything, get the mental model. This unit explains what
-         Reinforcement Learning is, the vocabulary you'll use throughout the course,
-         and how it all maps onto the Godot game engine — then you'll watch a finished
-         agent train, live.</p>
+      <p>Learn the RL mental model and map it onto Godot — but don't wait until the end to
+         <em>do</em> something. Skim the loop, tweak one BallChase reward, then read the deeper
+         sections while training runs.</p>
     </div>
 
     <!-- Progress pills -->
     <div class="progress-row">
-      <div class="progress-step active">1–4 Concepts</div>
+      <div class="progress-step active">⚡ Tweak early</div>
+      <div class="progress-step">1–4 Concepts</div>
       <div class="progress-step">5 Architecture</div>
       <div class="progress-step">6 Hands-on</div>
+    </div>
+
+    <div class="callout info">
+      <strong>Three ways to see your AI</strong>
+      <strong>Godot</strong> (<code>--viz</code>) · <strong>TensorBoard</strong> (<code>tensorboard --logdir=logs</code>) ·
+      <strong>AIController</strong> (reward you changed)
     </div>
 
     <!-- ── Objectives & prerequisites ── -->
@@ -288,8 +295,25 @@
       </ul>
       <div class="callout info">
         <strong>ℹ Time &amp; difficulty</strong>
-        Reading: ~25 minutes. The hands-on quick win (Section 6): ~30 minutes of setup,
-        then training runs on its own. This unit is conceptual — nothing to build yet.
+        Fast path: ~15 min skim + ~20 min reward tweak + training in background.
+        Full read of Sections 1–5: add ~25 minutes. Nothing to build from scratch yet.
+      </div>
+    </div>
+
+    <div class="section" id="fastpath">
+      <div class="section-header">
+        <span style="font-size:1.3rem">⚡</span>
+        <h2>Fast path (recommended first hour)</h2>
+      </div>
+      <div class="step">
+        <ol>
+          <li>Read <a href="#s1" style="color:var(--accent)">Section 1</a> and <a href="#s2" style="color:var(--accent)">Section 2</a> only (~15 min) — agent, environment, reward, loop.</li>
+          <li>Jump to <a href="#s6" style="color:var(--accent)">Section 6</a> — change one reward in BallChase, start training with <code>--viz</code>.</li>
+          <li>While it trains, read Sections 3–5 and the <a href="#glossary" style="color:var(--accent)">glossary</a>.</li>
+        </ol>
+        <p style="margin-top:0.5rem;color:var(--muted);font-size:0.88rem">
+          Prefer linear reading? Follow Sections 1–6 in order — Section 6 still includes the reward tweak.
+        </p>
       </div>
     </div>
 
@@ -380,6 +404,13 @@
           RL rests on one bold idea: <em>every</em> goal can be expressed as maximising expected
           cumulative reward. "Land softly on the pad" becomes "collect the most reward" once you
           design the reward function — which is exactly what you'll do in Unit 2.
+        </div>
+        <div class="callout warn" id="training-stalled">
+          <strong>Training stalled?</strong>
+          Check in order: (1) reward sign and scale — is “good” actually positive?
+          (2) sparse rewards — does the agent get any signal before the goal?
+          (3) observation bugs — are sensors updating after resets?
+          (4) TensorBoard flat but Godot looks fine — you may need longer training or a viz checkpoint.
         </div>
       </div>
 
@@ -607,9 +638,19 @@
       </div>
 
       <div class="callout tip">
-        <strong>💡 Connect theory to what you already ran</strong>
-        In <a href="Unit-00.html" style="color:var(--accent)">Unit 0</a> you trained BallChase. Here you interpret
-        that run using the vocabulary from Sections 1–5.
+        <strong>💡 Your first ownership moment</strong>
+        In <a href="Unit-00.html" style="color:var(--accent)">Unit 0</a> you ran BallChase. Here you change the
+        reward signal and see behavior shift — that connects vocabulary to code.
+      </div>
+
+      <div class="step">
+        <div class="step-title">Tweak one reward (do this before a long re-read)</div>
+        <ol>
+          <li>Clone or open <a href="https://github.com/edbeeching/godot_rl_agents_examples/tree/main/examples/BallChase" style="color:var(--accent)">BallChase</a> in Godot .NET.</li>
+          <li>Find the script that sets <code>reward</code> on the agent (often on the player or <code>AIController</code>).</li>
+          <li>Change one term — e.g. double the reward for getting closer to the ball, or add a small penalty per step.</li>
+          <li>Note what you expect: faster chasing, more wandering, etc.</li>
+        </ol>
       </div>
 
       <div class="step">
@@ -622,14 +663,18 @@ python examples/stable_baselines3_example.py \
       </div>
 
       <div class="step">
-        <div class="step-title">Watch it learn</div>
-        <p>Watch <code>ep_rew_mean</code> climb — that's expected return from Section 2 improving as the policy learns.</p>
+        <div class="step-title">Watch it learn (three views)</div>
+        <ul>
+          <li><strong>Godot</strong> — with <code>--viz</code>, confirm movement matches your reward change.</li>
+          <li><strong>TensorBoard</strong> — <code>ep_rew_mean</code> may start lower after a harsh reward; it should trend up as the policy adapts.</li>
+          <li><strong>Code</strong> — you can point to the line you edited when explaining the MDP loop.</li>
+        </ul>
       </div>
 
       <div class="step">
         <div class="step-title">✅ Checkpoint — you're ready for Unit 2</div>
-        <p>If you saw <code>ep_rew_mean</code> rise, your toolchain works and you've seen RL end to end:
-        the agent, the environment, the loop, the reward going up. Now it's time to build it yourself.</p>
+        <p>You changed a reward, retrained, and saw at least two of the three views update. In
+        <strong>Unit 2</strong> you'll warm up on <strong>SimpleReachGoal</strong>, then build Lunar Lander from scratch.</p>
       </div>
     </div>
 
@@ -671,9 +716,9 @@ python examples/stable_baselines3_example.py \
         <h2>What's next</h2>
       </div>
       <div class="step">
-        <p>You now have the vocabulary and the mental model, and you've seen a real agent learn. In
-        <strong>Unit 2</strong> you'll build that Lunar Lander yourself — the scene, the observation and
-        action code, the reward function — and train it from scratch.</p>
+        <p>You have the vocabulary, a reward tweak under your belt, and a trained run to reference. In
+        <strong>Unit 2</strong>, start with <strong>SimpleReachGoal</strong> (run + tweak), then build Lunar Lander
+        from scratch.</p>
         <p style="margin-top:0.6rem">
           <a href="Unit-02.html" style="color:var(--accent); font-weight:700">→ Continue to Unit 2: Build Lunar Lander in Godot</a>
           · <a href="index.html" style="color:var(--muted); font-weight:600">Course home</a>

@@ -73,7 +73,21 @@
     <div class="callout warn">
       <strong>Console-first from here</strong>
       Units 0–2 used the editor for building and debugging. From Unit 3 on, train with an exported binary
-      and omit <code>--viz</code> unless you are debugging rewards.
+      and omit <code>--viz</code> for speed — then run a short <strong>viz checkpoint</strong> when training finishes
+      (see step 5).
+    </div>
+
+    <div class="callout info">
+      <strong>Three ways to see your AI</strong>
+      Godot (viz checkpoint) · TensorBoard (DQN vs Unit 2 PPO) · <code>AIController</code> reward tweaks
+    </div>
+
+    <div class="callout warn" id="training-stalled">
+      <strong>Training stalled?</strong>
+      Check in order: (1) reward sign and scale — is “good” actually positive?
+      (2) sparse rewards — does the agent get any signal before the goal?
+      (3) observation bugs — are sensors updating after resets?
+      (4) TensorBoard flat but Godot looks fine — you may need longer training or a viz checkpoint.
     </div>
 
     <div class="section" id="s1">
@@ -83,6 +97,12 @@
            <strong>DQN</strong> uses a neural network to approximate those values, with experience replay and a target network for stability.</p>
         <p>Use DQN when the action space is <strong>discrete</strong> and rewards are sparse — like crossing lanes of traffic.</p>
         <p>Unit 2 used <strong>PPO</strong> (policy-based). Compare learning curves in TensorBoard after this unit.</p>
+      </div>
+      <div class="callout tip">
+        <strong>Exploration</strong>
+        DQN explores with <strong>ε-greedy</strong>: random actions early, greedy Q-actions later.
+        If the curve is flat, ε may be decaying too fast — check your training script’s exploration schedule.
+        PPO explores via <strong>stochastic policy + entropy</strong>; compare Unit 2’s PPO run in TensorBoard.
       </div>
     </div>
 
@@ -131,7 +151,11 @@ tensorboard --logdir=logs &</pre>
     </div>
 
     <div class="section" id="s5">
-      <div class="section-header"><span class="section-num">5</span><h2>Tweak one thing</h2></div>
+      <div class="section-header"><span class="section-num">5</span><h2>Tweak &amp; viz checkpoint</h2></div>
+      <div class="step">
+        <div class="step-title">Viz checkpoint (~5 min)</div>
+        <p>Re-run the trained policy with <code>--viz</code> or Play Scene in Godot. Screenshot behavior that matches (or contradicts) the TensorBoard curve — keeps headless training from feeling invisible.</p>
+      </div>
       <div class="step">
         <p><strong>Stretch goals (pick one):</strong></p>
         <ul>
