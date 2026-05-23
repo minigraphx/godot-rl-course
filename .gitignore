@@ -1,1 +1,20 @@
+# MkDocs
 site/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Local tooling
+.claude/
+.cursor/
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# RL training (gdrl / SB3 in repo root)
+logs/
+*.zip
+*.onnx
