@@ -50,8 +50,14 @@ Ships · ZombieGame · ItemSortingCart · AirHockey · VirtualCamera
 
 | File | Status |
 |------|--------|
-| `Unit-00.html` | Done |
-| `Unit-01.html` | Done |
-| `Unit-02.html` | Done |
-| `Unit-03.html` | Done |
-| `Unit-04.html`–`Unit-10.html` | Planned |
+| `content/unit-00.md` | Done |
+| `content/unit-01.md` | Done |
+| `content/unit-02.md` | Done |
+| `content/unit-03.md` | Done |
+| `content/unit-04.md` | Done |
+| `content/unit-05.md` | Done |
+| `content/unit-06.md` | Done |
+| `content/unit-07.md` | Done |
+| `content/unit-08.md` | Done |
+| `content/unit-09.md` | Done |
+| `content/unit-10.md` | Done |
