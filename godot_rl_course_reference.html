@@ -456,6 +456,7 @@
       <div class="nav-section">
         <div class="nav-label">Getting Started</div>
         <a href="#installation" class="nav-link">Installation</a>
+        <a href="#progression" class="nav-link">Example Progression</a>
         <a href="#examples" class="nav-link">Example Environments</a>
       </div>
 
@@ -566,10 +567,36 @@
     </section>
 
 
-    <!-- 2. Examples -->
+    <!-- 2. Example Progression -->
+    <section class="section" id="progression">
+      <div class="section-title"><span class="num">02</span> Example Progression Ladder</div>
+      <p class="section-desc">The course teaches godot-rl-agents by running official examples from simple to complex. Each step adds one framework skill.</p>
+
+      <table class="param-table">
+        <thead><tr><th>Step</th><th>Example</th><th>New skill</th><th>Tier</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>BallChase</td><td>Hub binary, <code>gdrl</code>, TensorBoard</td><td>Run</td></tr>
+          <tr><td>2</td><td>SimpleReachGoal</td><td><code>AIController</code>, raycasts, discrete actions</td><td>Study</td></tr>
+          <tr><td>3</td><td>Lunar Lander (build)</td><td>Full scene from scratch, human → train</td><td>Build</td></tr>
+          <tr><td>4</td><td>CrossTheRoad</td><td>DQN, sparse 2D rewards</td><td>Study</td></tr>
+          <tr><td>5</td><td>JumperHard</td><td>PPO benchmark, headless export</td><td>Run + study</td></tr>
+          <tr><td>6</td><td>BallChase (source)</td><td>Parallel instances, <code>n_parallel</code></td><td>Study</td></tr>
+          <tr><td>7</td><td>FlyBy / HovercraftRacing</td><td>Continuous 3D, raycast sensors</td><td>Study</td></tr>
+          <tr><td>8</td><td>Racer</td><td>Mixed action space</td><td>Study</td></tr>
+          <tr><td>9</td><td>MultiAgentSimple</td><td>Multiple controllers in one scene</td><td>Study</td></tr>
+          <tr><td>10</td><td>FPS / RobotFPS</td><td>RecurrentPPO, large obs</td><td>Advanced</td></tr>
+          <tr><td>11</td><td>MultiLevelRobot</td><td>Expert demos, imitation</td><td>Advanced</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout-info callout"><strong>Per-unit rhythm:</strong> run hub binary → open source → read <code>AIController</code> → tweak one reward/sensor → retrain. Details in <a href="docs/example-progression.md" style="color:var(--accent2)">docs/example-progression.md</a>.</div>
+    </section>
+
+
+    <!-- 3. Examples -->
     <section class="section" id="examples">
-      <div class="section-title"><span class="num">02</span> Example Environments</div>
-      <p class="section-desc">Download and prepare official example environments from the Hugging Face hub.</p>
+      <div class="section-title"><span class="num">03</span> Example Environments</div>
+      <p class="section-desc">Download pre-built binaries with <code>gdrl.env_from_hub</code>, or clone source from the examples repo. See the <a href="#progression" style="color:var(--accent2)">progression ladder</a> for course order.</p>
 
       <div class="code-block">
         <div class="code-block-header">
@@ -583,10 +610,10 @@ gdrl.env_from_hub -r edbeeching/godot_rl_&lt;ENV_NAME&gt;
 chmod +x examples/godot_rl_&lt;ENV_NAME&gt;/bin/&lt;ENV_NAME&gt;.x86_64</code></pre>
       </div>
 
-      <div class="callout-info callout"><strong>Two sources:</strong> Pre-built binaries on the HuggingFace hub (download with <code>gdrl.env_from_hub</code>), and source projects in the separate <a href="https://github.com/edbeeching/godot_rl_agents_examples" style="color:var(--accent2)">godot_rl_agents_examples</a> GitHub repo (requires Godot .NET + Blender for some).</div>
+      <div class="callout-info callout"><strong>Two sources:</strong> Pre-built binaries via <code>gdrl.env_from_hub</code>, and source projects in <a href="https://github.com/edbeeching/godot_rl_agents_examples" style="color:var(--accent2)">godot_rl_agents_examples</a> (requires Godot .NET + Blender for some).</div>
 
       <div class="subsection">
-        <div class="subsection-title">HuggingFace Hub — Pre-built Binaries</div>
+        <div class="subsection-title">Pre-built Binaries (gdrl hub)</div>
         <div class="code-block">
           <div class="code-block-header"><span class="code-label">shell</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
           <pre><code>gdrl.env_from_hub -r edbeeching/godot_rl_&lt;ENV_NAME&gt;</code></pre>
@@ -598,7 +625,7 @@ chmod +x examples/godot_rl_&lt;ENV_NAME&gt;/bin/&lt;ENV_NAME&gt;.x86_64</code></
             <tr><td>JumperHard</td><td>Jump between platforms, good benchmark environment</td><td><span class="badge green" style="font-size:11px">yes</span></td></tr>
             <tr><td>FlyBy</td><td>3D aerial navigation, waypoint-based, raycasts</td><td><span class="badge green" style="font-size:11px">yes</span></td></tr>
             <tr><td>Racer</td><td>Top-down car racing</td><td><span class="badge green" style="font-size:11px">yes (SF docs)</span></td></tr>
-            <tr><td>VirtualCamera</td><td>Camera control agent — unusual observation space</td><td><span class="badge green" style="font-size:11px">yes (HF)</span></td></tr>
+            <tr><td>VirtualCamera</td><td>Camera control agent — unusual observation space</td><td><span class="badge green" style="font-size:11px">yes</span></td></tr>
             <tr><td>FPS</td><td>First-person shooter agent, complex action space</td><td><span class="badge" style="font-size:11px">partial (SF docs)</span></td></tr>
             <tr><td>Ships</td><td>Naval combat / movement</td><td><span class="badge" style="font-size:11px">no</span></td></tr>
             <tr><td>ZombieGame</td><td>Survival / zombie avoidance</td><td><span class="badge" style="font-size:11px">no</span></td></tr>
@@ -610,16 +637,21 @@ chmod +x examples/godot_rl_&lt;ENV_NAME&gt;/bin/&lt;ENV_NAME&gt;.x86_64</code></
         <div class="subsection-title">godot_rl_agents_examples Repo — Source Projects</div>
         <p style="margin-bottom:12px">Clone or download from <a href="https://github.com/edbeeching/godot_rl_agents_examples/tree/main/examples" style="color:var(--accent2)">github.com/edbeeching/godot_rl_agents_examples</a>. Open directly in Godot editor for training.</p>
         <table class="param-table">
-          <thead><tr><th>Example</th><th>Description</th><th>Notes</th></tr></thead>
+          <thead><tr><th>Example</th><th>Unit</th><th>Tier</th><th>Notes</th></tr></thead>
           <tbody>
-            <tr><td>JumperHard</td><td>Platform jumping — the canonical example</td><td>GDScript + C# variants</td></tr>
-            <tr><td>SimpleReachGoal</td><td>Reach green goal, avoid red obstacle — good for testing sensors and reward shaping. Includes raycast setup.</td><td>GDScript, CSharp, CSharpAll variants</td></tr>
-            <tr><td>BallChase</td><td>Ball chasing in 3D room</td><td>Simple obs/action space</td></tr>
-            <tr><td>FlyBy</td><td>Aerial waypoint navigation</td><td>Continuous action space</td></tr>
-            <tr><td>Racer</td><td>Car racing environment</td><td>Mixed action space</td></tr>
-            <tr><td>FPS</td><td>First-person shooter with multi-agent support</td><td>Complex; requires LSTM / RNN for good results</td></tr>
-            <tr><td>Ships</td><td>Naval movement / combat</td><td>Source available, no docs</td></tr>
-            <tr><td>ZombieGame</td><td>Survival environment</td><td>Source available, no docs</td></tr>
+            <tr><td>SimpleReachGoal</td><td>2</td><td>Study</td><td>First source read — raycasts, reward shaping</td></tr>
+            <tr><td>BallChase</td><td>1, 6</td><td>Run → Study</td><td>Simplest 3D obs/action space</td></tr>
+            <tr><td>CrossTheRoad</td><td>3</td><td>Study</td><td>2D discrete, DQN-friendly</td></tr>
+            <tr><td>JumperHard</td><td>4</td><td>Run + study</td><td>Canonical PPO benchmark</td></tr>
+            <tr><td>FlyBy</td><td>6</td><td>Study</td><td>Continuous 3D, waypoints</td></tr>
+            <tr><td>HovercraftRacing</td><td>7</td><td>Study</td><td>Physics-heavy continuous control</td></tr>
+            <tr><td>Racer</td><td>8</td><td>Study</td><td>Mixed action space</td></tr>
+            <tr><td>MultiAgentSimple</td><td>9</td><td>Study</td><td>Multi-agent basics</td></tr>
+            <tr><td>DefendTheGoal / ScoreTheGoal</td><td>9</td><td>Study</td><td>Competitive rewards</td></tr>
+            <tr><td>FPS / RobotFPS</td><td>10</td><td>Advanced</td><td>LSTM recommended</td></tr>
+            <tr><td>MultiLevelRobot</td><td>11</td><td>Advanced</td><td>Imitation learning tutorial</td></tr>
+            <tr><td>AirHockey / RobotVolleyball</td><td>Extension</td><td>Capstone</td><td>Self-play</td></tr>
+            <tr><td>Ships / ZombieGame</td><td>Extension</td><td>Capstone</td><td>Source only, no course unit yet</td></tr>
           </tbody>
         </table>
         <div class="callout-warn callout"><strong>Requirements:</strong> All examples require Godot with .NET/Mono. Some additionally require Blender (for asset generation). Check individual project folders for specifics.</div>
@@ -1035,12 +1067,12 @@ xattr -dr com.apple.quarantine ./MyGame</code></pre>
         <thead><tr><th>Resource</th><th>URL</th></tr></thead>
         <tbody>
           <tr><td>GitHub</td><td><a href="https://github.com/edbeeching/godot_rl_agents" style="color:var(--accent2)">github.com/edbeeching/godot_rl_agents</a></td></tr>
+          <tr><td>Examples Repo</td><td><a href="https://github.com/edbeeching/godot_rl_agents_examples" style="color:var(--accent2)">github.com/edbeeching/godot_rl_agents_examples</a></td></tr>
           <tr><td>PyPI</td><td><a href="https://pypi.org/project/godot-rl/" style="color:var(--accent2)">pypi.org/project/godot-rl</a></td></tr>
-          <tr><td>HuggingFace Course</td><td><a href="https://huggingface.co/learn/deep-rl-course/unitbonus3/godotrl" style="color:var(--accent2)">huggingface.co — Deep RL Course Unit Bonus 3</a></td></tr>
+          <tr><td>Course Progression</td><td><a href="docs/example-progression.md" style="color:var(--accent2)">docs/example-progression.md</a></td></tr>
           <tr><td>Godot CLI Docs</td><td><a href="https://docs.godotengine.org/en/stable/tutorials/editor/command_line_tutorial.html" style="color:var(--accent2)">docs.godotengine.org — Command Line Tutorial</a></td></tr>
           <tr><td>MovieWriter Docs</td><td><a href="https://docs.godotengine.org/en/stable/tutorials/animation/creating_movies.html" style="color:var(--accent2)">docs.godotengine.org — Creating Movies</a></td></tr>
           <tr><td>SB3 Callbacks</td><td><a href="https://stable-baselines3.readthedocs.io/en/master/guide/callbacks.html" style="color:var(--accent2)">stable-baselines3.readthedocs.io — Callbacks</a></td></tr>
-          <tr><td>Examples Repo</td><td><a href="https://github.com/edbeeching/godot_rl_agents_examples" style="color:var(--accent2)">github.com/edbeeching/godot_rl_agents_examples</a></td></tr>
           <tr><td>DeepWiki (auto-docs)</td><td><a href="https://deepwiki.com/edbeeching/godot_rl_agents_examples" style="color:var(--accent2)">deepwiki.com/edbeeching/godot_rl_agents_examples</a></td></tr>
         </tbody>
       </table>

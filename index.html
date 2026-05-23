@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Godot Reinforcement Learning Course</title>
+  <style>
+    :root {
+      --bg: #0f1117; --surface: #1a1d27; --surface2: #22263a; --border: #2e3350;
+      --accent: #6c8ef7; --accent2: #4ecca3; --text: #e2e8f0; --muted: #8892b0; --code-bg: #0d1117;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: "Segoe UI", system-ui, sans-serif; font-size: 15px; line-height: 1.75; }
+    .layout { display: flex; min-height: 100vh; }
+    .sidebar { width: 260px; flex-shrink: 0; background: var(--surface); border-right: 1px solid var(--border); padding: 1.5rem 1rem; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+    .sidebar-title { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 1rem; }
+    .sidebar nav a { display: flex; align-items: center; gap: 0.5rem; padding: 0.35rem 0.6rem; border-radius: 6px; text-decoration: none; font-size: 0.85rem; color: var(--muted); }
+    .sidebar nav a:hover { background: var(--surface2); color: var(--text); }
+    .sidebar nav .section-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); padding: 0.8rem 0.6rem 0.25rem; }
+    .sidebar nav .num { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; background: var(--surface2); border-radius: 50%; font-size: 0.7rem; font-weight: 700; color: var(--accent); flex-shrink: 0; }
+    .sidebar nav a.done .num { background: var(--accent2); color: #0f1117; }
+    .content { flex: 1; max-width: 860px; padding: 2.5rem 2.5rem 6rem; }
+    .hero { background: linear-gradient(135deg, #1a1d27 0%, #141829 100%); border: 1px solid var(--border); border-radius: 14px; padding: 2rem 2.5rem; margin-bottom: 2rem; }
+    .hero .tag { display: inline-block; background: var(--accent2); color: #0f1117; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.2rem 0.6rem; border-radius: 99px; margin-bottom: 0.75rem; }
+    .hero h1 { font-size: 1.85rem; font-weight: 800; line-height: 1.2; margin-bottom: 0.6rem; }
+    .hero p { color: var(--muted); max-width: 620px; }
+    .section { margin-bottom: 2.5rem; }
+    .section-header h2 { font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.88rem; margin: 1rem 0; }
+    th, td { border: 1px solid var(--border); padding: 0.55rem 0.75rem; text-align: left; vertical-align: top; }
+    th { background: var(--surface2); color: var(--accent); font-weight: 600; }
+    .callout { background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: 8px; padding: 1rem 1.25rem; margin: 1rem 0; font-size: 0.9rem; }
+    .callout strong { color: var(--accent); }
+    .unit-grid { display: grid; gap: 0.75rem; }
+    .unit-card { display: flex; gap: 1rem; align-items: flex-start; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1rem 1.25rem; text-decoration: none; color: inherit; transition: border-color 0.15s; }
+    a.unit-card:hover { border-color: var(--accent); }
+    .unit-card .u-num { font-size: 0.75rem; font-weight: 800; color: var(--accent); min-width: 3rem; }
+    .unit-card h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.2rem; }
+    .unit-card p { font-size: 0.82rem; color: var(--muted); margin: 0; }
+    .unit-card .example { font-size: 0.78rem; color: var(--accent2); margin-top: 0.3rem; }
+    .unit-card.planned { opacity: 0.65; }
+    code { background: var(--code-bg); padding: 0.1rem 0.35rem; border-radius: 4px; font-size: 0.85em; }
+  </style>
+</head>
+<body>
+<div class="layout">
+
+  <aside class="sidebar">
+    <p class="sidebar-title">Godot RL Course</p>
+    <nav>
+      <p class="section-label">Start</p>
+      <a href="#overview"><span class="num">H</span> Overview</a>
+      <a href="#units"><span class="num">U</span> Units</a>
+      <p class="section-label">Available</p>
+      <a href="Unit-00.html" class="done"><span class="num">0</span> Setup</a>
+      <a href="Unit-01.html" class="done"><span class="num">1</span> Foundations</a>
+      <a href="Unit-02.html" class="done"><span class="num">2</span> Lunar Lander</a>
+      <a href="Unit-03.html" class="done"><span class="num">3</span> CrossTheRoad</a>
+      <a href="godot_rl_course_reference.html"><span class="num">R</span> Reference</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+
+    <header class="hero" id="overview">
+      <p class="tag">Godot 4 · godot-rl-agents · Stable-Baselines3</p>
+      <h1>Deep Reinforcement Learning with Godot</h1>
+      <p>Official examples, step-by-step from BallChase to multi-agent FPS. Train locally with Python; deploy via ONNX to the browser.</p>
+    </header>
+
+    <section class="section" id="units">
+      <h2 class="section-header">Course units</h2>
+      <div class="unit-grid">
+        <a class="unit-card" href="Unit-00.html">
+          <span class="u-num">Unit 0</span>
+          <span><h3>Setup &amp; first run</h3><p>Conda, Godot .NET, BallChase smoke test.</p></span>
+        </a>
+        <a class="unit-card" href="Unit-01.html">
+          <span class="u-num">Unit 1</span>
+          <span><h3>RL foundations</h3><p>MDP loop, vocabulary, BallChase recap.</p></span>
+        </a>
+        <a class="unit-card" href="Unit-02.html">
+          <span class="u-num">Unit 2</span>
+          <span><h3>Build Lunar Lander</h3><p>SimpleReachGoal patterns, PPO, ONNX intro.</p></span>
+        </a>
+        <a class="unit-card" href="Unit-03.html">
+          <span class="u-num">Unit 3</span>
+          <span><h3>CrossTheRoad &amp; DQN</h3><p>Discrete env, headless training.</p></span>
+        </a>
+        <span class="unit-card planned">
+          <span class="u-num">Unit 4</span>
+          <span><h3>JumperHard &amp; PPO</h3><p>Benchmark, hyperparameters.</p></span>
+        </span>
+        <span class="unit-card planned">
+          <span class="u-num">Unit 5</span>
+          <span><h3>Parallel training</h3><p>BallChase source, n_parallel.</p></span>
+        </span>
+        <span class="unit-card planned">
+          <span class="u-num">Unit 6</span>
+          <span><h3>Continuous 3D</h3><p>FlyBy, HovercraftRacing.</p></span>
+        </span>
+        <span class="unit-card planned">
+          <span class="u-num">Unit 7</span>
+          <span><h3>Multi-agent</h3><p>Racer, MultiAgentSimple.</p></span>
+        </span>
+        <span class="unit-card planned">
+          <span class="u-num">Unit 8</span>
+          <span><h3>Memory &amp; POMDPs</h3><p>FPS, RecurrentPPO.</p></span>
+        </span>
+        <span class="unit-card planned">
+          <span class="u-num">Unit 9</span>
+          <span><h3>Imitation learning</h3><p>MultiLevelRobot.</p></span>
+        </span>
+        <span class="unit-card planned">
+          <span class="u-num">Unit 10</span>
+          <span><h3>Deploy to web</h3><p>ONNX, HTML5/WASM.</p></span>
+        </span>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-header">Training workflow</h2>
+      <table>
+        <thead><tr><th>Phase</th><th>Units</th><th>Godot</th><th>Python</th></tr></thead>
+        <tbody>
+          <tr><td>Explore</td><td>0–2</td><td>Editor or --viz</td><td>gdrl / SB3</td></tr>
+          <tr><td>Scale</td><td>3–8</td><td>Headless binary</td><td>gdrl, n_parallel</td></tr>
+          <tr><td>Ship</td><td>9–10</td><td>ONNX inference</td><td>No Python at runtime</td></tr>
+        </tbody>
+      </table>
+      <p style="margin-top:1rem;color:var(--muted);font-size:0.88rem">
+        <a href="godot_rl_course_reference.html" style="color:var(--accent)">Reference</a> ·
+        <a href="docs/example-progression.md" style="color:var(--accent)">example-progression.md</a> ·
+        <a href="docs/curriculum.md" style="color:var(--accent)">curriculum.md</a>
+      </p>
+    </section>
+
+  </main>
+</div>
+</body>
+</html>

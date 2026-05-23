@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Unit 3 → CrossTheRoad &amp; DQN</title>
+  <style>
+    :root {
+      --bg: #0f1117; --surface: #1a1d27; --surface2: #22263a; --border: #2e3350;
+      --accent: #6c8ef7; --accent2: #4ecca3; --warn: #f7c86c; --text: #e2e8f0; --muted: #8892b0;
+      --code-bg: #0d1117; --code-fg: #cdd6f4;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: "Segoe UI", system-ui, sans-serif; font-size: 15px; line-height: 1.75; }
+    .layout { display: flex; min-height: 100vh; }
+    .sidebar { width: 260px; flex-shrink: 0; background: var(--surface); border-right: 1px solid var(--border); padding: 1.5rem 1rem; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+    .sidebar-title { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 1rem; }
+    .sidebar nav a { display: flex; align-items: center; gap: 0.5rem; padding: 0.35rem 0.6rem; border-radius: 6px; text-decoration: none; font-size: 0.85rem; color: var(--muted); }
+    .sidebar nav a:hover { background: var(--surface2); color: var(--text); }
+    .sidebar nav .section-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); padding: 0.8rem 0.6rem 0.25rem; }
+    .sidebar nav .num { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; background: var(--surface2); border-radius: 50%; font-size: 0.7rem; font-weight: 700; color: var(--accent); flex-shrink: 0; }
+    .content { flex: 1; max-width: 820px; padding: 2.5rem 2.5rem 6rem; }
+    .hero { background: linear-gradient(135deg, #1a1d27 0%, #141829 100%); border: 1px solid var(--border); border-radius: 14px; padding: 2rem 2.5rem; margin-bottom: 2rem; }
+    .hero .tag { display: inline-block; background: var(--accent); color: #0f1117; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.2rem 0.6rem; border-radius: 99px; margin-bottom: 0.75rem; }
+    .hero h1 { font-size: 1.75rem; font-weight: 800; margin-bottom: 0.5rem; }
+    .hero p { color: var(--muted); }
+    .section { margin-bottom: 2.5rem; }
+    .section-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border); }
+    .section-num { display: inline-flex; align-items: center; justify-content: center; width: 2rem; height: 2rem; background: var(--accent); color: #0f1117; font-size: 0.85rem; font-weight: 800; border-radius: 50%; }
+    .section-header h2 { font-size: 1.15rem; font-weight: 700; }
+    .step { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.1rem 1.25rem; margin-bottom: 1rem; }
+    .step-title { font-size: 0.9rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .step p, .step li { font-size: 0.88rem; color: var(--muted); }
+    .step ul, .step ol { padding-left: 1.25rem; margin-top: 0.4rem; }
+    pre { background: var(--code-bg); color: var(--code-fg); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; font-family: "JetBrains Mono", monospace; font-size: 0.8rem; overflow-x: auto; margin: 0.6rem 0; }
+    code { background: var(--code-bg); color: var(--accent2); padding: 0.15em 0.4em; border-radius: 4px; font-family: "JetBrains Mono", monospace; font-size: 0.82em; }
+    pre code { background: none; color: inherit; padding: 0; }
+    .callout { border-radius: 8px; padding: 0.8rem 1rem; font-size: 0.85rem; margin: 0.75rem 0; border-left: 3px solid; }
+    .callout.tip { background: #12202e; border-color: var(--accent); color: #93c5fd; }
+    .callout.warn { background: #201e12; border-color: var(--warn); color: #fde68a; }
+    .callout.info { background: #12201a; border-color: var(--accent2); color: #6ee7b7; }
+    .callout strong { display: block; margin-bottom: 0.2rem; }
+    hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
+  </style>
+</head>
+<body>
+<div class="layout">
+
+  <aside class="sidebar">
+    <div class="sidebar-title">Unit 3</div>
+    <nav>
+      <a href="index.html"><span class="num">⌂</span> Course home</a>
+      <a href="Unit-02.html"><span class="num">←</span> Unit 2: Lunar Lander</a>
+      <div class="section-label">Steps</div>
+      <a href="#s1"><span class="num">1</span> DQN in one page</a>
+      <a href="#s2"><span class="num">2</span> Open CrossTheRoad</a>
+      <a href="#s3"><span class="num">3</span> Read the code</a>
+      <a href="#s4"><span class="num">4</span> Train headless</a>
+      <a href="#s5"><span class="num">5</span> Tweak &amp; compare</a>
+      <a href="#next">What's next</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+
+    <div class="hero" id="overview">
+      <div class="tag">Unit 3 · Example ladder step 4</div>
+      <h1>CrossTheRoad &amp; DQN</h1>
+      <p>Study the official <strong>CrossTheRoad</strong> example — discrete 2D navigation with sparse rewards —
+         then train it with <strong>DQN</strong> instead of PPO. Default workflow: exported binary, headless.</p>
+    </div>
+
+    <div class="callout warn">
+      <strong>Console-first from here</strong>
+      Units 0–2 used the editor for building and debugging. From Unit 3 on, train with an exported binary
+      and omit <code>--viz</code> unless you are debugging rewards.
+    </div>
+
+    <div class="section" id="s1">
+      <div class="section-header"><span class="section-num">1</span><h2>DQN in one page</h2></div>
+      <div class="step">
+        <p><strong>Value-based</strong> methods learn how good each action is in each state (Q-values).
+           <strong>DQN</strong> uses a neural network to approximate those values, with experience replay and a target network for stability.</p>
+        <p>Use DQN when the action space is <strong>discrete</strong> and rewards are sparse — like crossing lanes of traffic.</p>
+        <p>Unit 2 used <strong>PPO</strong> (policy-based). Compare learning curves in TensorBoard after this unit.</p>
+      </div>
+    </div>
+
+    <div class="section" id="s2">
+      <div class="section-header"><span class="section-num">2</span><h2>Open CrossTheRoad</h2></div>
+      <div class="step">
+        <div class="step-title">Clone and import</div>
+        <ol>
+          <li>From <a href="https://github.com/edbeeching/godot_rl_agents_examples/tree/main/examples/CrossTheRoad" style="color:var(--accent)">examples/CrossTheRoad</a>, open the project in Godot .NET</li>
+          <li>Enable the Godot RL Agents plugin</li>
+          <li>Locate the training scene and <code>AIController</code> script</li>
+        </ol>
+      </div>
+      <div class="step">
+        <div class="step-title">Export for training (recommended)</div>
+        <p>Project → Export → add macOS/Windows/Linux preset → export binary. Use that path in Python instead of Play Scene.</p>
+<pre>gdrl --env_path=./CrossTheRoad.x86_64 \
+  --experiment_name=CrossTheRoad_DQN \
+  --timesteps=500000 \
+  --speedup=8 \
+  --n_parallel=4</pre>
+        <p>Adjust algorithm flags per your training script if using custom DQN entrypoint — SB3 <code>DQN</code> via a dedicated example script is the usual pattern.</p>
+      </div>
+    </div>
+
+    <div class="section" id="s3">
+      <div class="section-header"><span class="section-num">3</span><h2>Read the code</h2></div>
+      <div class="step">
+        <p>Trace these in order (same rhythm as SimpleReachGoal in Unit 2):</p>
+        <ul>
+          <li><code>get_obs()</code> — what the agent sees (position, nearby hazards)</li>
+          <li><code>get_action_space()</code> — discrete moves (e.g. wait / up / down / forward)</li>
+          <li>Reward logic — sparse + penalty for crashes; note shaping vs Unit 2 dense lander rewards</li>
+          <li>Sync node + number of parallel env roots in the training scene</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section" id="s4">
+      <div class="section-header"><span class="section-num">4</span><h2>Train headless</h2></div>
+      <div class="step">
+<pre>conda activate godot_env
+tensorboard --logdir=logs &</pre>
+        <p>Run your DQN training command against the exported binary. Watch <code>ep_rew_mean</code> — sparse rewards may stay flat, then jump as the agent learns safe crossings.</p>
+      </div>
+    </div>
+
+    <div class="section" id="s5">
+      <div class="section-header"><span class="section-num">5</span><h2>Tweak one thing</h2></div>
+      <div class="step">
+        <p><strong>Stretch goals (pick one):</strong></p>
+        <ul>
+          <li>Increase crash penalty by 2× — does learning speed up or stall?</li>
+          <li>Add a small reward for forward progress — compare to pure sparse setup</li>
+          <li>Train the same env with PPO — which algorithm reaches reliable crossings first?</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section" id="next">
+      <div class="section-header"><span style="font-size:1.3rem">➡️</span><h2>What's next</h2></div>
+      <div class="step">
+        <p><strong>Unit 4:</strong> <a href="index.html#units" style="color:var(--accent)">JumperHard</a> — the canonical PPO benchmark, headless export, hyperparameter tuning.</p>
+        <p style="margin-top:0.5rem"><a href="Unit-02.html" style="color:var(--muted)">← Unit 2</a> · <a href="index.html" style="color:var(--muted)">Course home</a></p>
+      </div>
+    </div>
+
+  </main>
+</div>
+</body>
+</html>

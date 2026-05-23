@@ -70,52 +70,37 @@ This architectural diagram outlines how the **Godot Game Client** runs independe
 
 ---
 
-### Course Transition Blueprint: Classic Gym to Godot RL
+### Part 1: Hybrid training strategy
 
-Converting legacy Python-only libraries into interactive, engine-supported modules represents a leap forward in teaching quality. This document maps out your migration path, practical limitations, and a 6-week curriculum.
+Training in the browser is impractical. Use a **hybrid model**:
 
----
-
-### Part 1: Conversion Feasibility & Strategy
-
-Running deep learning algorithms synchronously alongside full visual rendering is computationally expensive. Attempting to train RL models directly inside a standard web browser (such as compiling Python via Pyodide or JupyterLite inside static pages) is highly impractical due to extreme slow-downs, sandboxing CPU thresholds, and lacking proper PyTorch GPU acceleration in browser engines.
-
-Instead, a perfect **"Hybrid Engine Model"** should be utilized:
-* **The Training Phase (Local-first):** Students clone environments containing Godot source templates locally. They use Python scripts (utilizing `stable-baselines3` or `cleanrl`) on their own PCs to execute rapid vectorized training loops connected to local Godot executable outputs.
-* **The Showcase / Interactive Phase (Web-first):** Once trained, the optimized parameters are exported to an **ONNX model** file. The student loads this model directly into the Godot project and exports their clean, responsive game with WASM compatibility to run real-time inference seamlessly inside any web browser.
+* **Training (local):** Godot env + Python over a socket; headless binaries from Unit 3 onward.
+* **Inference (web):** ONNX → Godot Sync node → HTML5/WASM without Python.
 
 ---
 
-### Part 2: Curriculum Outline (6-Week Core)
+### Course approach
 
-This syllabus takes students from basic Reinforcement Learning principles up to compiling high-quality autonomous game actors.
+Example-driven progression through official **godot-rl-agents** environments. Start in [index.html](index.html). Full detail: [docs/curriculum.md](docs/curriculum.md).
 
-#### Week 1: Introduction to MDPs & The Godot-Python Link
-* **Concepts:** Markov Decision Processes, actions, states, environmental bounds, and basic scalar rewards.
-* **Local Setup:** Installing Anaconda/Miniconda, creating virtual environments, installing `godot-rl`, and initiating standard environments from the hub.
-* **Hands-on Lab:** Run training using pre-existing assets (`JumperHard`) using CMD tools while monitoring local runtime rendering flags on screen.
+---
 
-#### Week 2: Deep Q-Networks (DQN) & Discretized Spaces
-* **Concepts:** Q-learning, exploration vs. exploitation ($\epsilon$-greedy), neural network approximation, and experience replay buffers.
-* **Godot Integration:** Constructing discrete game boundaries inside 2D coordinates (e.g., Grid navigation or "Cross the Road" variants).
-* **Hands-on Lab:** Implement custom reward wrappers to train a 2D vehicle navigating through traffic obstacles.
+### Part 2: Curriculum (10 core units)
 
-#### Week 3: Policy Gradient Methods & Continuous Actions
-* **Concepts:** Policy Gradients, Actor-Critic structures, continuous spaces, and standard deviations of predictive actions.
-* **Godot Integration:** Using the AI dynamic sensors (RayCast2D / RayCast3D) to sample continuous ranges of distances from nearby geometric collision panels.
-* **Hands-on Lab:** Standardizing reward systems to teach a 3D Hovercraft how to guide itself through a windy, high-speed speedway.
+| Unit | Topic | Example | Training mode |
+|------|-------|---------|---------------|
+| 0 | Setup & first run | BallChase | Hub binary / in-editor |
+| 1 | RL foundations | BallChase recap | `--viz` optional |
+| 2 | Build Lunar Lander | SimpleReachGoal patterns | Editor + in-editor train |
+| 3 | DQN & discrete spaces | CrossTheRoad | Headless binary |
+| 4 | PPO & platforms | JumperHard | Headless |
+| 5 | Parallel training | BallChase (source) | `n_parallel` |
+| 6 | Continuous 3D | FlyBy, HovercraftRacing | Headless |
+| 7 | Multi-agent | Racer, MultiAgentSimple | Headless |
+| 8 | Memory / POMDPs | FPS, RobotFPS | RecurrentPPO |
+| 9 | Imitation learning | MultiLevelRobot | Expert demos |
+| 10 | Deploy to web | Any model | ONNX + WASM |
 
-#### Week 4: PPO Explained & Godot Multi-Agent Sync
-* **Concepts:** Clip ratios, trust regions, advantages, and training multiple agents inside a single vectorized thread simultaneously to save system resources.
-* **Godot Integration:** Instantiating parallel arena nodes inside Godot to accelerate step generation and gather training samples quickly.
-* **Hands-on Lab:** Parallelize 16 spatial instances of a 3D Ball-chasing agent using Stable-Baselines3, cutting full validation down to minutes.
+**Extensions:** CleanRL / Sample Factory · capstone from stretch pool · self-play (AirHockey).
 
-#### Week 5: Memory Models (LSTMs) & Navigation Tasks
-* **Concepts:** Partially Observable Markov Decision Processes (POMDPs), embedding sequence memory into networks, and recurrent layers.
-* **Godot Integration:** Designing mazes where targets are temporarily obstructed or location-sensitive flags rely on timing sequences.
-* **Hands-on Lab:** Training an agent using a recurrent visual policy to navigate dynamic obstacle paths requiring temporal memory.
-
-#### Week 6: Web Assembly (WASM) Deployment
-* **Concepts:** ONNX model serialization, compiling assets for client-side environments, and handling light inference runtimes in WebGL frameworks.
-* **Godot Integration:** Loading the trained network weights directly within Godot's Mono version, binding the file runtime, and setting up HTML5 exports.
-* **Hands-on Lab:** Building a beautiful, browser-ready portfolio showing the virtual agent running on self-guided pathfinding loops.
+**Rhythm (every unit):** run → open source → read `AIController` → tweak → retrain.

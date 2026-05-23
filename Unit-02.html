@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Unit 2 → Godot: Step-by-Step Guide</title>
+  <style>
+    :root {
+      --bg:       #0f1117;
+      --surface:  #1a1d27;
+      --surface2: #22263a;
+      --border:   #2e3350;
+      --accent:   #6c8ef7;
+      --accent2:  #4ecca3;
+      --warn:     #f7c86c;
+      --danger:   #f76c6c;
+      --text:     #e2e8f0;
+      --muted:    #8892b0;
+      --code-bg:  #0d1117;
+      --code-fg:  #cdd6f4;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      font-size: 15px;
+      line-height: 1.75;
+    }
+
+    /* ── Layout ── */
+    .layout { display: flex; min-height: 100vh; }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      width: 260px;
+      flex-shrink: 0;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      padding: 1.5rem 1rem;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
+    .sidebar-title {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1rem;
+    }
+    .sidebar nav a {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.35rem 0.6rem;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 0.85rem;
+      color: var(--muted);
+      transition: background 0.15s, color 0.15s;
+    }
+    .sidebar nav a:hover { background: var(--surface2); color: var(--text); }
+    .sidebar nav .section-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      padding: 0.8rem 0.6rem 0.25rem;
+    }
+    .sidebar nav .num {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 1.4rem; height: 1.4rem;
+      background: var(--surface2); border-radius: 50%;
+      font-size: 0.7rem; font-weight: 700; color: var(--accent);
+      flex-shrink: 0;
+    }
+
+    /* ── Main content ── */
+    .content { flex: 1; max-width: 820px; padding: 2.5rem 2.5rem 6rem; }
+
+    /* ── Hero ── */
+    .hero {
+      background: linear-gradient(135deg, #1a1d27 0%, #141829 100%);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 2rem 2.5rem;
+      margin-bottom: 2.5rem;
+    }
+    .hero .tag {
+      display: inline-block;
+      background: var(--accent);
+      color: #0f1117;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.2rem 0.6rem;
+      border-radius: 99px;
+      margin-bottom: 0.75rem;
+    }
+    .hero h1 { font-size: 1.75rem; font-weight: 800; line-height: 1.25; margin-bottom: 0.5rem; }
+    .hero p { color: var(--muted); max-width: 560px; }
+
+    /* ── Progress bar row ── */
+    .progress-row {
+      display: flex; gap: 0.4rem; margin-bottom: 2.5rem; flex-wrap: wrap;
+    }
+    .progress-step {
+      flex: 1; min-width: 80px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 8px; padding: 0.5rem 0.75rem;
+      font-size: 0.75rem; color: var(--muted); text-align: center;
+    }
+    .progress-step.active { border-color: var(--accent); color: var(--accent); background: #1a1d27; }
+
+    /* ── Section ── */
+    .section { margin-bottom: 3rem; }
+    .section-header {
+      display: flex; align-items: center; gap: 0.75rem;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .section-num {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 2rem; height: 2rem;
+      background: var(--accent); color: #0f1117;
+      font-size: 0.85rem; font-weight: 800;
+      border-radius: 50%; flex-shrink: 0;
+    }
+    .section-header h2 { font-size: 1.15rem; font-weight: 700; }
+
+    /* ── Step card ── */
+    .step {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.1rem 1.25rem;
+      margin-bottom: 1rem;
+    }
+    .step-title {
+      font-size: 0.9rem; font-weight: 700;
+      margin-bottom: 0.5rem;
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+    .step-title .check {
+      width: 1.1rem; height: 1.1rem;
+      border: 2px solid var(--border); border-radius: 3px;
+      flex-shrink: 0; cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .step p, .step li { font-size: 0.88rem; color: var(--muted); }
+    .step ul, .step ol { padding-left: 1.25rem; margin-top: 0.4rem; }
+    .step li { margin-bottom: 0.3rem; }
+
+    /* ── Code block ── */
+    pre {
+      background: var(--code-bg);
+      color: var(--code-fg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem 1.1rem;
+      font-family: "JetBrains Mono", "Fira Mono", "Consolas", monospace;
+      font-size: 0.8rem;
+      line-height: 1.65;
+      overflow-x: auto;
+      margin: 0.6rem 0;
+    }
+    code {
+      background: var(--code-bg);
+      color: var(--accent2);
+      padding: 0.15em 0.4em;
+      border-radius: 4px;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.82em;
+    }
+    pre code { background: none; color: inherit; padding: 0; font-size: inherit; }
+
+    /* ── Callouts ── */
+    .callout {
+      border-radius: 8px; padding: 0.8rem 1rem;
+      font-size: 0.85rem; margin: 0.75rem 0;
+      border-left: 3px solid;
+    }
+    .callout.tip   { background: #12202e; border-color: var(--accent);  color: #93c5fd; }
+    .callout.warn  { background: #201e12; border-color: var(--warn);    color: #fde68a; }
+    .callout.info  { background: #12201a; border-color: var(--accent2); color: #6ee7b7; }
+    .callout strong { display: block; margin-bottom: 0.2rem; }
+
+    /* ── File tree ── */
+    .filetree {
+      background: var(--code-bg); border: 1px solid var(--border);
+      border-radius: 8px; padding: 0.9rem 1rem;
+      font-family: "JetBrains Mono", monospace; font-size: 0.8rem;
+      line-height: 1.9; color: var(--code-fg);
+      margin: 0.6rem 0;
+    }
+    .filetree .dir  { color: var(--accent); }
+    .filetree .file { color: var(--code-fg); }
+    .filetree .note { color: var(--muted); }
+
+    /* ── Table ── */
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; margin: 0.6rem 0; }
+    th { background: var(--surface2); color: var(--accent); padding: 0.5rem 0.75rem; text-align: left; font-weight: 700; }
+    td { padding: 0.45rem 0.75rem; border-bottom: 1px solid var(--border); color: var(--muted); }
+    tr:last-child td { border-bottom: none; }
+
+    /* ── Mapping table highlight ── */
+    .from { color: #93c5fd; }
+    .to   { color: #6ee7b7; }
+
+    /* ── Divider ── */
+    hr { border: none; border-top: 1px solid var(--border); margin: 2.5rem 0; }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  </style>
+</head>
+<body>
+<div class="layout">
+
+  <!-- ─────────────── SIDEBAR ─────────────── -->
+  <aside class="sidebar">
+    <div class="sidebar-title">Contents</div>
+    <nav>
+      <div class="section-label">Course</div>
+      <a href="index.html"><span class="num">⌂</span> Course home</a>
+      <a href="Unit-01.html"><span class="num">←</span> Unit 1: Foundations</a>
+
+      <div class="section-label">Overview</div>
+      <a href="#overview"><span class="num">★</span> What you're building</a>
+      <a href="#mapping"><span class="num">~</span> Gymnasium → Godot map</a>
+
+      <div class="section-label">Setup</div>
+      <a href="#s1"><span class="num">1</span> Install tools</a>
+      <a href="#s2"><span class="num">2</span> Create Godot project</a>
+      <a href="#s3"><span class="num">3</span> Install the plugin</a>
+
+      <div class="section-label">Godot scene</div>
+      <a href="#s4"><span class="num">4</span> Build the lander scene</a>
+      <a href="#s5"><span class="num">5</span> Write lander.gd</a>
+      <a href="#s6"><span class="num">6</span> Write ai_controller.gd</a>
+      <a href="#s7"><span class="num">7</span> Build training scene</a>
+
+      <div class="section-label">Training</div>
+      <a href="#s8"><span class="num">8</span> Test with human control</a>
+      <a href="#s9"><span class="num">9</span> Run training (in-editor)</a>
+      <a href="#s10"><span class="num">10</span> Monitor with TensorBoard</a>
+
+      <div class="section-label">Deployment</div>
+      <a href="#s11"><span class="num">11</span> Export ONNX &amp; run inference</a>
+
+      <div class="section-label">Advanced (optional)</div>
+      <a href="#s12"><span class="num">12</span> Export a game binary</a>
+
+      <div class="section-label">Reference</div>
+      <a href="#ref-obs">Observation space</a>
+      <a href="#ref-actions">Action space</a>
+      <a href="#ref-reward">Reward function</a>
+      <a href="#ref-args">gdrl arguments</a>
+    </nav>
+  </aside>
+
+  <!-- ─────────────── MAIN ─────────────── -->
+  <main class="content">
+
+    <!-- Hero -->
+    <div class="hero" id="overview">
+      <div class="tag">Unit 2 · Godot .NET Edition</div>
+      <h1>Convert LunarLander to Godot RL Agents</h1>
+      <p>Build a Lunar Lander environment from scratch in Godot, applying the same
+         patterns you saw in <strong>SimpleReachGoal</strong> and the
+         <strong>BallChase</strong> quick win. Train with Stable-Baselines3 via
+         <strong>godot-rl</strong> — Godot 4 .NET editor and a Conda Python environment.</p>
+      <p style="margin-top:0.75rem"><a href="Unit-01.html" style="color:var(--accent); font-weight:700">← Unit 1: Foundations</a>
+         · <a href="index.html" style="color:var(--muted); font-weight:600">Course home</a></p>
+    </div>
+
+    <!-- Progress pills -->
+    <div class="progress-row">
+      <div class="progress-step active">1–3 Setup</div>
+      <div class="progress-step">4–7 Scene</div>
+      <div class="progress-step">8 Test</div>
+      <div class="progress-step">9–10 Train</div>
+      <div class="progress-step">11 Deploy</div>
+      <div class="progress-step">12 Optional</div>
+    </div>
+
+    <!-- ── Mapping overview ── -->
+    <div class="section" id="mapping">
+      <div class="section-header">
+        <span style="font-size:1.4rem">🗺</span>
+        <h2>Gymnasium → Godot concept map</h2>
+      </div>
+      <table>
+        <thead><tr><th>Gymnasium / SB3</th><th>Godot RL Agents equivalent</th></tr></thead>
+        <tbody>
+          <tr><td class="from"><code>gym.make("LunarLander-v2")</code></td><td class="to">Godot scene with <code>RigidBody2D</code> lander</td></tr>
+          <tr><td class="from"><code>env.observation_space</code> (8 floats)</td><td class="to"><code>get_obs()</code> returning <code>{"obs": [...]}</code></td></tr>
+          <tr><td class="from"><code>env.action_space</code> (4 discrete)</td><td class="to"><code>get_action_space()</code> returning discrete size 4</td></tr>
+          <tr><td class="from">Per-step reward logic in Python</td><td class="to">Reward shaping in <code>lander.gd</code> + <code>_ai_controller.reward</code></td></tr>
+          <tr><td class="from"><code>make_vec_env(n_envs=16)</code></td><td class="to">N copies of env root in <code>training_scene.tscn</code></td></tr>
+          <tr><td class="from"><code>PPO("MlpPolicy", env)</code></td><td class="to"><code>PPO("MultiInputPolicy", StableBaselinesGodotEnv(...))</code></td></tr>
+          <tr><td class="from"><code>model.learn(1_000_000)</code></td><td class="to"><code>gdrl --timesteps=1_000_000</code></td></tr>
+          <tr><td class="from">Saved <code>.zip</code> model</td><td class="to">ONNX model path in Sync node inspector</td></tr>
+        </tbody>
+      </table>
+      <div class="callout info" style="margin-top:1rem">
+        <strong>Before you build:</strong> Clone
+        <a href="https://github.com/edbeeching/godot_rl_agents_examples/tree/main/examples/SimpleReachGoal" style="color:var(--accent)">SimpleReachGoal</a>
+        from the examples repo. Open it in Godot, trace <code>ai_controller.gd</code> and the training scene — this unit applies the same patterns to a Lunar Lander you build yourself. See the
+        <a href="index.html#ladder" style="color:var(--accent)">example progression ladder</a>.
+      </div>
+    </div>
+
+      <div class="callout info" style="margin-bottom:1.5rem">
+        <strong>ℹ Setup already done?</strong>
+        If you completed <a href="Unit-00.html" style="color:var(--accent2)">Unit 0</a>, skip Sections 1–3 and start at
+        <a href="#s4" style="color:var(--accent2)">Section 4 — Build the lander scene</a>.
+      </div>
+
+    <hr>
+
+    <!-- ════════════════════════════════════
+         SECTION 1 – Install tools
+    ════════════════════════════════════ -->
+    <div class="section" id="s1">
+      <div class="section-header">
+        <span class="section-num">1</span>
+        <h2>Install the required tools</h2>
+      </div>
+
+      <div class="step">
+        <div class="step-title"><span class="check" onclick="this.style.background=this.style.background?'':'var(--accent)'"></span> Install Godot 4 — .NET edition</div>
+        <p>Download the <strong>.NET / Mono</strong> build of Godot 4 from
+        <strong>godotengine.org</strong> (not the standard build).<br>
+        Tested with Godot 4.3+.</p>
+        <div class="callout warn">
+          <strong>⚠ Use the .NET edition for the whole workflow</strong>
+          The godot-rl plugin layer compiles native C# tasks (with NuGet references) that bridge
+          Godot to the model parsers and the ONNX runtime. The standard Godot build cannot
+          resolve these, so use the <strong>.NET edition</strong> from the start — building the
+          scene, training, and inference all rely on it. You must also install the
+          <a href="https://dotnet.microsoft.com/download" style="color:var(--accent)">.NET SDK</a>
+          on your machine.
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-title"><span class="check" onclick="this.style.background=this.style.background?'':'var(--accent)'"></span> Install Miniconda</div>
+        <p>If you don't already have it, install <strong>Miniconda</strong> from
+        <strong>docs.conda.io</strong>. We use a Conda environment instead of a plain
+        <code>venv</code> so we can pin an exact Python version and keep the ML packages
+        cleanly isolated.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-title"><span class="check" onclick="this.style.background=this.style.background?'':'var(--accent)'"></span> Create &amp; activate the Conda environment</div>
+<pre># Create an isolated environment with Python 3.10
+conda create --name godot_env python=3.10 -y
+
+# Activate it (run this in every new terminal)
+conda activate godot_env</pre>
+        <div class="callout info">
+          <strong>ℹ Why Python 3.10?</strong>
+          godot-rl and its Stable-Baselines3 dependencies are most reliable on Python 3.10.
+          Pinning it inside a dedicated Conda environment avoids version conflicts with other
+          projects on your machine.
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-title"><span class="check" onclick="this.style.background=this.style.background?'':'var(--accent)'"></span> Install the Python packages</div>
+<pre>pip install "godot-rl[sb3]" tensorboard</pre>
+        <div class="callout info">
+          <strong>ℹ What this installs</strong>
+          <code>godot-rl[sb3]</code> — the Python bridge, the Stable-Baselines3 wrappers,
+          and the <code>gdrl</code> training command.<br>
+          <code>tensorboard</code> — training-curve visualisation.<br>
+          Keep the double quotes around <code>"godot-rl[sb3]"</code> so the shell does not try
+          to expand the square brackets.
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════
+         SECTION 2 – Create Godot project
+    ════════════════════════════════════ -->
+    <div class="section" id="s2">
+      <div class="section-header">
+        <span class="section-num">2</span>
+        <h2>Create the Godot project</h2>
+      </div>
+
+      <div class="step">
+        <div class="step-title"><span class="check" onclick="this.style.background=this.style.background?'':'var(--accent)'"></span> New project in Godot</div>
+        <ul>
+          <li>Open the Godot <strong>.NET editor</strong>, click <strong>New Project</strong></li>
+          <li>Name it e.g. <code>LunarLanderGodot</code></li>
+          <li>Choose a folder, select <strong>Renderer: Compatibility</strong> (fastest for training)</li>
+          <li>Click <strong>Create &amp; Edit</strong></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════
+         SECTION 3 – Install the plugin
+    ════════════════════════════════════ -->
+    <div class="section" id="s3">
+      <div class="section-header">
+        <span class="section-num">3</span>
+        <h2>Install the godot-rl Godot plugin</h2>
+      </div>
+
+      <div class="step">
+        <div class="step-title"><span class="check" onclick="this.style.background=this.style.background?'':'var(--accent)'"></span> Option A – AssetLib (easiest)</div>
+        <ul>
+          <li>In the Godot editor, open the <strong>AssetLib</strong> tab (top center)</li>
+          <li>Search for <strong>rl</strong> and pick <strong>Godot RL Agents</strong></li>
+          <li>Click <strong>Download</strong>, unselect the <code>LICENSE</code> and
+            <code>README.md</code> files, then click <strong>Install</strong></li>
+        </ul>
+      </div>
+
+      <div class="step">
+        <div class="step-title"><span class="check" onclick="this.style.background=this.style.background?'':'var(--accent)'"></span> Option B – Manual (always up to date)</div>
+        <ul>
+          <li>Clone or download the <strong>plugin repo</strong> (separate from the Python package):
+            <a href="https://github.com/edbeeching/godot_rl_agents_plugin" style="color:var(--accent)">github.com/edbeeching/godot_rl_agents_plugin</a></li>
+          <li>Copy its <code>addons/godot_rl_agents</code> folder into your project's <code>addons/</code> directory</li>
+        </ul>
+        <div class="callout warn">
+          <strong>⚠ Two different repos</strong>
+          <code>godot_rl_agents</code> is the <em>Python</em> package (installed with <code>pip</code>).
+          The Godot-side plugin lives in the separate <code>godot_rl_agents_plugin</code> repo.
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-title"><span class="check" onclick="this.style.background=this.style.background?'':'var(--accent)'"></span> Enable the plugin</div>
+        <ul>
+          <li>Open <strong>Project → Project Settings → Plugins</strong></li>
+          <li>Find <em>Godot RL Agents</em> and set its status to <strong>Enabled</strong></li>
+          <li>Let the background <strong>MSBuild</strong> process finish compiling the plugin's
+            C# layer before you continue</li>
+        </ul>
+        <div class="callout warn">
+          <strong>⚠ Common first-time issue</strong>
+          On first import Godot may report a C# build or plugin-load error. Close the project
+          completely and reopen it — the C# assemblies build correctly on the second open.
+        </div>
+        <div class="callout tip">
+          <strong>💡 Verify the nodes are available</strong>
+          Open <strong>Add Node</strong> and search for <code>Sync</code> and
+          <code>AIController2D</code>. If they appear, the plugin is installed correctly.
+        </div>
+      </div>
+    </div>
+
+    <hr>
+
+    <!-- ════════════════════════════════════
+         SECTION 4 – Build lander scene
+    ════════════════════════════════════ -->
+    <div class="section" id="s4">
+      <div class="section-header">
+        <span class="section-num">4</span>
+        <h2>Build the lander scene (<code>lander.tscn</code>)</h2>
+      </div>
+
+      <div class="step">
+        <div class="step-title"><span class="check" onclick="this.style.background=this.style.background?'':'var(--accent)'"></span> Node hierarchy to create</div>
+        <div class="filetree">
+<span class="dir">Lander</span>  &lt;-- <span class="note">RigidBody2D  (root, script: lander.gd)</span>
+  ├─ <span class="file">CollisionShape2D</span>  <span class="note">(capsule or polygon shape)</span>
+  ├─ <span class="file">Sprite2D</span>          <span class="note">(your lander artwork, or placeholder)</span>
+  ├─ <span class="file">LeftLeg</span>           <span class="note">(Area2D — detects ground contact)</span>
+  │   └─ CollisionShape2D
+  ├─ <span class="file">RightLeg</span>          <span class="note">(Area2D — detects ground contact)</span>
+  │   └─ CollisionShape2D
+  └─ <span class="dir">AIController2D</span>    <span class="note">(script: ai_controller.gd)</span>
+        </div>
+        <div class="callout tip">
+          <strong>💡 Tip</strong>
+          Use a 2D project to match the original LunarLander-v2 physics most closely.
+          A 3D version is also possible — just extend <code>AIController3D</code> instead.
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-title"><span class="check" onclick="this.style.background=this.style.background?'':'var(--accent)'"></span> Add ground / landing pad nodes</div>
+        <ul>
+          <li>Create a <code>StaticBody2D</code> for the ground with a <code>CollisionShape2D</code></li>
+          <li>Place two small <code>StaticBody2D</code> pads as the landing targets</li>
+          <li>Add a <code>Camera2D</code> following the lander (optional, nice for watching training)</li>
+          <li>Export a <code>@export var landing_pad_position: Vector2</code> from the lander scene root so it can be read in the reward function</li>
+        </ul>
+      </div>
+
+      <div class="step">
+        <div class="step-title"><span class="check" onclick="this.style.background=this.style.background?'':'var(--accent)'"></span> Connect leg contact signals</div>
+        <p>Select each <code>Area2D</code> leg node, go to <strong>Node → Signals</strong>,
+        connect <code>body_entered</code> and <code>body_exited</code> to <code>lander.gd</code>
+        to set the <code>left_leg_contact</code> / <code>right_leg_contact</code> booleans.</p>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════
+         SECTION 5 – lander.gd
+    ════════════════════════════════════ -->
+    <div class="section" id="s5">
+      <div class="section-header">
+        <span class="section-num">5</span>
+        <h2>Write <code>lander.gd</code> (physics + reward)</h2>
+      </div>
+
+      <div class="step">
+        <div class="step-title"><span class="check" onclick="this.style.background=this.style.background?'':'var(--accent)'"></span> Full script</div>
+<pre>extends RigidBody2D
+
+# ── Exported config ──────────────────────────────────
+@export var landing_pad_position : Vector2 = Vector2(0, 300)
+@export var main_thrust           : float  = 800.0
+@export var side_thrust           : float  = 300.0
+
+# ── State ────────────────────────────────────────────
+var left_leg_contact  : bool = false
+var right_leg_contact : bool = false
+var _thrust           : Vector2 = Vector2.ZERO
+var _firing_main      : bool = false
+var _firing_side      : bool = false
+
+@onready var _ai : AIController2D = $AIController2D
+
+# ── Setup ─────────────────────────────────────────────
+func _ready() -> void:
+    # Register this node with the AIController (required by godot-rl)
+    _ai.init(self)
+    reset()
+
+# ── Reset ─────────────────────────────────────────────
+func reset() -> void:
+    # Randomise start position slightly (mirrors LunarLander-v2)
+    position = Vector2(
+        landing_pad_position.x + randf_range(-150, 150),
+        50.0
+    )
+    rotation           = 0.0
+    linear_velocity    = Vector2(randf_range(-30,30), randf_range(-10,10))
+    angular_velocity   = 0.0
+    left_leg_contact   = false
+    right_leg_contact  = false
+    _thrust            = Vector2.ZERO
+
+# ── Thrust API called by AIController ────────────────
+func set_thrust(direction: Vector2, is_main: bool) -> void:
+    _thrust      = direction
+    _firing_main = is_main
+    _firing_side = (direction != Vector2.ZERO) and not is_main
+
+# ── Physics loop ─────────────────────────────────────
+func _physics_process(_delta: float) -> void:
+    # Reset the episode when the AIController requests it
+    # (set by game_over() below, or by the reset_after timeout)
+    if _ai.needs_reset:
+        _ai.reset()
+        reset()
+        return
+
+    # Human control: read the keyboard when Sync is in HUMAN mode
+    if _ai.heuristic == "human":
+        _read_human_input()
+
+    # Apply thrust
+    if _thrust != Vector2.ZERO:
+        apply_central_force(_thrust)
+
+    # ── Per-step reward shaping (mirrors LunarLander-v2) ──
+    var dist = global_position.distance_to(landing_pad_position)
+    _ai.reward -= dist * 0.003
+    _ai.reward -= abs(linear_velocity.x) * 0.001
+    _ai.reward -= abs(linear_velocity.y) * 0.001
+    _ai.reward -= abs(rotation)          * 0.002
+    if left_leg_contact:  _ai.reward += 0.01
+    if right_leg_contact: _ai.reward += 0.01
+    if _firing_main: _ai.reward -= 0.30
+    if _firing_side: _ai.reward -= 0.03
+
+    _thrust = Vector2.ZERO  # reset each frame (action applied once per step)
+
+# ── Human input (only used in HUMAN test mode) ───────
+func _read_human_input() -> void:
+    if Input.is_action_pressed("ui_up"):
+        set_thrust(Vector2.UP * main_thrust, true)
+    elif Input.is_action_pressed("ui_left"):
+        set_thrust(Vector2.LEFT * side_thrust, false)
+    elif Input.is_action_pressed("ui_right"):
+        set_thrust(Vector2.RIGHT * side_thrust, false)
+
+# ── Terminal outcomes ─────────────────────────────────
+func game_over(terminal_reward: float) -> void:
+    _ai.reward     += terminal_reward
+    _ai.done        = true
+    _ai.needs_reset = true
+
+# ── Leg contact callbacks (connect in editor) ─────────
+func _on_left_leg_body_entered(_body):  left_leg_contact  = true
+func _on_left_leg_body_exited(_body):   left_leg_contact  = false
+func _on_right_leg_body_entered(_body): right_leg_contact = true
+func _on_right_leg_body_exited(_body):  right_leg_contact = false</pre>
+        <div class="callout info">
+          <strong>ℹ Crash &amp; land detection</strong>
+          Call <code>game_over(-100.0)</code> when the body hits the ground too fast
+          (check <code>linear_velocity.y</code> in <code>body_entered</code> on a ground
+          <code>Area2D</code>) and <code>game_over(+100.0)</code> when both legs touch
+          and speed is low.
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════
+         SECTION 6 – ai_controller.gd
+    ════════════════════════════════════ -->
+    <div class="section" id="s6">
+      <div class="section-header">
+        <span class="section-num">6</span>
+        <h2>Write <code>ai_controller.gd</code> (RL interface)</h2>
+      </div>
+
+      <div class="step">
+        <div class="step-title"><span class="check" onclick="this.style.background=this.style.background?'':'var(--accent)'"></span> Full script</div>
+<pre>extends AIController2D
+
+# ── Observation space ────────────────────────────────
+# Returns a flat array of 8 floats matching LunarLander-v2
+func get_obs() -> Dictionary:
+    var lander = get_parent() as RigidBody2D
+    var pad    = lander.landing_pad_position
+
+    return {"obs": [
+        (lander.global_position.x - pad.x) / 300.0,  # normalised x offset
+        (lander.global_position.y - pad.y) / 300.0,  # normalised y offset
+        lander.linear_velocity.x            / 200.0,  # x velocity
+        lander.linear_velocity.y            / 200.0,  # y velocity
+        lander.rotation                     / PI,      # angle
+        lander.angular_velocity             / 5.0,     # angular velocity
+        float(lander.left_leg_contact),               # leg L contact
+        float(lander.right_leg_contact),              # leg R contact
+    ]}
+
+# ── Action space ─────────────────────────────────────
+# 4 discrete actions: 0=nothing, 1=left, 2=main, 3=right
+func get_action_space() -> Dictionary:
+    return {
+        "engine": {"size": 4, "action_type": "discrete"}
+    }
+
+# ── Apply action ─────────────────────────────────────
+func set_action(action) -> void:
+    var lander = get_parent()
+    match int(action["engine"]):
+        0: lander.set_thrust(Vector2.ZERO,                       false)
+        1: lander.set_thrust(Vector2.LEFT  * lander.side_thrust, false)
+        2: lander.set_thrust(Vector2.UP    * lander.main_thrust, true)
+        3: lander.set_thrust(Vector2.RIGHT * lander.side_thrust, false)
+
+# ── Reward passthrough ───────────────────────────────
+func get_reward() -> float:
+    return reward</pre>
+        <div class="callout info">
+          <strong>ℹ Episode timeout &amp; reset are automatic</strong>
+          The base <code>AIController2D</code> counts steps and flips <code>needs_reset</code>
+          once its exported <code>reset_after</code> value is exceeded — no custom
+          <code>_physics_process</code> is needed here. <code>lander.gd</code> watches
+          <code>needs_reset</code> and respawns the lander.
+        </div>
+        <div class="callout tip">
+          <strong>💡 Human control lives in lander.gd</strong>
+          godot-rl's <code>AIController</code> has no <code>get_user_input()</code> hook.
+          Keyboard input is read in <code>lander.gd</code>, which checks
+          <code>_ai.heuristic == "human"</code> while Sync is in HUMAN mode.
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════
+         SECTION 7 – Training scene
+    ════════════════════════════════════ -->
+    <div class="section" id="s7">
+      <div class="section-header">
+        <span class="section-num">7</span>
+        <h2>Build the training scene (<code>training_scene.tscn</code>)</h2>
+      </div>
+
+      <div class="step">
+        <div class="step-title"><span class="check" onclick="this.style.background=this.style.background?'':'var(--accent)'"></span> Scene structure</div>
+        <div class="filetree">
+<span class="dir">TrainingScene</span>  <span class="note">(Node2D, root)</span>
+  ├─ <span class="dir">Sync</span>          <span class="note">(add via Add Node → search "Sync")</span>
+  ├─ <span class="file">Env_0</span>         <span class="note">(instance of your lander.tscn)</span>
+  ├─ <span class="file">Env_1</span>         <span class="note">(another instance)</span>
+  ├─ <span class="file">Env_2</span>
+  └─ <span class="file">…Env_N</span>        <span class="note">(duplicate as many as you want, e.g. 8–16)</span>
+        </div>
+        <div class="callout tip">
+          <strong>💡 More envs = faster training</strong>
+          Each instance runs in parallel inside the same Godot process and all of them feed
+          the trainer. 8–16 instances is a good starting point for CPU training.
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-title"><span class="check" onclick="this.style.background=this.style.background?'':'var(--accent)'"></span> Configure the Sync node</div>
+        <p>Select the <strong>Sync</strong> node in the scene tree and set these properties in the Inspector:</p>
+        <table>
+          <thead><tr><th>Property</th><th>Value for training</th></tr></thead>
+          <tbody>
+            <tr><td>Control Mode</td><td><code>TRAINING</code></td></tr>
+            <tr><td>Speed Up</td><td><code>20</code> (or higher on fast hardware)</td></tr>
+            <tr><td>Action Repeat</td><td><code>1</code></td></tr>
+            <tr><td>ONNX Model Path</td><td><em>leave empty</em></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="step">
+        <div class="step-title"><span class="check" onclick="this.style.background=this.style.background?'':'var(--accent)'"></span> Spread out the env instances</div>
+        <p>Move each <code>Env_N</code> instance to a different position so they don't overlap visually.
+        They don't need to be visible but it helps when debugging.</p>
+      </div>
+    </div>
+
+    <hr>
+
+    <!-- ════════════════════════════════════
+         SECTION 8 – Human control test
+    ════════════════════════════════════ -->
+    <div class="section" id="s8">
+      <div class="section-header">
+        <span class="section-num">8</span>
+        <h2>Test with human control first</h2>
+      </div>
+
+      <div class="step">
+        <div class="step-title"><span class="check" onclick="this.style.background=this.style.background?'':'var(--accent)'"></span> Switch Sync → HUMAN mode</div>
+        <p>In the Sync node Inspector, set <strong>Control Mode</strong> to <code>HUMAN</code>.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-title"><span class="check" onclick="this.style.background=this.style.background?'':'var(--accent)'"></span> Press F6 (Run current scene)</div>
+        <p>Use arrow keys to fly the lander. Verify in the Godot Output panel that:</p>
+        <ul>
+          <li>Rewards accumulate (positive near pad, negative far away)</li>
+          <li>The <code>done</code> / <code>needs_reset</code> flags trigger correctly on crash or landing</li>
+          <li>The episode resets and the lander respawns</li>
+        </ul>
+        <div class="callout warn">
+          <strong>⚠ Do not skip this step</strong>
+          Playing manually is the fastest way to catch bugs in your observation
+          normalization and reward shaping before wasting hours on broken training.
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-title"><span class="check" onclick="this.style.background=this.style.background?'':'var(--accent)'"></span> Switch back to TRAINING mode when done</div>
+        <p>Set the Sync node <strong>Control Mode</strong> back to <code>TRAINING</code> before training.</p>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════
+         SECTION 9 – Run training (in-editor)
+    ════════════════════════════════════ -->
+    <div class="section" id="s9">
+      <div class="section-header">
+        <span class="section-num">9</span>
+        <h2>Run training (in the editor)</h2>
+      </div>
+
+      <div class="callout info">
+        <strong>ℹ In-editor training is the recommended path</strong>
+        Python and Godot talk over a local socket, so you can train directly from the editor —
+        no exported binary required. This is the simplest, most portable approach, and on
+        macOS it avoids the architecture-dependent issues that come with exported binaries.
+        For large-scale parallel training with an exported binary, see the optional
+        <a href="#s12" style="color:var(--accent)">Section 12</a>.
+      </div>
+
+      <div class="step">
+        <div class="step-title"><span class="check" onclick="this.style.background=this.style.background?'':'var(--accent)'"></span> Activate the Conda environment</div>
+<pre>conda activate godot_env</pre>
+      </div>
+
+      <div class="step">
+        <div class="step-title"><span class="check" onclick="this.style.background=this.style.background?'':'var(--accent)'"></span> Start the gdrl training listener</div>
+        <p>godot-rl installs a <code>gdrl</code> command — there is no script to download.
+        Run it in your activated environment:</p>
+<pre>gdrl --experiment_name=ppo-lunarlander-godot \
+     --timesteps=1_000_000 \
+     --save_model_path=lander_ppo \
+     --onnx_export_path=lander_ppo.onnx</pre>
+        <p>The console will pause on a line like
+        <code>waiting for remote GODOT connection on port 11008</code> — this is expected.
+        It is now listening for Godot.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-title"><span class="check" onclick="this.style.background=this.style.background?'':'var(--accent)'"></span> Press Play in Godot to connect</div>
+        <p>Switch to the Godot editor, open <code>training_scene.tscn</code> in the FileSystem
+        dock, and press <strong>Play Scene (F6)</strong>. Godot connects to the waiting
+        <code>gdrl</code> process and training begins — SB3 starts printing a metrics table
+        in the terminal.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-title"><span class="check" onclick="this.style.background=this.style.background?'':'var(--accent)'"></span> What to expect in the console output</div>
+        <p>SB3 prints a training table every rollout. The key metric to watch is <code>ep_rew_mean</code>:</p>
+        <table>
+          <thead><tr><th>ep_rew_mean</th><th>What it means</th></tr></thead>
+          <tbody>
+            <tr><td>&lt; 0</td><td>Agent is still crashing / drifting — normal early on</td></tr>
+            <tr><td>50–150</td><td>Agent has learned basic stability, working on landing</td></tr>
+            <tr><td>≥ 200</td><td>Consistently landing — a solved Lunar Lander</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="step">
+        <div class="step-title"><span class="check" onclick="this.style.background=this.style.background?'':'var(--accent)'"></span> Freeze / pause during training is normal</div>
+        <p>With the default SB3 PPO setup, Godot briefly freezes while the model
+        weights are updated (the Python side blocks the socket). This is expected —
+        it is not a crash.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-title"><span class="check" onclick="this.style.background=this.style.background?'':'var(--accent)'"></span> Resume training if interrupted</div>
+        <p><code>--save_model_path=lander_ppo</code> writes <code>lander_ppo.zip</code>.
+        To resume from it, relaunch <code>gdrl</code> and press Play in Godot again:</p>
+<pre>gdrl --resume_model_path=lander_ppo.zip \
+     --timesteps=500_000 \
+     --onnx_export_path=lander_ppo.onnx</pre>
+      </div>
+
+      <div class="step">
+        <div class="step-title"><span class="check" onclick="this.style.background=this.style.background?'':'var(--accent)'"></span> Save checkpoints automatically</div>
+<pre># Add this flag to save a checkpoint every 50 000 steps:
+  --save_checkpoint_frequency=50000</pre>
+        <p>Checkpoints are saved under <code>logs/sb3/&lt;experiment_name&gt;/</code> and can be
+        loaded with <code>--resume_model_path</code>.</p>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════
+         SECTION 10 – TensorBoard
+    ════════════════════════════════════ -->
+    <div class="section" id="s10">
+      <div class="section-header">
+        <span class="section-num">10</span>
+        <h2>Monitor training with TensorBoard</h2>
+      </div>
+
+      <div class="step">
+        <div class="step-title"><span class="check" onclick="this.style.background=this.style.background?'':'var(--accent)'"></span> Open TensorBoard in a second terminal</div>
+<pre>conda activate godot_env
+tensorboard --logdir=logs/sb3</pre>
+        <p>Then open <code>http://localhost:6006</code> in your browser.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-title"><span class="check" onclick="this.style.background=this.style.background?'':'var(--accent)'"></span> Key metrics to watch</div>
+        <table>
+          <thead><tr><th>Metric</th><th>Meaning</th><th>Goal</th></tr></thead>
+          <tbody>
+            <tr><td><code>rollout/ep_rew_mean</code></td><td>Mean episode reward</td><td>≥ 200</td></tr>
+            <tr><td><code>rollout/ep_len_mean</code></td><td>Mean episode length</td><td>Stabilises (not always growing)</td></tr>
+            <tr><td><code>train/policy_gradient_loss</code></td><td>PPO policy loss</td><td>Decreasing trend</td></tr>
+            <tr><td><code>train/entropy_loss</code></td><td>Exploration entropy</td><td>Slowly decreasing</td></tr>
+            <tr><td><code>train/approx_kl</code></td><td>Policy change per update</td><td>Stays small (&lt; 0.02)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="step">
+        <div class="step-title"><span class="check" onclick="this.style.background=this.style.background?'':'var(--accent)'"></span> Tuning tips if training is stuck</div>
+        <ul>
+          <li>Reward never rises → check observation normalization ranges; print <code>get_obs()</code> values and make sure no value is always 0 or saturated</li>
+          <li>Reward oscillates → reduce learning rate: add <code>--learning_rate=0.0001</code></li>
+          <li>Training is slow → raise the Sync node's <strong>Speed Up</strong>, or add more
+            <code>Env</code> instances to <code>training_scene.tscn</code>. For true
+            <code>--n_parallel</code> scaling, export a binary (Section 12)</li>
+          <li>Policy gradient loss explodes → reduce <code>--clip_range</code> to <code>0.1</code></li>
+        </ul>
+      </div>
+    </div>
+
+    <hr>
+
+    <!-- ════════════════════════════════════
+         SECTION 11 – ONNX inference
+    ════════════════════════════════════ -->
+    <div class="section" id="s11">
+      <div class="section-header">
+        <span class="section-num">11</span>
+        <h2>Export ONNX &amp; run inference in Godot</h2>
+      </div>
+
+      <div class="step">
+        <div class="step-title"><span class="check" onclick="this.style.background=this.style.background?'':'var(--accent)'"></span> The ONNX file is exported automatically</div>
+        <p>Because you passed <code>--onnx_export_path=lander_ppo.onnx</code>, the file is written
+        when training finishes (or when you stop it with <strong>Ctrl + C</strong>). Look for
+        <code>lander_ppo.onnx</code> in the directory where you launched <code>gdrl</code>.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-title"><span class="check" onclick="this.style.background=this.style.background?'':'var(--accent)'"></span> Import the model into the project</div>
+        <p>Drag <code>lander_ppo.onnx</code> straight into Godot's <strong>FileSystem</strong> dock,
+        placing it in the project's resource root so its path becomes
+        <code>res://lander_ppo.onnx</code>.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-title"><span class="check" onclick="this.style.background=this.style.background?'':'var(--accent)'"></span> Create an inference scene (<code>onnx_inference_scene.tscn</code>)</div>
+        <p>Duplicate your <code>training_scene.tscn</code>. In the copy:</p>
+        <ul>
+          <li>Keep only <strong>one</strong> env instance (delete the extras)</li>
+          <li>Select the <strong>Sync</strong> node and set:</li>
+        </ul>
+        <table>
+          <thead><tr><th>Property</th><th>Value</th></tr></thead>
+          <tbody>
+            <tr><td>Control Mode</td><td><code>ONNX Inference</code></td></tr>
+            <tr><td>ONNX Model Path</td><td><code>res://lander_ppo.onnx</code></td></tr>
+            <tr><td>Speed Up</td><td><code>1</code> (or lower — slowed down looks nice)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="step">
+        <div class="step-title"><span class="check" onclick="this.style.background=this.style.background?'':'var(--accent)'"></span> Run the inference scene</div>
+        <ul>
+          <li>In Godot, open <code>onnx_inference_scene.tscn</code></li>
+          <li>Press <strong>F6</strong> (Run current scene) — <em>no Python needed</em></li>
+          <li>Watch the trained agent land autonomously</li>
+        </ul>
+        <div class="callout info">
+          <strong>ℹ No Python at runtime</strong>
+          The ONNX model runs entirely inside Godot via the plugin's compiled C# OnnxRuntime
+          layer. The game no longer needs Python or an active Conda environment — you can ship
+          it as a standalone game.
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-title"><span class="check" onclick="this.style.background=this.style.background?'':'var(--accent)'"></span> Verify the agent is working</div>
+        <p>In <code>lander.gd</code>, add a temporary debug print:</p>
+<pre>func game_over(terminal_reward: float) -> void:
+    if terminal_reward > 0:
+        print("✅ Landed! reward=", terminal_reward)
+    else:
+        print("💥 Crashed or timed out")
+    ...</pre>
+        <p>Watch the Output panel. A well-trained agent should land successfully in
+        the majority of episodes.</p>
+      </div>
+    </div>
+
+    <hr>
+
+    <!-- ════════════════════════════════════
+         SECTION 12 – Export a game binary (optional)
+    ════════════════════════════════════ -->
+    <div class="section" id="s12">
+      <div class="section-header">
+        <span class="section-num">12</span>
+        <h2>Export a game binary <span style="color:var(--muted);font-weight:400">(optional)</span></h2>
+      </div>
+
+      <div class="callout warn">
+        <strong>⚠ Optional — only for large-scale parallel training</strong>
+        In-editor training (Section 9) is the recommended path for Units 0–2. From Unit 3 onward, prefer headless exported binaries.
+        Export a binary only if you want to run several Godot processes at once with
+        <code>--n_parallel</code> for higher throughput — typically on a Linux training box
+        or in the cloud. On macOS, exported binaries are architecture-dependent and fiddly,
+        so prefer in-editor training there.
+      </div>
+
+      <div class="step">
+        <div class="step-title"><span class="check" onclick="this.style.background=this.style.background?'':'var(--accent)'"></span> Add an export preset</div>
+        <ul>
+          <li>First set <code>training_scene.tscn</code> as the <strong>Main Scene</strong> in
+            <strong>Project → Project Settings → Application → Run</strong></li>
+          <li>In Godot: <strong>Project → Export…</strong></li>
+          <li>Click <strong>Add…</strong> and choose your platform (Linux/Windows/macOS)</li>
+        </ul>
+      </div>
+
+      <div class="step">
+        <div class="step-title"><span class="check" onclick="this.style.background=this.style.background?'':'var(--accent)'"></span> Download export templates if prompted</div>
+        <p>Godot will ask to download export templates the first time — click <strong>Manage Export Templates → Download</strong> and wait for the download to finish.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-title"><span class="check" onclick="this.style.background=this.style.background?'':'var(--accent)'"></span> Export the project</div>
+        <ul>
+          <li>Click <strong>Export Project…</strong> (not "Export PCK/ZIP")</li>
+          <li>Choose a folder, e.g. <code>build/LunarLander</code></li>
+          <li>Godot automatically appends the right suffix: <code>.x86_64</code> on Linux, <code>.exe</code> on Windows, <code>.app</code> on macOS</li>
+        </ul>
+      </div>
+
+      <div class="step">
+        <div class="step-title"><span class="check" onclick="this.style.background=this.style.background?'':'var(--accent)'"></span> Make the binary executable (Linux/macOS only)</div>
+<pre>chmod +x build/LunarLander/LunarLander.x86_64</pre>
+      </div>
+
+      <div class="step">
+        <div class="step-title"><span class="check" onclick="this.style.background=this.style.background?'':'var(--accent)'"></span> Train against the binary with <code>--env_path</code></div>
+        <p>Pass the binary path to <code>gdrl</code> — Godot no longer needs to be open, and
+        <code>--n_parallel</code> launches several copies at once:</p>
+<pre>gdrl --env_path=build/LunarLander/LunarLander.x86_64 \
+     --n_parallel=4 \
+     --speedup=20 \
+     --experiment_name=ppo-lunarlander-godot \
+     --timesteps=1_000_000 \
+     --onnx_export_path=lander_ppo.onnx</pre>
+      </div>
+    </div>
+
+    <hr>
+
+    <!-- ════════════════════════════════════
+         REFERENCE SECTION
+    ════════════════════════════════════ -->
+    <div class="section" id="ref-obs">
+      <div class="section-header">
+        <span style="font-size:1.3rem">📐</span>
+        <h2>Reference: Observation space</h2>
+      </div>
+      <table>
+        <thead><tr><th>Index</th><th>Value</th><th>Normalization</th><th>Range (approx)</th></tr></thead>
+        <tbody>
+          <tr><td>0</td><td>Horizontal offset from pad</td><td><code>/ 300.0</code></td><td>−1 … 1</td></tr>
+          <tr><td>1</td><td>Vertical offset from pad</td><td><code>/ 300.0</code></td><td>−1 … 1</td></tr>
+          <tr><td>2</td><td>Horizontal velocity</td><td><code>/ 200.0</code></td><td>−1 … 1</td></tr>
+          <tr><td>3</td><td>Vertical velocity</td><td><code>/ 200.0</code></td><td>−1 … 1</td></tr>
+          <tr><td>4</td><td>Rotation angle</td><td><code>/ PI</code></td><td>−1 … 1</td></tr>
+          <tr><td>5</td><td>Angular velocity</td><td><code>/ 5.0</code></td><td>−1 … 1</td></tr>
+          <tr><td>6</td><td>Left leg ground contact</td><td>boolean → float</td><td>0 or 1</td></tr>
+          <tr><td>7</td><td>Right leg ground contact</td><td>boolean → float</td><td>0 or 1</td></tr>
+        </tbody>
+      </table>
+      <div class="callout tip">
+        <strong>💡 Normalization matters</strong>
+        All values should be roughly in [−1, 1]. If a value can go much larger,
+        the neural network saturates and training stalls. Adjust the divisors to
+        match your scene scale.
+      </div>
+    </div>
+
+    <div class="section" id="ref-actions">
+      <div class="section-header">
+        <span style="font-size:1.3rem">🕹</span>
+        <h2>Reference: Action space</h2>
+      </div>
+      <table>
+        <thead><tr><th>Action index</th><th>Engine fired</th><th>Force applied</th></tr></thead>
+        <tbody>
+          <tr><td>0</td><td>None (do nothing)</td><td><code>Vector2.ZERO</code></td></tr>
+          <tr><td>1</td><td>Left orientation thruster</td><td><code>Vector2.LEFT * side_thrust</code></td></tr>
+          <tr><td>2</td><td>Main engine (upward)</td><td><code>Vector2.UP * main_thrust</code></td></tr>
+          <tr><td>3</td><td>Right orientation thruster</td><td><code>Vector2.RIGHT * side_thrust</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section" id="ref-reward">
+      <div class="section-header">
+        <span style="font-size:1.3rem">💰</span>
+        <h2>Reference: Reward function</h2>
+      </div>
+      <table>
+        <thead><tr><th>Event</th><th>Reward delta</th><th>Type</th></tr></thead>
+        <tbody>
+          <tr><td>Distance to pad</td><td><code>− dist × 0.003</code> per step</td><td>Shaped</td></tr>
+          <tr><td>Horizontal speed</td><td><code>− |vx| × 0.001</code> per step</td><td>Shaped</td></tr>
+          <tr><td>Vertical speed</td><td><code>− |vy| × 0.001</code> per step</td><td>Shaped</td></tr>
+          <tr><td>Tilt angle</td><td><code>− |θ| × 0.002</code> per step</td><td>Shaped</td></tr>
+          <tr><td>Left leg contact</td><td><code>+ 0.01</code> per step</td><td>Shaped</td></tr>
+          <tr><td>Right leg contact</td><td><code>+ 0.01</code> per step</td><td>Shaped</td></tr>
+          <tr><td>Main engine firing</td><td><code>− 0.30</code> per step</td><td>Shaped</td></tr>
+          <tr><td>Side engine firing</td><td><code>− 0.03</code> per step</td><td>Shaped</td></tr>
+          <tr><td>Safe landing</td><td><code>+ 100.0</code></td><td>Terminal</td></tr>
+          <tr><td>Crash</td><td><code>− 100.0</code></td><td>Terminal</td></tr>
+          <tr><td>Timeout</td><td><code>0.0</code></td><td>Terminal</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section" id="ref-args">
+      <div class="section-header">
+        <span style="font-size:1.3rem">⚙️</span>
+        <h2>Reference: <code>gdrl</code> command-line arguments</h2>
+      </div>
+      <table>
+        <thead><tr><th>Argument</th><th>Default</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>--env_path</code></td><td>None</td><td>Path to an exported binary (Section 12). Omit it for in-editor training.</td></tr>
+          <tr><td><code>--timesteps</code></td><td>1 000 000</td><td>Total environment steps to train for.</td></tr>
+          <tr><td><code>--n_parallel</code></td><td>1</td><td>How many binary instances to launch. Requires <code>--env_path</code>.</td></tr>
+          <tr><td><code>--speedup</code></td><td>1</td><td>Godot physics speed multiplier (binary mode; in-editor use the Sync node's Speed Up).</td></tr>
+          <tr><td><code>--experiment_name</code></td><td>experiment</td><td>Name shown in TensorBoard.</td></tr>
+          <tr><td><code>--experiment_dir</code></td><td>logs/sb3</td><td>TensorBoard log directory.</td></tr>
+          <tr><td><code>--n_steps</code></td><td>64</td><td>Steps per env per PPO rollout.</td></tr>
+          <tr><td><code>--batch_size</code></td><td>64</td><td>PPO minibatch size. Must divide <code>n_steps × n_envs</code>.</td></tr>
+          <tr><td><code>--learning_rate</code></td><td>0.0003</td><td>Adam learning rate.</td></tr>
+          <tr><td><code>--ent_coef</code></td><td>0.0001</td><td>Entropy bonus coefficient (encourages exploration).</td></tr>
+          <tr><td><code>--clip_range</code></td><td>0.2</td><td>PPO clipping range.</td></tr>
+          <tr><td><code>--onnx_export_path</code></td><td>None</td><td>If set, exports an ONNX model after training.</td></tr>
+          <tr><td><code>--save_model_path</code></td><td>None</td><td>Path to save the SB3 <code>.zip</code> checkpoint.</td></tr>
+          <tr><td><code>--save_checkpoint_frequency</code></td><td>None</td><td>Save checkpoint every N steps.</td></tr>
+          <tr><td><code>--resume_model_path</code></td><td>None</td><td>Load an existing <code>.zip</code> to resume training.</td></tr>
+          <tr><td><code>--viz</code></td><td>false</td><td>Show the Godot window when training against a binary.</td></tr>
+          <tr><td><code>--linear_lr_schedule</code></td><td>false</td><td>Decay LR linearly to 0 over training.</td></tr>
+          <tr><td><code>--inference</code></td><td>false</td><td>Run inference (no training) from a loaded model.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ── Final checklist summary ── -->
+    <hr>
+    <div class="section">
+      <div class="section-header">
+        <span style="font-size:1.3rem">✅</span>
+        <h2>Quick checklist summary</h2>
+      </div>
+      <div class="step">
+        <ol style="padding-left:1.25rem; font-size:0.88rem; color:var(--muted);">
+          <li>Godot 4 <strong>.NET edition</strong> installed, plus the .NET SDK</li>
+          <li>Miniconda installed; <code>godot_env</code> created with Python 3.10</li>
+          <li><code>pip install "godot-rl[sb3]" tensorboard</code> done inside the env</li>
+          <li>New Godot project created, godot-rl plugin installed and enabled</li>
+          <li><code>lander.tscn</code> built: <code>RigidBody2D</code> + two leg <code>Area2D</code> + <code>AIController2D</code></li>
+          <li><code>lander.gd</code> written: physics, thrust, reward shaping, <code>game_over()</code>, <code>reset()</code></li>
+          <li><code>ai_controller.gd</code> written: <code>get_obs()</code>, <code>get_action_space()</code>, <code>set_action()</code>, <code>get_reward()</code></li>
+          <li><code>training_scene.tscn</code> built: Sync node + 8–16 env instances</li>
+          <li>Tested manually in HUMAN mode — reward and reset work correctly</li>
+          <li>Trained in-editor: <code>gdrl</code> launched, Play pressed in Godot, <code>ep_rew_mean ≥ 200</code> reached</li>
+          <li>TensorBoard opened, training curves look healthy</li>
+          <li><code>lander_ppo.onnx</code> imported to <code>res://</code> and loaded into the Sync node, inference scene runs correctly</li>
+          <li><em>(Optional)</em> Game binary exported for <code>--n_parallel</code> training — Section 12</li>
+        </ol>
+      </div>
+      <div class="step" style="margin-top:1rem">
+        <p><strong>What's next:</strong> In <a href="Unit-03.html" style="color:var(--accent)">Unit 3</a> you'll study
+        <strong>CrossTheRoad</strong> and train with <strong>DQN</strong>.</p>
+      </div>
+    </div>
+
+  </main>
+</div>
+</body>
+</html>
