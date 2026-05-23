@@ -4,15 +4,19 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What This Repo Is
 
-Course material for a Godot Reinforcement Learning course. Students learn **godot-rl-agents** through a step-by-step example progression (simple → complex), not by referencing external courses.
+Course material for a Godot Reinforcement Learning course. Students learn **godot-rl-agents** through a step-by-step example progression (simple → complex).
+
+## Build
+
+```bash
+mkdocs serve   # live-reload at localhost:8000
+mkdocs build   # outputs distributable static site to site/
+```
+
+Content lives in `content/` (Markdown). Output goes to `site/` (gitignored).
 
 ## Docs
 
-- [docs/architecture.md](docs/architecture.md) — Hybrid training (Godot + Python socket) and ONNX inference model
-- [docs/example-progression.md](docs/example-progression.md) — Example complexity ladder and per-unit skills
-- [docs/html-units.md](docs/html-units.md) — HTML unit structure, CSS conventions, how to add a new unit
-- [docs/curriculum.md](docs/curriculum.md) — Full unit syllabus
-
-## Course entry
-
-- [index.html](index.html) — Course home and unit links
+- [docs/architecture.md](docs/architecture.md) — Hybrid training/inference model and stack
+- [docs/curriculum.md](docs/curriculum.md) — Full unit syllabus and pacing notes
+- [docs/html-units.md](docs/html-units.md) — How to add a new unit

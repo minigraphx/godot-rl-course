@@ -8,10 +8,10 @@ Source: [godot_rl_agents_examples](https://github.com/edbeeching/godot_rl_agents
 
 | Step | Example | HTML unit | New skill |
 |------|---------|-----------|-----------|
-| 0 | — | Unit 0 | Conda, plugin, BallChase run |
-| 1 | BallChase | Unit 1 (recap) | TensorBoard, RL vocabulary |
-| 2 | SimpleReachGoal | Unit 2 (patterns) | AIController, raycasts |
-| 3 | Lunar Lander | Unit 2 (build) | Full scene from scratch |
+| 0 | — | Unit 0 | Conda, plugin, BallChase run (first success checklist) |
+| 1 | BallChase | Unit 1 | MDP vocabulary + **one reward tweak** |
+| 2 | SimpleReachGoal | Unit 2 (Phase A) | Hub/source run, tweak sensor or reward |
+| 3 | Lunar Lander | Unit 2 (Phase B) | Full scene from scratch |
 | 4 | CrossTheRoad | Unit 3 | DQN, sparse 2D rewards |
 | 5 | JumperHard | Unit 4 | PPO benchmark, headless export |
 | 6 | BallChase (source) | Unit 5 | Parallel instances |
@@ -28,7 +28,11 @@ Source: [godot_rl_agents_examples](https://github.com/edbeeching/godot_rl_agents
 2. Open source in Godot .NET
 3. Read `AIController` → Sync → training scene
 4. Tweak one reward or sensor
-5. Retrain and compare in TensorBoard
+5. Retrain and compare in **three views**: Godot behavior · TensorBoard · what changed in code
+
+## Viz checkpoints (Units 3+)
+
+Default training is headless for speed. After each major unit, spend ~5 minutes with `--viz` or the editor to confirm behavior matches the curve — avoids “TensorBoard up, game invisible” fatigue.
 
 ## Training mode
 

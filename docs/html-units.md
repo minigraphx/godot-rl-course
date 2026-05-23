@@ -27,6 +27,12 @@ Variables defined in `:root`:
 - Content area with `<h2 id="...">` section anchors
 - Code blocks use `<pre>` inside a `.code-block` wrapper
 
+## Pedagogy blocks (recurring)
+
+- **First success checklist** — Unit 0 (`🎯 After this unit`)
+- **Three ways to see your AI** — Godot · TensorBoard · `AIController` (index + units 0–3+)
+- **Fast path / Phase A** — Unit 1 (theory ↔ tweak early); Unit 2 (SimpleReachGoal before Lander build)
+
 ## Adding a New Unit
 
 Copy scaffold from an existing unit, then:
