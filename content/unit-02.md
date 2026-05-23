@@ -48,6 +48,9 @@ Then continue to Phase B — you are copying these patterns, not discovering the
 | `model.learn(1_000_000)` | `gdrl --timesteps=1_000_000` |
 | Saved `.zip` model | ONNX model path in Sync node inspector |
 
+!!! info "Phase B — build"
+    If you completed [Phase A](#phase-a), you already traced SimpleReachGoal. This map shows how those Gymnasium concepts become Godot nodes for the Lunar Lander you create next.
+
 !!! info "Setup already done?"
     If you completed Unit 0, skip Sections 1–3 and start at [Section 4 — Build the lander scene](#4-build-the-lander-scene-landertscn).
 

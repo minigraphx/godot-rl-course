@@ -35,12 +35,47 @@ Two runtimes talk over a local socket — Godot sends observations and receives 
 
 ## 2 · Conda environment
 
-**Create and activate:**
+### What Conda is
+
+**Conda** is a tool that installs Python and libraries into **isolated environments** — separate folders on disk, so one project's packages do not clash with another's.
+
+In this course, Python runs the training loop (PPO/DQN via Stable-Baselines3) while Godot runs the game (see [Section 1](#1-split-architecture)). You need a working Python setup before any training command will run.
+
+**Miniconda** is a small installer that includes Conda. You do **not** need the full Anaconda distribution.
+
+### Install Miniconda
+
+If you do not already have Conda, install **Miniconda** from the [Miniconda install guide](https://docs.conda.io/en/latest/miniconda.html) (choose the installer for macOS, Windows, or Linux).
+
+After installation, **open a new terminal** and verify:
+
+```bash
+conda --version
+```
+
+!!! tip "Already installed?"
+    If that prints a version number, skip to [Why `godot_env`](#why-godot_env) below. If you see `command not found`, finish the installer and restart the terminal. On macOS/Linux, the installer may ask you to run `conda init` — follow the on-screen prompt, then open a new terminal.
+
+### Why `godot_env` { #why-godot_env }
+
+!!! info "Why a dedicated environment?"
+    - **Python 3.10** — godot-rl and Stable-Baselines3 are most reliable on 3.10; newer versions (3.12+) often break package wheels.
+    - **Isolation** — ML packages stay separate from your system Python and other projects.
+    - **Every session** — run `conda activate godot_env` in **every new terminal** before training commands in this course.
+
+### Create environment, install packages, verify
+
+**One-time** — create the environment:
 
 ```bash
 conda create --name godot_env python=3.10 -y
+```
+
+**Every new terminal** — activate it, then install course packages:
+
+```bash
 conda activate godot_env
-pip install "godot-rl[sb3]"
+pip install "godot-rl[sb3]" tensorboard
 ```
 
 Verify: `python -c "import godot_rl; print('ok')"`
@@ -122,7 +157,7 @@ One sitting: tooling works, agent learns, you change a reward. Times are guides 
 
 | Block | Time | Do this | Done when |
 |-------|------|---------|-----------|
-| **1 · Install** | 45–75 min | [Section 2](#2-conda-environment) — Conda + `godot-rl[sb3]`<br>[Section 3](#3-godot-project-plugin) — hub download BallChase | `import godot_rl` prints ok; binary path exists |
+| **1 · Install** | 45–75 min | [Section 2](#2-conda-environment) — install Miniconda → create `godot_env` → `pip install`<br>[Section 3](#3-godot-project-plugin) — hub download BallChase | `import godot_rl` prints ok; binary path exists |
 | **2 · First train** | 30–45 min | [Section 4B](#4-first-training-run) — `gdrl --viz` + Godot F6<br>Second terminal: `tensorboard --logdir=logs` | Agent moves; `ep_rew_mean` rises; no socket errors |
 | **3 · Start Unit 1** | 45–60 min | Open [Unit 1](unit-01.md)<br>Skim MDP loop (~15 min) → open BallChase source → tweak one reward → retrain with `--viz`<br>While training: read Unit 1 Sections 3–5 | You can name which line you changed; behavior or curve shifted |
 

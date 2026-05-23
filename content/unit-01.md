@@ -55,23 +55,27 @@ RL always runs as the same loop, repeated thousands of times. At each time step:
 - The environment moves to a **new state Sₜ₊₁**.
 - The environment returns a **reward Rₜ₊₁** — a number saying how good that was.
 
-<svg viewBox="0 0 660 200" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, sans-serif" style="max-width:600px;display:block;margin:1.5rem auto">
+<div class="diagram-scroll">
+
+<svg class="course-diagram" viewBox="0 0 660 200" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, sans-serif" role="img" aria-label="RL loop: agent and environment exchange actions, states, and rewards">
   <defs>
     <marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
       <path d="M0 1 L10 5 L0 9 z" fill="#8892b0"/>
     </marker>
   </defs>
   <rect x="60" y="70" width="200" height="64" rx="12" fill="#1a1d27" stroke="#6c8ef7" stroke-width="1.5"/>
-  <text x="160" y="96" text-anchor="middle" fill="#e2e8f0" font-size="15" font-weight="700">AGENT</text>
-  <text x="160" y="116" text-anchor="middle" fill="#8892b0" font-size="11">the lander's brain</text>
+  <text x="160" y="96" text-anchor="middle" fill="#e2e8f0" font-size="18" font-weight="700">AGENT</text>
+  <text x="160" y="116" text-anchor="middle" fill="#8892b0" font-size="14">the lander's brain</text>
   <rect x="400" y="70" width="200" height="64" rx="12" fill="#1a1d27" stroke="#4ecca3" stroke-width="1.5"/>
-  <text x="500" y="96" text-anchor="middle" fill="#e2e8f0" font-size="15" font-weight="700">ENVIRONMENT</text>
-  <text x="500" y="116" text-anchor="middle" fill="#8892b0" font-size="11">the Godot game world</text>
+  <text x="500" y="96" text-anchor="middle" fill="#e2e8f0" font-size="18" font-weight="700">ENVIRONMENT</text>
+  <text x="500" y="116" text-anchor="middle" fill="#8892b0" font-size="14">the Godot game world</text>
   <path d="M260 84 C320 84, 340 84, 400 84" fill="none" stroke="#8892b0" stroke-width="1.6" marker-end="url(#ar)"/>
-  <text x="330" y="74" text-anchor="middle" fill="#6c8ef7" font-size="11" font-weight="700">action Aₜ</text>
+  <text x="330" y="74" text-anchor="middle" fill="#6c8ef7" font-size="14" font-weight="700">action Aₜ</text>
   <path d="M400 120 C340 120, 320 120, 260 120" fill="none" stroke="#8892b0" stroke-width="1.6" marker-end="url(#ar)"/>
-  <text x="330" y="148" text-anchor="middle" fill="#4ecca3" font-size="11" font-weight="700">state Sₜ₊₁ + reward Rₜ₊₁</text>
+  <text x="330" y="148" text-anchor="middle" fill="#4ecca3" font-size="14" font-weight="700">state Sₜ₊₁ + reward Rₜ₊₁</text>
 </svg>
+
+</div>
 
 This loop outputs a stream of *state, action, reward, next state*. Repeat, and the agent gradually shifts toward actions that earn more reward.
 
@@ -166,7 +170,9 @@ The policy has to be *some* function. In **Deep** RL, that function is a **neura
 
 Godot RL Agents uses two programs that run side by side and talk over a fast local network socket. The **Godot engine** is the environment — it renders the world, runs the physics, and reports observations and rewards. **Python** is the brain — it runs PPO and decides the actions.
 
-<svg viewBox="0 0 660 320" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, sans-serif" style="max-width:600px;display:block;margin:1.5rem auto">
+<div class="diagram-scroll">
+
+<svg class="course-diagram" viewBox="0 0 720 360" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, sans-serif" role="img" aria-label="Godot environment and Python training process connected by socket">
   <defs>
     <marker id="ar2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
       <path d="M0 1 L10 5 L0 9 z" fill="#8892b0"/>
@@ -175,30 +181,40 @@ Godot RL Agents uses two programs that run side by side and talk over a fast loc
       <path d="M0 1 L10 5 L0 9 z" fill="#f7c86c"/>
     </marker>
   </defs>
-  <rect x="30" y="50" width="260" height="200" rx="14" fill="#1a1d27" stroke="#4ecca3" stroke-width="1.5"/>
-  <text x="160" y="78" text-anchor="middle" fill="#e2e8f0" font-size="14" font-weight="700">Godot Engine — Environment</text>
-  <rect x="52" y="100" width="216" height="52" rx="8" fill="#22263a" stroke="#2e3350"/>
-  <text x="160" y="121" text-anchor="middle" fill="#e2e8f0" font-size="12">Lander scene + AIController2D</text>
-  <text x="160" y="138" text-anchor="middle" fill="#8892b0" font-size="10">observations · actions · reward</text>
-  <rect x="52" y="168" width="216" height="52" rx="8" fill="#22263a" stroke="#2e3350"/>
-  <text x="160" y="189" text-anchor="middle" fill="#e2e8f0" font-size="12">Sync node</text>
-  <text x="160" y="206" text-anchor="middle" fill="#8892b0" font-size="10" font-family="monospace">godot_rl_agents plugin</text>
-  <rect x="370" y="50" width="260" height="200" rx="14" fill="#1a1d27" stroke="#6c8ef7" stroke-width="1.5"/>
-  <text x="500" y="78" text-anchor="middle" fill="#e2e8f0" font-size="14" font-weight="700">Python — Agent's Brain</text>
-  <rect x="392" y="100" width="216" height="52" rx="8" fill="#22263a" stroke="#2e3350"/>
-  <text x="500" y="121" text-anchor="middle" fill="#e2e8f0" font-size="12">godot-rl wrapper</text>
-  <text x="500" y="138" text-anchor="middle" fill="#8892b0" font-size="10" font-family="monospace">gdrl</text>
-  <rect x="392" y="168" width="216" height="52" rx="8" fill="#22263a" stroke="#2e3350"/>
-  <text x="500" y="189" text-anchor="middle" fill="#e2e8f0" font-size="12">Stable-Baselines3</text>
-  <text x="500" y="206" text-anchor="middle" fill="#8892b0" font-size="10">PPO · neural-net policy</text>
-  <path d="M290 118 L370 118" fill="none" stroke="#8892b0" stroke-width="1.8" marker-end="url(#ar2)"/>
-  <text x="330" y="108" text-anchor="middle" fill="#4ecca3" font-size="10" font-weight="700">obs + reward</text>
-  <path d="M370 196 L290 196" fill="none" stroke="#8892b0" stroke-width="1.8" marker-end="url(#ar2)"/>
-  <text x="330" y="212" text-anchor="middle" fill="#6c8ef7" font-size="10" font-weight="700">actions</text>
-  <text x="330" y="160" text-anchor="middle" fill="#8892b0" font-size="9">socket · port 11008</text>
-  <path d="M500 250 C500 292, 160 292, 160 252" fill="none" stroke="#f7c86c" stroke-width="1.6" stroke-dasharray="5,4" marker-end="url(#ar3)"/>
-  <text x="330" y="288" text-anchor="middle" fill="#f7c86c" font-size="10" font-weight="700">after training: ONNX model runs inside Godot — no Python</text>
+  <!-- Godot -->
+  <rect x="20" y="16" width="290" height="238" rx="14" fill="#1a1d27" stroke="#4ecca3" stroke-width="1.5"/>
+  <text x="165" y="44" text-anchor="middle" fill="#e2e8f0" font-size="16" font-weight="700">Godot Engine</text>
+  <text x="165" y="62" text-anchor="middle" fill="#8892b0" font-size="13">Environment</text>
+  <rect x="40" y="76" width="250" height="66" rx="8" fill="#22263a" stroke="#2e3350"/>
+  <text x="165" y="102" text-anchor="middle" fill="#e2e8f0" font-size="14">Lander scene + AIController2D</text>
+  <text x="165" y="124" text-anchor="middle" fill="#8892b0" font-size="12">observations · actions · reward</text>
+  <rect x="40" y="154" width="250" height="66" rx="8" fill="#22263a" stroke="#2e3350"/>
+  <text x="165" y="180" text-anchor="middle" fill="#e2e8f0" font-size="14">Sync node</text>
+  <text x="165" y="202" text-anchor="middle" fill="#8892b0" font-size="12" font-family="monospace">godot_rl_agents</text>
+  <!-- Python -->
+  <rect x="410" y="16" width="290" height="238" rx="14" fill="#1a1d27" stroke="#6c8ef7" stroke-width="1.5"/>
+  <text x="555" y="44" text-anchor="middle" fill="#e2e8f0" font-size="16" font-weight="700">Python</text>
+  <text x="555" y="62" text-anchor="middle" fill="#8892b0" font-size="13">Agent's brain</text>
+  <rect x="430" y="76" width="250" height="66" rx="8" fill="#22263a" stroke="#2e3350"/>
+  <text x="555" y="102" text-anchor="middle" fill="#e2e8f0" font-size="14">godot-rl wrapper</text>
+  <text x="555" y="124" text-anchor="middle" fill="#8892b0" font-size="12" font-family="monospace">gdrl</text>
+  <rect x="430" y="154" width="250" height="66" rx="8" fill="#22263a" stroke="#2e3350"/>
+  <text x="555" y="180" text-anchor="middle" fill="#e2e8f0" font-size="14">Stable-Baselines3</text>
+  <text x="555" y="202" text-anchor="middle" fill="#8892b0" font-size="12">PPO · neural-net policy</text>
+  <!-- Socket traffic (wider gutter) -->
+  <path d="M310 112 L410 112" fill="none" stroke="#8892b0" stroke-width="1.8" marker-end="url(#ar2)"/>
+  <text x="360" y="98" text-anchor="middle" fill="#4ecca3" font-size="13" font-weight="700">obs + reward</text>
+  <path d="M410 192 L310 192" fill="none" stroke="#8892b0" stroke-width="1.8" marker-end="url(#ar2)"/>
+  <text x="360" y="208" text-anchor="middle" fill="#6c8ef7" font-size="13" font-weight="700">actions</text>
+  <text x="360" y="144" text-anchor="middle" fill="#8892b0" font-size="12">socket</text>
+  <text x="360" y="160" text-anchor="middle" fill="#8892b0" font-size="12">port 11008</text>
+  <!-- ONNX export (below panels) -->
+  <path d="M555 262 C555 288, 165 288, 165 262" fill="none" stroke="#f7c86c" stroke-width="1.6" stroke-dasharray="5,4" marker-end="url(#ar3)"/>
+  <text x="360" y="318" text-anchor="middle" fill="#f7c86c" font-size="13" font-weight="700">After training: ONNX model runs in Godot</text>
+  <text x="360" y="338" text-anchor="middle" fill="#f7c86c" font-size="12">no Python process required</text>
 </svg>
+
+</div>
 
 **Every concept has a home in Godot**
 

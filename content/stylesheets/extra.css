@@ -1,0 +1,21 @@
+/* Course SVG diagrams (Unit 1 RL loop, architecture, etc.) */
+.md-typeset .diagram-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 1.5rem 0;
+}
+
+.md-typeset svg.course-diagram {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto;
+}
+
+/* Keep labels readable on narrow viewports — scroll instead of shrinking */
+@media (max-width: 48em) {
+  .md-typeset .diagram-scroll svg.course-diagram {
+    min-width: 40rem;
+  }
+}
