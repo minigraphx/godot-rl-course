@@ -22,6 +22,9 @@ Learn the RL mental model and map it onto Godot — but don't wait until the end
 
     **Time:** Fast path ~15 min skim + ~20 min reward tweak + training in background. Full read of Sections 1–6: add ~40 minutes. Nothing to build from scratch yet.
 
+!!! info "Three ways to see your AI"
+    Godot editor (BallChase learning live — ball following the target) · TensorBoard (`rollout/ep_rew_mean` rising from negative toward positive) · Code (the reward tweak you made in Section 2 showing up immediately in the curve)
+
 ---
 
 ## ⚡ Fast path (recommended first hour) { #fast-path }

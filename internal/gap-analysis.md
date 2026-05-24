@@ -6,15 +6,15 @@ Identified after completing the HF Deep RL parity pass. All items below are trac
 
 | Gap | Priority | File | Status |
 |-----|----------|------|--------|
-| SAC (Soft Actor-Critic) | High | `content/unit-sac.md` | Integrating |
-| Reward engineering | High | `content/unit-reward-engineering.md` | Integrating |
-| Debugging RL training | High | `content/unit-debugging.md` | Integrating |
-| Intrinsic motivation / curiosity | Medium | `content/unit-curiosity.md` | Integrating |
-| Off-policy vs on-policy deep treatment | Medium | expand `unit-03.md` | Integrating |
-| Deadly triad callout | Medium | expand `unit-03.md` | Integrating |
-| Model-based RL overview | Medium | expand `unit-q-learning.md` or `unit-01.md` | Integrating |
-| Multi-seed evaluation | Medium | expand `unit-05.md` | Integrating |
-| Hyperparameter search (Optuna) | Low | stretch goal in `unit-04.md` | Integrating |
+| SAC (Soft Actor-Critic) | High | `content/unit-sac.md` | Done ✅ |
+| Reward engineering | High | `content/unit-reward-engineering.md` | Done ✅ |
+| Debugging RL training | High | `content/unit-debugging.md` | Done ✅ |
+| Intrinsic motivation / curiosity | Medium | `content/unit-curiosity.md` | Done ✅ |
+| Off-policy vs on-policy deep treatment | Medium | expand `unit-03.md` | Done ✅ |
+| Deadly triad callout | Medium | expand `unit-03.md` | Done ✅ |
+| Model-based RL overview | Medium | expand `unit-q-learning.md` or `unit-01.md` | Done ✅ |
+| Multi-seed evaluation | Medium | expand `unit-05.md` | Done ✅ |
+| Hyperparameter search (Optuna) | Low | stretch goal in `unit-04.md` | Done ✅ |
 
 ## Detail notes
 

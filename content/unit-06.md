@@ -187,6 +187,6 @@ Apply the continuous action pattern to a new scene:
 
 ## What's next
 
-**Unit 7:** Multi-agent — Racer (mixed actions) and MultiAgentSimple (cooperative/competitive policies).
+**Visual Observations:** Move from raycast sensors to raw pixels — SubViewport pipeline, NatureCNN, and frame stacking in Godot.
 
-[→ Unit 7: Multi-Agent](unit-07.md)
+[→ Visual Observations](unit-visual-observations.md)

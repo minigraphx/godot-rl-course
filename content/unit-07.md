@@ -2,7 +2,7 @@
 
 Train multiple agents simultaneously in the same environment — some cooperating, some competing. Study **Racer** (mixed discrete+continuous actions) and **MultiAgentSimple** (shared vs independent policies).
 
-[← Unit 6: Continuous 3D](unit-06.md) · [Course home](index.md)
+[← Visual Observations](unit-visual-observations.md) · [Course home](index.md)
 
 ---
 

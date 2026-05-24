@@ -181,6 +181,6 @@ A working LSTM agent will hesitate briefly when losing sight, then move in the l
 
 ## What's next
 
-**Unit 9:** Imitation learning — MultiLevelRobot, Behavioral Cloning, GAIL. Learning from expert demonstrations instead of reward signals.
+**Self-Play:** Train agents by competing against copies of themselves — AirHockey, frozen checkpoints, league-based training, and ELO tracking.
 
-[→ Unit 9: Imitation Learning](unit-09.md)
+[→ Self-Play](unit-self-play.md)
