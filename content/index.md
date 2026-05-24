@@ -6,11 +6,12 @@ Learn deep reinforcement learning by building and training agents inside real Go
 
 | Phase | Content | What you learn |
 |-------|---------|----------------|
-| **Foundations** (Units 0–2) | Setup, RL loop, first custom env | How RL works, first agent in Godot |
-| **Value-Based** (Q-Learning → DQN) | Bellman, Q-tables, DQN, experience replay | How value methods work from scratch |
-| **Policy-Based** (REINFORCE → Actor-Critic → PPO) | Policy gradients, A2C, PPO internals | Why PPO is the standard algorithm |
-| **Scale & Complexity** (Units 5–8) | Parallel training, continuous actions, MARL, memory | Real-world training at scale |
-| **Beyond Reward** (Units 9–10) | Imitation learning, ONNX/WASM | Alternative learning signals, shipping |
+| **Phase 1 — Foundations** | Setup · RL loop · first custom env · reward design | How RL works, how to design rewards |
+| **Phase 2 — Value-Based** | Q-Learning · DQN · curiosity | Bellman equation, Q-tables, DQN, sparse reward exploration |
+| **Phase 3 — Policy-Based** | REINFORCE · Actor-Critic · PPO · SAC | Policy gradient theorem, PPO internals, continuous control |
+| **Phase 4 — Scale & Complexity** | Parallel · 3D · Multi-agent · Memory | Real-world training at scale |
+| **Phase 5 — Beyond Reward** | Imitation learning · ONNX/WASM | Alternative learning signals, shipping |
+| **Guides** | Debugging | Systematic diagnosis of broken training |
 
 ## Three ways to see your AI (every unit)
 
@@ -27,11 +28,13 @@ Learn deep reinforcement learning by building and training agents inside real Go
 - [Unit 0 — Setup & First Run](unit-00.md)
 - [Unit 1 — RL Foundations](unit-01.md)
 - [Unit 2 — Build Your First Env](unit-02.md)
+- [Reward Engineering](unit-reward-engineering.md)
 
 **Phase 2 — Value-Based Methods**
 
 - [Q-Learning](unit-q-learning.md)
 - [Deep Q-Learning (DQN)](unit-03.md)
+- [Intrinsic Motivation & Curiosity](unit-curiosity.md)
 
 **Phase 3 — Policy-Based Methods**
 
@@ -39,6 +42,7 @@ Learn deep reinforcement learning by building and training agents inside real Go
 - [Actor-Critic](unit-actor-critic.md)
 - [PPO Deep Dive](unit-ppo-deep.md)
 - [PPO in Practice (JumperHard)](unit-04.md)
+- [SAC — Soft Actor-Critic](unit-sac.md)
 
 **Phase 4 — Scale & Complexity**
 
@@ -51,6 +55,10 @@ Learn deep reinforcement learning by building and training agents inside real Go
 
 - [Unit 9 — Imitation Learning](unit-09.md)
 - [Unit 10 — Ship Your Brain](unit-10.md)
+
+**Guides**
+
+- [Debugging RL Training](unit-debugging.md)
 
 ## After this course
 

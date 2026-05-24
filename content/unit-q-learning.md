@@ -530,6 +530,50 @@ You should see a noisy but rising curve: near-zero at first, climbing as ε deca
 
 ---
 
+## N · Model-Based RL — A Different Family Entirely
+
+All methods covered so far are **model-free**: the agent interacts with the environment and learns directly from experience — no internal model of how the world works, just a direct mapping from experience to policy or value estimates.
+
+**Model-based RL** takes a fundamentally different route: learn a dynamics model first — p(s'|s,a) — then plan inside it.
+
+The core loop:
+
+1. **World model**: given state s and action a, predict next state s' and reward r.
+2. **Planning**: simulate thousands of trajectories inside the model, pick the best action.
+3. **Update model** with real environment data, repeat.
+
+### Classic example: Dyna-Q (Sutton 1990)
+
+Dyna-Q combines Q-Learning with a learned model for "imaginary" transitions. After each real step, the agent performs several model-simulated steps and uses them as additional training data — effectively getting more experience without running the real environment.
+
+### Modern examples
+
+| Algorithm | Approach |
+|-----------|----------|
+| **MuZero** (DeepMind) | Learns a model and uses MCTS planning — mastered chess, Go, and Atari without being told the rules |
+| **Dreamer** (Google Brain) | Learns a compact latent world model; trains actor-critic entirely in imagination |
+| **MBPO** | Model-Based PPO — uses model for short rollouts to augment real experience |
+
+### Model-free vs model-based comparison
+
+| Aspect | Model-Free (PPO, DQN, SAC) | Model-Based (MuZero, Dreamer) |
+|--------|--------------------------|-------------------------------|
+| Learns | Policy and/or value function | Dynamics model + policy |
+| Sample efficiency | Lower | Much higher (10–100×) |
+| Training stability | Higher | Lower (model errors) |
+| Best for | Fast simulators, game envs | Expensive sims, real robots |
+| In this course | Primary approach | Conceptual reference only |
+
+### Why it matters — and why we skip it here
+
+**Sample efficiency**: model-based methods can be 10–100× more sample-efficient than model-free methods. When each real interaction is expensive (a real robot, a slow physics simulator), this matters enormously.
+
+**Why we don't use it in this course**: model-based RL is harder to train stably. Model errors compound during planning — if the world model is slightly wrong, multi-step rollouts inside it drift further from reality. For game-style Godot environments where simulation is fast and cheap, the complexity cost outweighs the sample-efficiency benefit. PPO with parallel environments gives us effectively unlimited data, making model-free the practical choice here.
+
+Model-based RL is worth knowing exists: if you move from games to robotics or any domain where simulation is slow or impossible, these methods become essential.
+
+---
+
 ## What's next
 
 You now understand the core machinery of value-based RL:

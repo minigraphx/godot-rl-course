@@ -243,6 +243,60 @@ gdrl --env_path=./JumperHard.x86_64 \
 
 ---
 
+## Stretch Goals
+
+### Automated hyperparameter search with Optuna
+
+Instead of manually running one experiment at a time, use Optuna to search the hyperparameter space automatically:
+
+```python
+import optuna
+from stable_baselines3 import PPO
+from godot_rl.wrappers.stable_baselines_wrapper import StableBaselinesGodotEnv
+import numpy as np
+
+def objective(trial):
+    lr         = trial.suggest_float("learning_rate", 1e-5, 1e-3, log=True)
+    n_steps    = trial.suggest_categorical("n_steps", [64, 128, 256, 512])
+    clip_range = trial.suggest_float("clip_range", 0.1, 0.4)
+    ent_coef   = trial.suggest_float("ent_coef", 1e-4, 0.05, log=True)
+    
+    env = StableBaselinesGodotEnv(env_path="./JumperHard.x86_64", n_parallel=4, speedup=20)
+    model = PPO(
+        "MlpPolicy", env,
+        learning_rate=lr,
+        n_steps=n_steps,
+        clip_range=clip_range,
+        ent_coef=ent_coef,
+        batch_size=64,
+        verbose=0,
+    )
+    model.learn(total_timesteps=200_000)
+    
+    # Quick eval
+    rewards = []
+    for _ in range(10):
+        obs, done, total = env.reset(), False, 0.0
+        while not done:
+            action, _ = model.predict(obs, deterministic=True)
+            obs, r, done, _ = env.step(action)
+            total += r
+        rewards.append(total)
+    env.close()
+    return np.mean(rewards)
+
+study = optuna.create_study(direction="maximize")
+study.optimize(objective, n_trials=20)
+print("Best params:", study.best_params)
+```
+
+Install: `pip install optuna`
+
+!!! tip
+    Optuna is the most practical hyperparameter search tool for SB3. RL-Zoo3 (used in HF course Unit 3) uses Optuna internally.
+
+---
+
 ## What's next
 
 **Unit 5:** Same BallChase environment — new skill: parallel rollout scaling with `n_parallel` and a proper evaluation protocol.

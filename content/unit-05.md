@@ -119,7 +119,82 @@ env.close()
 
 ---
 
-## 6 · Stretch goals
+## 6 · Why one seed is never enough
+
+RL training has high variance between random seeds. Two runs with identical hyperparameters and the same number of timesteps — but different random seeds — can produce `ep_rew_mean` values that differ by 50% or more at convergence.
+
+A single training run that "works" might be a lucky seed. A run that "fails" might be an unlucky one. If you tune hyperparameters on one seed, you may be optimising for randomness rather than algorithm quality.
+
+**Standard practice:** run N = 3–5 seeds, report **mean ± std across seeds** (not the mean and std within a single run).
+
+```python
+import subprocess
+import numpy as np
+from stable_baselines3 import PPO
+from godot_rl.wrappers.stable_baselines_wrapper import StableBaselinesGodotEnv
+
+seeds = [0, 1, 2, 3, 4]
+final_rewards = []
+
+for seed in seeds:
+    # Train with this seed
+    subprocess.run([
+        "gdrl",
+        "--env_path=./BallChase.x86_64",
+        f"--experiment_name=ballchase_seed{seed}",
+        "--timesteps=500000",
+        "--n_parallel=8",
+        "--speedup=20",
+        f"--seed={seed}",
+    ])
+
+    # Evaluate the trained model
+    env = StableBaselinesGodotEnv(env_path="./BallChase.x86_64", n_parallel=1, speedup=1)
+    model = PPO.load(f"logs/sb3/ballchase_seed{seed}/best_model")
+
+    ep_rewards = []
+    for _ in range(20):
+        obs, done, total = env.reset(), False, 0.0
+        while not done:
+            action, _ = model.predict(obs, deterministic=True)
+            obs, r, done, _ = env.step(action)
+            total += r
+        ep_rewards.append(total)
+
+    final_rewards.append(np.mean(ep_rewards))
+    env.close()
+
+print(f"Mean across seeds: {np.mean(final_rewards):.1f} ± {np.std(final_rewards):.1f}")
+```
+
+!!! tip "How many seeds?"
+    For a course project: 1 seed is fine — you're learning, not publishing.
+    For a comparison between two methods: 3–5 seeds minimum.
+    For a paper or production decision: 10 seeds.
+
+**Comparing two algorithms properly (PPO vs SAC):**
+
+Use the *same* seeds for both algorithms, then compare mean ± std across those seeds:
+
+```python
+# WRONG: PPO on seeds [0,1,2], SAC on seeds [3,4,5]
+# The seed sets are different — any difference might be due to seed luck
+
+# CORRECT: both algorithms trained on seeds [0, 1, 2, 3, 4]
+ppo_rewards = [train_and_eval("PPO", seed) for seed in seeds]
+sac_rewards  = [train_and_eval("SAC",  seed) for seed in seeds]
+
+print(f"PPO: {np.mean(ppo_rewards):.1f} ± {np.std(ppo_rewards):.1f}")
+print(f"SAC: {np.mean(sac_rewards):.1f}  ± {np.std(sac_rewards):.1f}")
+```
+
+Paired seeds control for environment randomness — if PPO beats SAC on seed 0, 1, 2, 3, and 4, that's a much stronger conclusion than a single-seed comparison.
+
+In TensorBoard, use the shaded area view (IQM or mean ± std) to visualise multi-seed results. The width of the shaded band tells you more about algorithm stability than the center line alone.
+
+---
+
+## 7 · Stretch goals (pick one)
 
 - **Scale curve** — plot steps/sec vs N envs (1, 2, 4, 8, 16). Where does the gain flatten?
 - **Batch size scaling** — when doubling `n_parallel`, also double `--batch_size`. Does it help?

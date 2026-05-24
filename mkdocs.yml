@@ -35,14 +35,17 @@ nav:
     - "Unit 0 — Setup & First Run": unit-00.md
     - "Unit 1 — RL Foundations": unit-01.md
     - "Unit 2 — Build Your First Env": unit-02.md
+    - "Reward Engineering": unit-reward-engineering.md
   - "Phase 2 — Value-Based Methods":
     - "Q-Learning": unit-q-learning.md
     - "Deep Q-Learning (DQN)": unit-03.md
+    - "Intrinsic Motivation & Curiosity": unit-curiosity.md
   - "Phase 3 — Policy-Based Methods":
     - "Policy Gradients & REINFORCE": unit-policy-gradients.md
     - "Actor-Critic": unit-actor-critic.md
     - "PPO Deep Dive": unit-ppo-deep.md
     - "PPO in Practice (JumperHard)": unit-04.md
+    - "SAC — Soft Actor-Critic": unit-sac.md
   - "Phase 4 — Scale & Complexity":
     - "Parallel Training": unit-05.md
     - "Continuous 3D": unit-06.md
@@ -51,4 +54,6 @@ nav:
   - "Phase 5 — Beyond Reward":
     - "Imitation Learning": unit-09.md
     - "Ship Your Brain": unit-10.md
+  - Guides:
+    - "Debugging RL Training": unit-debugging.md
   - Reference: reference.md
