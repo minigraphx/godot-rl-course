@@ -395,6 +395,45 @@ Remove or hide the debug display before exporting the binary used for parallel t
 !!! tip "Grayscale first, colour second"
     Start every new visual task with grayscale at 32×32 or 64×64. Verify the agent learns something. Then scale up resolution or add colour only if you have evidence that colour information helps. Each increase in resolution multiplies training time.
 
+### Normalization layers in RL (BatchNorm vs LayerNorm)
+
+Normalization is standard in supervised deep learning. RL has specific constraints that change which type to use.
+
+**Why BatchNorm is risky in RL:** BatchNorm normalizes using batch statistics (mean, variance across the mini-batch) during training, then switches to running statistics at inference. In RL, the data distribution shifts as the policy improves — running statistics computed on early-training data become stale. The mismatch between training and inference statistics can cause instability, especially in continuous control.
+
+**LayerNorm is safer:** normalizes per-sample (statistics computed over the feature dimensions of a single observation, not the batch). No running statistics to go stale; compatible with non-stationary RL data distributions.
+
+| Normalization | How | Stale statistics risk | Notes |
+|--------------|-----|----------------------|-------|
+| None | — | None | Default for MLP on low-dim obs |
+| BatchNorm | Per mini-batch mean/var | Yes | Largely abandoned in modern RL |
+| LayerNorm | Per sample mean/var | No | Safe for RL; preferred when normalization is needed |
+| VecNormalize | Running obs mean/var (env wrapper) | Managed (save/load required) | Normalizes inputs, not activations |
+
+**NatureCNN with LayerNorm (when training is unstable):**
+
+```python
+import torch.nn as nn
+from stable_baselines3.common.torch_layers import BaseFeaturesExtractor
+
+class NatureCNNWithLayerNorm(BaseFeaturesExtractor):
+    def __init__(self, observation_space, features_dim=512):
+        super().__init__(observation_space, features_dim)
+        n_input_channels = observation_space.shape[0]
+        self.cnn = nn.Sequential(
+            nn.Conv2d(n_input_channels, 32, kernel_size=8, stride=4),
+            nn.LayerNorm([32, 20, 20]),   # per-sample norm on feature maps
+            nn.ReLU(),
+            nn.Conv2d(32, 64, kernel_size=4, stride=2),
+            nn.ReLU(),
+            nn.Conv2d(64, 64, kernel_size=3, stride=1),
+            nn.ReLU(),
+            nn.Flatten(),
+        )
+```
+
+**Practical rule:** for MLP policies on low-dimensional observations, skip normalization — use `VecNormalize` on the input instead. For CNN policies on images: add LayerNorm *only if training is unstable* (NaN loss, exploding gradients). For large architectures (Transformers, ResNets in RL): LayerNorm is standard.
+
 ---
 
 ## 9 · Hybrid: visual + proprioceptive observations

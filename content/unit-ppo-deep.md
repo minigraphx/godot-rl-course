@@ -90,6 +90,16 @@ In words: *maximize expected advantage, but the KL divergence between the new an
 
 TRPO works beautifully — but it requires **second-order optimization** (computing and inverting an approximation to the Fisher information matrix). That's expensive, hard to implement, and doesn't play well with shared actor-critic networks.
 
+**TRPO vs PPO at a glance:**
+
+| | TRPO | PPO |
+|--|------|-----|
+| Constraint enforcement | Hard KL ≤ δ (constrained opt) | Soft clip on probability ratio |
+| Optimizer | Conjugate gradient + line search | Adam (first-order) |
+| Compute per update | O(n²) in policy parameters | O(n) |
+| Key hyperparameter | δ (KL threshold) | `clip_range` ε, `target_kl` |
+| When to use | Robotics papers requiring monotonic improvement | Everything else — far simpler |
+
 ### PPO — the practical version
 
 PPO (Schulman et al. 2017) asked: *can we get TRPO's stability without the second-order math?* The answer turned out to be embarrassingly simple — **clip the objective so that the gradient becomes zero once the policy has moved "far enough"**. No constraint, no KL computation, no Lagrangian. Just a `min` and a `clip` inside the loss function. First-order optimization (vanilla Adam) is all you need.
