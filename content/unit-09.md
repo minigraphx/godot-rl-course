@@ -2,7 +2,7 @@
 
 Skip the reward engineering entirely. Record an expert playing the game, then train a policy to **copy that behavior**. Study **MultiLevelRobot**, record demonstrations, run **Behavioral Cloning (BC)**, and optionally extend to **GAIL**.
 
-[← Self-Play](unit-self-play.md) · [Course home](index.md)
+[← Multi-Task RL](unit-multitask.md) · [Course home](index.md)
 
 ---
 
