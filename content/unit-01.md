@@ -473,6 +473,40 @@ python examples/stable_baselines3_example.py \
 
 ---
 
+## 8 · Stretch goals
+
+**Implement the RL loop by hand.** Without SB3 or gdrl, write a bare Python loop that steps through a gymnasium environment and accumulates returns. FrozenLake-v1 (discrete, small) or CartPole-v1 (continuous obs, discrete action) are ideal. You don't need to learn anything — use a random policy. The goal is to see `env.reset()`, `env.step(action)`, `obs`, `reward`, `done` in real code before a framework hides them.
+
+```python
+import gymnasium as gym
+import numpy as np
+
+env = gym.make("CartPole-v1")
+obs, _ = env.reset()
+total_reward = 0.0
+
+for _ in range(500):
+    action = env.action_space.sample()   # random policy
+    obs, reward, terminated, truncated, _ = env.step(action)
+    total_reward += reward
+    if terminated or truncated:
+        break
+
+print(f"Episode return: {total_reward}")
+env.close()
+```
+
+**Taxonomy self-test.** Cover the algorithm table in Section 6 and answer these five questions from memory:
+1. Which algorithm introduced the replay buffer?
+2. Is PPO on-policy or off-policy — and why does that matter for how much data you need?
+3. What does "deep" add to Q-Learning that tabular Q-Learning lacks?
+4. Name one model-based algorithm and explain what "model" it learns.
+5. Which of the course algorithms would you use first for a robot arm task — and why?
+
+Check your answers against Section 6. Anything you got wrong is worth re-reading.
+
+**Reward sensitivity experiment.** In your BallChase training scene, multiply the reward coefficient by 10 (make it larger). Predict what will happen to the TensorBoard curve. Then run a short training (200k steps) and compare. Repeat with the coefficient divided by 10 (tiny reward signal). Explain what you observe in terms of the signal-to-noise ratio of the gradient updates.
+
 ## What's next
 
 You have the vocabulary, a reward tweak under your belt, and a trained run to reference. In **Unit 2**, start with **SimpleReachGoal** (run + tweak), then build Lunar Lander from scratch.

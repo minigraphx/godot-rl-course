@@ -41,18 +41,23 @@ Phase 3 — Policy-Based Methods:
 - PPO Deep Dive (clipped objective, GAE, hyperparameter math)
 - PPO in Practice / JumperHard (tuning, locomotion rewards)
 - SAC — Soft Actor-Critic (continuous control, entropy regularization)
+- PPO from Scratch / CleanRL (implement PPO from scratch, train with CleanRL) → unit-cleanrl.md
 
 Phase 4 — Scale & Complexity:
 - Parallel Training (n_parallel, multi-seed evaluation)
 - Continuous 3D / FlyBy (normalization, RayCast3D)
 - Multi-Agent (cooperative/competitive, CTDE, MARL)
 - Memory & POMDPs / RobotFPS (RecurrentPPO, LSTM)
+- Self-Play (AirHockey, league, ELO) → unit-self-play.md
+- Visual Observations (SubViewport, CNN, VirtualCamera) → unit-visual-observations.md
 
 Phase 5 — Beyond Reward:
 - Imitation Learning (BC, GAIL, MultiLevelRobot)
 - Ship Your Brain (ONNX export, Godot inference, HTML5)
+- Capstone Project (end-to-end: env design, train, export, ship) → unit-capstone.md
 
 Phase 6 — Robotics:
+- Locomotion Agents (Walker, Crawler, Worm) → unit-locomotion.md
 - Robot Observations & Sensors (proprioception, joint control modes)
 - Goal-Conditioned RL & HER (FetchReach/Push, Godot wrapper)
 - Sim-to-Real Transfer (domain randomization, deployment checklist)
@@ -62,8 +67,6 @@ Guides:
 
 ### In Progress 🔄
 
-- Self-Play (AirHockey, league, ELO) → unit-self-play.md
-- Visual Observations (SubViewport, CNN, VirtualCamera) → unit-visual-observations.md
 - Theory-to-Godot bridges → additions to unit-q-learning.md, unit-policy-gradients.md, unit-actor-critic.md
 
 ### Planned 📋
@@ -71,9 +74,6 @@ Guides:
 These topics are identified but not yet written. Sorted by priority:
 
 **High priority:**
-- Self-play unit (in progress above)
-- CleanRL & Sample Factory (Extension 11 from original curriculum) — implement PPO from scratch with CleanRL, train VizDoom with Sample Factory
-- Capstone project guide — how to pick an environment, design obs/reward, train, export, ship
 - Advanced evaluation — interquartile mean, performance profiles, statistical significance tests (Agarwal et al. 2021)
 
 **Medium priority:**

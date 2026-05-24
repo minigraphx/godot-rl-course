@@ -173,7 +173,7 @@ gdrl --env_path=./FlyBy.x86_64 \
 
 ---
 
-## 7 · Build your own continuous env (stretch)
+## 7 · Build your own continuous env
 
 Apply the continuous action pattern to a new scene:
 
@@ -182,6 +182,165 @@ Apply the continuous action pattern to a new scene:
 3. Implement 3D observations with RayCast3D sensors
 4. Use a 2–4 dimensional continuous action space
 5. Shape rewards: distance to goal + speed penalty + survival bonus
+
+---
+
+## 8 · VecNormalize — observation and reward normalization
+
+While manual normalization in `get_obs()` works well, SB3 also provides **VecNormalize** — a vectorized wrapper that tracks a running mean and standard deviation across all parallel environments and normalizes on the fly.
+
+**What VecNormalize does:**
+
+- Maintains a running mean and std for every observation dimension across all `n_parallel` envs
+- Normalizes each observation to approximately **N(0, 1)** before it reaches the policy network
+- Optionally normalizes rewards by their running std (reduces variance without changing sign)
+- Clips normalized values at `clip_obs` (default 10.0) to prevent outliers from dominating
+
+**Why continuous control needs it more than discrete:**
+
+In discrete environments, observations are often already bounded (e.g. a grid index or a boolean flag). In continuous 3D environments, raw physics values live on wildly different scales: a joint velocity might be 0.03 rad/s while a world-space position might be 847.2 m. Without normalization, the largest-magnitude observation dimension dominates the gradient update and the other dimensions are effectively ignored.
+
+```python
+from stable_baselines3 import PPO
+from stable_baselines3.common.vec_env import VecNormalize
+from godot_rl.wrappers.stable_baselines_wrapper import StableBaselinesGodotEnv
+
+env = StableBaselinesGodotEnv(env_path="./FlyBy.x86_64", n_parallel=8, speedup=20)
+env = VecNormalize(env, norm_obs=True, norm_reward=True, clip_obs=10.0)
+
+model = PPO("MlpPolicy", env, verbose=1, tensorboard_log="logs/")
+model.learn(total_timesteps=2_000_000)
+
+# CRITICAL: save the normalization stats alongside the model
+env.save("flyby_vecnormalize.pkl")
+model.save("flyby_ppo")
+```
+
+!!! warning "Always save VecNormalize stats"
+    At inference time you must reload the same normalization statistics, otherwise the ONNX export will receive un-normalized observations and output nonsense actions.
+
+    ```python
+    env = StableBaselinesGodotEnv(env_path="./FlyBy.x86_64", n_parallel=1)
+    env = VecNormalize.load("flyby_vecnormalize.pkl", env)
+    env.training = False   # freeze the running stats during inference
+    env.norm_reward = False
+
+    model = PPO.load("flyby_ppo", env=env)
+    ```
+
+!!! tip "When to skip VecNormalize"
+    If you already normalize every observation to **[−1, 1]** inside `get_obs()` in GDScript (the recommended approach for this course), VecNormalize is redundant. Manual GDScript normalization is more transparent and easier to debug during development. Reach for VecNormalize when you can't easily bound a value at the source — for example, a cumulative distance or an unbounded physics force.
+
+---
+
+## 9 · FlyBy vs HovercraftRacing — choosing your benchmark
+
+Both examples ship with `godot_rl_agents_examples` and expose a continuous action space, but they have meaningfully different characteristics:
+
+| | FlyBy | HovercraftRacing |
+|--|-------|-----------------|
+| Physics | 6-DOF free flight | Ground-constrained, high friction |
+| Action space | 3D thrust + yaw | 2D thrust + steer |
+| Reward | Checkpoint proximity | Race position + speed |
+| Difficulty | Medium — 3D orientation is hard | Hard — tight turns, opponents |
+| Recommended for | Learning continuous 3D obs | Competitive continuous control |
+| Typical convergence | 1–2 M steps | 3–5 M steps |
+
+**Which to use first:** Start with FlyBy. It has simpler physics and converges faster, so you can iterate on your observation and reward design quickly. Move to HovercraftRacing once you've confirmed your obs normalization, action scaling, and reward shaping all work correctly — the additional complexity of a race track and opponents will only add noise to debugging if the fundamentals aren't solid yet.
+
+**Key differences in observation design:**
+
+- *FlyBy* needs orientation relative to the next checkpoint (a 3D unit vector), linear velocity, and raycast distances. The checkpoint direction provides a clear learning signal — reward goes up as the agent heads toward it.
+- *HovercraftRacing* typically exposes track-relative position, velocity components, and distance to the nearest wall or waypoint. Because the hovercraft is ground-constrained, you can drop the vertical velocity component and the up/down rays, keeping the obs vector smaller.
+
+**Key differences in reward shaping:**
+
+- *FlyBy*: A dense reward proportional to `max(0, prev_dist_to_checkpoint - curr_dist_to_checkpoint)` works well. Add a small time-alive bonus to discourage crashing early.
+- *HovercraftRacing*: Pure distance reward can teach the agent to take tight lines but ignore opponents. Consider adding a penalty for lateral distance from the track centre and a bonus for overtaking.
+
+!!! tip "Benchmark progression"
+    FlyBy → HovercraftRacing mirrors the general pattern of starting simple and adding complexity. Resist the temptation to jump straight to the harder environment — a policy that doesn't converge in HovercraftRacing could be failing for a dozen different reasons; in FlyBy there are far fewer places to look.
+
+---
+
+## 10 · RayCast3D sensor design for 3D environments
+
+The brief raycast example in section 4 covers the mechanics. This section goes deeper on design choices.
+
+**Key `RayCast3D` parameters to set in the Inspector:**
+
+| Parameter | Purpose | Recommended starting value |
+|-----------|---------|--------------------------|
+| `target_position` | Direction and max length of the ray | `Vector3(0, 0, -20)` for forward, 20 m max |
+| `collision_mask` | Which physics layers to sense | Match your obstacle/wall layers; exclude the agent's own layer |
+| `enabled` | Whether the ray is active | Always `true` during training; see warning below |
+
+**Normalized distance pattern for `get_obs()`:**
+
+```gdscript
+@onready var rays = [$RayForward, $RayLeft, $RayRight, $RayUp, $RayDown]
+const RAY_MAX = 20.0  # meters — must match target_position length
+
+func _get_ray_obs() -> Array:
+    var obs = []
+    for ray in rays:
+        if ray.is_colliding():
+            obs.append(ray.get_collision_point().distance_to(global_position) / RAY_MAX)
+        else:
+            obs.append(1.0)  # no hit = max distance (already normalized)
+    return obs
+```
+
+Call `_get_ray_obs()` inside `get_obs()` and concatenate with your velocity and orientation observations.
+
+!!! tip "How many rays?"
+    Five rays (forward, left, right, up, down) gives enough spatial awareness for FlyBy and keeps the observation vector small. More rays increase observation size linearly — a larger obs vector slows training and may require more network capacity. Run with 5 first. Only add more if the agent is hitting obstacles it couldn't see.
+
+!!! warning "Collision mask must match between training and inference"
+    If you change scene geometry or physics layer assignments after exporting the ONNX model, the rays may return different values for the same situation. Always retrain after structural scene changes. During ONNX inference in a live Godot scene, verify that collision masks on the `RayCast3D` nodes match exactly what was used during training.
+
+---
+
+## 11 · Stretch goals
+
+These exercises extend the unit and are optional but highly recommended before moving on.
+
+**VecNormalize vs manual normalization**
+
+Train FlyBy twice — once using `VecNormalize` (section 8), once with all observations manually normalized to [−1, 1] inside `get_obs()` in GDScript. Log both runs to TensorBoard and compare:
+
+- Which reaches a reward of +50 faster?
+- Which is easier to debug when something goes wrong?
+- What happens if you forget to reload the VecNormalize stats at inference time?
+
+**Ray count ablation**
+
+Train FlyBy with 3 rays, 5 rays, and 9 rays. Hold all other hyperparameters fixed. Measure:
+
+- Steps to reach a stable positive reward
+- Final `ep_rew_mean` at 2 M steps
+
+At what point does adding more rays stop improving performance? Does it ever hurt?
+
+**HovercraftRacing multi-agent**
+
+Use the multi-agent setup introduced in Unit 7. Race two HovercraftRacing agents against each other in the same scene. Compare:
+
+- Average lap time vs a single agent racing against a static obstacle course
+- Does competition (an opponent to avoid) improve or hurt lap times?
+- Do the agents develop cooperative or adversarial driving styles?
+
+To set up the multi-agent race, duplicate the hovercraft `Node3D` (including its `AIController3D` child) and give each controller a unique `player_id`. The `godot-rl-agents` plugin handles the per-agent action dispatch automatically.
+
+**Reward shaping challenge**
+
+Design a reward function for FlyBy that satisfies all three of these constraints simultaneously:
+
+1. The agent must reach the checkpoint (dense distance reward)
+2. The agent must not spin faster than 90°/s (angular velocity penalty)
+3. The agent must arrive in under 30 seconds (time pressure bonus)
+
+How do you weight these three terms without one overwhelming the others? Log each reward component separately to TensorBoard — `ep_rew_mean` alone won't tell you which term is dominating.
 
 ---
 

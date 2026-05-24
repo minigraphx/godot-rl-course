@@ -549,6 +549,25 @@ gdrl --env_path=build/LunarLander/LunarLander.x86_64 \
     11. `lander_ppo.onnx` imported and loaded in the Sync node; inference scene runs correctly
     12. *(Optional)* Game binary exported for `--n_parallel` training (Section 12)
 
+## 13 · Stretch goals
+
+**Add a second sensor.** Add a second `RayCast2D` pointing 45° off-axis from the first. Re-export the binary, retrain for 300k steps, and compare the TensorBoard curves. Does the agent navigate corners more smoothly? Check `get_obs()` — does adding a sensor change `obs_size` in the Sync node? (It should — rebuild the observation space if needed.)
+
+**Multi-goal episode.** Modify your env so the agent must reach **three goals in sequence** before `done = true`. Spawn each subsequent goal randomly when the previous one is reached. You need to change `get_reward()`, `get_done()`, and track a `_goals_reached` counter in your script. Tip: give a small shaped reward for each step closer to the current goal, plus a larger bonus on reaching it.
+
+**Randomize goal position on reset.** In `reset()`, spawn the goal at a random `Vector2` within the arena bounds instead of a fixed position. Run 500k steps and compare to your fixed-goal baseline. The agent now must generalize across goal positions — does it take more timesteps to converge?
+
+```gdscript
+func reset() -> void:
+    var arena_half = 8.0
+    goal.global_position = Vector2(
+        randf_range(-arena_half, arena_half),
+        randf_range(-arena_half, arena_half)
+    )
+    _prev_dist_to_goal = agent.global_position.distance_to(goal.global_position)
+    _ai.reset()
+```
+
 **What's next:** In Unit 3 you'll study **CrossTheRoad** and train with **DQN**.
 
 [→ Unit 3: CrossTheRoad & DQN](unit-03.md)
