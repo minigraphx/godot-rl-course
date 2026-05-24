@@ -70,4 +70,5 @@ nav:
     - "Debugging RL Training": unit-debugging.md
     - "Advanced Evaluation": unit-evaluation.md
     - "Population-Based Training (PBT)": unit-pbt.md
+    - "World Models (Dreamer)": unit-world-models.md
   - Reference: reference.md
