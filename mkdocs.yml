@@ -65,7 +65,9 @@ nav:
     - "Locomotion Agents (Walker / Crawler / Worm)": unit-locomotion.md
     - "Goal-Conditioned RL & HER": unit-her.md
     - "Sim-to-Real Transfer": unit-sim-to-real.md
+    - "Safe RL / Constrained MDPs": unit-safe-rl.md
   - Guides:
     - "Debugging RL Training": unit-debugging.md
     - "Advanced Evaluation": unit-evaluation.md
+    - "Population-Based Training (PBT)": unit-pbt.md
   - Reference: reference.md
