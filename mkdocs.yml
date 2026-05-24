@@ -46,6 +46,7 @@ nav:
     - "PPO Deep Dive": unit-ppo-deep.md
     - "PPO in Practice (JumperHard)": unit-04.md
     - "SAC — Soft Actor-Critic": unit-sac.md
+    - "PPO From Scratch (CleanRL)": unit-cleanrl.md
   - "Phase 4 — Scale & Complexity":
     - "Parallel Training": unit-05.md
     - "Continuous 3D": unit-06.md
@@ -56,6 +57,7 @@ nav:
   - "Phase 5 — Beyond Reward":
     - "Imitation Learning": unit-09.md
     - "Ship Your Brain": unit-10.md
+    - "Capstone Project": unit-capstone.md
   - "Phase 6 — Robotics":
     - "Robot Observations & Sensors": unit-robotics.md
     - "Goal-Conditioned RL & HER": unit-her.md

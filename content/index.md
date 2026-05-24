@@ -44,6 +44,7 @@ Learn deep reinforcement learning by building and training agents inside real Go
 - [PPO Deep Dive](unit-ppo-deep.md)
 - [PPO in Practice (JumperHard)](unit-04.md)
 - [SAC — Soft Actor-Critic](unit-sac.md)
+- [PPO From Scratch (CleanRL)](unit-cleanrl.md)
 
 **Phase 4 — Scale & Complexity**
 
@@ -58,6 +59,7 @@ Learn deep reinforcement learning by building and training agents inside real Go
 
 - [Unit 9 — Imitation Learning](unit-09.md)
 - [Unit 10 — Ship Your Brain](unit-10.md)
+- [Capstone Project](unit-capstone.md)
 
 **Phase 6 — Robotics**
 

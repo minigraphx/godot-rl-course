@@ -221,6 +221,6 @@ You've completed the course. Here's what you've built:
 | 9 | Imitation learning: BC and GAIL |
 | 10 | ONNX export + Godot inference + HTML5 |
 
-**What comes next:** The alignment sequel builds directly on Unit 9's imitation learning foundation — moving from BC on game demonstrations to SFT on language, then RLHF, reward modelling, and Constitutional AI.
+**What comes next:** Put everything together in the capstone — pick your own environment, design your own reward, train and ship it.
 
-[← Back to course home](index.md)
+[→ Capstone Project](unit-capstone.md) · [← Back to course home](index.md)

@@ -415,4 +415,6 @@ You now have two tools in the toolbox: PPO (your workhorse for game environments
 
 **Unit 5: Parallel Training** covers `n_parallel`, how rollouts are stitched across envs, and how to think about throughput vs sample efficiency. Note that parallelism helps PPO substantially (linear scaling up to dozens of envs) but barely helps SAC — another illustration of the on-policy / off-policy divide.
 
-[→ Parallel Training](unit-05.md)
+Want to go deeper into how PPO actually works in code? **PPO From Scratch (CleanRL)** walks through every line of a single-file PPO implementation before you scale up.
+
+[→ PPO From Scratch (CleanRL)](unit-cleanrl.md) · [→ Parallel Training](unit-05.md)
