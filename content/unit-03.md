@@ -128,6 +128,39 @@ class ReplayBuffer:
 !!! tip "Buffer size vs. memory"
     Storing raw pixel observations at 1M capacity costs gigabytes of RAM. For godot-rl-agents tasks, raycast observations are small floats — 100k capacity is usually fine and keeps memory manageable.
 
+### Prioritized Experience Replay (PER)
+
+Standard replay buffers sample transitions **uniformly at random**. Most transitions are "boring" (reward = 0, nothing new to learn). PER samples in proportion to **TD error** — transitions the network got most wrong get replayed most often.
+
+**Priority formula:**
+
+```
+p_i = |δ_i|^α + ε_per
+```
+
+- `δ_i` — TD error for transition i (how wrong the Q-value prediction was)
+- `α` — prioritization strength (0 = uniform, 1 = full priority); typical value: 0.6
+- `ε_per` — small constant to ensure all transitions have non-zero probability
+
+Sampling with non-uniform probabilities introduces bias — corrected with **importance-sampling weights** that down-weight frequently replayed transitions.
+
+**SB3 implementation (requires `sb3-contrib`):**
+
+```python
+from stable_baselines3 import DQN
+from sb3_contrib import PrioritizedReplayBuffer
+
+model = DQN(
+    "MlpPolicy", env,
+    replay_buffer_class=PrioritizedReplayBuffer,
+    replay_buffer_kwargs={"alpha": 0.6},
+    learning_starts=1000,
+    verbose=1,
+)
+```
+
+**When PER helps:** sparse-reward tasks (CrossTheRoad, multi-room navigation) where informative transitions are rare. **When it doesn't:** dense-reward environments — uniform sampling is already informative, so prioritization adds overhead without benefit.
+
 ---
 
 ## 4 · Target Network
@@ -226,6 +259,34 @@ decay_steps = 100_000
 ```
 
 At step 0 the agent acts randomly, discovering diverse crossings. By step 100k it mostly exploits its learned Q-values, with 5% random exploration to avoid getting stuck in local optima.
+
+**Decay schedule design**
+
+The example above uses **linear decay** — ε drops at a constant rate. Two alternatives are worth knowing:
+
+```python
+# Linear decay (default — predictable, easy to tune)
+epsilon = max(epsilon_min, epsilon_start - (epsilon_start - epsilon_min) * (step / decay_steps))
+
+# Exponential decay (aggressive early, slower late)
+import math
+epsilon = epsilon_min + (epsilon_start - epsilon_min) * math.exp(-step / decay_rate)
+```
+
+| Schedule | Shape | When to use |
+|----------|-------|-------------|
+| Linear | Constant rate of decrease | Most tasks — predictable and easy to tune |
+| Exponential | Fast early, slow late | When you want aggressive early exploration |
+| Curriculum | Step function | When task difficulty changes (multi-room, curriculum) |
+
+**Practical rules:**
+
+- `epsilon_start=1.0` (fully random) is almost always right
+- `epsilon_min=0.05` (5% random at convergence) prevents the policy from becoming brittle
+- `decay_steps` should be ~10–50% of total timesteps — if the agent hasn't learned the basics by then, random exploration is no longer helpful
+- In SB3 DQN: `exploration_fraction` = fraction of total timesteps over which ε decays; `exploration_final_eps` = ε_min
+
+**TensorBoard:** `rollout/exploration_rate` tracks ε in SB3 — add it to your diagnostic monitor alongside `ep_rew_mean`.
 
 **Training vs. evaluation**
 
@@ -357,6 +418,25 @@ Split the network's final layers into two streams:
 - Combine: Q(s, a) = V(s) + (A(s, a) − mean_a A(s, a))
 
 This helps the agent learn that some states are simply bad regardless of what it does — useful for CrossTheRoad where falling into traffic is catastrophically bad no matter what move you make next.
+
+### Noisy Networks and Rainbow
+
+**Noisy Networks** replace standard linear layers with `NoisyLinear` layers that add *learned* noise to weights. The network learns how much to explore by adjusting noise magnitude — no ε schedule needed. This makes exploration adaptive: the network explores more in unfamiliar states and less in well-understood ones.
+
+**Rainbow** (Hessel et al. 2017) combines six DQN improvements into one agent and demonstrated they are complementary — each one helps, and all six together beat any single improvement by a large margin on Atari:
+
+| Component | What it adds |
+|-----------|-------------|
+| Double DQN | Unbiased target Q-values |
+| Dueling DQN | Separate value + advantage streams |
+| Prioritized Replay (PER) | Sample important transitions more |
+| Multi-step returns | n-step TD instead of 1-step |
+| Distributional RL (C51) | Model full return distribution, not just mean |
+| Noisy Networks | Learned exploration (replaces ε-greedy) |
+
+**Practical note:** full Rainbow is not in SB3. Individual components are available: Double DQN is on by default; Dueling via `policy_kwargs={"dueling": True}`; PER via `sb3-contrib` (see Section 3). For most Godot tasks, Double DQN + PER gives ~90% of Rainbow's benefit at a fraction of the complexity.
+
+**When Rainbow matters:** Atari-style pixel tasks with discrete actions and sparse rewards. For Godot's typical environments, PPO usually outperforms any DQN variant.
 
 !!! info "SB3 handles these automatically"
     Stable-Baselines3's `DQN` class supports Double DQN via `policy_kwargs={"optimize_memory_usage": False}` and Dueling networks via `policy_kwargs={"dueling": True}`. You don't need to implement them from scratch.

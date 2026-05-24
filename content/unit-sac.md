@@ -393,6 +393,40 @@ torch.onnx.export(
 
 ---
 
+## 8.5 · The DDPG → TD3 → SAC lineage
+
+SAC's twin-critic trick didn't originate with SAC — it came from **TD3**, which fixed the instabilities of **DDPG**. Understanding this lineage clarifies why SAC's architecture looks the way it does.
+
+**DDPG (Deep Deterministic Policy Gradient, Lillicrap et al. 2015)** was the first off-policy actor-critic for continuous actions. The actor outputs a *deterministic* action `π(s) → a` (no distribution), which avoids the reparameterization complexity SAC needs. It uses a replay buffer just like DQN. Problem: the single Q-network systematically overestimates values, and the deterministic actor is brittle — small perturbations in Q-values can cause large policy swings.
+
+**TD3 (Twin Delayed DDPG, Fujimoto et al. 2018)** fixes DDPG with three targeted changes:
+
+1. **Twin critics** — train two independent Q-networks and take `min(Q1, Q2)` for target computation. Reduces Q-value overestimation bias. This is exactly the trick SAC inherits.
+2. **Delayed policy updates** — update the actor every 2 critic steps instead of every step. Critic estimates stabilize before the policy acts on them, reducing variance in the actor gradient.
+3. **Target policy smoothing** — add small Gaussian noise to the target action during critic updates: `ã = clip(π(s') + clip(ε, -c, c), a_low, a_high)`. Regularizes the Q-function against narrow spikes.
+
+**Where SAC improves on TD3:**
+
+| | DDPG | TD3 | SAC |
+|--|------|-----|-----|
+| Policy | Deterministic | Deterministic | Stochastic |
+| Exploration | Added noise at runtime | Added noise at runtime | Entropy maximization (built-in) |
+| Twin critics | No | Yes | Yes |
+| Delayed updates | No | Yes | Not needed |
+| Sample efficiency | Medium | High | Highest |
+| Hyperparameter sensitivity | High | Medium | Low (auto-α) |
+
+**When to use TD3 over SAC:** when a *deterministic* policy at inference time is required (some robotics deployments that cannot tolerate stochastic actions), or when the entropy bonus in SAC causes issues in a specific environment. For most tasks, SAC outperforms TD3.
+
+```python
+from stable_baselines3 import TD3
+
+model = TD3("MlpPolicy", env, verbose=1)
+model.learn(total_timesteps=1_000_000)
+```
+
+---
+
 ## 9 · Stretch goals
 
 Try these to deepen your understanding:

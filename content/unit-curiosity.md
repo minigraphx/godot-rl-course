@@ -84,6 +84,26 @@ Older approaches (ICM — Intrinsic Curiosity Module, Pathak et al. 2017) used a
 
 ---
 
+## 3.5 · ICM vs RND — comparison
+
+RND is the safer default, but you will encounter **ICM (Intrinsic Curiosity Module, Pathak et al. 2017)** frequently in papers. Understanding the difference matters for choosing between them.
+
+**ICM recap:** ICM uses two learned models. A *forward model* predicts the next-state embedding from `(state, action)`. An *inverse model* predicts the action from `(state, next_state)`. Curiosity = forward model prediction error in a learned feature space — not pixel space, which avoids sensitivity to irrelevant changes.
+
+**The noisy-TV problem:** ICM's forward model is fascinated by irrelevant stochasticity. Imagine a TV in the corner showing random static — the next frame is always unpredictable, so the forward model error stays permanently high. The agent gets stuck watching the TV forever. RND avoids this entirely: the target network is fixed, so it measures *unfamiliarity* (has the predictor seen this state?), not *unpredictability* (is the next state random?).
+
+| | ICM | RND |
+|--|-----|-----|
+| What it measures | Forward model prediction error | Distance from fixed random network |
+| Noisy-TV problem | Yes — stochastic envs fool it | No — stochastic obs have fixed target |
+| Compute cost | Higher (trains two networks) | Lower (trains one predictor) |
+| Feature space | Learned (inverse model) | Random projection |
+| Best for | Deterministic envs, action-relevant features | General use — the safe default |
+
+**When to use ICM:** deterministic environments where the agent controls all meaningful state changes and you want the feature space to capture action-relevant information specifically. **Otherwise:** use RND — it is simpler, cheaper, and immune to the noisy-TV problem.
+
+---
+
 ## 4 · RND in practice with Stable-Baselines3
 
 Install the required packages:
@@ -220,7 +240,7 @@ If yes to all three → try RND. Otherwise → reward shaping (see [Reward Engin
 
 ---
 
-## 6 · Count-based exploration (conceptual)
+## 6 · Count-based exploration
 
 The oldest exploration bonus method:
 
@@ -229,13 +249,33 @@ N(s, a) = number of times (state, action) pair has been visited
 bonus(s, a) = 1 / sqrt(N(s, a))
 ```
 
-Newly visited pairs have low N → high bonus. Frequently visited pairs have high N → near-zero bonus. The agent is automatically pulled toward unexplored regions.
+Newly visited pairs have low N → high bonus. Frequently visited pairs have high N → near-zero bonus. The agent is automatically pulled toward unexplored regions. This bonus is provably optimal in tabular settings.
 
-**Where it works:** tabular settings with discrete state spaces — the Q-Learning FrozenLake example from the [Q-Learning unit](unit-q-learning.md). With a finite grid, you can maintain an exact count table.
+**Where it works:** discrete state spaces with manageable size — the Q-Learning FrozenLake example from the [Q-Learning unit](unit-q-learning.md). With a finite grid, you maintain an exact count table.
 
-**Why it doesn't scale:** continuous state spaces make every state unique. A robot at position (1.000, 2.000) and (1.001, 2.000) are technically different states — both have N=0 forever. State aggregation (discretising continuous states) partially helps but loses information and requires careful tuning.
+**Limitation: continuous state spaces** make every state unique. A robot at position (1.000, 2.000) and (1.001, 2.000) are technically different states — both have N=0 forever. Exact counting breaks.
 
-RND is the scalable deep-learning solution to the same problem: instead of counting exact states, it measures how *well-predicted* a state is, which is a proxy for how often it has been visited.
+**UCB (Upper Confidence Bound)** extends count-based ideas with an uncertainty bonus:
+
+```
+a* = argmax [ Q(s,a) + c · sqrt(log t / N(s,a)) ]
+```
+
+`t` is the total step count; `N(s,a)` is how often that action was tried in this state. Well-studied in bandit literature, but SB3 does not implement UCB for deep RL — it's primarily used in MCTS-style planning.
+
+**SimHash / locality-sensitive hashing** approximates counts in continuous spaces: hash state observations into discrete buckets using a random projection matrix, count bucket visits, and compute `r_int = 1 / sqrt(N(hash(s)))`. Computationally cheap and works in high-dimensional observation spaces without requiring a neural network.
+
+**How these compare to each other and to RND:**
+
+| Method | Continuous obs? | Compute | Notes |
+|--------|-----------------|---------|-------|
+| ε-greedy | N/A | Minimal | No state-level novelty signal |
+| Entropy bonus | N/A | Free (PPO already computes it) | Action-level diversity only |
+| Count-based | Tabular only | Minimal | Optimal in theory, limited in practice |
+| SimHash | Yes (approximate) | Low | No neural network needed |
+| RND | Yes | Medium (one extra network) | Count-based intuition at scale |
+
+**Practical recommendation:** use RND for most continuous-space tasks. Count-based methods and SimHash are useful for research comparisons or bandit-style discrete problems where their theoretical guarantees matter.
 
 ---
 

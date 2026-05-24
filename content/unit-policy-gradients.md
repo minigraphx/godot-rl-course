@@ -258,6 +258,31 @@ Practical consequences:
 
 A common cheap fix is in the code above: **normalize returns** to zero mean and unit variance across the episode. This is a hack — not theoretically justified — but it helps a lot in practice. The principled fix is the next section.
 
+### Why score function variance is high
+
+The gradient is `∇log π(a|s) · G_t`. The return `G_t` has high variance — different episodes take wildly different paths through the environment, and the sum of rewards can swing by 10× between runs. Multiplying by `G_t` amplifies that variance into the gradient. Every update is a noisy estimate of the true gradient direction, and the noise can easily overwhelm the signal.
+
+**Why the reparameterization trick achieves lower variance:**
+
+SAC's actor (see [SAC unit](unit-sac.md)) faces the same problem — it needs gradients through sampled actions. Instead of the score function estimator, it uses reparameterization: write the sample as a *deterministic* function of the policy parameters and an independent noise variable:
+
+```
+ε ~ N(0, 1)               ← sampled independently
+a = μ(s) + σ(s) · ε       ← deterministic function of policy parameters
+```
+
+Now `∂a/∂θ = ∂μ/∂θ + ε · ∂σ/∂θ` — the gradient flows directly through `μ` and `σ`, bypassing the sampling step. This gives much lower variance because the gradient estimate doesn't depend on the return magnitude.
+
+**Which estimator each algorithm uses:**
+
+| Estimator | Used in | Variance |
+|-----------|---------|----------|
+| Score function (REINFORCE) | REINFORCE, A2C, PPO | High (needs baseline) |
+| Reparameterization | SAC actor | Low |
+| Neither | DQN (no policy gradient) | N/A |
+
+**Why PPO uses score function, not reparameterization:** PPO's clipped ratio objective requires differentiating through `log π(a|s)`, not through the action sample itself. The importance-sampling ratio `π_new/π_old` works with already-collected actions — reparameterization would require re-sampling fresh actions at each gradient step and loses the reuse benefit of the replay-free rollout.
+
 ---
 
 ## 6 · Baseline variance reduction

@@ -389,6 +389,38 @@ Remove or hide the debug display before exporting the binary used for parallel t
 | Loss goes NaN | Unnormalized pixels (values 0–255) | Ensure `img.get_pixel().r` path is used, not raw byte values |
 | Agent ignores objects at edge | Field of view too narrow | Widen camera FOV; reposition camera further back |
 
+### Normalization layers in visual RL
+
+Normalization choices in RL are more nuanced than in supervised learning because the data distribution shifts as the policy improves.
+
+**BatchNorm** uses batch statistics during training and running statistics during inference. In RL the data distribution is non-stationary — batch statistics computed on early-training data become stale as the policy improves. This can cause instability and is largely abandoned in modern RL policy networks.
+
+**LayerNorm** normalizes per-sample, not per-batch. It has no running statistics to go stale, making it compatible with non-stationary RL data. It is the preferred normalization inside RL networks when normalization is needed at all.
+
+**VecNormalize** (SB3 wrapper) normalizes the *observations themselves* — not network activations. It tracks running mean and variance of observations and scales them before the network sees them. This operates at the environment level, not the layer level.
+
+| Layer | Used in | Note |
+|-------|---------|------|
+| No normalization | SB3 default MLP | Works fine for low-dim obs |
+| BatchNorm | Early DQN papers | Largely abandoned in modern RL |
+| LayerNorm | Transformer-based policies, large networks | Preferred when normalization is needed |
+| VecNormalize | SB3 wrapper | Obs-level normalization, not layer-level |
+
+**Practical rule:** for MLP policies on low-dim observations, don't add normalization — use `VecNormalize` instead. For CNN policies on images, add `LayerNorm` after conv layers only if training is unstable. For large networks (Transformer, ResNet): LayerNorm is standard.
+
+```python
+class NatureCNNWithNorm(BaseFeaturesExtractor):
+    def __init__(self, observation_space, features_dim=512):
+        super().__init__(observation_space, features_dim)
+        n_input_channels = observation_space.shape[0]
+        self.cnn = nn.Sequential(
+            nn.Conv2d(n_input_channels, 32, kernel_size=8, stride=4),
+            nn.LayerNorm([32, 20, 20]),  # per-sample, no running stats
+            nn.ReLU(),
+            # ... remaining layers
+        )
+```
+
 !!! warning "Verify the SubViewport renders before training"
     A frozen SubViewport (wrong `render_target_update_mode`) will give the agent identical observations every step. The policy will converge to a random or trivial behaviour and the loss will not decrease. Always confirm the SubViewport is live before launching a long training run.
 
