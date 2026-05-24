@@ -340,6 +340,73 @@ For students who want to dig deeper before moving on to PPO:
 
 ---
 
+## 13 · The Actor and Critic Inside SB3's PPO
+
+SB3's PPO is an Actor-Critic method — it has exactly the two heads you built in Section 5. The `ActorCritic` class you wrote maps directly onto `model.policy` in a trained SB3 model.
+
+### Inspecting the actor and critic on a trained Godot agent
+
+```python
+from stable_baselines3 import PPO
+from godot_rl.wrappers.stable_baselines_wrapper import StableBaselinesGodotEnv
+import torch, numpy as np
+
+env = StableBaselinesGodotEnv(env_path="./JumperHard.x86_64", n_parallel=1, speedup=1)
+model = PPO.load("logs/sb3/jumper_baseline/best_model", env=env)
+
+obs, _ = env.reset(), None
+obs_tensor = torch.tensor(obs, dtype=torch.float32).unsqueeze(0)
+
+with torch.no_grad():
+    # Actor: get action distribution
+    dist = model.policy.get_distribution(obs_tensor)
+    action_mean = dist.distribution.loc    # mean of Gaussian (continuous actions)
+    action_std  = dist.distribution.scale  # std (exploration amount)
+
+    # Critic: get value estimate
+    value = model.policy.predict_values(obs_tensor)
+
+print(f"Action mean: {action_mean.numpy()}")
+print(f"Action std:  {action_std.numpy()}")
+print(f"State value: {value.item():.3f}")
+env.close()
+```
+
+The `action_mean` is what the actor recommends; `action_std` reflects how much uncertainty (exploration) remains — a well-trained agent has lower std. The `value` is the critic's estimate of expected return from this state.
+
+### Mapping unit variables to SB3 internals
+
+```
+Unit variable            →  SB3 PPO equivalent
+──────────────────────────────────────────────────
+actor_head               →  model.policy.action_net
+critic_head              →  model.policy.value_net
+shared backbone          →  model.policy.mlp_extractor
+advantage A_t            →  computed in rollout buffer
+ent_coef                 →  model.ent_coef
+vf_coef                  →  model.vf_coef
+n_steps                  →  model.n_steps (rollout length)
+```
+
+### TensorBoard connection
+
+Every loss term from Section 4's combined loss formula has a TensorBoard counterpart:
+
+- `train/policy_gradient_loss` = L_actor from this unit — the actor improving on advantage estimates
+- `train/value_loss` = L_critic from this unit — the critic minimizing squared TD error
+- `train/entropy_loss` = L_entropy — the entropy bonus keeping exploration alive
+
+### The explained variance diagnostic
+
+`train/explained_variance` (shown in SB3's TensorBoard) is the most useful single metric for diagnosing your critic. It measures how well `V(s)` predicts the actual returns:
+
+- **Close to 1.0** — the critic has learned a good value function. The actor is getting accurate advantage estimates, and the training signal is clean.
+- **Near 0 or negative** — the critic is useless. The actor is essentially running REINFORCE with high variance — exactly the problem this unit was designed to solve. If you see this, the critic is undertrained: try a higher `vf_coef`, more `n_steps`, or a lower learning rate.
+
+Watching `explained_variance` climb from near-zero toward 0.9+ during a Godot training run is seeing the critic learn in real time — the same process you implemented in the CartPole code above, just at scale.
+
+---
+
 ## What's next
 
 You now have every conceptual ingredient PPO needs. The next unit takes A2C's loss, swaps `A_t · log π_θ(a_t | s_t)` for a clipped probability ratio, allows multiple epochs over one rollout, and walks through the full PPO update — the algorithm behind every `gdrl` command you have run.

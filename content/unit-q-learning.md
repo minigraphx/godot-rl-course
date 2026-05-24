@@ -530,7 +530,7 @@ You should see a noisy but rising curve: near-zero at first, climbing as ε deca
 
 ---
 
-## N · Model-Based RL — A Different Family Entirely
+## 12 · Model-Based RL — A Different Family Entirely
 
 All methods covered so far are **model-free**: the agent interacts with the environment and learns directly from experience — no internal model of how the world works, just a direct mapping from experience to policy or value estimates.
 
@@ -571,6 +571,53 @@ Dyna-Q combines Q-Learning with a learned model for "imaginary" transitions. Aft
 **Why we don't use it in this course**: model-based RL is harder to train stably. Model errors compound during planning — if the world model is slightly wrong, multi-step rollouts inside it drift further from reality. For game-style Godot environments where simulation is fast and cheap, the complexity cost outweighs the sample-efficiency benefit. PPO with parallel environments gives us effectively unlimited data, making model-free the practical choice here.
 
 Model-based RL is worth knowing exists: if you move from games to robotics or any domain where simulation is slow or impossible, these methods become essential.
+
+---
+
+## 13 · Q-Learning in Godot — CrossTheRoad Revisited
+
+CrossTheRoad (Unit 3) uses DQN — a neural Q-function. Conceptually it IS Q-Learning, just with a neural network instead of a table. Every idea from this unit maps directly onto what `stable_baselines3.DQN` does under the hood.
+
+### Mapping the concepts
+
+| Q-Learning (this unit) | CrossTheRoad / DQN |
+|---|---|
+| **States** — integers 0–15 | Raycast readings + grid position (continuous, not tabular — but same idea) |
+| **Actions** — 0, 1, 2, 3 | move left, right, up, down, wait — 5 discrete actions |
+| **Q-values** — one cell per (s, a) | DQN outputs one Q-value per action: Q(obs, left), Q(obs, right), Q(obs, up), Q(obs, down), Q(obs, wait) |
+| **ε-greedy** — your `epsilon_decay` loop | SB3's `exploration_fraction` and `exploration_final_eps` — exactly the same decay schedule |
+| **Bellman update** — the formula in Section 4 | Happening inside SB3 every training step, using the replay buffer you now understand |
+
+### Inspecting DQN's Q-values in SB3
+
+You can reach directly into the trained network and read the Q-values for any observation — the same numbers that fill your Q-table, but as neural-network outputs:
+
+```python
+from stable_baselines3 import DQN
+import torch, numpy as np
+from godot_rl.wrappers.stable_baselines_wrapper import StableBaselinesGodotEnv
+
+env = StableBaselinesGodotEnv(env_path="./CrossTheRoad.x86_64", n_parallel=1, speedup=1)
+model = DQN.load("logs/sb3/crosstheroad_dqn/best_model", env=env)
+
+# Get an observation and inspect Q-values
+obs, _ = env.reset(), None
+obs_tensor = torch.tensor(obs, dtype=torch.float32).unsqueeze(0)
+with torch.no_grad():
+    q_values = model.q_net(obs_tensor)
+print("Q-values per action:", q_values.numpy())
+# Output: [[-0.23, 0.87, -0.45, 0.61, -0.12]]
+# Greedy action = argmax = action 1 (move right)
+env.close()
+```
+
+The five numbers in the output are exactly `Q(obs, left)`, `Q(obs, right)`, `Q(obs, up)`, `Q(obs, down)`, `Q(obs, wait)`. The agent picks `argmax` — the same greedy rule you implemented in Section 7.
+
+### The core insight
+
+The FrozenLake Q-table you built is a tiny version of exactly what DQN's neural network computes for CrossTheRoad — generalized to continuous observations. A table cannot handle the hundreds of possible raycast values, so the neural network learns a compressed representation that generalizes across similar inputs. The update rule is identical.
+
+In Unit 3 you will see that DQN's **experience replay** (the replay buffer) and **target network** are engineering solutions to make this Q-Learning update stable at neural-network scale. They do not change the algorithm — they prevent the training from diverging when the Q-function is a non-linear approximator rather than a simple table.
 
 ---
 

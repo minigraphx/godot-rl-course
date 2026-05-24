@@ -49,8 +49,10 @@ Learn deep reinforcement learning by building and training agents inside real Go
 
 - [Unit 5 — Parallel Training](unit-05.md)
 - [Unit 6 — Continuous 3D](unit-06.md)
+- [Visual Observations](unit-visual-observations.md)
 - [Unit 7 — Multi-Agent](unit-07.md)
 - [Unit 8 — Memory & POMDPs](unit-08.md)
+- [Self-Play](unit-self-play.md)
 
 **Phase 5 — Beyond Reward**
 
