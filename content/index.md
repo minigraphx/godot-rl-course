@@ -11,6 +11,7 @@ Learn deep reinforcement learning by building and training agents inside real Go
 | **Phase 3 — Policy-Based** | REINFORCE · Actor-Critic · PPO · SAC | Policy gradient theorem, PPO internals, continuous control |
 | **Phase 4 — Scale & Complexity** | Parallel · 3D · Multi-agent · Memory | Real-world training at scale |
 | **Phase 5 — Beyond Reward** | Imitation learning · ONNX/WASM | Alternative learning signals, shipping |
+| **Phase 6 — Robotics** | Robot sensors · HER · sim-to-real | Robot observation/action design, goal-conditioned RL, deploying policies to hardware |
 | **Guides** | Debugging | Systematic diagnosis of broken training |
 
 ## Three ways to see your AI (every unit)
@@ -55,6 +56,12 @@ Learn deep reinforcement learning by building and training agents inside real Go
 
 - [Unit 9 — Imitation Learning](unit-09.md)
 - [Unit 10 — Ship Your Brain](unit-10.md)
+
+**Phase 6 — Robotics**
+
+- [Robot Observations & Sensors](unit-robotics.md)
+- [Goal-Conditioned RL & HER](unit-her.md)
+- [Sim-to-Real Transfer](unit-sim-to-real.md)
 
 **Guides**
 

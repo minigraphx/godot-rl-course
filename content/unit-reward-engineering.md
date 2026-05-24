@@ -396,7 +396,117 @@ This is a full topic on its own — see the stretch goals and a later unit.
 
 ---
 
-## 10 · Reward Engineering Checklist
+## 10 · Safety Constraints in Reward Design
+
+For most course projects, a "bad episode" means the agent falls over or misses the goal. On real hardware, a bad episode can mean a broken servo, a burned-out motor, or a damaged gearbox. Reward design must reflect the cost structure of the actual system being controlled.
+
+### Hard constraints vs soft penalties
+
+There are two ways to encode a constraint in reward:
+
+```gdscript
+# Soft penalty — discourages the behavior but does not terminate
+if abs(joint_angle) > safe_range * 0.8:
+    _ai.reward -= 0.1   # warns the policy to back off
+
+# Hard constraint — terminates immediately and applies a large penalty
+if abs(joint_angle) > hard_limit:
+    _ai.reward -= 5.0   # strong negative signal
+    _ai.done = true     # end the episode — this would break hardware
+    _ai.needs_reset = true
+```
+
+Use soft penalties to shape the policy toward safe operation well before the hard boundary. Use hard constraints to terminate episodes that cross into physically dangerous territory. The two-tier structure — warn at 70%, terminate at 90% — is a practical rule of thumb used in sim-to-real transfer work.
+
+### Common hardware safety constraints
+
+| Constraint | Godot implementation | Why it matters |
+|---|---|---|
+| Joint angle limits | Check bone rotation against configured limit | Servo strip / mechanical stop damage |
+| Velocity limits | Check `linear_velocity.length()` against max | Motor overheating under sustained high speed |
+| Acceleration limits | Check velocity change per physics step | Gearbox shock loads from abrupt starts/stops |
+| Ground contact force | Check collision normal force magnitude | Leg impact damage on hard landings |
+| Workspace limits | Check `global_position` bounds | Arm or end-effector hitting a fixed surface |
+
+### The safety-performance tradeoff
+
+Strict safety constraints reduce learning speed because more episodes terminate early, meaning fewer transitions per episode reach later task states. Too-loose constraints allow the policy to find dangerous behaviors in simulation that would damage hardware on transfer.
+
+A practical starting point: set hard termination at 90% of the physical limit; begin soft penalties at 70%. If the policy still finds the boundary too often, lower both thresholds or increase the soft penalty coefficient.
+
+!!! warning "Safety constraints are not free"
+    Every additional termination condition is effectively a curriculum difficulty increase. If training stalls after adding a safety constraint, check whether the survival time has dropped sharply in TensorBoard (`rollout/ep_len_mean`). If episodes are very short, the safety boundary may be tighter than the policy can reliably avoid during early training — consider curriculum-based constraint tightening.
+
+---
+
+## 11 · Energy Efficiency in Reward Design
+
+Energy efficiency matters in two different contexts:
+
+- **Real robots**: battery life, motor heat, mechanical longevity — all are directly affected by how much power the policy commands.
+- **Virtual robots**: energy penalties produce more natural-looking, human-like motion by discouraging the "spastic" high-frequency joint oscillations that unconstrained policies tend to discover.
+
+### Power-based penalty
+
+The physically accurate approach: penalize the actual power consumed at each joint.
+
+```gdscript
+# Power = force × velocity (translational) or torque × angular_velocity (rotational)
+var translational_power = applied_force.dot(linear_velocity)
+var rotational_power    = applied_torque.dot(angular_velocity)
+var total_power = abs(translational_power) + abs(rotational_power)
+_ai.reward -= total_power * power_penalty_coeff   # typically 0.0001 to 0.001
+```
+
+The coefficient `power_penalty_coeff` is the most sensitive hyperparameter here. Too large and the policy freezes (no motion = no power = high reward). Too small and it has no effect on the gait. Start at `0.0001` and increase until gait quality improves without stopping locomotion.
+
+### Action magnitude penalty (simpler approximation)
+
+When joint torque data is not readily accessible, penalize the magnitude of the action vector directly:
+
+```gdscript
+# Penalize large actions regardless of outcome — reduces jerkiness
+var action_magnitude = 0.0
+for a in last_action.values():
+    if a is Array:
+        for v in a: action_magnitude += v * v
+    else:
+        action_magnitude += a * a
+_ai.reward -= action_magnitude * 0.0005
+```
+
+This is the same as MuJoCo's `ctrl_cost` (the sum of squared action components multiplied by a cost coefficient), which appears in every standard locomotion benchmark. The intuition is that large actions require large forces, which require large currents, which consume large amounts of power. Action magnitude is a cheap and effective proxy.
+
+### Smoothness penalty
+
+The energy penalty reduces average power consumption. The smoothness penalty reduces peak-to-peak variation — it discourages policies that alternate between high and low torque rapidly:
+
+```gdscript
+# Penalize rapid action changes (jerk) — produces smoother policies
+if _prev_action != null:
+    var action_delta = 0.0
+    for key in last_action:
+        var curr = last_action[key] if last_action[key] is float else last_action[key][0]
+        var prev = _prev_action[key] if _prev_action[key] is float else _prev_action[key][0]
+        action_delta += (curr - prev) * (curr - prev)
+    _ai.reward -= action_delta * 0.001
+_prev_action = last_action.duplicate(true)
+```
+
+Note `duplicate(true)` — a deep copy is required here. If you store a reference to `last_action`, `_prev_action` will reflect the current action on the next step, making the delta always zero.
+
+### When to use which
+
+| Situation | Recommended approach |
+|---|---|
+| Simulated locomotion, want natural-looking gait | Action magnitude penalty (simple, effective) |
+| Sim-to-real transfer | Power-based penalty (physically grounded) |
+| Policy produces jitter / vibration | Smoothness penalty on action deltas |
+| All three issues | Stack all three with separate tunable coefficients |
+
+---
+
+## 12 · Reward Engineering Checklist
 
 Print this. Tape it to your monitor.
 
@@ -418,11 +528,18 @@ Print this. Tape it to your monitor.
 - [ ] Is the agent doing **something reasonable**, even if suboptimal?
 - [ ] Are the per-component reward magnitudes **balanced**? (log them separately in TensorBoard)
 
+### Hardware safety (add if deploying to real robot)
+
+- [ ] Joint limit violations terminate episodes with a hard penalty
+- [ ] Soft penalty begins at 70% of hard limit; hard penalty + `done = true` at 90%
+- [ ] Energy efficiency penalty is active to prevent overheating behavior
+- [ ] Action magnitude or smoothness penalty is present to reduce mechanical wear
+
 If any item fails: **stop training. Fix the reward. Restart.** Throwing more steps at a broken reward never works.
 
 ---
 
-## 11 · Stretch Goals
+## 13 · Stretch Goals
 
 If you finished the unit and want more practice:
 

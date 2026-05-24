@@ -243,6 +243,120 @@ gdrl --env_path=./JumperHard.x86_64 \
 
 ---
 
+## 9 · Locomotion reward engineering
+
+Navigation tasks have a single objective: get from A to B. Locomotion is different — the robot must discover a **gait** (a coordinated pattern of limb movements) as an emergent side effect of maximizing forward progress. The reward function is not just measuring success; it is sculpting which gait appears.
+
+### Locomotion-specific reward components
+
+**Forward velocity reward (the primary signal)**
+
+```gdscript
+# Reward forward velocity — encourages the robot to move fast
+var forward_vel = linear_velocity.dot(global_transform.basis.z)  # z = forward axis
+_ai.reward += forward_vel / max_speed * 0.1
+```
+
+This is the core signal, but it has a dangerous failure mode: the robot learns to **fall forward**. A single large forward lurch before collapsing maximizes forward velocity for one step — then the episode ends. Fix: pair it with a survival bonus.
+
+**Survival bonus**
+
+```gdscript
+_ai.reward += 0.005   # per physics step — gives robot reason to stay alive
+```
+
+Without this, the agent has no incentive to remain on its feet. The survival bonus is what converts "fall forward" into "keep moving forward".
+
+**Upright posture reward**
+
+```gdscript
+# Reward staying upright — dot product of up-vector with world up
+var uprightness = global_transform.basis.y.dot(Vector3.UP)   # 1.0 = upright, -1.0 = upside down
+_ai.reward += max(0.0, uprightness) * 0.01
+```
+
+This discourages locomotion policies that stay low or lean heavily. Combined with survival, it pushes the agent toward an upright stance before it has to worry about efficient walking.
+
+**Energy efficiency (minimize power consumption)**
+
+```gdscript
+# Power = torque × angular_velocity (in Watts)
+# Penalizing it encourages smooth, efficient gaits
+var total_power = 0.0
+for joint in joints:
+    total_power += abs(joint_torques[joint] * joint_angular_velocities[joint])
+_ai.reward -= total_power * 0.0001
+```
+
+This is the most important shaping term for producing natural-looking gaits. Without an energy penalty, locomotion policies frequently discover "galloping" motions that are mechanically unreasonable and would not work on real hardware. The energy penalty naturally produces walking-like gaits because walking is metabolically cheap — each leg briefly supports weight, transfers momentum, and swings forward with minimal effort.
+
+**Smoothness reward (minimize jerk)**
+
+```gdscript
+# Penalize rapid changes in velocity (mechanical wear, instability)
+var jerk = (linear_velocity - _prev_linear_velocity).length() / delta
+_ai.reward -= jerk * 0.00001
+_prev_linear_velocity = linear_velocity
+```
+
+Jerk is the derivative of acceleration. High jerk means the robot is lurching rather than flowing. Penalizing it tends to produce smoother trajectories and reduces the visual "vibrating" that appears in early locomotion policies.
+
+**Contact reward (for multi-legged robots)**
+
+```gdscript
+# For robots with legs: reward foot-ground contact to encourage proper gait
+for foot in feet:
+    if foot.is_colliding():
+        _ai.reward += 0.001
+```
+
+For walking robots with discrete feet, rewarding ground contact guides the policy toward periodically planting and lifting each foot — the basis of a gait — rather than sliding along the ground or hopping on one leg.
+
+**Fall termination**
+
+```gdscript
+# End episode if robot falls — saves training time
+if global_position.y < fall_threshold:
+    _ai.reward -= 1.0   # penalty for falling
+    _ai.done = true
+    _ai.needs_reset = true
+```
+
+Ending the episode on a fall has two benefits: it saves compute (no more steps from a failed state) and it sends a strong signal that falling is costly. The penalty magnitude should be around 10–20× the per-step survival bonus.
+
+### Gait emergence
+
+The gait that emerges depends directly on which reward components are active. Adding components one at a time and watching the Godot viz checkpoint at each stage is the best way to build intuition:
+
+| Reward components | Gait that typically emerges |
+|---|---|
+| Forward velocity only | Falls forward (one step, then dies) |
+| Velocity + survival | Shuffling, dragging along the ground |
+| Velocity + survival + upright | Upright hopping or bobbing |
+| + energy efficiency | Walking-like gait with reduced wasted motion |
+| + smoothness | Smooth walking with less jitter and vibration |
+| All of the above | Natural-looking locomotion gait |
+
+Each row is the previous row plus one signal. This is not a coincidence — each component closes a specific loophole that the agent was exploiting in the row above it.
+
+!!! tip "JumperHard's jump bonus is a shaped sparse component"
+    JumperHard uses a jump bonus — a sparse component that fires only on "hard" jumps. This is a sparse signal layered on top of dense locomotion rewards. The dense rewards keep learning stable between jumps; the sparse bonus steers the policy toward the actual task objective. Add `print(_ai.reward)` for 10 steps to see which component dominates in a given training phase.
+
+### Comparison with MuJoCo locomotion benchmarks
+
+If you ever read a locomotion paper — HalfCheetah, Ant, Hopper, Walker2D — the reward function will look almost identical to what is described above:
+
+- **`forward_reward`** → forward velocity (same as the primary signal here)
+- **`healthy_reward`** or **`survive_reward`** → survival bonus (same concept)
+- **`ctrl_cost`** → `sum(action² ) × weight` — this is the MuJoCo approximation of energy efficiency. Instead of measuring actual torque × angular velocity, MuJoCo penalizes the magnitude of the action vector, which is a proxy for control effort.
+- **`contact_cost`** (Ant) → penalizes high contact forces, similar to safety constraints
+
+The key difference is that MuJoCo uses action magnitude as a proxy for power, while Godot's physics engine lets you compute actual joint torques. Both approaches produce similar gait behavior in practice.
+
+Understanding JumperHard's reward is sufficient to read any locomotion paper's reward section. The vocabulary is the same; only the coefficient values differ.
+
+---
+
 ## Stretch Goals
 
 ### Automated hyperparameter search with Optuna

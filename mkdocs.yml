@@ -54,6 +54,10 @@ nav:
   - "Phase 5 — Beyond Reward":
     - "Imitation Learning": unit-09.md
     - "Ship Your Brain": unit-10.md
+  - "Phase 6 — Robotics":
+    - "Robot Observations & Sensors": unit-robotics.md
+    - "Goal-Conditioned RL & HER": unit-her.md
+    - "Sim-to-Real Transfer": unit-sim-to-real.md
   - Guides:
     - "Debugging RL Training": unit-debugging.md
   - Reference: reference.md
