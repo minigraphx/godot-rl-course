@@ -54,10 +54,12 @@ Learn deep reinforcement learning by building and training agents inside real Go
 - [Unit 7 — Multi-Agent](unit-07.md)
 - [Unit 8 — Memory & POMDPs](unit-08.md)
 - [Self-Play](unit-self-play.md)
+- [Hierarchical RL](unit-hierarchical.md)
 
 **Phase 5 — Beyond Reward**
 
 - [Unit 9 — Imitation Learning](unit-09.md)
+- [Offline RL](unit-offline-rl.md)
 - [Unit 10 — Ship Your Brain](unit-10.md)
 - [Capstone Project](unit-capstone.md)
 
@@ -70,6 +72,7 @@ Learn deep reinforcement learning by building and training agents inside real Go
 **Guides**
 
 - [Debugging RL Training](unit-debugging.md)
+- [Advanced Evaluation](unit-evaluation.md)
 
 ## After this course
 

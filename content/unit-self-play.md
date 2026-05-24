@@ -533,10 +533,10 @@ Self-play closes the loop on Phase 4. You have now seen:
 - **Memory & POMDPs** ([Unit 8](unit-08.md)) — handling partial observability with recurrence.
 - **Self-play** (this unit) — using yourself as the curriculum.
 
-Phase 5 turns the corner from "policies that learn from scratch" to **policies that learn from humans**: imitation learning, behavior cloning, and the first steps toward RLHF. After spending all of Phase 4 watching agents discover behavior from reward signals alone, Phase 5 asks: what if we just *show* them?
+**Hierarchical RL:** Long-horizon tasks where flat PPO stalls — multi-room navigation, multi-step assembly — can be decomposed with a high-level policy that sets subgoals and a low-level policy that achieves them.
 
-[→ Imitation Learning](unit-09.md)
+[→ Hierarchical RL](unit-hierarchical.md)
 
 ---
 
-[← Memory & POMDPs](unit-08.md) · [Course home](index.md) · [→ Imitation Learning](unit-09.md)
+[← Memory & POMDPs](unit-08.md) · [Course home](index.md) · [→ Hierarchical RL](unit-hierarchical.md)

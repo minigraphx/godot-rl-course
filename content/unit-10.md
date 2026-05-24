@@ -2,7 +2,7 @@
 
 Your policy is trained. Now get it **out of Python and into Godot** — running at full speed without a Python process, as a self-contained game. Learn the ONNX export pipeline, load and resume checkpoints, and optionally publish a playable HTML5 demo.
 
-[← Unit 9: Imitation Learning](unit-09.md) · [Course home](index.md)
+[← Offline RL](unit-offline-rl.md) · [Course home](index.md)
 
 ---
 

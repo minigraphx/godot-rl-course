@@ -54,8 +54,10 @@ nav:
     - "Multi-Agent": unit-07.md
     - "Memory & POMDPs": unit-08.md
     - "Self-Play": unit-self-play.md
+    - "Hierarchical RL": unit-hierarchical.md
   - "Phase 5 — Beyond Reward":
     - "Imitation Learning": unit-09.md
+    - "Offline RL": unit-offline-rl.md
     - "Ship Your Brain": unit-10.md
     - "Capstone Project": unit-capstone.md
   - "Phase 6 — Robotics":
@@ -65,4 +67,5 @@ nav:
     - "Sim-to-Real Transfer": unit-sim-to-real.md
   - Guides:
     - "Debugging RL Training": unit-debugging.md
+    - "Advanced Evaluation": unit-evaluation.md
   - Reference: reference.md

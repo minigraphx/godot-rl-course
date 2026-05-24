@@ -219,6 +219,6 @@ A good BC agent looks "human-like" — it hesitates at the same spots you hesita
 
 ## What's next
 
-**Unit 10:** Ship your trained brain — export to ONNX, run inference in Godot without Python, and optionally publish as a playable HTML5 demo.
+**Offline RL:** Got recorded demonstrations but no live environment? Offline RL trains from a fixed dataset — no environment interaction needed. Essential for robotics and safety-critical domains.
 
-[→ Unit 10: Ship Your Brain](unit-10.md)
+[→ Offline RL](unit-offline-rl.md)
