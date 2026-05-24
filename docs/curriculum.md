@@ -47,6 +47,7 @@ Optional stretch: inspect exported **ONNX** in [Netron](https://netron.app) befo
 
 - **Unit 1:** Skim MDP loop (~15 min) → tweak one BallChase reward → read deeper theory while training runs.
 - **Unit 2:** Phase A — run/tweak **SimpleReachGoal** hub or source; Phase B — build Lunar Lander from scratch.
+- **After Unit 3 (DQN):** If CrossTheRoad reward curve is flat → assign the **Curiosity unit** (Intrinsic Motivation & RND) before Unit 4. Sparse-reward diagnosis is the direct motivation; students should read it while their headless training runs.
 - **Unit 5:** Same BallChase env, new skill — parallel rollouts (`n_parallel`), not a repeat lesson.
 - **After headless units (3+):** Schedule a short **viz checkpoint** — re-run with `--viz` or editor to screenshot before/after behavior.
 
@@ -57,6 +58,7 @@ Optional stretch: inspect exported **ONNX** in [Netron](https://netron.app) befo
 | 11 | CleanRL & Sample Factory |
 | 12 | Capstone (stretch pool) |
 | 13 | Self-play (AirHockey, RobotVolleyball) |
+| 14 | Locomotion Agents — Walker, Crawler, Worm (AI Warehouse parity) |
 
 ## After this course
 
