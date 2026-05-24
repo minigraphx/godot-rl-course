@@ -60,6 +60,7 @@ nav:
     - "Capstone Project": unit-capstone.md
   - "Phase 6 — Robotics":
     - "Robot Observations & Sensors": unit-robotics.md
+    - "Locomotion Agents (Walker / Crawler / Worm)": unit-locomotion.md
     - "Goal-Conditioned RL & HER": unit-her.md
     - "Sim-to-Real Transfer": unit-sim-to-real.md
   - Guides:

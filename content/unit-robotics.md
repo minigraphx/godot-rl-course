@@ -462,6 +462,6 @@ You can now:
 - Stack safety, efficiency, and smoothness rewards without drowning the task signal
 - Read robotics papers and know whether their MuJoCo / Isaac setup maps to what you have in Godot
 
-The next unit introduces **goal-conditioned RL and Hindsight Experience Replay (HER)** — the trick that turns sparse-reward reaching tasks (like the 3-DOF arm you just built) from "unlearnable" into "trains in an afternoon."
+The next unit shows how to build Walker, Crawler, and Worm agents from scratch in Godot — the locomotion demos you've seen in AI Warehouse, rebuilt with the same reward structure you now know.
 
-[→ Goal-Conditioned RL & HER](unit-her.md)
+[→ Locomotion Agents](unit-locomotion.md)

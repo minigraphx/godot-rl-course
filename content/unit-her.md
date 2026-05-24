@@ -1,6 +1,6 @@
 # Goal-Conditioned RL & Hindsight Experience Replay
 
-[← Robot Observations & Sensors](unit-robotics.md) · [Course home](index.md)
+[← Locomotion Agents](unit-locomotion.md) · [Course home](index.md)
 
 !!! info "Three ways to see your AI"
     - **Godot viewport** — watch the arm reach toward a randomly spawned goal marker every episode; the goal moves, but the same policy handles it.
