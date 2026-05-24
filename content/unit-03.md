@@ -270,6 +270,7 @@ epsilon = max(epsilon_min, epsilon_start - (epsilon_start - epsilon_min) * (step
 
 # Exponential decay (aggressive early, slower late)
 import math
+decay_rate = 20_000  # characteristic timescale in steps
 epsilon = epsilon_min + (epsilon_start - epsilon_min) * math.exp(-step / decay_rate)
 ```
 

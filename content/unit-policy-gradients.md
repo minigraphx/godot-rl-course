@@ -267,11 +267,11 @@ The gradient is `∇log π(a|s) · G_t`. The return `G_t` has high variance — 
 SAC's actor (see [SAC unit](unit-sac.md)) faces the same problem — it needs gradients through sampled actions. Instead of the score function estimator, it uses reparameterization: write the sample as a *deterministic* function of the policy parameters and an independent noise variable:
 
 ```
-ε ~ N(0, 1)               ← sampled independently
-a = μ(s) + σ(s) · ε       ← deterministic function of policy parameters
+z ~ N(0, 1)               ← sampled independently (z, not ε, to avoid confusion with ε-greedy)
+a = μ(s) + σ(s) · z       ← deterministic function of policy parameters
 ```
 
-Now `∂a/∂θ = ∂μ/∂θ + ε · ∂σ/∂θ` — the gradient flows directly through `μ` and `σ`, bypassing the sampling step. This gives much lower variance because the gradient estimate doesn't depend on the return magnitude.
+Now `∂a/∂θ = ∂μ/∂θ + z · ∂σ/∂θ` — the gradient flows directly through `μ` and `σ`, bypassing the sampling step. This gives much lower variance because the gradient estimate doesn't depend on the return magnitude.
 
 **Which estimator each algorithm uses:**
 

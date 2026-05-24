@@ -104,7 +104,7 @@ This is the one trick that took PPO from "interesting" to "standard."
 | Optimizer | Conjugate gradient + line search | Adam |
 | Compute per update | O(n²) — Fisher matrix inversion | O(n) |
 | Hyperparameter | δ (KL threshold) | ε (clip range), `target_kl` |
-| When to use | Robotics papers require near-monotonic improvement guarantees | Everything else |
+| When to use | Safety-critical or robotics tasks requiring monotonic improvement guarantees | Everything else |
 
 ---
 

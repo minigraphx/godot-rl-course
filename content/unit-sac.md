@@ -393,7 +393,7 @@ torch.onnx.export(
 
 ---
 
-## 8.5 · The DDPG → TD3 → SAC lineage
+## The DDPG → TD3 → SAC lineage
 
 SAC's twin-critic trick didn't originate with SAC — it came from **TD3**, which fixed the instabilities of **DDPG**. Understanding this lineage clarifies why SAC's architecture looks the way it does.
 
@@ -410,7 +410,7 @@ SAC's twin-critic trick didn't originate with SAC — it came from **TD3**, whic
 | | DDPG | TD3 | SAC |
 |--|------|-----|-----|
 | Policy | Deterministic | Deterministic | Stochastic |
-| Exploration | Added noise at runtime | Added noise at runtime | Entropy maximization (built-in) |
+| Exploration | Ornstein-Uhlenbeck noise (correlated) | Gaussian noise (uncorrelated) | Entropy maximization (built-in) |
 | Twin critics | No | Yes | Yes |
 | Delayed updates | No | Yes | Not needed |
 | Sample efficiency | Medium | High | Highest |

@@ -84,7 +84,7 @@ Older approaches (ICM — Intrinsic Curiosity Module, Pathak et al. 2017) used a
 
 ---
 
-## 3.5 · ICM vs RND — comparison
+## ICM vs RND — comparison
 
 RND is the safer default, but you will encounter **ICM (Intrinsic Curiosity Module, Pathak et al. 2017)** frequently in papers. Understanding the difference matters for choosing between them.
 
