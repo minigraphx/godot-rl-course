@@ -128,6 +128,42 @@ class ReplayBuffer:
 !!! tip "Buffer size vs. memory"
     Storing raw pixel observations at 1M capacity costs gigabytes of RAM. For godot-rl-agents tasks, raycast observations are small floats — 100k capacity is usually fine and keeps memory manageable.
 
+### Prioritized Experience Replay (PER)
+
+Uniform random sampling treats every transition equally — but most transitions in a large buffer are "boring" (reward = 0, Q-target close to current estimate). **PER** samples transitions in proportion to their TD error: transitions the network got most wrong are revisited more often.
+
+**Priority formula:**
+
+```
+p_i = |δ_i|^α + ε_per
+```
+
+- `δ_i` — TD error for transition i (large error → high priority)
+- `α` — controls how much prioritization (0 = uniform, 1 = fully proportional)
+- `ε_per` — small constant so every transition has non-zero chance of being sampled
+
+Sampling by priority introduces bias (non-uniform data distribution), corrected by importance-sampling weights `w_i = (1 / N·P(i))^β` applied to the loss.
+
+**SB3 via sb3-contrib:**
+
+```python
+from stable_baselines3 import DQN
+from sb3_contrib import QRDQN  # or use PrioritizedReplayBuffer directly
+
+from stable_baselines3.common.buffers import ReplayBuffer
+# PrioritizedReplayBuffer is in sb3_contrib
+from sb3_contrib.common.buffers import PrioritizedReplayBuffer
+
+model = DQN(
+    "MlpPolicy", env,
+    replay_buffer_class=PrioritizedReplayBuffer,
+    replay_buffer_kwargs={"alpha": 0.6},
+    learning_starts=1000,
+)
+```
+
+**When PER helps:** sparse reward tasks where a few transitions contain almost all the useful signal (first-time goal reached, first collision). **When it doesn't:** dense reward environments where nearly every transition is informative — uniform sampling is already good enough. Watch `train/td_loss` variance: high variance early that falls quickly is a sign PER is working.
+
 ---
 
 ## 4 · Target Network
@@ -234,6 +270,33 @@ At step 0 the agent acts randomly, discovering diverse crossings. By step 100k i
 
 !!! tip "Watching ε decay in CrossTheRoad"
     The DQN agent exploring CrossTheRoad is trying random moves early — you'll see it fall off the road constantly in the first few thousand steps. As ε decays toward 0.05, the agent starts exploiting its learned Q-values and you'll see it make purposeful crossing attempts. The flat → sharp-jump curve in TensorBoard corresponds directly to ε decay meeting a sufficient amount of replay buffer experience.
+
+### Decay schedule design
+
+**Linear decay** — the SB3 default, controlled by two parameters:
+
+```python
+model = DQN(
+    "MlpPolicy", env,
+    exploration_fraction=0.1,   # fraction of total_timesteps over which ε decays
+    exploration_final_eps=0.05, # ε_min at the end of the decay period
+)
+# ε(t) = max(ε_min, ε_start − (ε_start − ε_min) × (step / decay_steps))
+```
+
+**Exponential decay** — aggressive early exploration, slow late:
+
+```python
+epsilon = epsilon_min + (epsilon_start - epsilon_min) * math.exp(-step / decay_rate)
+```
+
+| Schedule | Shape | When to use |
+|----------|-------|-------------|
+| Linear | Constant rate | Most tasks — predictable and easy to tune |
+| Exponential | Fast early, slow late | When you want heavy exploration in early training |
+| Curriculum | Step function | When task difficulty changes (multi-room, staged environments) |
+
+**Practical rules:** `exploration_fraction=0.1` (decay over 10% of timesteps) is often too fast for sparse tasks — try `0.3`. `exploration_final_eps=0.05` keeps the policy from becoming brittle. Monitor `rollout/exploration_rate` in TensorBoard to confirm ε is decaying at the rate you expect.
 
 ---
 
@@ -363,6 +426,25 @@ This helps the agent learn that some states are simply bad regardless of what it
 
 !!! tip "Bridge to continuous control"
     For continuous actions — Unit 6 FlyBy, JumperHard with joint torques — we need policy-based methods that output action *distributions* rather than Q-value tables. That is exactly what PPO does, and why the next unit focuses on it. See [Unit 4: JumperHard & PPO](unit-04.md).
+
+### Noisy Networks and Rainbow DQN
+
+**Noisy Networks** replace the final linear layers of the Q-network with `NoisyLinear` layers that inject *learned* noise into the weights. The network controls its own exploration by adjusting the noise magnitude — no ε schedule needed.
+
+**Rainbow DQN** (Hessel et al. 2017) combines six DQN improvements into a single agent:
+
+| Component | What it adds |
+|-----------|-------------|
+| Double DQN | Unbiased target Q-values |
+| Dueling DQN | Separate value + advantage streams |
+| Prioritized Replay (PER) | Sample important transitions more |
+| Multi-step returns | n-step TD instead of 1-step |
+| Distributional RL (C51) | Model full return distribution, not just mean |
+| Noisy Networks | Learned exploration — no ε schedule |
+
+The landmark result: combining all six beats any individual improvement by a large margin on Atari. The improvements are complementary, not redundant.
+
+**Practical note for Godot tasks:** full Rainbow is not in SB3. Use individual components: Double DQN is on by default; Dueling via `policy_kwargs={"dueling": True}`; PER via sb3-contrib (see Section 3.1 above). For most Godot environments, PPO outperforms any DQN variant — DQN shines on discrete, sparse-reward tasks. If you are on a discrete task with sparse rewards and DQN is still underperforming, try PER + Dueling before reaching for Rainbow.
 
 ---
 

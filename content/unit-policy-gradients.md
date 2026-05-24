@@ -258,6 +258,28 @@ Practical consequences:
 
 A common cheap fix is in the code above: **normalize returns** to zero mean and unit variance across the episode. This is a hack — not theoretically justified — but it helps a lot in practice. The principled fix is the next section.
 
+### Why the score function estimator is high-variance
+
+The gradient `∇log π(a|s) · G_t` multiplies a log-probability by the return. The return G_t has high variance because different episodes take wildly different paths through the environment. The product amplifies this variance — every gradient step is a noisy estimate of the true gradient direction. A baseline b(s) removes the "how good is this state overall" noise and isolates "how good was this specific action" — reducing variance without changing the gradient in expectation (since `E[∇log π · b(s)] = 0`).
+
+### The reparameterization trick (SAC, low-variance alternative)
+
+Instead of sampling `a ~ π(a|s)` and differentiating *through* the sampling step (which the score function estimator does), write:
+
+```
+a = μ_θ(s) + σ_θ(s) · ε,    ε ~ N(0, 1)
+```
+
+Now the randomness lives entirely in `ε`, which does not depend on θ. The gradient flows directly through `μ_θ` and `σ_θ` — bypassing the discrete sampling. Much lower variance. This is why SAC's actor has low-variance gradients even without a baseline. See [SAC unit](unit-sac.md) §7 for implementation details.
+
+| Estimator | Used in | Variance |
+|-----------|---------|----------|
+| Score function (REINFORCE) | REINFORCE, A2C, PPO | High (needs baseline) |
+| Reparameterization | SAC actor | Low |
+| Neither (no policy gradient) | DQN | N/A |
+
+**Why PPO uses score function, not reparameterization:** PPO's clipped ratio objective requires differentiating through the log-probability to measure how much the policy has changed. Reparameterization would remove that signal. The score function estimator is the right choice when the policy ratio is part of the objective — and the baseline (via GAE) handles the variance problem.
+
 ---
 
 ## 6 · Baseline variance reduction

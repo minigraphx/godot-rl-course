@@ -395,6 +395,40 @@ Remove or hide the debug display before exporting the binary used for parallel t
 !!! tip "Grayscale first, colour second"
     Start every new visual task with grayscale at 32×32 or 64×64. Verify the agent learns something. Then scale up resolution or add colour only if you have evidence that colour information helps. Each increase in resolution multiplies training time.
 
+### BatchNorm vs LayerNorm vs VecNormalize
+
+Normalization layers are standard in supervised deep learning but their use in RL is nuanced — the non-stationarity of RL data creates specific problems.
+
+**BatchNorm** computes statistics across the batch during training and uses running statistics during inference. In RL, the data distribution shifts as the policy improves; batch statistics computed on early-training data become stale. This can cause instability and is largely abandoned in modern deep RL networks.
+
+**LayerNorm** normalizes per-sample, not per-batch. No running statistics to go stale; compatible with non-stationary data. Preferred when normalization is needed inside a deep RL network.
+
+**VecNormalize** (SB3 wrapper) normalizes the *observation* before it enters the network — not inside the network. Operates at the environment level, not the layer level.
+
+| Layer | Used in | Note |
+|-------|---------|------|
+| No normalization | SB3 default MLP | Works fine for low-dim obs |
+| BatchNorm | Early DQN papers | Largely abandoned in modern RL |
+| LayerNorm | Transformer-based policies, large networks | Preferred when normalization is needed |
+| VecNormalize | SB3 wrapper | Obs-level normalization, not layer-level |
+
+**Practical rule:** for MLP policies on low-dim observations, don't add normalization — use `VecNormalize` instead. For CNN policies on images: add LayerNorm after conv layers if training is unstable. Example:
+
+```python
+class NatureCNNWithNorm(BaseFeaturesExtractor):
+    def __init__(self, observation_space, features_dim=512):
+        super().__init__(observation_space, features_dim)
+        n_input_channels = observation_space.shape[0]
+        self.cnn = nn.Sequential(
+            nn.Conv2d(n_input_channels, 32, kernel_size=8, stride=4),
+            nn.LayerNorm([32, 20, 20]),
+            nn.ReLU(),
+            nn.Conv2d(32, 64, kernel_size=4, stride=2),
+            nn.ReLU(),
+            nn.Flatten(),
+        )
+```
+
 ---
 
 ## 9 · Hybrid: visual + proprioceptive observations
