@@ -84,7 +84,7 @@ Older approaches (ICM — Intrinsic Curiosity Module, Pathak et al. 2017) used a
 
 ---
 
-## ICM vs RND — comparison
+## 3.1 · ICM vs RND — when to use each
 
 RND is the safer default, but you will encounter **ICM (Intrinsic Curiosity Module, Pathak et al. 2017)** frequently in papers. Understanding the difference matters for choosing between them.
 
@@ -263,7 +263,7 @@ a* = argmax [ Q(s,a) + c · sqrt(log t / N(s,a)) ]
 
 `t` is the total step count; `N(s,a)` is how often that action was tried in this state. Well-studied in bandit literature, but SB3 does not implement UCB for deep RL — it's primarily used in MCTS-style planning.
 
-**SimHash / locality-sensitive hashing** approximates counts in continuous spaces: hash state observations into discrete buckets using a random projection matrix, count bucket visits, and compute `r_int = 1 / sqrt(N(hash(s)))`. Computationally cheap and works in high-dimensional observation spaces without requiring a neural network.
+**SimHash / locality-sensitive hashing** approximates counts in continuous spaces: hash state observations into discrete buckets using a random projection matrix, count bucket visits, and compute `r_int = 1 / sqrt(N(hash(s), a))`. Computationally cheap and works in high-dimensional observation spaces without requiring a neural network.
 
 **How these compare to each other and to RND:**
 

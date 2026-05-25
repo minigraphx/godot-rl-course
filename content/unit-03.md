@@ -148,7 +148,7 @@ Sampling with non-uniform probabilities introduces bias — corrected with **imp
 
 ```python
 from stable_baselines3 import DQN
-from sb3_contrib import PrioritizedReplayBuffer
+from sb3_contrib.common.buffers import PrioritizedReplayBuffer
 
 model = DQN(
     "MlpPolicy", env,
