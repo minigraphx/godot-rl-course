@@ -226,7 +226,9 @@ class TaskIDWrapper(gym.ObservationWrapper):
         self.task_id = task_id
         self.n_tasks = n_tasks
 
-        original_shape = env.observation_space.shape[0]
+        # Use np.prod so this works for any flat obs shape (MLP-only wrapper).
+        # For image observations, flatten first or use a different approach.
+        original_shape = int(np.prod(env.observation_space.shape))
         self.observation_space = gym.spaces.Box(
             low=-np.inf,
             high=np.inf,
@@ -517,13 +519,14 @@ func get_obs() -> Array:
     var to_goal: Vector3 = goal.global_position - agent.global_position
 
     # Base observation (8 values)
+    var obstacle_delta := _nearest_obstacle_delta()
     var base_obs := [
         to_goal.x / 20.0,          # normalised delta X
         to_goal.z / 20.0,          # normalised delta Z
         agent.velocity.x / 10.0,
         agent.velocity.z / 10.0,
-        _nearest_obstacle_delta().x / 20.0,
-        _nearest_obstacle_delta().z / 20.0,
+        obstacle_delta.x / 20.0,
+        obstacle_delta.z / 20.0,
         float(_step_count) / float(MAX_EPISODE_STEPS),
         to_goal.length() / 20.0,   # distance to goal (scalar)
     ]
@@ -735,6 +738,11 @@ By default, SB3 SAC samples from the replay buffer uniformly. For multi-task tra
 it helps to sample uniformly across tasks (not uniformly over all transitions, which would
 under-sample rare tasks):
 
+!!! warning "Pseudocode — not runnable as-is"
+    The class below illustrates the concept. Full SB3 integration requires subclassing
+    `ReplayBuffer` and overriding `sample` with the proper SB3 buffer API.
+    Do not paste this into a training script without completing those details.
+
 ```python
 class MultiTaskReplayBuffer:
     """Wraps SB3 ReplayBuffer to ensure uniform task sampling."""
@@ -752,9 +760,6 @@ class MultiTaskReplayBuffer:
         batches = [buf.sample(per_task) for buf in self.buffers]
         return self._concatenate_batches(batches)
 ```
-
-(This is pseudocode; full SB3 integration requires subclassing `ReplayBuffer` and
-overriding `sample`.)
 
 ---
 

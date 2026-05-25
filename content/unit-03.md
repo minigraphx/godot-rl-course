@@ -148,10 +148,6 @@ Sampling by priority introduces bias (non-uniform data distribution), corrected 
 
 ```python
 from stable_baselines3 import DQN
-from sb3_contrib import QRDQN  # or use PrioritizedReplayBuffer directly
-
-from stable_baselines3.common.buffers import ReplayBuffer
-# PrioritizedReplayBuffer is in sb3_contrib
 from sb3_contrib.common.buffers import PrioritizedReplayBuffer
 
 model = DQN(
