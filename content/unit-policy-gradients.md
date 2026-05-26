@@ -270,10 +270,11 @@ The gradient `∇log π(a|s) · G_t` multiplies a log-probability by the return.
 Instead of sampling `a ~ π(a|s)` and differentiating *through* the sampling step (which the score function estimator does), write:
 
 ```
-a = μ_θ(s) + σ_θ(s) · ε,    ε ~ N(0, 1)
+z ~ N(0, 1)
+a = μ_θ(s) + σ_θ(s) · z
 ```
 
-Now the randomness lives entirely in `ε`, which does not depend on θ. The gradient flows directly through `μ_θ` and `σ_θ` — bypassing the discrete sampling. Much lower variance. This is why SAC's actor has low-variance gradients even without a baseline. See [SAC unit](unit-sac.md) §7 for implementation details.
+Now the randomness lives entirely in `z`, which does not depend on θ. The gradient flows directly through `μ_θ` and `σ_θ` — bypassing the discrete sampling. Much lower variance. This is why SAC's actor has low-variance gradients even without a baseline. (We use `z` here rather than `ε` to avoid collision with the ε-greedy exploration symbol in value-based methods.) See [SAC unit](unit-sac.md) §7 for implementation details.
 
 | Estimator | Used in | Variance |
 |-----------|---------|----------|
