@@ -1,6 +1,6 @@
 # Multi-Task RL — One Policy for Multiple Tasks
 
-[← Hierarchical RL](unit-hierarchical.md) · [Course home](index.md)
+[← Hierarchical RL](unit-hierarchical.md) · [Course home](index.md) · [→ Imitation Learning](unit-09.md)
 
 ---
 
@@ -1011,4 +1011,4 @@ descriptions the policy has never seen.
 
 ---
 
-[← Hierarchical RL](unit-hierarchical.md) · [Course home](index.md)
+[← Hierarchical RL](unit-hierarchical.md) · [Course home](index.md) · [→ Imitation Learning](unit-09.md)

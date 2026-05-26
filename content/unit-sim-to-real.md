@@ -444,8 +444,8 @@ The remaining frontier is no longer technical — it's *alignment*. Once your po
 - How do you keep the policy aligned with human intent across distribution shifts you didn't anticipate?
 - How do you build oversight into the deployment loop so you catch failures before they hurt someone?
 
-The next unit — on **safety, alignment, and human-in-the-loop RL** — picks up there. Until then: measure your robot, randomize widely, and never deploy without walking the checklist.
+The next unit covers **Safe RL and Constrained MDPs** — how to enforce hard constraints (joint limits, geofences, regulatory requirements) during training, so the policy cannot trade safety for performance. Until then: measure your robot, randomize widely, and never deploy without walking the checklist.
 
 ---
 
-[→ Course home](index.md)
+[← Goal-Conditioned RL & HER](unit-her.md) · [Course home](index.md) · [→ Safe RL / Constrained MDPs](unit-safe-rl.md)

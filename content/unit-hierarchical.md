@@ -730,4 +730,4 @@ not yet mastered.
 
 ---
 
-[← Self-Play](unit-self-play.md) · [Course home](index.md) · [→ Imitation Learning](unit-09.md)
+[← Self-Play](unit-self-play.md) · [Course home](index.md) · [→ Multi-Task RL](unit-multitask.md)

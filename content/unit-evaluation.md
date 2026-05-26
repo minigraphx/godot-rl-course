@@ -754,6 +754,8 @@ The core message: **report IQM ± CI from at least 5 seeds, plot a performance p
 
 For debugging policies that fail to learn, see [→ Debugging](unit-debugging.md).
 
+For adaptive hyperparameter search across a population of agents, see [→ Population-Based Training](unit-pbt.md).
+
 ---
 
-[← Parallel Training](unit-05.md) · [Course home](index.md) · [→ Debugging](unit-debugging.md)
+[← Parallel Training](unit-05.md) · [Course home](index.md) · [→ Population-Based Training](unit-pbt.md)
