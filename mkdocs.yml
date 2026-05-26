@@ -61,7 +61,6 @@ nav:
     - "Offline RL": unit-offline-rl.md
     - "Ship Your Brain": unit-10.md
     - "Capstone Project": unit-capstone.md
-    - "Multi-Task RL": unit-multitask.md
   - "Phase 6 — Robotics":
     - "Robot Observations & Sensors": unit-robotics.md
     - "Locomotion Agents (Walker / Crawler / Worm)": unit-locomotion.md
