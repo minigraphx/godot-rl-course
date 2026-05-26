@@ -2,6 +2,9 @@
 
 [← Sim-to-Real Transfer](unit-sim-to-real.md) · [Course home](index.md)
 
+!!! info "Time"
+    Reading: ~35 min · Training: ~30 min GPU / ~2 h CPU
+
 !!! info "Three ways to see your AI"
     - **Godot viewport** — watch the agent navigate toward its goal while visibly avoiding the hazard zone; at the start of training it blunders straight through; by convergence it should route around it almost every episode.
     - **TensorBoard** — plot two curves side by side: `rollout/ep_rew_mean` (task reward) and `constraint/violation_rate` (fraction of steps that incurred a cost). A working CMDP run shows reward climbing *while* violation rate falls — penalty-based methods often show the two curves fighting each other.

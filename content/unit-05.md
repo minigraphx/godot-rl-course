@@ -4,6 +4,9 @@ Same **BallChase** environment you already know — but now you open the source,
 
 [← Unit 4: JumperHard & PPO](unit-04.md) · [Course home](index.md)
 
+!!! info "Time"
+    Reading: ~25 min · Training: ~20 min GPU / ~1 h CPU
+
 ---
 
 !!! info "Three ways to see your AI"

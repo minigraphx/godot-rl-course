@@ -2,6 +2,9 @@
 
 [← RLHF & Preference Learning](unit-rlhf.md) · [Course home](index.md)
 
+!!! info "Time"
+    Reading: ~40 min · Training: ~20 min GPU / ~1.5 h CPU
+
 ---
 
 !!! info "Three ways to see your AI"

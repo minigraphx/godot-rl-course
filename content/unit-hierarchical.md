@@ -2,6 +2,9 @@
 
 [← Self-Play](unit-self-play.md) · [Course home](index.md)
 
+!!! info "Time"
+    Reading: ~35 min · Training: ~30 min GPU / ~2 h CPU
+
 ---
 
 Long-horizon tasks break flat RL. When a reward arrives only after 1 000 steps, gradient

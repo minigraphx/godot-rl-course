@@ -4,6 +4,9 @@ Train the **JumperHard** example — a 3D jumping robot that serves as a standar
 
 [← Unit 3: CrossTheRoad & DQN](unit-03.md) · [Course home](index.md)
 
+!!! info "Time"
+    Reading: ~40 min · Training: ~45 min GPU / ~3 h CPU
+
 ---
 
 !!! info "Three ways to see your AI"

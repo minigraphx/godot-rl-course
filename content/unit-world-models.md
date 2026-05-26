@@ -1,5 +1,8 @@
 # World Models — Model-Based RL with Dreamer
 
+!!! info "Time"
+    Reading: ~40 min · Training: ~45 min GPU / ~3 h CPU
+
 [Course home](index.md)
 
 ---

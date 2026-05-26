@@ -4,6 +4,9 @@ Move from discrete button-presses to **continuous forces and steering**. Study *
 
 [← Unit 5: Parallel Training](unit-05.md) · [Course home](index.md)
 
+!!! info "Time"
+    Reading: ~30 min · Training: ~30 min GPU / ~2 h CPU
+
 ---
 
 !!! info "Three ways to see your AI"

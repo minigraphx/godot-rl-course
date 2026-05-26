@@ -6,6 +6,9 @@ This unit does not show you how to *use* PPO — that's the next unit. This unit
 
 [← Actor-Critic](unit-actor-critic.md) · [Course home](index.md)
 
+!!! info "Time"
+    Reading: ~45 min
+
 ---
 
 !!! info "Three ways to see your AI"

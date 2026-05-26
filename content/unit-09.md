@@ -4,6 +4,9 @@ Skip the reward engineering entirely. Record an expert playing the game, then tr
 
 [← Multi-Task RL](unit-multitask.md) · [Course home](index.md)
 
+!!! info "Time"
+    Reading: ~30 min · Training: ~20 min GPU / ~1.5 h CPU
+
 ---
 
 !!! info "Three ways to see your AI"

@@ -2,6 +2,9 @@
 
 [Course home](index.md) · [← Debugging](unit-debugging.md) · [→ Advanced Evaluation](unit-evaluation.md)
 
+!!! info "Time"
+    Reading: ~25 min
+
 ---
 
 ## 1 · Why TensorBoard isn't enough at scale

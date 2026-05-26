@@ -4,6 +4,9 @@ Before we replace policies with neural networks (Unit 3 / DQN), we need to under
 
 [← Unit 2: Lunar Lander](unit-02.md) · [Course home](index.md)
 
+!!! info "Time"
+    Reading: ~35 min · Training: ~20 min GPU / ~1.5 h CPU
+
 ---
 
 !!! info "Three ways to see your AI"

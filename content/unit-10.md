@@ -4,6 +4,9 @@ Your policy is trained. Now get it **out of Python and into Godot** — running 
 
 [← Offline RL](unit-offline-rl.md) · [Course home](index.md)
 
+!!! info "Time"
+    Reading: ~20 min · Training: ~10 min GPU / ~30 min CPU
+
 ---
 
 !!! info "Three ways to see your AI"

@@ -6,6 +6,9 @@ This unit shows you how.
 
 [← Robot Observations & Sensors](unit-robotics.md) · [Course home](index.md)
 
+!!! info "Time"
+    Reading: ~35 min · Training: ~45 min GPU / ~3 h CPU
+
 ---
 
 !!! info "Three ways to see your AI"

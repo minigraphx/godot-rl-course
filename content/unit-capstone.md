@@ -2,6 +2,9 @@
 
 [← Ship Your Brain](unit-10.md) · [Course home](index.md)
 
+!!! info "Time"
+    Reading: ~20 min · Training: varies
+
 ---
 
 !!! info "Three ways to see your AI"

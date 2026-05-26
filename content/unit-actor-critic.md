@@ -4,6 +4,9 @@ REINFORCE taught the policy directly, but at the cost of waiting for whole episo
 
 [← Policy Gradients](unit-policy-gradients.md) · [Course home](index.md)
 
+!!! info "Time"
+    Reading: ~35 min · Training: ~20 min GPU / ~1 h CPU
+
 ---
 
 !!! info "Three ways to see your AI"

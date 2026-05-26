@@ -4,6 +4,9 @@ Study the official **CrossTheRoad** example — discrete 2D navigation with spar
 
 [← Unit 2: Lunar Lander](unit-02.md) · [Course home](index.md)
 
+!!! info "Time"
+    Reading: ~45 min · Training: ~45 min GPU / ~3 h CPU
+
 ---
 
 !!! warning "Console-first from here"

@@ -6,6 +6,9 @@ This unit teaches the robotics-specific patterns you'll use in every manipulatio
 
 [← Ship Your Brain](unit-10.md) · [Course home](index.md)
 
+!!! info "Time"
+    Reading: ~30 min
+
 ---
 
 !!! info "Three ways to see your AI"

@@ -4,6 +4,9 @@ Two wins in one unit: **Phase A** — run and tweak **SimpleReachGoal** (raycast
 
 [← Unit 1: Foundations](unit-01.md) · [Course home](index.md)
 
+!!! info "Time"
+    Reading: ~35 min · Training: ~30 min GPU / ~2 h CPU
+
 ---
 
 !!! info "Three ways to see your AI"

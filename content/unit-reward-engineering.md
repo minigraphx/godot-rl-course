@@ -2,6 +2,9 @@
 
 [← Unit 2: Lunar Lander](unit-02.md) · [Course home](index.md)
 
+!!! info "Time"
+    Reading: ~35 min
+
 !!! info "Three ways to see your AI"
     - **Godot viz** — the only place where reward hacking is visible. A high TensorBoard score plus a weird-looking agent in Godot means your reward is broken, not your algorithm.
     - **TensorBoard** — the shape of `ep_rew_mean` over time tells you the whole story: flat means no signal, rising means learning, oscillating means weight imbalance.

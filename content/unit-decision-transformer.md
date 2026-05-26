@@ -2,6 +2,9 @@
 
 [← Offline RL](unit-offline-rl.md) · [Course home](index.md) · [→ Ship Your Brain](unit-10.md)
 
+!!! info "Time"
+    Reading: ~40 min · Training: ~20 min GPU / ~1.5 h CPU
+
 ---
 
 !!! info "Three ways to see your AI"

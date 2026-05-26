@@ -4,6 +4,9 @@ You have spent the course building Gaussian policies. PPO outputs a Gaussian ove
 
 [← SAC](unit-sac.md) · [Course home](index.md)
 
+!!! info "Time"
+    Reading: ~40 min · Training: ~30 min GPU / ~2 h CPU
+
 ---
 
 !!! info "Three ways to see your AI"

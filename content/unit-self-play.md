@@ -2,6 +2,9 @@
 
 [← Memory & POMDPs](unit-08.md) · [Course home](index.md)
 
+!!! info "Time"
+    Reading: ~30 min · Training: ~30 min GPU / ~2 h CPU
+
 !!! info "Three ways to see your AI"
     - **Godot viewer**: watch two AI paddles, controlled by the same brain, play AirHockey against each other — strategies emerge from nothing.
     - **TensorBoard**: track ELO rating over training. Reward alone is meaningless in self-play (it averages to zero in a zero-sum game); ELO is the proxy for absolute skill.

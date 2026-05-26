@@ -2,6 +2,9 @@
 
 [← Imitation Learning](unit-09.md) · [Course home](index.md)
 
+!!! info "Time"
+    Reading: ~45 min · Training: ~20 min GPU / ~1.5 h CPU
+
 ---
 
 !!! info "Three ways to see your AI"
