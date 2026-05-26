@@ -70,6 +70,12 @@ nav:
   - Guides:
     - "Debugging RL Training": unit-debugging.md
     - "Advanced Evaluation": unit-evaluation.md
+    - "Experiment Tracking (W&B / MLflow)": unit-experiment-tracking.md
+    - "GPU-Accelerated Environments": unit-gpu-envs.md
     - "Population-Based Training (PBT)": unit-pbt.md
     - "World Models (Dreamer)": unit-world-models.md
-  - Reference: reference.md
+  - Reference:
+    - "Glossary & Cheat Sheet": glossary.md
+    - "Troubleshooting FAQ": troubleshooting.md
+    - "Hardware Setup Guide": hardware-setup.md
+    - "Reference": reference.md
