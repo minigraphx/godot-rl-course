@@ -13,6 +13,8 @@ on:
     paths:
       - 'content/**'
       - 'mkdocs.yml'
+      - 'requirements*.txt'
+      - '.github/workflows/docs-ci.yml'
 
 jobs:
   build:
@@ -31,7 +33,7 @@ jobs:
       - name: Build docs (strict mode)
         run: mkdocs build --strict
 
-      - name: Check internal links
+      - name: Check internal links (English)
         run: |
           pip install linkchecker
           linkchecker --config /dev/null \
@@ -41,3 +43,13 @@ jobs:
             site/index.html 2>&1 | tee linkcheck.log || true
           # Fail if there are internal broken links (HTTP 404 on relative paths)
           grep -q "Error: 404" linkcheck.log && exit 1 || exit 0
+
+      - name: Check internal links (German)
+        run: |
+          linkchecker --config /dev/null \
+            --check-extern \
+            --no-warnings \
+            --ignore-url "^https?://localhost" \
+            site/de/index.html 2>&1 | tee linkcheck-de.log || true
+          # Fail if there are internal broken links in the German build
+          grep -q "Error: 404" linkcheck-de.log && exit 1 || exit 0
