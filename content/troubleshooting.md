@@ -43,19 +43,22 @@ If you must use a different version, check the [godot-rl-agents](https://github.
 
 ### `gdrl: command not found`
 
-**Cause:** The Python `godot-rl-agents` package was not installed, or your conda environment is not activated.
+**Cause:** The Python `godot-rl` package was not installed, or your conda environment is not activated.
 
 **Fix:**
 ```bash
 # Activate your conda environment
 conda activate godot_env
 
-# Install the package
-pip install godot-rl-agents stable-baselines3
+# Install using the pinned requirements file (recommended)
+pip install -r requirements-course.txt
 
 # Verify
 gdrl --version
 ```
+
+!!! note "Package name is `godot-rl`, not `godot-rl-agents`"
+    The PyPI package is `godot-rl` (install with `pip install godot-rl` or via `requirements-course.txt`). The old name `godot-rl-agents` is no longer the canonical package name. The Python import is still `import godot_rl`.
 
 ---
 
@@ -75,12 +78,12 @@ If you get a permission error, use `pip install --user stable-baselines3` or che
 
 ### `ModuleNotFoundError: No module named 'godot_rl'`
 
-**Cause:** The godot-rl-agents Python package is not installed in your active conda environment.
+**Cause:** The `godot-rl` Python package is not installed in your active conda environment.
 
 **Fix:**
 ```bash
 conda activate godot_env
-pip install godot-rl-agents
+pip install -r requirements-course.txt
 ```
 
 Verify:
@@ -90,7 +93,7 @@ python -c "import godot_rl; print(godot_rl.__version__)"
 
 ---
 
-### Python version incompatibility (godot-rl-agents requires Python 3.8+)
+### Python version incompatibility (godot-rl requires Python 3.8+)
 
 **Cause:** Your Python environment is older than 3.8, or you are using Python 2.
 
@@ -99,10 +102,10 @@ python -c "import godot_rl; print(godot_rl.__version__)"
 # Check your Python version
 python --version
 
-# If < 3.8, create a new conda environment with Python 3.10 or 3.11
+# If < 3.8, create a new conda environment with Python 3.10
 conda create -n godot_env python=3.10
 conda activate godot_env
-pip install godot-rl-agents stable-baselines3
+pip install -r requirements-course.txt
 ```
 
 ---
@@ -143,8 +146,13 @@ python train.py --env_path=./godot_binary
 
 Check that no other process is blocking port 11008:
 ```bash
-lsof -i :11008
+lsof -i :11008   # macOS / Linux
+# Windows (PowerShell):
+# netstat -ano | findstr :11008
 ```
+
+!!! warning "Windows: antivirus may silently block port 11008"
+    On Windows, Windows Defender and third-party antivirus programs sometimes block the godot-rl socket port without showing an error. If Godot never connects even though the port appears free, add firewall exceptions for `python.exe` and the Godot executable. See [Windows first run](setup.md#windows-first-run) in the setup guide for step-by-step instructions.
 
 ---
 

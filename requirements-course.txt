@@ -1,0 +1,20 @@
+# Course Python dependencies — pinned for reproducibility (May 2026)
+# Tested together on Python 3.10 (macOS, Linux, Windows).
+#
+# Install with:
+#   conda activate godot_env
+#   pip install -r requirements-course.txt
+#
+# See content/setup.md for the full setup guide and compatibility table.
+
+# Core training stack
+godot-rl==0.5.0
+stable-baselines3==2.3.2
+torch==2.3.1
+
+# Visualisation
+tensorboard==2.17.0
+
+# SB3 runtime dependencies (pinned for reproducibility)
+numpy==1.26.4
+gymnasium==0.29.1

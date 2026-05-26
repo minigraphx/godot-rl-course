@@ -25,9 +25,6 @@ Lade von [docs.conda.io/en/latest/miniconda.html](https://docs.conda.io/en/lates
 conda --version
 ```
 
-!!! tip "macOS / Linux — erster Start"
-    Der Installer fordert dich möglicherweise auf, `conda init` auszuführen — folge der Anweisung und öffne dann ein neues Terminal.
-
 **Umgebung erstellen** (einmalig):
 
 ```bash
@@ -38,16 +35,89 @@ conda create --name godot_env python=3.10 -y
 
 ```bash
 conda activate godot_env
-pip install "godot-rl[sb3]" tensorboard
+pip install -r requirements-course.txt
 ```
+
+`requirements-course.txt` befindet sich im Stammverzeichnis dieses Kurs-Repos. Es fixiert alle Pakete auf bekannte, funktionierende Versionen — siehe die [Kompatibilitätstabelle](#kompatibilitatstabelle) unten.
+
+!!! info "Was installiert wird"
+    - `godot-rl` — Python ↔ Godot Socket-Bridge, Stable-Baselines3-Wrapper und die `gdrl`-CLI
+    - `stable-baselines3` — PPO, SAC und andere Algorithmen
+    - `torch` — PyTorch-Backend für das Training
+    - `tensorboard` — Visualisierung der Trainingskurven
 
 Überprüfen: `python -c "import godot_rl; print('ok')"`
 
-!!! info "Was installiert wird"
-    - `godot-rl[sb3]` — Python ↔ Godot Socket-Bridge, Stable-Baselines3-Wrapper und die `gdrl`-CLI
-    - `tensorboard` — Visualisierung der Trainingskurven
-    
-    Behalte die doppelten Anführungszeichen um `"godot-rl[sb3]"`, damit die Shell die eckigen Klammern nicht expandiert.
+!!! tip "macOS / Linux — erster Start"
+    Der Installer fordert dich möglicherweise auf, `conda init` auszuführen — folge der Anweisung und öffne dann ein neues Terminal.
+
+!!! tip "Windows — erster Start"
+    Siehe [Windows — erster Start](#windows-erster-start) unten für Hinweise zur PowerShell / cmd / Git Bash Aktivierung und Windows-spezifische Besonderheiten.
+
+---
+
+## Kompatibilitätstabelle
+
+Die folgende Tabelle zeigt die Paketversionen aus `requirements-course.txt` und die Godot-Version, mit der sie getestet wurden.
+
+| Kurs-Tag | Godot | godot-rl | stable-baselines3 | PyTorch | Python |
+|---|---|---|---|---|---|
+| 2026-05 | 4.3.x | 0.5.0 | 2.3.2 | 2.3.1 | 3.10 |
+
+!!! warning "Pakete während des Kurses nicht aktualisieren"
+    godot-rl, SB3 und PyTorch haben inkompatible API-Änderungen zwischen Releases. Bleibe für die Dauer des Kurses bei den fixierten Versionen in `requirements-course.txt`. Nach dem Kurs kannst du gerne neuere Versionen ausprobieren — erstelle dafür einfach eine neue Conda-Umgebung.
+
+---
+
+## Windows — erster Start
+
+Die obigen Schritte funktionieren auf Windows mit kleinen Unterschieden. Lies diesen Abschnitt, bevor du das erste Mal `conda activate` ausführst.
+
+### Shell-Wahl
+
+| Shell | Hinweise |
+|-------|----------|
+| **Anaconda Prompt** | Am einfachsten — `conda activate godot_env` funktioniert sofort. |
+| **PowerShell** | Führe einmalig `conda init powershell` aus (als Administrator), starte PowerShell neu, dann `conda activate godot_env`. |
+| **cmd** | Führe einmalig `conda init cmd.exe` aus, starte cmd neu, dann `conda activate godot_env`. |
+| **Git Bash** | Führe einmalig `conda init bash` (aus dem Anaconda Prompt) aus, starte Git Bash neu, dann `conda activate godot_env`. |
+
+### `--env_path` mit Windows-Pfaden
+
+godot-rl akzeptiert Schrägstriche (Forward Slashes) unter Windows — bevorzuge diese gegenüber Backslashes, um Shell-Escape-Probleme zu vermeiden:
+
+```bash
+# Empfohlen — Forward Slashes funktionieren überall, auch in PowerShell und cmd
+gdrl --env_path=C:/Users/DeinName/Projekte/mein_spiel/mein_spiel.exe
+
+# Auch gültig — Backslashes, müssen aber escaped oder in Anführungszeichen gesetzt werden
+gdrl --env_path="C:\Users\DeinName\Projekte\mein_spiel\mein_spiel.exe"
+```
+
+### Windows Defender / Antivirusproblem mit Sockets
+
+Windows Defender (und viele Antivirusprogramme von Drittanbietern) blockieren manchmal **still und heimlich** den lokalen TCP-Port, den godot-rl für die Kommunikation zwischen Python und Godot verwendet (Standard: Port 11008). Symptome: Das Training scheint zu starten, aber Godot stellt keine Verbindung her; Python wartet auf die erste Beobachtung.
+
+Lösung:
+
+1. Öffne **Windows-Sicherheit → Firewall & Netzwerkschutz → App durch Firewall zulassen**.
+2. Füge eine Ausnahme für `python.exe` (das Python deiner Conda-Umgebung) und für die Godot-Anwendung hinzu.
+3. Alternativ: Verwende einen anderen Port: `gdrl --port=12000` (und setze denselben Port im AIController von Godot).
+
+Wenn du ein Antivirusprogramm eines Drittanbieters verwendest, füge den Conda-Umgebungsordner (z. B. `C:\Users\DeinName\miniconda3\envs\godot_env\`) und deinen Godot-Projektordner zur Ausschlussliste hinzu.
+
+### `chmod +x` ist unter Windows nicht erforderlich
+
+Die macOS/Linux-Befehle `chmod +x godot_binary` gelten nicht für Windows. Godot `.exe`-Dateien sind vom Betriebssystem bereits ausführbar.
+
+### WSL2 vs. natives Windows
+
+| Ansatz | Vorteile | Nachteile |
+|--------|----------|-----------|
+| **Natives Windows** | Einfachste Einrichtung, keine Übersetzungsschicht, Direct3D GPU | Antivirus-/Firewall-Reibung; Pfade verwenden Backslashes |
+| **WSL2 (Ubuntu)** | Vollständige Linux-Toolchain, einfachere GPU-Einrichtung via CUDA | GPU-Durchleitung (CUDA in WSL2) erfordert Windows 11 + WSL2-Kernel ≥ 5.15; Godot-GUI kann in WSL2 ohne X-Server oder WSLg nicht rendern |
+
+**Empfehlung für diesen Kurs:** Verwende **natives Windows**, es sei denn, du hast bereits ein funktionierendes WSL2 + GPU-Setup. Godot muss ohnehin auf der Windows-Host-Seite (oder WSLg) laufen; die Kombination von Godot unter Windows und Python in WSL2 erfordert zusätzliche Port-Weiterleitungsschritte, die in diesem Kurs nicht behandelt werden.
 
 ---
 
