@@ -2,10 +2,122 @@
 
 Learn deep RL with **Godot 4** and **godot-rl-agents**. Train locally with Python, deploy agents to the browser via ONNX.
 
-**Start here:** open [index.html](index.html) in a browser.
+The course is published as a static MkDocs site. Markdown sources live in [`content/`](content/); the rendered HTML is built into `site/` (gitignored).
 
-## Docs
+**Read the course:** open `mkdocs serve` locally, or visit the published site.
 
-- [docs/curriculum.md](docs/curriculum.md) — unit syllabus
-- [docs/example-progression.md](docs/example-progression.md) — step-by-step example ladder
-- [docs/architecture.md](docs/architecture.md) — training / inference architecture
+---
+
+## Contributor quick start
+
+```bash
+# 1. Clone
+git clone https://github.com/minigraphx/godot-rl-course.git
+cd godot-rl-course
+
+# 2. Create a virtualenv and install pinned MkDocs deps
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+
+# 3. Serve with live reload at http://localhost:8000
+mkdocs serve
+
+# 4. Build the static site (outputs to site/)
+mkdocs build --strict
+```
+
+`mkdocs build --strict` is the canonical check before opening a PR — it fails on broken links, missing files, or other warnings.
+
+> **Do not upgrade** `mkdocs` or `mkdocs-material` past the versions in [`requirements.txt`](requirements.txt). The pin is intentional: newer Material releases have published breaking changes (theme rewrite, plugin removal) on a 2026 roadmap.
+
+---
+
+## Repository layout
+
+| Path | Purpose |
+|------|---------|
+| `content/` | All published unit Markdown — one file per unit. This is `mkdocs.yml`'s `docs_dir`. |
+| `mkdocs.yml` | Site config and **the navigation tree**. Adding a unit means adding it here. |
+| `requirements.txt` | Pinned MkDocs + Material versions. |
+| `docs/` | Internal docs for contributors (curriculum map, architecture, conventions). **Not** published. |
+| `internal/` | Working notes, gap analyses. Not published. |
+| `site/` | Build output. Gitignored. |
+| `CLAUDE.md` | Onboarding notes for AI coding assistants working on the repo. |
+
+Related contributor docs:
+
+- [`docs/curriculum.md`](docs/curriculum.md) — full syllabus and pacing.
+- [`docs/architecture.md`](docs/architecture.md) — training-vs-inference architecture of the example projects.
+- [`docs/example-progression.md`](docs/example-progression.md) — the example ladder the units build on.
+- [`docs/html-units.md`](docs/html-units.md) — historical conventions from the pre-MkDocs HTML build (still useful for pedagogy block names).
+
+---
+
+## Adding or modifying a unit
+
+### File and structure conventions
+
+Every unit Markdown file is expected to have, in order:
+
+1. **H1 title** — `# Unit N — Title` or `# Topic Name`.
+2. **Top breadcrumb** — `[← Previous Unit](unit-prev.md) · [Course home](index.md)` immediately under the title.
+3. **"Three ways to see your AI" callout** — early in the file:
+   ```markdown
+   !!! info "Three ways to see your AI"
+       Godot (...) · TensorBoard (`metric/name`) · AIController (...)
+   ```
+4. **Numbered sections** — `## 1 · Topic`, `## 2 · Topic`, etc. The `·` (middle dot) is the convention, not `.`.
+5. **`## N · Stretch goals`** — towards the end, a list of optional deepening exercises.
+6. **`## What's next`** — final section pointing forward.
+7. **Bottom breadcrumb** — `[← Prev](unit-prev.md) · [Course home](index.md) · [→ Next](unit-next.md)`.
+
+### Wiring a new unit into the course
+
+When you insert a unit `X` between existing units `A` and `B`, **four files** need updating:
+
+| File | Change |
+|------|--------|
+| `mkdocs.yml` | Add `"X Title": unit-x.md` to the correct phase block in `nav:`. |
+| `content/index.md` | Add a bullet under the right phase heading, and update the phase summary table if scope changes. |
+| `content/unit-a.md` | Bottom breadcrumb: change `→ B` to `→ X`. Update the "What's next" prose. |
+| `content/unit-b.md` | Top breadcrumb: change `← A` to `← X`. |
+
+Forgetting any one of these breaks the reading flow. `mkdocs build --strict` catches dangling links but not stale `← / →` chains.
+
+### Other authoring rules
+
+- **GDScript correctness.** Code in the course is read and copied. Verify any GDScript you publish against the Godot 4 docs — in particular, never use a static config constant (e.g. `PhysicsServer3D.HINGE_JOINT_PARAM_*`) where a runtime value is required. (See git history for the locomotion unit fix as a worked example.)
+- **Python code blocks** should be runnable as written — no pseudocode without an `!!! warning "Pseudocode"` admonition. Imports must be real and used; dead imports are flagged in review.
+- **Cross-links use Markdown paths,** not URLs: `[→ SAC](unit-sac.md)`, not `/unit-sac/` or absolute links.
+- **Admonitions** use the `pymdownx`/Material syntax: `!!! info`, `!!! warning`, `!!! tip`, `??? details` (collapsible).
+- **Tables** are preferred for comparisons (algorithms, hyperparameters, schedules). Keep column counts ≤ 5 for readability.
+
+---
+
+## Commit and PR workflow
+
+- **Branch naming:** topical, kebab-case (`fix-locomotion-hinge-param`, `add-multitask-unit`).
+- **Commit style:** Conventional Commits.
+  - `feat: add unit-X — short description` — new units.
+  - `fix: ...` — corrections to existing content.
+  - `chore: ...` — non-content changes (nav wiring, requirements bumps).
+  - `docs: ...` — internal `docs/` or `README.md` changes.
+- **PR description:** explain *why* the change exists (which gap it closes, what reader confusion it removes). Reference issues with `Closes #NN`.
+- **Pre-merge checklist:**
+  - [ ] `mkdocs build --strict` passes locally.
+  - [ ] Nav chain (`← / →` breadcrumbs) is consistent end-to-end through the touched units.
+  - [ ] `mkdocs.yml`, `content/index.md`, and adjacent units are updated for any new unit.
+  - [ ] Code examples compile / parse in their respective languages.
+
+---
+
+## Reporting issues
+
+Open a GitHub issue describing:
+
+- The unit (or section anchor) involved.
+- What's wrong or missing — be concrete (a wrong equation, a broken link, a missing prerequisite).
+- A suggested fix if you have one, even a rough sketch.
+
+For curriculum-level proposals (new units, restructured phases), open the issue against `docs/curriculum.md` rather than a unit file so the scope is clear.
