@@ -106,6 +106,7 @@ nav:
     - "GPU-Accelerated Environments": unit-gpu-envs.md
     - "Population-Based Training (PBT)": unit-pbt.md
     - "World Models (Dreamer)": unit-world-models.md
+    - "Foundation Models for Control (VLA)": unit-foundation-models.md
   - Reference:
     - "Glossary & Cheat Sheet": glossary.md
     - "Troubleshooting FAQ": troubleshooting.md

@@ -507,4 +507,6 @@ World models represent the frontier of sample efficiency in deep RL. The ideas h
 
 For production Godot projects, the recommended path remains: **PPO baseline → curiosity if sparse rewards → world models if simulation is expensive or planning is needed**. Each step adds power and complexity; move to the next only when you have evidence the simpler approach has plateaued.
 
-[Course home](index.md)
+If you want to keep widening the lens, the next unit — **Foundation Models for Control (VLA)** — surveys RT-2, Octo, OpenVLA, and π0: an entirely different bet on how to train general-purpose embodied agents.
+
+[→ Foundation Models for Control](unit-foundation-models.md) · [Course home](index.md)
