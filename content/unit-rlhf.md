@@ -1,6 +1,6 @@
 # RLHF — Learning Rewards from Human Preferences
 
-[← Imitation Learning](unit-09.md) · [Course home](index.md)
+[← Imitation Learning](unit-09.md) · [Course home](index.md) · [→ Offline RL](unit-offline-rl.md)
 
 !!! info "Time"
     Reading: ~45 min · Training: ~20 min GPU / ~1.5 h CPU

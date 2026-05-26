@@ -1,6 +1,6 @@
 # Offline RL — Learning from Fixed Datasets
 
-[← RLHF & Preference Learning](unit-rlhf.md) · [Course home](index.md)
+[← RLHF & Preference Learning](unit-rlhf.md) · [Course home](index.md) · [→ Decision Transformer](unit-decision-transformer.md)
 
 !!! info "Time"
     Reading: ~40 min · Training: ~20 min GPU / ~1.5 h CPU
