@@ -448,8 +448,4 @@ The next unit covers **Safe RL and Constrained MDPs** — how to enforce hard co
 
 ---
 
-[→ Safe RL / Constrained MDPs](unit-safe-rl.md)
-
----
-
 [← Goal-Conditioned RL & HER](unit-her.md) · [Course home](index.md) · [→ Safe RL / Constrained MDPs](unit-safe-rl.md)

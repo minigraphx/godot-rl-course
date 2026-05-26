@@ -258,6 +258,28 @@ Practical consequences:
 
 A common cheap fix is in the code above: **normalize returns** to zero mean and unit variance across the episode. This is a hack — not theoretically justified — but it helps a lot in practice. The principled fix is the next section.
 
+### Why the score function estimator is high-variance
+
+The gradient `∇log π(a|s) · G_t` multiplies a log-probability by the return. The return G_t has high variance because different episodes take wildly different paths through the environment. The product amplifies this variance — every gradient step is a noisy estimate of the true gradient direction. A baseline b(s) removes the "how good is this state overall" noise and isolates "how good was this specific action" — reducing variance without changing the gradient in expectation (since `E[∇log π · b(s)] = 0`).
+
+### The reparameterization trick (SAC, low-variance alternative)
+
+Instead of sampling `a ~ π(a|s)` and differentiating *through* the sampling step (which the score function estimator does), write:
+
+```
+a = μ_θ(s) + σ_θ(s) · ε,    ε ~ N(0, 1)
+```
+
+Now the randomness lives entirely in `ε`, which does not depend on θ. The gradient flows directly through `μ_θ` and `σ_θ` — bypassing the discrete sampling. Much lower variance. This is why SAC's actor has low-variance gradients even without a baseline. See [SAC unit](unit-sac.md) §7 for implementation details.
+
+| Estimator | Used in | Variance |
+|-----------|---------|----------|
+| Score function (REINFORCE) | REINFORCE, A2C, PPO | High (needs baseline) |
+| Reparameterization | SAC actor | Low |
+| Neither (no policy gradient) | DQN | N/A |
+
+**Why PPO uses score function, not reparameterization:** PPO's clipped ratio objective requires differentiating through the log-probability to measure how much the policy has changed. Reparameterization would remove that signal. The score function estimator is the right choice when the policy ratio is part of the objective — and the baseline (via GAE) handles the variance problem.
+
 ---
 
 ## 6 · Baseline variance reduction
@@ -340,30 +362,6 @@ optimizer.step()
 ```
 
 Run this side-by-side with vanilla REINFORCE. The baseline version will reach 200 reward faster and oscillate noticeably less. You have just built your first **actor-critic** — the policy is the actor, `V_φ` is the critic.
-
-### Why the score function estimator is high-variance (and what to do about it)
-
-The gradient `∇_θ log π_θ(a|s) · G_t` multiplies a log-probability by the return. The return `G_t` has high variance: two episodes from the same policy can end with `G_t = 200` or `G_t = -50` purely due to chance. The product amplifies this variance — every gradient step is a noisy estimate of the true gradient direction.
-
-Subtracting the baseline `V(s)` isolates the advantage `A(s,a) = G_t - V(s)`, removing "how good is this state overall" noise and keeping only "how good was this specific action." Variance drops substantially; bias stays zero (since `V(s)` does not depend on `a`).
-
-**The reparameterization trick** (used in SAC) achieves lower variance still. Instead of sampling `a ~ π(a|s)` and differentiating through the discrete sampling step, write:
-
-```
-a = μ(s) + σ(s) · ε,   ε ~ N(0, 1)
-```
-
-Now `a` is a deterministic function of `s` and `ε`. The gradient flows directly through `μ` and `σ` — no log-probability, no high-variance multiplicative return. This is why SAC's actor update is more stable than REINFORCE's.
-
-**Gradient estimator comparison:**
-
-| Estimator | Used in | Variance | Requires |
-|-----------|---------|----------|---------|
-| Score function (REINFORCE) | REINFORCE, A2C, PPO | High (needs baseline) | Any policy |
-| Reparameterization | SAC actor | Low | Continuous, differentiable action space |
-| Neither (Q-value target) | DQN | N/A | Discrete actions |
-
-**Why PPO uses score function, not reparameterization:** PPO's clipped ratio objective requires differentiating `log π(a|s)` (the score function). Reparameterization would require differentiating through the action sample itself — incompatible with the importance-sampling ratio that PPO's objective depends on. See [SAC unit](unit-sac.md) for the reparameterization implementation.
 
 ---
 

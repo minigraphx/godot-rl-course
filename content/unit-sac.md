@@ -36,36 +36,7 @@ So the open question is:
 
 > Can we have **continuous actions** + **a replay buffer** + **stable training**?
 
-The answer, since 2018, is yes. The algorithm is **SAC — Soft Actor-Critic** (Haarnoja et al., 2018). To understand SAC's architecture, it helps to know the lineage it came from.
-
-### The DDPG → TD3 → SAC lineage
-
-**DDPG (Deep Deterministic Policy Gradient, Lillicrap et al. 2015)** was the first successful off-policy actor-critic for continuous actions. It uses a deterministic policy `π(s) → a` (no distribution) and a replay buffer like DQN. Problems: Q-value overestimation causes unstable training; brittle to hyperparameters; the deterministic policy requires hand-tuned noise injection for exploration.
-
-**TD3 (Twin Delayed DDPG, Fujimoto et al. 2018)** fixed DDPG's instability with three changes:
-
-1. **Twin critics** — train two Q-networks; use `min(Q1, Q2)` for target computation. This prevents Q-value overestimation by taking the pessimistic estimate.
-2. **Delayed policy updates** — update the actor every 2 critic steps. Reduces variance in actor gradient (critics are more accurate before the actor uses them).
-3. **Target policy smoothing** — add noise to the target action during critic updates (`â = clip(π(s') + ε, a_min, a_max)`). Regularises the Q-function against sharp peaks.
-
-**SAC** kept TD3's twin critics and replay buffer, then replaced the deterministic policy with a stochastic one — enabling maximum-entropy training and automatic exploration without noise injection.
-
-| | DDPG | TD3 | SAC |
-|--|------|-----|-----|
-| Policy | Deterministic | Deterministic | Stochastic |
-| Exploration | Noise injection | Noise injection | Entropy maximization |
-| Twin critics | No | Yes | Yes |
-| Delayed updates | No | Yes | No (not needed) |
-| Sample efficiency | Medium | High | Highest |
-| Hyperparameter sensitivity | High | Medium | Low (auto-α) |
-
-**When TD3 over SAC:** when you need a deterministic policy at inference (some robotics deployments require it), or when SAC's stochasticity causes issues in your specific environment. In practice, SAC is almost always the better default.
-
-```python
-from stable_baselines3 import TD3
-model = TD3("MlpPolicy", env, verbose=1, tensorboard_log="logs/")
-model.learn(total_timesteps=1_000_000)
-```
+The answer, since 2018, is yes. The algorithm is **SAC — Soft Actor-Critic** (Haarnoja et al., 2018). Section 9 below traces the DDPG → TD3 → SAC lineage that produced it.
 
 ---
 
@@ -422,7 +393,40 @@ torch.onnx.export(
 
 ---
 
-## 9 · Stretch goals
+## 9 · The DDPG → TD3 → SAC lineage
+
+Understanding where SAC's architecture comes from makes it less mysterious. Three algorithms, each fixing the previous one's main problem.
+
+**DDPG (Deep Deterministic Policy Gradient):** off-policy actor-critic for continuous actions. The actor outputs a single deterministic action `π(s) → a` (no distribution). Uses a replay buffer — the first continuous-control algorithm to do so effectively. Problem: overestimates Q-values (single critic), brittle to hyperparameters, exploration requires manually injected noise.
+
+**TD3 (Twin Delayed DDPG, Fujimoto et al. 2018)** — three fixes:
+
+1. **Twin critics:** train two Q-networks independently, take the minimum for target computation → prevents Q-value overestimation
+2. **Delayed policy updates:** update the actor every 2 critic steps → reduces variance in the actor gradient when critic estimates are still noisy
+3. **Target policy smoothing:** add small Gaussian noise to the target action during critic updates → regularizes the Q-function, prevents it from exploiting sharp peaks
+
+**SAC** takes the twin-critic trick from TD3 and adds maximum entropy RL (Section 1) to replace manual noise injection with principled stochastic exploration.
+
+| | DDPG | TD3 | SAC |
+|--|------|-----|-----|
+| Policy | Deterministic | Deterministic | Stochastic |
+| Exploration | Noise injection | Noise injection | Entropy maximization |
+| Twin critics | No | Yes | Yes |
+| Delayed actor updates | No | Yes | No (not needed) |
+| Sample efficiency | Medium | High | Highest |
+| Hyperparameter sensitivity | High | Medium | Low (auto-α) |
+
+**When TD3 over SAC:** when you need a deterministic policy at inference (some real-robot deployments require repeatable actions); when the stochasticity of SAC creates issues in a specific environment. SB3 supports TD3 directly:
+
+```python
+from stable_baselines3 import TD3
+model = TD3("MlpPolicy", env, verbose=1)
+model.learn(total_timesteps=1_000_000)
+```
+
+---
+
+## 10 · Stretch goals
 
 Try these to deepen your understanding:
 

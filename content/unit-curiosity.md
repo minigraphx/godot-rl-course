@@ -84,36 +84,23 @@ Older approaches (ICM — Intrinsic Curiosity Module, Pathak et al. 2017) used a
 
 ---
 
-## 3.5 · ICM vs RND — when each approach wins
+## 3.1 · ICM vs RND — when to use each
 
-**ICM (Intrinsic Curiosity Module) recap:**
+**ICM recap (Intrinsic Curiosity Module, Pathak et al. 2017):** two networks trained jointly — an *inverse model* predicts the action taken from `(s_t, s_{t+1})` (forces features to be action-relevant), and a *forward model* predicts the next-state embedding from `(s_t, a_t)`. Curiosity = forward model error in feature space.
 
-- **Forward model:** predicts next-state embedding from `(state, action)` — `f(s_t, a_t) → ê_{t+1}`
-- **Inverse model:** predicts action from `(state, next_state)` — `g(s_t, s_{t+1}) → â_t`
-- **Curiosity signal:** prediction error of the forward model in feature space (not raw pixels)
+**The noisy-TV problem:** ICM measures how *unpredictable* the next state is. A TV showing random static is always unpredictable — the agent gets stuck watching it forever because every frame is "novel." Any stochastic element in the environment (random particle effects, procedural noise) becomes a curiosity magnet.
 
-The inverse model ensures the feature space captures action-relevant information only — irrelevant background noise is not encoded.
-
-**The noisy-TV problem** — why ICM can fail:
-
-A TV showing random static is always "novel": the forward model cannot predict the next frame (it is stochastic). ICM assigns high curiosity to the TV forever — the agent gets stuck watching it instead of exploring. The root cause: ICM confuses *unpredictability* (stochasticity) with *novelty* (unfamiliarity).
-
-RND avoids this because its target network is fixed: a stochastic observation maps to the same fixed random embedding every time. The predictor eventually learns it, error drops, curiosity fades. Stochastic ≠ novel under RND.
-
-**ICM vs RND comparison:**
+**Why RND avoids this:** the fixed random target network produces the same output for the same observation every time. A noisy TV produces the same distribution of pixel patterns — after a few visits, the predictor matches the target for those patterns and `r_int` falls to near zero. RND measures *unfamiliarity*, not *unpredictability*.
 
 | | ICM | RND |
 |--|-----|-----|
 | What it measures | Forward model prediction error | Distance from fixed random network |
 | Noisy-TV problem | Yes — stochastic envs fool it | No — stochastic obs have fixed target |
-| Compute cost | Higher (trains two networks) | Lower (one predictor only) |
-| Feature space | Learned via inverse model | Fixed random projection |
-| Best for | Deterministic envs with structured dynamics | General use — the safe default |
-| SB3 support | Manual (no built-in) | Manual (no built-in) |
+| Compute | Higher (trains two networks) | Lower (trains one predictor) |
+| Feature space | Learned (inverse model) | Random projection |
+| Best for | Deterministic envs, action-relevant features | General use — the safe default |
 
-**When to choose ICM:** deterministic environments where the agent controls all meaningful state changes, and you want the feature space to reflect action-relevant information (e.g., a robot arm where joint angles matter, but background lighting does not).
-
-**Default:** use RND. It is simpler, cheaper, and immune to the noisy-TV problem.
+**When to use ICM:** fully deterministic environments where the agent controls all state changes and you want the curiosity features to capture action-relevant structure. **Default to RND** in all other cases — it is simpler, cheaper, and handles stochastic environments correctly.
 
 ---
 
@@ -255,55 +242,34 @@ If yes to all three → try RND. Otherwise → reward shaping (see [Reward Engin
 
 ## 6 · Count-based exploration
 
-The oldest exploration bonus method — provably optimal in tabular settings:
+The oldest exploration bonus: reward the agent inversely proportional to how often it has visited a state.
 
 ```
 r_int = 1 / sqrt(N(s))
 ```
 
-`N(s)` is the number of times state `s` has been visited. Newly visited states have `N=1` → bonus = 1.0. Frequently visited states have large N → bonus ≈ 0. The agent is automatically pulled toward unexplored regions.
+where `N(s)` is the visit count. Never-visited states get high bonus; well-explored states get near-zero bonus. This is provably optimal in tabular settings — it drives the agent to visit every state at least O(√T) times in T steps.
 
-**Where it works:** tabular settings with discrete state spaces — the Q-Learning FrozenLake example from the [Q-Learning unit](unit-q-learning.md). With a finite grid, you can maintain an exact count table and show that a UCB-style bonus achieves sample-efficient exploration with theoretical guarantees.
-
-**UCB (Upper Confidence Bound):** extends the count-based idea to action selection:
+**UCB (Upper Confidence Bound)** — extends the same idea to action selection in bandit problems:
 
 ```
-a* = argmax_a [ Q(s, a) + c · sqrt(log t / N(s, a)) ]
+a* = argmax_a [ Q(s,a) + c · sqrt(log t / N(s,a)) ]
 ```
 
-The square-root term is an exploration bonus that decays as action `(s, a)` is visited more. Well-studied in bandit literature; SB3 does not implement UCB for deep RL directly, but the intuition shows up everywhere — including the PPO entropy bonus.
+The second term is the exploration bonus: high when an action has rarely been tried. Well-studied in theory; SB3 does not implement UCB for deep RL.
 
-**Why exact counts don't scale:** continuous state spaces make every state technically unique. A robot at position (1.000, 2.000) and (1.001, 2.000) are different states — both have N=0 forever. State aggregation (discretising) partially helps but loses information.
+**SimHash / locality-sensitive hashing** — approximate counting for continuous spaces: hash the observation into a discrete bucket using a random projection matrix, then count bucket visits. `r_int = 1 / sqrt(N(hash(s)))`. Computationally cheap; works on high-dimensional observations.
 
-**SimHash / locality-sensitive hashing** — an approximate solution:
+**Why exact counting doesn't scale:** continuous state spaces make every state unique — a robot at position (1.000, 2.000) and (1.001, 2.000) are technically different states, both with N=0. SimHash aggregates nearby states into the same bucket.
 
-```python
-# SimHash: project obs onto a random matrix, take sign → binary hash
-A = np.random.randn(hash_bits, obs_dim)  # fixed random matrix
-def hash_obs(obs):
-    return tuple((A @ obs > 0).astype(int))
+| Method | Requires exact states? | Noisy-TV safe? | Typical use |
+|--------|----------------------|----------------|-------------|
+| Count-based (exact) | Yes | Yes | Tabular FrozenLake |
+| SimHash | No (bucket counts) | Yes | Moderate-dim continuous obs |
+| RND | No | Yes | General deep RL |
+| ICM | No | **No** | Deterministic envs only |
 
-counts = defaultdict(int)
-def count_bonus(obs):
-    h = hash_obs(obs)
-    counts[h] += 1
-    return 1.0 / np.sqrt(counts[h])
-```
-
-Nearby observations hash to the same bucket more often than distant ones. Count bucket visits rather than exact states. Computationally cheap; works in moderate-dimensional obs spaces.
-
-**Exploration methods at a glance:**
-
-| Method | Measures | Scales to deep RL? | Noisy-TV safe? |
-|--------|---------|-------------------|----------------|
-| ε-greedy | Nothing — random | Yes | Yes |
-| Entropy bonus | Action distribution spread | Yes | Yes |
-| Count-based | Exact visit count | No (continuous states) | Yes |
-| SimHash | Approximate visit count | Partially | Yes |
-| RND | Predictor error ≈ inverse count | Yes | Yes |
-| ICM | Forward model surprise | Yes | No |
-
-**Practical recommendation:** RND for most deep RL tasks (scalable, noisy-TV safe). Count-based/SimHash for research comparison or for environments with discrete, low-dimensional state spaces. UCB for bandit-style problems.
+**Practical recommendation:** use RND for most Godot tasks. SimHash is worth trying when the observation space is low-to-medium dimensional and you want something simpler than a neural network. Count-based comparison: train FrozenLake Q-Learning with and without `1/sqrt(N)` — measuring how many fewer steps are needed to find the optimal policy is a useful exercise (Stretch goal, Section 9).
 
 ---
 
