@@ -1,0 +1,43 @@
+name: Docs CI
+
+on:
+  pull_request:
+    paths:
+      - 'content/**'
+      - 'mkdocs.yml'
+      - 'requirements*.txt'
+      - '.github/workflows/docs-ci.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'content/**'
+      - 'mkdocs.yml'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Build docs (strict mode)
+        run: mkdocs build --strict
+
+      - name: Check internal links
+        run: |
+          pip install linkchecker
+          linkchecker --config /dev/null \
+            --check-extern \
+            --no-warnings \
+            --ignore-url "^https?://localhost" \
+            site/index.html 2>&1 | tee linkcheck.log || true
+          # Fail if there are internal broken links (HTTP 404 on relative paths)
+          grep -q "Error: 404" linkcheck.log && exit 1 || exit 0
