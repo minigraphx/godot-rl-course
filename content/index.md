@@ -77,6 +77,7 @@ Learn deep reinforcement learning by building and training agents inside real Go
 - [Advanced Evaluation](unit-evaluation.md)
 - [Population-Based Training](unit-pbt.md)
 - [World Models / DreamerV3](unit-world-models.md)
+- [Foundation Models for Control (VLA)](unit-foundation-models.md)
 
 ## After this course
 
