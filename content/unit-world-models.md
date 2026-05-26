@@ -72,6 +72,9 @@ Training losses:
   reconstruction:  ||obs_t - recon_t||²  (per pixel, or per feature)
   reward:          ||r_t - reward_pred_t||²
   dynamics (KL):   KL( posterior(z_t | obs_t) || prior(z_t | z_{t-1}, a_{t-1}) )
+                   ↑ DreamerV1 form, shown for intuition.
+                   DreamerV3 uses a balanced KL with free bits:
+                   KL_loss = max(KL, free_bits) — see §4 for details.
 ```
 
 All four components share gradients — improving the dynamics model improves the encoder because better representations lead to lower prediction error downstream.

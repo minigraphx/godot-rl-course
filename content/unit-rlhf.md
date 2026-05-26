@@ -311,14 +311,16 @@ class RLHFGodotEnv(gym.Wrapper):
         with torch.no_grad():
             r_rm = float(self.reward_model(obs_t).squeeze())
 
-            # Per-step KL between current and reference policy at this obs
+            # Per-step single-sample log-ratio between current and reference policy
+            # (a one-sample MC estimator of KL — not the KL itself; use a multi-sample
+            # estimator like Schulman's `(r-1) - log r` form if you want a true KL.)
             logp_cur = self.current_policy.log_prob(obs_t, action)
             logp_ref = self.ref_policy.log_prob(obs_t, action)
-            kl = float(logp_cur - logp_ref)
+            log_ratio = float(logp_cur - logp_ref)
 
-        r_total = r_rm - self.kl_coef * kl
+        r_total = r_rm - self.kl_coef * log_ratio
         info["r_rm"] = r_rm
-        info["kl_to_ref"] = kl
+        info["log_ratio_to_ref"] = log_ratio
         return obs, r_total, terminated, truncated, info
 ```
 

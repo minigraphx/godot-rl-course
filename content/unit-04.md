@@ -81,8 +81,8 @@ This makes it a good benchmark: if your hyperparameters can solve JumperHard, th
 
 These are the knobs you turn. Defaults work for most tasks; you only need to change one at a time. The theoretical reason for each parameter is listed so you understand *why* a change should help.
 
-| Parameter | Default | Theoretical role | When to change |
-|-----------|---------|-----------------|----------------|
+| Parameter | gdrl default | Theoretical role | When to change |
+|-----------|-------------|-----------------|----------------|
 | `--learning_rate` | 0.0003 | Step size in gradient space — controls how far the optimizer moves per update | Lower if reward oscillates; raise if learning is very slow |
 | `--n_steps` | 64 | Rollout length — controls the bias-variance tradeoff in GAE advantage estimates (longer = lower bias, higher variance; see [PPO Deep Dive](unit-ppo-deep.md)) | Raise (256–2048) for longer episodes; needs more memory |
 | `--batch_size` | 64 | Mini-batch size within each epoch — must divide `n_steps × n_envs` | Match to `n_steps`; larger = more stable gradients |

@@ -40,7 +40,7 @@ You already know **value-based RL**:
 
 - **Discrete actions with a small action set.** DQN is often more sample-efficient here.
 - **Deterministic environments with one optimal action per state.** A greedy value method nails this fast.
-- **Off-policy learning from a replay buffer.** Pure policy gradient is on-policy — you must use fresh samples from the *current* policy.
+- **Off-policy learning from a replay buffer.** Vanilla REINFORCE is on-policy — you must use fresh samples from the *current* policy. (PPO extends this by using importance sampling to safely reuse data for a few epochs.)
 
 | | Value-based (DQN) | Policy-based (REINFORCE) |
 |--|--|--|
@@ -48,7 +48,7 @@ You already know **value-based RL**:
 | Policy | argmax (deterministic) | Sample (stochastic) |
 | Action space | Discrete | Discrete **or continuous** |
 | Exploration | ε-greedy add-on | Built into the policy |
-| Data efficiency | Replay buffer (off-policy) | Fresh samples (on-policy) |
+| Data efficiency | Replay buffer (off-policy) | Fresh samples (vanilla REINFORCE is on-policy) |
 
 ---
 
@@ -238,7 +238,7 @@ Episode 400: total reward = 156
 Episode 700: total reward = 200
 ```
 
-CartPole's max reward is 200 (or 500 on the v1 episode-length cap). REINFORCE typically reaches the cap in **500–800 episodes**. But the curve is **noisy** — some episodes will randomly drop back to 30. That brings us to the central weakness of REINFORCE.
+CartPole-v1's max reward is **500** (the episode-length cap). REINFORCE typically reaches the cap in **500–800 episodes**. But the curve is **noisy** — some episodes will randomly drop back to 30. That brings us to the central weakness of REINFORCE.
 
 ---
 

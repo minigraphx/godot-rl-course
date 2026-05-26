@@ -254,7 +254,7 @@ model = SAC(
     learning_starts=1000,
     batch_size=256,
     gamma=0.95,
-    tau=0.05,
+    tau=0.005,
 )
 
 model.learn(total_timesteps=500_000, tb_log_name="her_fetchreach")
@@ -364,7 +364,7 @@ model = SAC(
     replay_buffer_kwargs=dict(n_sampled_goal=4, goal_selection_strategy="future"),
     verbose=1, tensorboard_log="logs/",
     learning_rate=1e-3, buffer_size=1_000_000,
-    learning_starts=1000, batch_size=256, gamma=0.95, tau=0.05,
+    learning_starts=1000, batch_size=256, gamma=0.95, tau=0.005,
 )
 model.learn(total_timesteps=500_000, tb_log_name="her_godot_arm")
 ```
