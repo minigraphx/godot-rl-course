@@ -52,7 +52,7 @@ pip install -r requirements-course.txt
     Der Installer fordert dich möglicherweise auf, `conda init` auszuführen — folge der Anweisung und öffne dann ein neues Terminal.
 
 !!! tip "Windows — erster Start"
-    Siehe [Windows — erster Start](#windows-erster-start) unten für Hinweise zur PowerShell / cmd / Git Bash Aktivierung und Windows-spezifische Besonderheiten.
+    Siehe [Windows — erster Start](#windows-first-run) unten für Hinweise zur PowerShell / cmd / Git Bash Aktivierung und Windows-spezifische Besonderheiten.
 
 ---
 
@@ -69,7 +69,7 @@ Die folgende Tabelle zeigt die Paketversionen aus `requirements-course.txt` und 
 
 ---
 
-## Windows — erster Start
+## Windows — erster Start { #windows-first-run }
 
 Die obigen Schritte funktionieren auf Windows mit kleinen Unterschieden. Lies diesen Abschnitt, bevor du das erste Mal `conda activate` ausführst.
 
