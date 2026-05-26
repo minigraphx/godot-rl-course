@@ -424,7 +424,7 @@ class NatureCNNWithNorm(BaseFeaturesExtractor):
         n_input_channels = observation_space.shape[0]
         self.cnn = nn.Sequential(
             nn.Conv2d(n_input_channels, 32, kernel_size=8, stride=4),
-            nn.LayerNorm([32, 20, 20]),
+            nn.GroupNorm(1, 32),          # GroupNorm(1, C) ≡ LayerNorm but input-size-agnostic
             nn.ReLU(),
             nn.Conv2d(32, 64, kernel_size=4, stride=2),
             nn.ReLU(),

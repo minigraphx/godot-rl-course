@@ -107,7 +107,7 @@ This is the one trick that took PPO from "interesting" to "standard."
 | Optimizer | Conjugate gradient + line search | Adam |
 | Compute per update | O(n²) | O(n) |
 | Hyperparameter | δ (KL threshold) | ε (`clip_range`), `target_kl` |
-| When to use | Robotics papers require it; near-monotonic improvement guarantees | Everything else |
+| When to use | Safety-critical tasks requiring near-monotonic improvement guarantees | Everything else |
 
 **PPO's `target_kl`** (SB3 parameter, default None) adds an optional early stopping check: if the approximate KL between old and new policy exceeds `target_kl` during a minibatch epoch, training stops early. This gives PPO a soft version of TRPO's hard constraint at negligible cost.
 
