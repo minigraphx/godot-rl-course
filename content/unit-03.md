@@ -259,6 +259,31 @@ decay_steps = 100_000
 
 At step 0 the agent acts randomly, discovering diverse crossings. By step 100k it mostly exploits its learned Q-values, with 5% random exploration to avoid getting stuck in local optima.
 
+**Three decay schedules**
+
+| Schedule | Formula | When to use |
+|----------|---------|-------------|
+| **Linear** | `ε(t) = ε_end + (ε_start - ε_end) · max(0, 1 - t/decay_steps)` | Most tasks — predictable and easy to tune |
+| **Exponential** | `ε(t) = ε_end + (ε_start - ε_end) · exp(-t / decay_rate)` | Fast early exploration; tail stays above `ε_end` |
+| **Curriculum** | Step function at milestones | When task difficulty changes in discrete phases |
+
+Exponential decay explores aggressively early and tapers slowly — useful when you need the agent to cover state space fast but want a long "refinement" phase. Curriculum schedules (e.g., keeping ε = 0.5 for 100k steps while the task is still random, then dropping to 0.05) are common in multi-stage environments.
+
+**Practical rules:**
+
+- `exploration_fraction` — fraction of total timesteps over which ε decays (SB3 DQN parameter). `exploration_fraction=0.1` means ε decays over the first 10% of training.
+- `exploration_final_eps` — ε at the end of the decay period (= `ε_end` in the formula). Default `0.05`.
+- `exploration_initial_eps` — starting ε. Default `1.0`.
+
+```python
+model = DQN("MlpPolicy", env,
+    exploration_fraction=0.2,       # decay over first 20% of timesteps
+    exploration_final_eps=0.05,     # 5% random at convergence
+    verbose=1)
+```
+
+TensorBoard tracks `rollout/exploration_rate` — watch it decay and cross-reference with `ep_rew_mean`. The reward should start rising roughly when ε crosses 0.2–0.3 (agent begins exploiting learned Q-values). If `ep_rew_mean` is still flat at ε = 0.05, the problem is not exploration — check reward design.
+
 **Training vs. evaluation**
 
 - **During training:** use the ε schedule — lots of exploration early
@@ -468,6 +493,79 @@ Because the replay buffer contains transitions collected by old policies, the Q-
 - DQN with a large replay buffer can be more sample-efficient than PPO for discrete-action tasks — every transition is reused hundreds of times
 - PPO scales better with parallel environments (see [Unit 5: Parallel Training](unit-05.md)) — running N envs in parallel gives N times more on-policy data per second
 - For continuous actions, SAC uses the same off-policy principle as DQN but extends it to continuous control — see [Unit SAC](unit-sac.md)
+
+---
+
+## 12 · Prioritized Experience Replay (PER)
+
+Uniform replay buffer sampling is wasteful: most stored transitions have near-zero TD error — the network already predicts them well and learns nothing new from them. **PER** samples transitions proportional to how surprising they are.
+
+**Priority formula:**
+
+```
+p_i = |δ_i|^α + ε
+```
+
+- `δ_i` — TD error for transition `i` (how wrong was the Q-value prediction?)
+- `α` — controls how much prioritization; `α=0` is uniform, `α=1` is full priority
+- `ε` — small constant to ensure every transition has a non-zero chance
+
+Higher TD error → more likely to be sampled → policy updates faster on informative transitions.
+
+**Bias correction:** PER changes the data distribution, which biases gradient estimates. An importance-sampling correction weight `w_i = (1 / N · 1/p_i)^β` is applied during training, annealing β from 0.4 → 1.0 over training.
+
+**SB3 implementation (sb3-contrib):**
+
+```bash
+pip install sb3-contrib
+```
+
+```python
+from stable_baselines3 import DQN
+from sb3_contrib.per import PrioritizedReplayBuffer
+
+model = DQN(
+    "MlpPolicy", env,
+    replay_buffer_class=PrioritizedReplayBuffer,
+    replay_buffer_kwargs={"alpha": 0.6},
+    learning_starts=1000,
+    verbose=1,
+)
+model.learn(total_timesteps=500_000)
+```
+
+**When PER helps:** sparse reward tasks where most transitions are zero-reward (CrossTheRoad variants, multi-room navigation). PER automatically upweights the rare goal-reaching transitions that carry the learning signal.
+
+**When PER doesn't help:** dense reward tasks — uniform sampling is already informative when every transition has a useful signal. Watch `train/td_loss` variance; if it's already low, PER adds overhead without benefit.
+
+---
+
+## 13 · Rainbow DQN and Noisy Networks
+
+**Noisy Networks** (Fortunato et al. 2017) replace linear layers in the Q-network with stochastic layers that add learned noise to their weights. The network learns *how much* to explore by adjusting noise magnitude — no ε schedule needed.
+
+```python
+# SB3: enable noisy nets via policy_kwargs (version-dependent)
+model = DQN("MlpPolicy", env,
+    policy_kwargs={"optimizer_class": th.optim.Adam})
+```
+
+**Rainbow** (Hessel et al. 2017) combined six DQN improvements into a single agent:
+
+| Component | Improvement |
+|-----------|-------------|
+| Double DQN | Unbiased target Q-values |
+| Dueling DQN | Separate value + advantage streams |
+| Prioritized Replay | Sample important transitions more |
+| Multi-step returns | n-step TD instead of 1-step |
+| Distributional RL (C51) | Model full return distribution, not just mean |
+| Noisy Networks | Learned exploration without ε schedule |
+
+The key result: combining all six beats any individual improvement by a wide margin on Atari. The improvements are complementary, not redundant.
+
+**Practical note for Godot:** Full Rainbow is not in SB3. Use individual components — Double DQN is on by default; Dueling via `policy_kwargs={"dueling": True}`; PER via sb3-contrib (Section 12 above). For most Godot tasks, **Double DQN + PER captures ≈90% of Rainbow's benefit** at a fraction of the complexity.
+
+**When Rainbow matters** over PPO: Atari-style pixel tasks with discrete actions and very sparse rewards. For typical Godot vector-observation environments, PPO or SAC usually outperforms any DQN variant — the on-policy or maximum-entropy advantage outweighs DQN's off-policy sample efficiency.
 
 ---
 

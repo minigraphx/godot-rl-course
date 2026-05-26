@@ -56,6 +56,7 @@ nav:
     - "Self-Play": unit-self-play.md
     - "Hierarchical RL": unit-hierarchical.md
   - "Phase 5 — Beyond Reward":
+    - "Multi-Task RL": unit-multitask.md
     - "Imitation Learning": unit-09.md
     - "Offline RL": unit-offline-rl.md
     - "Ship Your Brain": unit-10.md
