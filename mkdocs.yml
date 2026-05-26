@@ -15,6 +15,29 @@ theme:
     - content.code.copy
     - toc.integrate
 
+plugins:
+  - search
+  - i18n:
+      docs_structure: suffix
+      fallback_to_default: true
+      reconfigure_material: true
+      reconfigure_search: true
+      languages:
+        - locale: en
+          default: true
+          name: English
+          build: true
+        - locale: de
+          name: Deutsch
+          build: true
+          site_name: "Godot RL-Kurs"
+          site_description: "Deep Reinforcement Learning mit Godot-Spielumgebungen lernen"
+          nav_translations:
+            Home: Startseite
+            Setup: Einrichtung
+            Reference: Referenz
+            Guides: Anleitungen
+
 extra_css:
   - stylesheets/extra.css
 
@@ -58,7 +81,9 @@ nav:
   - "Phase 5 — Beyond Reward":
     - "Multi-Task RL": unit-multitask.md
     - "Imitation Learning": unit-09.md
+    - "RLHF & Preference Learning": unit-rlhf.md
     - "Offline RL": unit-offline-rl.md
+    - "Decision Transformer": unit-decision-transformer.md
     - "Ship Your Brain": unit-10.md
     - "Capstone Project": unit-capstone.md
   - "Phase 6 — Robotics":
