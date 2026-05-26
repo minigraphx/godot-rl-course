@@ -8,13 +8,18 @@ Course material for a Godot Reinforcement Learning course. Students learn **godo
 
 ## Build & verify
 
+The maintainer uses **conda** (env name: `godot_env`). Activate before running mkdocs:
+
 ```bash
-pip install -r requirements.txt   # mkdocs + mkdocs-material, pinned — do NOT upgrade
+conda activate godot_env
+pip install -r requirements.txt   # mkdocs + mkdocs-material + mkdocs-static-i18n, all pinned — do NOT upgrade
 mkdocs serve                      # live-reload at localhost:8000
-mkdocs build --strict             # canonical pre-commit check; fails on broken links / warnings
+mkdocs build --strict             # canonical pre-commit check; CI runs the same
 ```
 
-Content lives in `content/` (Markdown). Build output goes to `site/` (gitignored). Always run `mkdocs build --strict` before claiming a content change is done.
+Content lives in `content/` (Markdown). Build output goes to `site/` (English) and `site/de/` (German). Always run `mkdocs build --strict` before claiming a content change is done.
+
+The site is multilingual via the `mkdocs-static-i18n` plugin (suffix strategy). German pages live alongside English as `unit-foo.de.md`. If `mkdocs` errors with `'i18n' plugin is not installed`, run `pip install -r requirements.txt` inside the active conda env.
 
 ## Adding or modifying a unit
 

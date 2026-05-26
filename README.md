@@ -10,26 +10,30 @@ The course is published as a static MkDocs site. Markdown sources live in [`cont
 
 ## Contributor quick start
 
+This project uses **conda** for its Python environment. If you don't already use conda, install [Miniconda](https://docs.conda.io/en/latest/miniconda.html) first; `python -m venv` will also work if you prefer, but the maintainer's environment is conda-based.
+
 ```bash
 # 1. Clone
 git clone https://github.com/minigraphx/godot-rl-course.git
 cd godot-rl-course
 
-# 2. Create a virtualenv and install pinned MkDocs deps
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
+# 2. Create / activate the conda env and install pinned deps
+conda create -n godot_env python=3.11 -y       # one time
+conda activate godot_env
+pip install -r requirements.txt                # mkdocs, mkdocs-material, mkdocs-static-i18n
 
 # 3. Serve with live reload at http://localhost:8000
 mkdocs serve
 
-# 4. Build the static site (outputs to site/)
+# 4. Build the static site (outputs to site/, with site/de/ for German)
 mkdocs build --strict
 ```
 
-`mkdocs build --strict` is the canonical check before opening a PR — it fails on broken links, missing files, or other warnings.
+`mkdocs build --strict` is the canonical check before opening a PR — it fails on broken links, missing files, or other warnings. CI (`.github/workflows/docs-ci.yml`) runs the same command plus `linkchecker` on every PR.
 
-> **Do not upgrade** `mkdocs` or `mkdocs-material` past the versions in [`requirements.txt`](requirements.txt). The pin is intentional: newer Material releases have published breaking changes (theme rewrite, plugin removal) on a 2026 roadmap.
+> **Do not upgrade** `mkdocs`, `mkdocs-material`, or `mkdocs-static-i18n` past the versions in [`requirements.txt`](requirements.txt). The pins are intentional: newer Material releases have published breaking changes (theme rewrite, plugin removal) on a 2026 roadmap, and the i18n plugin's config schema shifts between minor versions.
+
+If you see `Config value 'plugins': The "i18n" plugin is not installed`, your environment is missing `mkdocs-static-i18n` — re-run `pip install -r requirements.txt` inside the activated env.
 
 ---
 
@@ -37,12 +41,14 @@ mkdocs build --strict
 
 | Path | Purpose |
 |------|---------|
-| `content/` | All published unit Markdown — one file per unit. This is `mkdocs.yml`'s `docs_dir`. |
-| `mkdocs.yml` | Site config and **the navigation tree**. Adding a unit means adding it here. |
-| `requirements.txt` | Pinned MkDocs + Material versions. |
+| `content/` | All published Markdown — units, glossary, troubleshooting, hardware-setup. This is `mkdocs.yml`'s `docs_dir`. |
+| `content/*.de.md` | German translations (see [Translations](#translations) below). |
+| `mkdocs.yml` | Site config, **the navigation tree**, and the `i18n` plugin config. Adding a unit or a language means editing here. |
+| `requirements.txt` | Pinned MkDocs + Material + i18n plugin versions. |
+| `.github/workflows/docs-ci.yml` | CI: runs `mkdocs build --strict` and a `linkchecker` pass on every PR. |
 | `docs/` | Internal docs for contributors (curriculum map, architecture, conventions). **Not** published. |
 | `internal/` | Working notes, gap analyses. Not published. |
-| `site/` | Build output. Gitignored. |
+| `site/` | Build output (`site/` is English, `site/de/` is German). Gitignored. |
 | `CLAUDE.md` | Onboarding notes for AI coding assistants working on the repo. |
 
 Related contributor docs:
@@ -95,6 +101,27 @@ Forgetting any one of these breaks the reading flow. `mkdocs build --strict` cat
 
 ---
 
+## Translations
+
+The site uses [`mkdocs-static-i18n`](https://github.com/ultrabug/mkdocs-static-i18n) with the **suffix** strategy. English is the default and falls back transparently for any page that hasn't been translated yet.
+
+- Default English page: `content/unit-03.md` → `https://.../unit-03/`
+- German translation: `content/unit-03.de.md` → `https://.../de/unit-03/`
+- Languages, navigation labels, and per-language `site_name` / `site_description` are configured in the `plugins:` block of `mkdocs.yml`.
+
+### Adding or updating a translation
+
+1. Copy the source file (`unit-foo.md`) to `unit-foo.<locale>.md` (e.g. `unit-foo.de.md`).
+2. Translate the prose, but **keep code blocks, file paths, library names, and TensorBoard metric names in English** — these match what students see in Godot, SB3, and the CLI.
+3. **Don't translate Markdown link targets** — `[Hierarchical RL](unit-hierarchical.md)` stays as-is; the i18n plugin handles language routing.
+4. Translate breadcrumb labels (`← Vorheriges` etc.) but keep their target file references English.
+5. If you add a new language, extend the `languages:` list in `mkdocs.yml` (under `plugins.i18n`) and translate the `nav_translations:` block too.
+6. Run `mkdocs build --strict` — the i18n plugin logs which pages fell back to English so you can see gaps.
+
+> If a translation file references a header anchor (`unit-02.md#step-3-...`), the German heading may have a different anchor — verify the link still resolves in the built `site/de/` output.
+
+---
+
 ## Commit and PR workflow
 
 - **Branch naming:** topical, kebab-case (`fix-locomotion-hinge-param`, `add-multitask-unit`).
@@ -105,10 +132,11 @@ Forgetting any one of these breaks the reading flow. `mkdocs build --strict` cat
   - `docs: ...` — internal `docs/` or `README.md` changes.
 - **PR description:** explain *why* the change exists (which gap it closes, what reader confusion it removes). Reference issues with `Closes #NN`.
 - **Pre-merge checklist:**
-  - [ ] `mkdocs build --strict` passes locally.
+  - [ ] `mkdocs build --strict` passes locally (CI runs the same).
   - [ ] Nav chain (`← / →` breadcrumbs) is consistent end-to-end through the touched units.
   - [ ] `mkdocs.yml`, `content/index.md`, and adjacent units are updated for any new unit.
   - [ ] Code examples compile / parse in their respective languages.
+  - [ ] If touching a translated page, the `.de.md` (and other locales) is either updated to match or left alone deliberately (English fallback is fine for new sections).
 
 ---
 
