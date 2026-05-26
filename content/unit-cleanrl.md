@@ -43,14 +43,15 @@ This unit bridges the theory you built in [unit-ppo-deep.md](unit-ppo-deep.md) t
 ### Installation
 
 ```bash
-pip install cleanrl[gym,atari]
-# Or, for the full dev environment:
+# CleanRL is not distributed as a PyPI package — clone the repo and install from source:
 git clone https://github.com/vwxyzjn/cleanrl.git
 cd cleanrl
-pip install -e ".[gym,atari]"
+pip install -r requirements/requirements.txt
+# For Atari support add:
+pip install -r requirements/requirements-atari.txt
 ```
 
-The `[gym,atari]` extras pull in `gymnasium`, `stable-baselines3` (for vectorized env utilities), and `tensorboard`. If you already have a course virtual environment, install into it — there are no conflicts with your existing SB3 installation.
+CleanRL's `requirements/` directory contains per-feature requirement files. If you already have a course conda environment, install into it — there are no conflicts with your existing SB3 installation.
 
 ### Running the CartPole baseline
 

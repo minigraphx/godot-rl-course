@@ -273,7 +273,7 @@ This is the table to come back to whenever you start a new project.
 | Aspect | PPO | SAC |
 |--------|-----|-----|
 | On/off-policy | On-policy (discard after use) | Off-policy (replay buffer) |
-| Action space | Discrete + continuous | Continuous only |
+| Action space | Discrete + continuous | Continuous (vanilla); discrete variants exist (sb3_contrib DiscreteSAC, CleanRL sac_atari) |
 | Replay buffer | No | Yes (typically 1M transitions) |
 | Parallel envs | Yes — scales near-linearly | Minimal benefit |
 | Sample efficiency | Lower — discards data | Higher — reuses transitions |
@@ -288,8 +288,8 @@ This is the table to come back to whenever you start a new project.
 
     **Use SAC when** the action space is purely continuous, simulation is expensive (a real robot, a heavy physics sim, anything that takes seconds per step), data collection is your bottleneck, and you want maximum sample efficiency.
 
-!!! warning "SAC does not support discrete action spaces"
-    If your `AIController` exposes any discrete buttons (jump, fire, grab) alongside continuous controls, SAC will not work out of the box. There is a Discrete-SAC variant, but SB3's `SAC` class assumes purely continuous actions. For mixed action spaces, stick with PPO or look at alternatives like `RecurrentPPO`.
+!!! warning "Vanilla SAC is designed for continuous action spaces"
+    SB3's `SAC` class assumes purely continuous actions. If your `AIController` exposes any discrete buttons (jump, fire, grab) alongside continuous controls, vanilla SAC will not work out of the box. Discrete variants do exist — `sb3_contrib.DiscreteSAC` and CleanRL's `sac_atari.py` — but for mixed action spaces the simplest choice is PPO or `RecurrentPPO`.
 
 ---
 
@@ -318,7 +318,7 @@ Now `a` is a *deterministic* function of `φ` (and the random noise `ε`, which 
 
 That gradient gets multiplied by `∂Q/∂a` to give the full actor gradient. The randomness is preserved (different `ε` samples give different `a`), but the path from `φ` to `a` is fully differentiable.
 
-**Compare to PPO.** PPO sidesteps this entire issue with the importance-sampling ratio `r_t = π_new(a|s) / π_old(a|s)`. PPO never differentiates *through* the action sample — it just reweights *already collected* actions by the policy ratio. That works because PPO is on-policy and only needs to use each rollout for a few epochs. SAC, being off-policy, must differentiate through fresh samples every step — and reparameterization is what makes that possible.
+**Compare to PPO.** PPO sidesteps this entire issue with the importance-sampling ratio `r_t = π_new(a|s) / π_old(a|s)`. PPO never differentiates *through* the action sample — it just reweights *already collected* actions by the policy ratio. The reason isn't simply that PPO is on-policy (REINFORCE is also on-policy yet uses the score-function estimator). It's that PPO's update is built around the IS ratio, which only needs `log π(a|s)` evaluated at stored actions — a derivative through the *parameters*, not the sample. SAC's actor objective is `E_{a ~ π}[Q(s, a)]`, so the gradient must flow through the action `a` itself; reparameterization is what makes that path differentiable.
 
 This is one of the deep mathematical reasons SAC and PPO look so different despite both being actor-critic methods.
 

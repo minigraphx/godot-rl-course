@@ -227,7 +227,7 @@ for update in range(max_updates):
               f"critic_loss={critic_loss.item():.3f} entropy={entropy.item():.3f}")
 ```
 
-Run it. After ~150 updates you should see `ep_rew_mean` climbing past 200 and the entropy decreasing from ~0.69 (the maximum for two equally-likely actions, `ln 2`) toward something like 0.3 as the policy commits.
+Run it. After ~150 updates you should see `ep_rew_mean` climbing past 200 and approaching the CartPole-v1 cap of 500. Entropy will decrease from ~0.69 (the maximum for two equally-likely actions, `ln 2`) toward something like 0.3 as the policy commits.
 
 !!! tip "Compare with REINFORCE"
     Plug the same network into your REINFORCE script from the previous unit (drop the critic head, use raw `G_t` instead of `A_t`). You will see A2C reach the same reward in roughly an order of magnitude fewer environment steps — the same observation that pushed the field from REINFORCE to A2C in the first place.
@@ -357,7 +357,7 @@ import torch, numpy as np
 env = StableBaselinesGodotEnv(env_path="./JumperHard.x86_64", n_parallel=1, speedup=1)
 model = PPO.load("logs/sb3/jumper_baseline/best_model", env=env)
 
-obs, _ = env.reset(), None
+obs, _ = env.reset()
 obs_tensor = torch.tensor(obs, dtype=torch.float32).unsqueeze(0)
 
 with torch.no_grad():

@@ -555,7 +555,7 @@ Dyna-Q combines Q-Learning with a learned model for "imaginary" transitions. Aft
 |-----------|----------|
 | **MuZero** (DeepMind) | Learns a model and uses MCTS planning — mastered chess, Go, and Atari without being told the rules |
 | **Dreamer** (Google Brain) | Learns a compact latent world model; trains actor-critic entirely in imagination |
-| **MBPO** | Model-Based PPO — uses model for short rollouts to augment real experience |
+| **MBPO** | Model-Based Policy Optimization (Janner 2019) — uses a learned dynamics model for short imagined rollouts to augment real experience; trains a SAC agent on the mixed real+imagined data |
 
 ### Model-free vs model-based comparison
 
@@ -604,7 +604,7 @@ env = StableBaselinesGodotEnv(env_path="./CrossTheRoad.x86_64", n_parallel=1, sp
 model = DQN.load("logs/sb3/crosstheroad_dqn/best_model", env=env)
 
 # Get an observation and inspect Q-values
-obs, _ = env.reset(), None
+obs, _ = env.reset()
 obs_tensor = torch.tensor(obs, dtype=torch.float32).unsqueeze(0)
 with torch.no_grad():
     q_values = model.q_net(obs_tensor)
