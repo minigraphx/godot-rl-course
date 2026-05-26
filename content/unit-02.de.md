@@ -52,13 +52,13 @@ Dann geht es weiter zu Phase B — du kopierst diese Muster, du entdeckst sie ni
     Wenn du [Phase A](#phase-a) abgeschlossen hast, hast du SimpleReachGoal bereits untersucht. Diese Tabelle zeigt, wie die Gymnasium-Konzepte zu Godot-Knoten für den Lunar Lander werden, den du als Nächstes erstellst.
 
 !!! info "Setup bereits erledigt?"
-    Wenn du Unit 0 abgeschlossen hast, überspringe Abschnitte 1–3 und beginne bei [Abschnitt 4 — Lander-Szene bauen](#4-build-the-lander-scene-landertscn).
+    Wenn du Unit 0 abgeschlossen hast, überspringe Abschnitte 1–3 und beginne bei [Abschnitt 4 — Lander-Szene bauen](#4-lander-szene-bauen-landertscn).
 
 ---
 
 ## 1 · Benötigte Werkzeuge installieren
 
-Wenn du Unit 0 abgeschlossen hast, sind deine Werkzeuge bereits installiert — springe zu [Abschnitt 4](#4-build-the-lander-scene-landertscn).
+Wenn du Unit 0 abgeschlossen hast, sind deine Werkzeuge bereits installiert — springe zu [Abschnitt 4](#4-lander-szene-bauen-landertscn).
 
 Andernfalls folge [Setup](setup.md) für Godot .NET, Miniconda, `godot_env` und das Plugin, und kehre dann hierher zurück.
 
@@ -308,7 +308,7 @@ Verschiebe jede `Env_N`-Instanz an eine andere Position, damit sie sich visuell 
 ## 9 · Training starten (im Editor)
 
 !!! info "Training im Editor ist der empfohlene Weg"
-    Python und Godot kommunizieren über einen lokalen Socket, sodass du direkt aus dem Editor heraus trainieren kannst — kein exportiertes Binary erforderlich. Dies ist der einfachste und portabelste Ansatz; auf macOS vermeidet er außerdem architekturabhängige Probleme mit exportierten Binaries. Für großangelegtes paralleles Training mit einem exportierten Binary, siehe den optionalen [Abschnitt 12](#12-export-a-game-binary-optional).
+    Python und Godot kommunizieren über einen lokalen Socket, sodass du direkt aus dem Editor heraus trainieren kannst — kein exportiertes Binary erforderlich. Dies ist der einfachste und portabelste Ansatz; auf macOS vermeidet er außerdem architekturabhängige Probleme mit exportierten Binaries. Für großangelegtes paralleles Training mit einem exportierten Binary, siehe den optionalen [Abschnitt 12](#12-spiel-binary-exportieren-optional).
 
 **Schritt 1 — Conda-Umgebung aktivieren**
 
