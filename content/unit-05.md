@@ -207,3 +207,6 @@ In TensorBoard, use the shaded area view (IQM or mean ± std) to visualise multi
 **Unit 6:** Continuous 3D — FlyBy / HovercraftRacing, continuous action spaces, observation normalization for 3D sensors.
 
 [→ Unit 6: Continuous 3D](unit-06.md)
+
+!!! tip "If parallel training feels slow or unstable"
+    See the [Debugging RL Training guide](unit-debugging.md#9-performance-slow-training) for throughput bottlenecks, subprocess launch issues, and VecEnv misconfigurations.

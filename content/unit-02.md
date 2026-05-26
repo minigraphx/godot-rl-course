@@ -113,7 +113,7 @@ Select each `Area2D` leg node, go to **Node → Signals**, connect `body_entered
 ## 5 · Write `lander.gd` (physics + reward)
 
 !!! warning "Training stalled?"
-    Check in order: (1) reward sign and scale — is "good" actually positive? (2) sparse rewards — does the agent get any signal before the goal? (3) observation bugs — are sensors updating after resets? (4) TensorBoard flat but Godot looks fine — you may need longer training or a viz checkpoint.
+    Check in order: (1) reward sign and scale — is "good" actually positive? (2) sparse rewards — does the agent get any signal before the goal? (3) observation bugs — are sensors updating after resets? (4) TensorBoard flat but Godot looks fine — you may need longer training or a viz checkpoint. → [Full diagnostic guide](unit-debugging.md#3-no-learning-signal-ep_rew_mean-flat)
 
 ```gdscript
 extends RigidBody2D

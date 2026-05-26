@@ -90,7 +90,7 @@ These are the knobs you turn. Defaults work for most tasks; you only need to cha
 | `--vf_coef` | 0.5 | Value function loss coefficient — scales how strongly the critic is trained relative to the actor | Raise (0.75–1.0) if `value_loss` plateaus while policy improves |
 
 !!! warning "Training stalled?"
-    Check in order: (1) reward sign and scale, (2) sparse rewards — is there a shaped component? (3) `approx_kl` > 0.02 → reduce `--clip_range` or `--learning_rate`, (4) `ep_rew_mean` flat after 500k steps → raise `--n_steps` and `--ent_coef`.
+    Check in order: (1) reward sign and scale, (2) sparse rewards — is there a shaped component? (3) `approx_kl` > 0.02 → reduce `--clip_range` or `--learning_rate`, (4) `ep_rew_mean` flat after 500k steps → raise `--n_steps` and `--ent_coef`. → [Full PPO diagnostic guide](unit-debugging.md#6-training-instability-oscillating-curves)
 
 **The learning rate is the most sensitive knob.** When in doubt, halve it and retrain. Large learning rates destabilize the clipped objective; small ones just train slowly. "Too slow" is recoverable; "diverged" is not.
 

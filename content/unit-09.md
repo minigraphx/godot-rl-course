@@ -219,6 +219,6 @@ A good BC agent looks "human-like" — it hesitates at the same spots you hesita
 
 ## What's next
 
-**Offline RL:** Got recorded demonstrations but no live environment? Offline RL trains from a fixed dataset — no environment interaction needed. Essential for robotics and safety-critical domains.
+**RLHF & Preference Learning:** You've learned to clone behaviour from demonstrations. What if you only have a designer's *taste* — no explicit reward, just pairwise preferences? RLHF turns human judgement into a reward model that guides policy fine-tuning.
 
-[→ Offline RL](unit-offline-rl.md)
+[→ RLHF & Preference Learning](unit-rlhf.md)

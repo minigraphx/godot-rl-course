@@ -1,6 +1,6 @@
 # Decision Transformer — RL as Sequence Modeling
 
-[← Offline RL](unit-offline-rl.md) · [Course home](index.md)
+[← Offline RL](unit-offline-rl.md) · [Course home](index.md) · [→ Ship Your Brain](unit-10.md)
 
 ---
 
@@ -515,4 +515,4 @@ Run the steering experiment with a fine-grained grid: `target_return in [0, 10, 
 
 ---
 
-[← Offline RL](unit-offline-rl.md) · [Course home](index.md)
+[← Offline RL](unit-offline-rl.md) · [Course home](index.md) · [→ Ship Your Brain](unit-10.md)
