@@ -2,6 +2,9 @@
 
 [← SAC](unit-sac.md) · [Course home](index.md)
 
+!!! info "Time"
+    Reading: ~50 min · Training: ~30 min GPU / ~2 h CPU
+
 ---
 
 !!! info "Three ways to see your AI"

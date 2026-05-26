@@ -1,5 +1,8 @@
 # Unit 1 — Foundations of Reinforcement Learning
 
+!!! info "Time"
+    Reading: ~40 min
+
 Learn the RL mental model and map it onto Godot — but don't wait until the end to *do* something. Skim the loop, tweak one BallChase reward, then read the deeper sections while training runs.
 
 ---

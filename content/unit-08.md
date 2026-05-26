@@ -4,6 +4,9 @@ Train **FPS / RobotFPS** — environments where the agent can't see everything a
 
 [← Unit 7: Multi-Agent](unit-07.md) · [Course home](index.md)
 
+!!! info "Time"
+    Reading: ~35 min · Training: ~30 min GPU / ~2 h CPU
+
 ---
 
 !!! info "Three ways to see your AI"

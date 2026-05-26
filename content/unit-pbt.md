@@ -1,5 +1,8 @@
 # Population-Based Training — Hyperparameter AutoML for RL
 
+!!! info "Time"
+    Reading: ~30 min · Training: ~45 min GPU / ~3 h CPU
+
 [Course home](index.md)
 
 ---

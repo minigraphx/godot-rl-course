@@ -2,6 +2,9 @@
 
 [← Continuous 3D](unit-06.md) · [Course home](index.md)
 
+!!! info "Time"
+    Reading: ~30 min · Training: ~45 min GPU / ~3 h CPU
+
 ---
 
 !!! info "Three ways to see your AI"

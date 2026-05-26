@@ -2,6 +2,9 @@
 
 [← Locomotion Agents](unit-locomotion.md) · [Course home](index.md)
 
+!!! info "Time"
+    Reading: ~35 min · Training: ~30 min GPU / ~2 h CPU
+
 !!! info "Three ways to see your AI"
     - **Godot viewport** — watch the arm reach toward a randomly spawned goal marker every episode; the goal moves, but the same policy handles it.
     - **TensorBoard** — plot `rollout/success_rate` vs `timesteps` for two runs side-by-side: SAC alone (flat at zero) vs SAC+HER (climbs to ~0.9).

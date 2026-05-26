@@ -1,6 +1,9 @@
 # RLHF — Learning Rewards from Human Preferences
 
-[← Imitation Learning](unit-09.md) · [Course home](index.md)
+[← Imitation Learning](unit-09.md) · [Course home](index.md) · [→ Offline RL](unit-offline-rl.md)
+
+!!! info "Time"
+    Reading: ~45 min · Training: ~20 min GPU / ~1.5 h CPU
 
 ---
 
@@ -640,4 +643,6 @@ You have closed the loop on the alignment story this course has been telling: re
 
 If you only remember one thing from this unit: **the reward is the goal, but the goal is in someone's head.** RLHF is the bridge from the head to the gradient.
 
-[← Imitation Learning](unit-09.md) · [Course home](index.md)
+**Offline RL:** What if you can't run the environment at all — only a static dataset of past transitions? Offline RL extracts a policy from fixed data without any further environment interaction.
+
+[← Imitation Learning](unit-09.md) · [Course home](index.md) · [→ Offline RL](unit-offline-rl.md)

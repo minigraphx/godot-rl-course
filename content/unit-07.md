@@ -4,6 +4,9 @@ Train multiple agents simultaneously in the same environment — some cooperatin
 
 [← Visual Observations](unit-visual-observations.md) · [Course home](index.md)
 
+!!! info "Time"
+    Reading: ~30 min · Training: ~30 min GPU / ~2 h CPU
+
 ---
 
 !!! info "Three ways to see your AI"

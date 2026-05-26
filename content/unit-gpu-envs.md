@@ -1,5 +1,8 @@
 # GPU-Accelerated RL Environments — Research-Scale Alternatives to Godot
 
+!!! info "Time"
+    Reading: ~20 min
+
 [Course home](index.md)
 
 ---

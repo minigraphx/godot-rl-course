@@ -2,6 +2,9 @@
 
 [← Goal-Conditioned RL & HER](unit-her.md) · [Course home](index.md)
 
+!!! info "Time"
+    Reading: ~30 min
+
 !!! info "Three ways to see your AI"
     - **Godot** — test your policy at the *extremes* of your domain randomization (max friction, min mass, max noise). If it survives there, it has a shot on hardware.
     - **TensorBoard** — watch `ep_rew_mean` and reward *variance* across seeds. Low variance under DR is your proxy for sim-to-real robustness.

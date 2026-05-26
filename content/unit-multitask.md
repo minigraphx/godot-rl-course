@@ -2,6 +2,9 @@
 
 [← Hierarchical RL](unit-hierarchical.md) · [Course home](index.md) · [→ Imitation Learning](unit-09.md)
 
+!!! info "Time"
+    Reading: ~35 min · Training: ~30 min GPU / ~2 h CPU
+
 ---
 
 A single robot arm that can reach, push, and pick-up-and-place. A character controller

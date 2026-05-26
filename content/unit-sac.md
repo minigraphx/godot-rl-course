@@ -4,6 +4,9 @@ PPO is the default in this course, and for good reason: it handles discrete and 
 
 [← PPO in Practice](unit-04.md) · [Course home](index.md)
 
+!!! info "Time"
+    Reading: ~40 min · Training: ~20 min GPU / ~1.5 h CPU
+
 ---
 
 !!! info "Three ways to see your AI"

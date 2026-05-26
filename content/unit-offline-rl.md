@@ -1,6 +1,9 @@
 # Offline RL — Learning from Fixed Datasets
 
-[← Imitation Learning](unit-09.md) · [Course home](index.md)
+[← RLHF & Preference Learning](unit-rlhf.md) · [Course home](index.md) · [→ Decision Transformer](unit-decision-transformer.md)
+
+!!! info "Time"
+    Reading: ~40 min · Training: ~20 min GPU / ~1.5 h CPU
 
 ---
 
@@ -516,4 +519,4 @@ Combine offline RL with hindsight experience replay from [unit-her.md](unit-her.
 
 ---
 
-[← Imitation Learning](unit-09.md) · [Course home](index.md) · [→ Ship Your Brain](unit-10.md)
+[← RLHF & Preference Learning](unit-rlhf.md) · [Course home](index.md) · [→ Decision Transformer](unit-decision-transformer.md)

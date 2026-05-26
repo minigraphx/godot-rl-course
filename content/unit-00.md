@@ -1,5 +1,8 @@
 # Unit 0 — Setup & First Run
 
+!!! info "Time"
+    Reading: ~20 min · Training: ~15 min GPU / ~1 h CPU
+
 Install the Godot .NET editor, Python toolchain, and godot-rl-agents plugin. Run your first training session with the **BallChase** example and confirm the Godot ↔ Python socket works.
 
 ---

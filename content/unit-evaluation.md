@@ -2,6 +2,9 @@
 
 [← Parallel Training](unit-05.md) · [Course home](index.md)
 
+!!! info "Time"
+    Reading: ~25 min
+
 ---
 
 !!! info "Three ways to see your AI"

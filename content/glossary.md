@@ -24,6 +24,8 @@ Quick reference for all acronyms, equations, and algorithm parameters used in th
 
 **Batch normalization** — Normalizes layer activations across the mini-batch at each gradient step; stabilizes training but interacts poorly with recurrent architectures and small batches common in RL. *See:* [unit-ppo-deep](unit-ppo-deep.md) §5
 
+**Behavioral Cloning (BC)** — Supervised imitation learning: given a dataset of expert `(state, action)` pairs, train a policy to mimic them via cross-entropy or MSE loss. Simple and fast, but suffers from distribution shift when the agent visits states the expert never demonstrated. *See:* [unit-09](unit-09.md) §1
+
 **Bellman equation** — Recursive definition of the value function: `V(s) = E[r + γ V(s')]`. The backbone of all value-based RL algorithms. *See:* [unit-q-learning](unit-q-learning.md) §2
 
 **Beta (β in PBT/PER)** — In PER, controls how much importance-sampling corrects the bias introduced by non-uniform sampling (annealed 0→1 during training). In PBT, sometimes used as a schedule parameter. *See:* [unit-pbt](unit-pbt.md) §2
@@ -37,6 +39,8 @@ Quick reference for all acronyms, equations, and algorithm parameters used in th
 **CNN (Convolutional Neural Network)** — Feature extractor designed for grid-structured inputs (images, tilemaps); uses weight-shared convolutional filters before a flat feature vector. *See:* [unit-visual-observations](unit-visual-observations.md) §2
 
 **Conjugate gradient** — Iterative solver used in TRPO to compute the natural gradient step without forming the full Fisher information matrix, keeping computation tractable. *See:* [unit-ppo-deep](unit-ppo-deep.md) §1
+
+**Credit assignment** — The problem of determining which past actions are responsible for a delayed reward. Temporal-difference methods (TD, Q-learning) address it by bootstrapping; eligibility traces and n-step returns extend the attribution window. Long-horizon tasks with sparse rewards make credit assignment especially hard. *See:* [unit-q-learning](unit-q-learning.md) §2
 
 **Critic** — The neural network that estimates V(s) or Q(s,a); provides the baseline or target for the actor's gradient. *See:* [unit-actor-critic](unit-actor-critic.md) §1
 
@@ -54,6 +58,10 @@ Quick reference for all acronyms, equations, and algorithm parameters used in th
 
 **DQN (Deep Q-Network)** — Combines Q-learning with a deep neural network, experience replay, and a target network to stabilize training on high-dimensional inputs. *See:* [unit-03](unit-03.md) §1
 
+**Discount factor (γ)** — A scalar in [0, 1) that down-weights future rewards in the return `G_t = Σ γ^k r_{t+k}`. γ=0 makes the agent myopic (only cares about immediate reward); γ→1 makes it far-sighted. Typical values: 0.99 for episodic tasks, 0.999 for long-horizon continuous tasks. *See:* [unit-00](unit-00.md) §2
+
+**Distributional RL** — Family of RL algorithms that model the full distribution of returns Z(s,a) rather than just its expectation Q(s,a). C51 (the original) represents Z as a categorical distribution over 51 atoms. Improves stability because the agent learns *how variable* an outcome is, not just its mean. Used in Rainbow DQN. *See:* [unit-03](unit-03.md) §7
+
 **Dreamer / DreamerV3** — Model-based RL agents that learn a compact world model in latent space and plan by imagining rollouts entirely inside that model; state-of-the-art on many benchmarks. *See:* [unit-world-models](unit-world-models.md) §4
 
 **Dueling DQN** — DQN variant that decomposes Q into separate value and advantage streams `Q(s,a) = V(s) + A(s,a) − mean(A)`; improves stability when many actions have similar value. *See:* [unit-03](unit-03.md) §4
@@ -68,6 +76,8 @@ Quick reference for all acronyms, equations, and algorithm parameters used in th
 
 **Feature extractor** — The front-end network (MLP, CNN, custom GDScript sensor → Python) that converts raw observations into a fixed-size embedding fed to the policy/value heads. *See:* [unit-visual-observations](unit-visual-observations.md) §2
 
+**Function approximation** — Using a parametric model (e.g., a neural network) to represent the value function V(s), Q(s,a), or policy π(a|s) when the state space is too large for a table. Deep RL is function approximation with deep nets; linear function approximation with tile coding or radial basis features predates it. *See:* [unit-q-learning](unit-q-learning.md) §3
+
 **FlyBy** — One of the built-in godot-rl-agents example environments; a drone navigates a 3-D obstacle course, commonly used for testing visual observations and 3-D locomotion policies. *See:* [unit-locomotion](unit-locomotion.md) §2
 
 **GAE (Generalized Advantage Estimation)** — Exponentially-weighted sum of TD errors used to estimate advantages, controlled by λ ∈ [0,1]: λ=0 gives one-step TD; λ=1 gives full Monte Carlo returns. *See:* [unit-ppo-deep](unit-ppo-deep.md) §3
@@ -81,6 +91,8 @@ Quick reference for all acronyms, equations, and algorithm parameters used in th
 **Hierarchical RL** — Decomposes a task into high-level sub-goal selection (manager) and low-level primitive execution (worker), enabling long-horizon planning without credit-assignment over thousands of steps. *See:* [unit-hierarchical](unit-hierarchical.md) §1
 
 **ICM (Intrinsic Curiosity Module)** — Adds a prediction error between a forward model's predicted next-state embedding and the actual next-state embedding as an intrinsic reward bonus, driving exploration. *See:* [unit-curiosity](unit-curiosity.md) §3
+
+**Imitation Learning** — Learning a policy by observing an expert's behaviour, without relying primarily on an environment reward signal. Covers Behavioral Cloning (supervised), DAgger (iterative), GAIL (adversarial), and IRL (reward recovery). *See:* [unit-09](unit-09.md) §1
 
 **Importance sampling** — Technique for reusing transitions generated by an old policy (behavior policy) to estimate gradients under the current policy, via the ratio `π_θ(a|s) / π_θ_old(a|s)`. *See:* [unit-ppo-deep](unit-ppo-deep.md) §2
 
@@ -130,6 +142,8 @@ Quick reference for all acronyms, equations, and algorithm parameters used in th
 
 **Rainbow DQN** — DQN variant that combines six improvements (PER, dueling, noisy nets, n-step returns, distributional RL, double DQN) into one agent achieving state-of-the-art Atari performance. *See:* [unit-03](unit-03.md) §7
 
+**Recurrence (LSTM / GRU)** — Architectures that maintain a hidden state across timesteps, giving the policy memory. Essential for POMDPs (partially observable environments) where the current observation is insufficient to determine the state. LSTM uses separate cell and hidden states with forget/input/output gates; GRU merges them into update/reset gates for fewer parameters. *See:* [unit-08](unit-08.md) §2
+
 **REINFORCE** — Monte Carlo policy gradient: collect full episodes, compute returns G_t, then update `θ ← θ + α ∇_θ log π_θ(a_t|s_t) · G_t`; high variance but conceptually simple. *See:* [unit-policy-gradients](unit-policy-gradients.md) §2
 
 **Reparameterization trick** — Expresses a stochastic sample `a ~ π(·|s)` as a deterministic function of a noise variable `ε ~ N(0,1)`: `a = μ(s) + σ(s) · ε`; allows gradients to flow through the sampling operation. Used in SAC. *See:* [unit-sac](unit-sac.md) §4
@@ -167,6 +181,8 @@ Quick reference for all acronyms, equations, and algorithm parameters used in th
 **Temperature (α)** — See *Alpha (α in SAC)*. *See:* [unit-sac](unit-sac.md) §3
 
 **Timestep** — A single environment step: the agent receives observation o_t, produces action a_t, the environment transitions to o_{t+1} and emits reward r_t. Training budgets are measured in total timesteps. *See:* [unit-00](unit-00.md) §2
+
+**Trajectory optimization** — Planning approach that directly searches for the sequence of actions `(a_0, a_1, …, a_T)` that maximizes return, using gradient-based or sampling-based methods. Unlike RL, it typically requires a differentiable model of the environment. *See:* [unit-world-models](unit-world-models.md) §3
 
 **TRPO (Trust Region Policy Optimization)** — On-policy algorithm that constrains each policy update to stay within a KL-divergence trust region; theoretically motivated but computationally expensive. PPO is the practical successor. *See:* [unit-ppo-deep](unit-ppo-deep.md) §1
 

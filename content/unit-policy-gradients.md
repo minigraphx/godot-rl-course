@@ -2,6 +2,9 @@
 
 [← Deep Q-Learning](unit-03.md) · [Course home](index.md)
 
+!!! info "Time"
+    Reading: ~40 min
+
 ---
 
 !!! info "Three ways to see your AI"

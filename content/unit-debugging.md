@@ -2,6 +2,9 @@
 
 [Course home](index.md) · [Reference](reference.md)
 
+!!! info "Time"
+    Reading: ~25 min
+
 !!! info "How to use this guide"
     This is a diagnostic reference, not a tutorial. Start at the **top-level flowchart** below, follow the branch that matches what you are seeing, and jump to the section it points to. Each section is structured the same way: **symptom → diagnosis → concrete fix**. The "Three ways to see your AI" principle applies here too — cross-check **Godot behavior**, **TensorBoard curves**, and **code inspection** before changing anything. If two of the three disagree, that disagreement is itself the clue.
 

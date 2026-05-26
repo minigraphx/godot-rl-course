@@ -4,6 +4,9 @@ Same **BallChase** environment you already know — but now you open the source,
 
 [← Unit 4: JumperHard & PPO](unit-04.md) · [Course home](index.md)
 
+!!! info "Time"
+    Reading: ~25 min · Training: ~20 min GPU / ~1 h CPU
+
 ---
 
 !!! info "Three ways to see your AI"
@@ -207,3 +210,6 @@ In TensorBoard, use the shaded area view (IQM or mean ± std) to visualise multi
 **Unit 6:** Continuous 3D — FlyBy / HovercraftRacing, continuous action spaces, observation normalization for 3D sensors.
 
 [→ Unit 6: Continuous 3D](unit-06.md)
+
+!!! tip "If parallel training feels slow or unstable"
+    See the [Debugging RL Training guide](unit-debugging.md#9-performance-slow-training) for throughput bottlenecks, subprocess launch issues, and VecEnv misconfigurations.
