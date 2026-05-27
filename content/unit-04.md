@@ -4,6 +4,12 @@ Train the **JumperHard** example — a 3D jumping robot that serves as a standar
 
 [← Unit 3: CrossTheRoad & DQN](unit-03.md) · [Course home](index.md)
 
+!!! note "Prerequisites"
+    - **[Unit 2](unit-02.md)** — a working SB3 PPO run end-to-end (training + ONNX export)
+    - **[Unit 3](unit-03.md)** — DQN trained on CrossTheRoad; on-policy vs off-policy distinction
+    - Comfort reading TensorBoard scalars (`ep_rew_mean`, `approx_kl`, `entropy_loss`)
+    - **[Actor-Critic unit](unit-actor-critic.md)** (optional but useful) — makes Section 0 click immediately
+
 !!! info "Time"
     Reading: ~40 min · Training: ~45 min GPU / ~3 h CPU
 
@@ -417,5 +423,16 @@ Install: `pip install optuna`
 ## What's next
 
 **Unit 5:** Same BallChase environment — new skill: parallel rollout scaling with `n_parallel` and a proper evaluation protocol.
+
+!!! info "Self-check before you move on"
+    Can you answer these in your own words?
+
+    1. What does the **clip range** in PPO actually clip, and what does it prevent?
+    2. How does GAE-λ trade off bias against variance, and what does λ = 1 collapse to?
+    3. If `approx_kl` is consistently above 0.05, what hyperparameter would you tune first — and which way?
+    4. Why does Optuna's pruner cut bad trials early, and what would happen if you didn't prune?
+    5. What's the difference between "training converged" and "policy is good enough to ship"?
+
+    If you can answer all five — you're ready.
 
 [→ Unit 5: Parallel Training](unit-05.md)

@@ -4,6 +4,12 @@ Before we replace policies with neural networks (Unit 3 / DQN), we need to under
 
 [← Unit 2: Lunar Lander](unit-02.md) · [Course home](index.md)
 
+!!! note "Prerequisites"
+    - **[Unit 1](unit-01.md)** — MDP loop, policy, return, discount factor γ
+    - **[Unit 2](unit-02.md)** — a working PPO training run (useful as a contrast in §1)
+    - Comfort running a Python script (`pip install gymnasium`, then run)
+    - No prior dynamic-programming knowledge required — we re-derive Bellman in §2
+
 !!! info "Time"
     Reading: ~35 min · Training: ~20 min GPU / ~1.5 h CPU
 
@@ -634,5 +640,16 @@ You now understand the core machinery of value-based RL:
 - Tables work for tiny worlds; **neural networks** take over for big ones.
 
 In the next unit you will replace the table with a neural network and meet the engineering tricks (replay buffer, target network, Huber loss) that make Deep Q-Networks stable in practice — and then apply them to a Godot scene.
+
+!!! info "Self-check before you move on"
+    Can you answer these in your own words?
+
+    1. What does Q(s, a) represent — in one sentence?
+    2. Write the Q-Learning update rule from memory. What is α, and what is the TD error?
+    3. Why is Q-Learning **off-policy** — and what does that mean concretely about the data it uses?
+    4. What does γ = 0 collapse the agent's behaviour to, and what does γ → 1 collapse it to?
+    5. Why does FrozenLake fit in a table while CrossTheRoad does not?
+
+    If you can answer all five — you're ready for DQN.
 
 [→ Deep Q-Learning](unit-03.md)

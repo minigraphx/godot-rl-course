@@ -4,6 +4,12 @@ Same **BallChase** environment you already know — but now you open the source,
 
 [← Unit 4: JumperHard & PPO](unit-04.md) · [Course home](index.md)
 
+!!! note "Prerequisites"
+    - **[Unit 4](unit-04.md)** — a working PPO training run + comfort with TensorBoard
+    - **[Unit 2](unit-02.md)** — BallChase source open in the editor at least once
+    - Comfort exporting a headless Godot binary (Unit 3 §9)
+    - No new Python — this unit only changes the *training scene* and CLI flags
+
 !!! info "Time"
     Reading: ~25 min · Training: ~20 min GPU / ~1 h CPU
 
@@ -208,6 +214,17 @@ In TensorBoard, use the shaded area view (IQM or mean ± std) to visualise multi
 ## What's next
 
 **Unit 6:** Continuous 3D — FlyBy / HovercraftRacing, continuous action spaces, observation normalization for 3D sensors.
+
+!!! info "Self-check before you move on"
+    Can you answer these in your own words?
+
+    1. Why do N parallel envs give *better* gradient estimates, not just *more* gradient estimates?
+    2. What's the difference between in-process parallel envs (the training scene) and `--n_parallel` subprocesses, and when would you use each?
+    3. If steps/sec scales linearly to 8 envs but flattens at 16, what is the bottleneck likely to be?
+    4. Why is a single-seed reward curve never enough evidence that a change "helped"?
+    5. Why does doubling `n_parallel` often need a matching bump to `batch_size`?
+
+    If you can answer all five — you're ready.
 
 [→ Unit 6: Continuous 3D](unit-06.md)
 

@@ -4,6 +4,12 @@ PPO is the default in this course, and for good reason: it handles discrete and 
 
 [← PPO in Practice](unit-04.md) · [Course home](index.md)
 
+!!! note "Prerequisites"
+    - **[Unit 4](unit-04.md)** — confident with PPO; you need the on-policy / off-policy intuition
+    - **[Actor-Critic](unit-actor-critic.md)** — SAC is "actor-critic with entropy" — the actor / critic split should be second nature
+    - **[Unit 3](unit-03.md)** — replay buffers and target networks (SAC uses both)
+    - Comfort reading PyTorch (§4 calls SB3's SAC; §3 walks the math behind it)
+
 !!! info "Time"
     Reading: ~40 min · Training: ~20 min GPU / ~1.5 h CPU
 
@@ -452,5 +458,16 @@ You now have two tools in the toolbox: PPO (your workhorse for game environments
 **Unit 5: Parallel Training** covers `n_parallel`, how rollouts are stitched across envs, and how to think about throughput vs sample efficiency. Note that parallelism helps PPO substantially (linear scaling up to dozens of envs) but barely helps SAC — another illustration of the on-policy / off-policy divide.
 
 Want to go deeper into how PPO actually works in code? **PPO From Scratch (CleanRL)** walks through every line of a single-file PPO implementation before you scale up.
+
+!!! info "Self-check before you move on"
+    Can you answer these in your own words?
+
+    1. Why does SAC keep a **replay buffer** while PPO doesn't — and what does that buy you in sample efficiency?
+    2. What does the **maximum entropy** term add to the standard RL objective, and what behaviour does it encourage?
+    3. Why does SAC use **two Q-networks** and take their `min`? What pathology does that fix?
+    4. What does `ent_coef="auto"` adjust, and what target does it adjust toward?
+    5. On a continuous Godot env (e.g. FlyBy), what would push you toward SAC instead of PPO, and what would push you back to PPO?
+
+    If you can answer all five — you can pick between PPO and SAC on a new task without guessing.
 
 [→ PPO From Scratch (CleanRL)](unit-cleanrl.md) · [→ Parallel Training](unit-05.md)

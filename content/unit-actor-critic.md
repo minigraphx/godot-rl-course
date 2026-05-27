@@ -4,6 +4,12 @@ REINFORCE taught the policy directly, but at the cost of waiting for whole episo
 
 [← Policy Gradients](unit-policy-gradients.md) · [Course home](index.md)
 
+!!! note "Prerequisites"
+    - **[Policy Gradients](unit-policy-gradients.md)** — REINFORCE, baselines, the variance problem
+    - **[Q-Learning unit](unit-q-learning.md)** — the critic *is* a value function; Bellman should feel familiar
+    - **[Unit 1](unit-01.md)** — discount factor, return, MDP loop
+    - PyTorch comfort (forward pass, optimizer, `loss.backward()`) for §5
+
 !!! info "Time"
     Reading: ~35 min · Training: ~20 min GPU / ~1 h CPU
 
@@ -413,5 +419,16 @@ Watching `explained_variance` climb from near-zero toward 0.9+ during a Godot tr
 ## What's next
 
 You now have every conceptual ingredient PPO needs. The next unit takes A2C's loss, swaps `A_t · log π_θ(a_t | s_t)` for a clipped probability ratio, allows multiple epochs over one rollout, and walks through the full PPO update — the algorithm behind every `gdrl` command you have run.
+
+!!! info "Self-check before you move on"
+    Can you answer these in your own words?
+
+    1. What does the **advantage** A(s, a) represent, and why is it lower-variance than the raw return G?
+    2. What goes wrong if the critic is much *worse* than the actor — what does that look like on TensorBoard?
+    3. Why does Actor-Critic update *during* an episode while REINFORCE has to wait for the end?
+    4. What does **entropy bonus** prevent, and what happens if it's too large?
+    5. What is the *one* remaining problem with A2C that PPO is specifically designed to fix?
+
+    If you can answer all five — you're ready for the PPO deep dive.
 
 [← Policy Gradients](unit-policy-gradients.md) · [Course home](index.md) · [→ PPO Deep Dive](unit-ppo-deep.md)

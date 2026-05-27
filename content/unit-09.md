@@ -4,6 +4,12 @@ Skip the reward engineering entirely. Record an expert playing the game, then tr
 
 [← Multi-Task RL](unit-multitask.md) · [Course home](index.md)
 
+!!! note "Prerequisites"
+    - **[Unit 4](unit-04.md)** — comfortable training PPO end-to-end (we fine-tune *after* BC)
+    - **[Unit 6](unit-06.md)** — continuous actions and observation normalisation
+    - Basic supervised learning intuition (loss minimisation, train/val split)
+    - No GAN / adversarial-training background needed — §7 keeps GAIL practical
+
 !!! info "Time"
     Reading: ~30 min · Training: ~20 min GPU / ~1.5 h CPU
 
@@ -223,5 +229,16 @@ A good BC agent looks "human-like" — it hesitates at the same spots you hesita
 ## What's next
 
 **RLHF & Preference Learning:** You've learned to clone behaviour from demonstrations. What if you only have a designer's *taste* — no explicit reward, just pairwise preferences? RLHF turns human judgement into a reward model that guides policy fine-tuning.
+
+!!! info "Self-check before you move on"
+    Can you answer these in your own words?
+
+    1. What problem does **imitation learning** solve that PPO + reward shaping doesn't, and at what cost?
+    2. What is **distribution shift** in Behavioral Cloning, and why does it usually require either fine-tuning or DAgger to fix?
+    3. Why is BC supervised learning, but GAIL is reinforcement learning?
+    4. After BC, why does fine-tuning with PPO usually help — what does PPO add that pure imitation can't?
+    5. Pick one Godot environment from earlier units — would expert demos *help* or *hurt* compared to from-scratch PPO, and why?
+
+    If you can answer all five — you're ready.
 
 [→ RLHF & Preference Learning](unit-rlhf.md)

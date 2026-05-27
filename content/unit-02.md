@@ -4,6 +4,12 @@ Two wins in one unit: **Phase A** — run and tweak **SimpleReachGoal** (raycast
 
 [← Unit 1: Foundations](unit-01.md) · [Course home](index.md)
 
+!!! note "Prerequisites"
+    - **[Unit 0](unit-00.md) complete** — Conda env, Godot .NET, working BallChase run
+    - **[Unit 1](unit-01.md) read** — MDP loop, reward, policy, PPO at a high level
+    - Comfortable editing GDScript (variables, functions, signals — no advanced features)
+    - No PyTorch, no SB3 internals, no game-engine experience required
+
 !!! info "Time"
     Reading: ~35 min · Training: ~30 min GPU / ~2 h CPU
 
@@ -570,6 +576,17 @@ func reset() -> void:
     _prev_dist_to_goal = agent.global_position.distance_to(goal.global_position)
     _ai.reset()
 ```
+
+!!! info "Self-check before you move on"
+    Can you answer these in your own words?
+
+    1. What does `AIController` expose to the Python side, and what does `lander.gd` own?
+    2. Why does `get_obs()` return *normalised* floats rather than raw positions and velocities?
+    3. What's the difference between a *terminal* reward (crash / land) and a *per-step* shaped reward, and why do you need both for LunarLander?
+    4. What does the Sync node's *control mode* select between, and what does each mode do?
+    5. After training, what does ONNX export give you that the `.zip` SB3 checkpoint does not?
+
+    If you can answer all five — you're ready.
 
 **What's next:** In Unit 3 you'll study **CrossTheRoad** and train with **DQN**.
 

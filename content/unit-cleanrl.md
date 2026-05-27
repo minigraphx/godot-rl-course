@@ -2,6 +2,12 @@
 
 [← SAC](unit-sac.md) · [Course home](index.md)
 
+!!! note "Prerequisites"
+    - **[PPO Deep Dive](unit-ppo-deep.md)** — the clipped objective and GAE-λ should be solid
+    - **[Actor-Critic](unit-actor-critic.md)** — the actor / critic split
+    - **[Unit 4](unit-04.md)** — having tuned PPO hyperparameters with SB3 once
+    - PyTorch fluency (modules, optimizers, autograd) — CleanRL is single-file PyTorch
+
 !!! info "Time"
     Reading: ~50 min · Training: ~30 min GPU / ~2 h CPU
 
@@ -880,5 +886,16 @@ These are open-ended. There are no provided solutions — use CleanRL's source a
 **Godot headless training.** Run a Godot environment without a display using `--headless` (Godot 4) or `--no-window` (Godot 3) flag passed via `env_path` arguments in `StableBaselinesGodotEnv`. Profile whether `SyncVectorEnv` with 8 headless Godot instances is faster than 4 windowed — the answer depends on your machine's CPU core count.
 
 ---
+
+!!! info "Self-check before you move on"
+    Can you answer these in your own words?
+
+    1. Walk through one full CleanRL PPO update: where does the rollout happen, where is GAE computed, where does the policy update fire?
+    2. In CleanRL's PPO, why does the inner loop reshuffle minibatches every epoch — and what would break if it didn't?
+    3. What is `clipfrac` measuring, and when is `clipfrac = 0` actually a *bad* sign?
+    4. If you wanted to add an intrinsic curiosity bonus, which line in `ppo.py` would you change?
+    5. What does CleanRL deliberately *not* support that SB3 does — and why is that a feature, not a bug?
+
+    If you can answer all five — you can read any PPO implementation in the wild.
 
 [← SAC](unit-sac.md) · [Course home](index.md) · [→ Parallel Training](unit-05.md)

@@ -4,6 +4,12 @@ Move from discrete button-presses to **continuous forces and steering**. Study *
 
 [← Unit 5: Parallel Training](unit-05.md) · [Course home](index.md)
 
+!!! note "Prerequisites"
+    - **[Unit 4](unit-04.md)** — PPO end-to-end, comfort with `clip_range`, GAE-λ, `approx_kl`
+    - **[Unit 5](unit-05.md)** — parallel envs and the eval protocol
+    - GDScript fluency: vectors, raycasts, `_physics_process`
+    - **[Policy Gradients unit](unit-policy-gradients.md)** (recommended) — Gaussian policies make Section 1 click
+
 !!! info "Time"
     Reading: ~30 min · Training: ~30 min GPU / ~2 h CPU
 
@@ -350,5 +356,16 @@ How do you weight these three terms without one overwhelming the others? Log eac
 ## What's next
 
 **Visual Observations:** Move from raycast sensors to raw pixels — SubViewport pipeline, NatureCNN, and frame stacking in Godot.
+
+!!! info "Self-check before you move on"
+    Can you answer these in your own words?
+
+    1. Why can DQN train CrossTheRoad but not FlyBy — what does PPO do that DQN can't?
+    2. Two raycast sensors return raw values: `dist = 47.3` metres and `velocity = 0.012`. Why is this fatal for the neural network, and how do you fix it?
+    3. What does `VecNormalize` track per-environment, and why must you save those stats with the model?
+    4. What does the `train/std` of the action distribution tell you about how confident the policy is?
+    5. Pick one of the two envs (FlyBy vs HovercraftRacing) — what specifically about its reward shape makes it a different teaching example than the other?
+
+    If you can answer all five — you're ready.
 
 [→ Visual Observations](unit-visual-observations.md)
