@@ -2,6 +2,12 @@
 
 [← Deep Q-Learning](unit-03.md) · [Course home](index.md)
 
+!!! note "Prerequisites"
+    - **[Unit 1](unit-01.md)** — MDP loop, return, discount factor
+    - **[Q-Learning unit](unit-q-learning.md)** — for the value-based contrast in §1
+    - **[Unit 3](unit-03.md)** (recommended) — DQN as the value-based foil
+    - Comfort with basic gradients (`∇`, chain rule); we re-derive the log-derivative trick in §3
+
 !!! info "Time"
     Reading: ~40 min
 
@@ -540,5 +546,16 @@ You now understand:
 - Why PPO is just REINFORCE with stability tricks.
 
 In the next unit, we build a full actor-critic — two networks training in lockstep — and watch the variance collapse compared to vanilla REINFORCE. After that, we layer on the PPO tricks one by one and finally connect everything back to Godot.
+
+!!! info "Self-check before you move on"
+    Can you answer these in your own words?
+
+    1. Name two things a policy-based method can do that a value-based method cannot.
+    2. State the policy gradient in one line and explain what each factor is doing.
+    3. What is the **log-derivative trick** turning into something differentiable, and why?
+    4. Why is **variance** the central practical problem with REINFORCE, and how does a baseline reduce it without biasing the gradient?
+    5. What does Actor-Critic replace the Monte-Carlo return with — and why is that a *bias / variance* trade?
+
+    If you can answer all five — you're ready for Actor-Critic.
 
 [→ Actor-Critic](unit-actor-critic.md)

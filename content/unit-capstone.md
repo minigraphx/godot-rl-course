@@ -2,6 +2,12 @@
 
 [← Ship Your Brain](unit-10.md) · [Course home](index.md)
 
+!!! note "Prerequisites"
+    - **All of Phases 1–3** — Units 0–4 and at least one theory unit; you need to choose between PPO / DQN / SAC fluently
+    - **[Unit 10](unit-10.md)** — comfortable exporting ONNX and shipping a binary
+    - **[Debugging guide](unit-debugging.md)** open in another tab — you will need it
+    - One concrete project idea, however rough — Section 8 has a list if you need one
+
 !!! info "Time"
     Reading: ~20 min · Training: varies
 
@@ -616,6 +622,19 @@ Narrate each section. "The agent has learned to avoid walls but still does not k
 
 !!! tip "You are now an RL practitioner"
     Every project you build from here will be faster than the last. The hard part — designing the MDP, debugging reward hacking, interpreting TensorBoard, running multi-seed evaluations — is now familiar. The algorithms and frameworks will change; this process does not.
+
+---
+
+!!! info "Self-check before you start the project"
+    Can you answer these in your own words about *your* capstone idea?
+
+    1. State your task in one sentence, then write its MDP: observation space, action space, reward, terminal condition.
+    2. Justify your algorithm choice (PPO / DQN / SAC / RecurrentPPO) by citing the *specific* property of your task that makes it the right fit.
+    3. What is your **minimum viable result** — the smallest version of this you can ship in 4–8 hours of training?
+    4. What is your evaluation protocol — how many seeds, how many eval episodes, deterministic or stochastic policy?
+    5. List the top three reward-hacking failure modes your design could enable, and one mitigation for each.
+
+    If you can answer all five — start building. If you can't, the answer is in Sections 1–4 above.
 
 ---
 

@@ -4,6 +4,12 @@ Study the official **CrossTheRoad** example — discrete 2D navigation with spar
 
 [← Unit 2: Lunar Lander](unit-02.md) · [Course home](index.md)
 
+!!! note "Prerequisites"
+    - **[Unit 1](unit-01.md)** — Q-values, value-based vs policy-based families, on-policy vs off-policy
+    - **[Unit 2](unit-02.md)** — `AIController` interface, `get_obs()` / `set_action()`, training a PPO agent end-to-end
+    - **[Q-Learning unit](unit-q-learning.md)** — tabular Q-Learning (recommended; helps Section 2 click instantly)
+    - Comfort exporting a Godot project to a headless binary
+
 !!! info "Time"
     Reading: ~45 min · Training: ~45 min GPU / ~3 h CPU
 
@@ -532,5 +538,16 @@ Because the replay buffer contains transitions collected by old policies, the Q-
 ## What's next
 
 **Unit 4:** JumperHard — the canonical PPO benchmark, headless export, hyperparameter tuning.
+
+!!! info "Self-check before you move on"
+    Can you answer these in your own words?
+
+    1. Why does a neural network replace the Q-table once you leave grid worlds?
+    2. What does the **experience replay buffer** fix that on-policy methods don't need to worry about?
+    3. What goes wrong if the target network is updated every step instead of every N steps?
+    4. Why is ε-greedy the natural exploration strategy for DQN but not for PPO?
+    5. Pick one Godot environment from Phase 2 — would you reach for DQN or PPO, and why?
+
+    If you can answer all five — you're ready.
 
 [→ Unit 4: JumperHard & PPO](unit-04.md)

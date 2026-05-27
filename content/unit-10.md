@@ -4,6 +4,12 @@ Your policy is trained. Now get it **out of Python and into Godot** — running 
 
 [← Offline RL](unit-offline-rl.md) · [Course home](index.md)
 
+!!! note "Prerequisites"
+    - **Any trained agent from Units 2–9** — you need a `.zip` SB3 checkpoint to export
+    - **[Unit 2](unit-02.md)** §11 already showed the first ONNX export — this unit makes it production-shaped
+    - Comfort with Godot export presets (desktop and/or HTML5)
+    - No PyTorch internals needed; no ONNX background required
+
 !!! info "Time"
     Reading: ~20 min · Training: ~10 min GPU / ~30 min CPU
 
@@ -225,5 +231,16 @@ You've completed the course. Here's what you've built:
 | 10 | ONNX export + Godot inference + HTML5 |
 
 **What comes next:** Put everything together in the capstone — pick your own environment, design your own reward, train and ship it.
+
+!!! info "Self-check before you move on"
+    Can you answer these in your own words?
+
+    1. Why does the shipping path go through ONNX instead of loading the SB3 `.zip` directly in Godot?
+    2. What three things must match between training and inference so the policy doesn't silently produce garbage actions?
+    3. What's the difference between a *resume-training* checkpoint and an *export-for-inference* model — what state does each contain?
+    4. When would you choose HTML5/WASM export over a desktop binary, and what does that cost the agent?
+    5. After export, how would you sanity-check that the Godot-side inference matches the Python-side training rollouts?
+
+    If you can answer all five — you're ready for the capstone.
 
 [→ Capstone Project](unit-capstone.md) · [← Back to course home](index.md)

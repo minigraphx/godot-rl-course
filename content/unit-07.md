@@ -4,6 +4,12 @@ Train multiple agents simultaneously in the same environment — some cooperatin
 
 [← Visual Observations](unit-visual-observations.md) · [Course home](index.md)
 
+!!! note "Prerequisites"
+    - **[Unit 4](unit-04.md)** — PPO end-to-end and confident with reward shaping
+    - **[Unit 6](unit-06.md)** — continuous action spaces (Racer mixes discrete + continuous)
+    - **[Visual Observations](unit-visual-observations.md)** — needed only if you train Racer from pixels
+    - Comfort attaching multiple `AIController` nodes in a single Godot scene
+
 !!! info "Time"
     Reading: ~30 min · Training: ~30 min GPU / ~2 h CPU
 
@@ -317,5 +323,16 @@ Watch 3–5 episodes in the Godot editor:
 ## What's next
 
 **Unit 8:** Memory & POMDPs — FPS / RobotFPS, RecurrentPPO, LSTM policy networks for partially-observable environments. RecurrentPPO is also the standard choice when combining memory with CTDE in cooperative multi-agent tasks.
+
+!!! info "Self-check before you move on"
+    Can you answer these in your own words?
+
+    1. What is the **non-stationarity problem** in multi-agent RL, and why does it not exist in single-agent RL?
+    2. When would you reach for a shared policy, and when for independent policies — what changes if the agents have *different* observation shapes?
+    3. What does CTDE keep centralised, and what does it execute decentralised? Why does that split help in cooperative tasks?
+    4. In self-play, why do you snapshot the opponent rather than training both copies live?
+    5. If two cooperating agents see the same reward but one is doing all the work, how would you detect that from TensorBoard alone?
+
+    If you can answer all five — you're ready.
 
 [→ Unit 8: Memory & POMDPs](unit-08.md)

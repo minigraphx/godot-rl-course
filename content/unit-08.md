@@ -4,6 +4,12 @@ Train **FPS / RobotFPS** — environments where the agent can't see everything a
 
 [← Unit 7: Multi-Agent](unit-07.md) · [Course home](index.md)
 
+!!! note "Prerequisites"
+    - **[Unit 4](unit-04.md)** — PPO end-to-end, confident reading `train/*` curves
+    - **[Unit 6](unit-06.md)** — continuous action design (FPS uses continuous look + discrete fire)
+    - **[Visual Observations](unit-visual-observations.md)** (optional) — only if you train from pixels
+    - High-level familiarity with RNN / LSTM ideas (we re-explain in §2)
+
 !!! info "Time"
     Reading: ~35 min · Training: ~30 min GPU / ~2 h CPU
 
@@ -185,5 +191,16 @@ A working LSTM agent will hesitate briefly when losing sight, then move in the l
 ## What's next
 
 **Self-Play:** Train agents by competing against copies of themselves — AirHockey, frozen checkpoints, league-based training, and ELO tracking.
+
+!!! info "Self-check before you move on"
+    Can you answer these in your own words?
+
+    1. What property does a POMDP break, and what concretely does that imply for the network?
+    2. What does the LSTM **hidden state** carry across time steps that a feed-forward policy can't?
+    3. When would frame-stacking be enough, and when do you genuinely need RecurrentPPO?
+    4. Why does RecurrentPPO use truncated BPTT instead of unrolling the full episode?
+    5. Name one Godot environment in this course where you would *not* use memory, and one where you would.
+
+    If you can answer all five — you're ready.
 
 [→ Self-Play](unit-self-play.md)

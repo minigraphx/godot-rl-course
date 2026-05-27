@@ -6,6 +6,12 @@ This unit does not show you how to *use* PPO — that's the next unit. This unit
 
 [← Actor-Critic](unit-actor-critic.md) · [Course home](index.md)
 
+!!! note "Prerequisites"
+    - **[Policy Gradients](unit-policy-gradients.md)** — log-derivative trick, baselines
+    - **[Actor-Critic](unit-actor-critic.md)** — A2C loss; you need to feel why A2C is *almost* enough
+    - **[Unit 4](unit-04.md)** (optional) — having tuned PPO once makes §8 and §9 land harder
+    - Comfortable reading PyTorch (CleanRL's `ppo.py` is the reference in §10)
+
 !!! info "Time"
     Reading: ~45 min
 
@@ -549,6 +555,17 @@ PPO's winning combination: **good sample efficiency, good stability, works on bo
 You now understand every line of PPO. The next unit, **PPO in Practice**, drops the equations and takes you back to the keyboard: training a real Godot agent with PPO, watching the metrics from §9 evolve in TensorBoard, and developing intuition for which knobs to turn when.
 
 After that, the course moves from theory to engineering: curriculum design, reward shaping, sim-to-real, and deployment. PPO will be in the background of every remaining unit.
+
+!!! info "Self-check before you move on"
+    Can you answer these in your own words?
+
+    1. State the **clipped PPO objective** from memory, then explain what each `min` / `clip` term is preventing.
+    2. What does the **probability ratio** `r_t(θ)` measure, and what does `r_t = 1` mean?
+    3. What does **GAE-λ** trade off, and what do λ = 0 and λ = 1 collapse to?
+    4. What does `approx_kl > 0.05` tell you, and which hyperparameter would you change first?
+    5. Why does PPO run **multiple epochs** over the same rollout, and why does that *not* break the on-policy assumption?
+
+    If you can answer all five — you understand PPO well enough to read the paper without skipping equations.
 
 ---
 
