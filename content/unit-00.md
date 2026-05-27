@@ -157,6 +157,21 @@ Tomorrow: finish Unit 1 reading + glossary, then Unit 2 Phase A (SimpleReachGoal
 
 ---
 
+## Stretch Goals
+
+**Run the other training mode.** If you used Option A (headless hub binary), try Option B (in-editor with `--viz`) — or vice versa. Same agent, same algorithm; the point is to feel the difference between *console-first* speed and *editor* visibility. Note in the terminal which mode reaches a given `ep_rew_mean` first.
+
+**Inspect the exported ONNX.** Open `ballchase_brain.onnx` in [Netron](https://netron.app/) (drag the file into the browser tab — no install). Identify the input tensor shape, the output tensor shape, and the activation between layers. This is the file Godot loads at inference time in Phase 3 — knowing what's inside it now pays off in Unit 9.
+
+**Try a second example from the hub.** Pull a different binary and run a short 50k-step smoke test:
+
+```python
+from godot_rl.env_from_hub import env_from_hub
+env_from_hub("edbeeching/godot_rl_JumperHard")
+```
+
+Then point `--env_path` at the new binary. The goal isn't to train it well — it's to confirm your install handles more than one environment and to compare reward curves on TensorBoard.
+
 ## What's next
 
 Tooling works. In **Unit 1** you'll skim the MDP loop, tweak one BallChase reward, then deepen the theory while training runs.

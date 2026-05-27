@@ -499,6 +499,36 @@ Because the replay buffer contains transitions collected by old policies, the Q-
 
 ---
 
+## 12 · Stretch Goals
+
+**Sweep the ε schedule.** Re-run CrossTheRoad three times, changing only the exploration schedule: (a) fast decay — ε reaches 0.05 by 25 % of training, (b) the default, (c) slow decay — ε still at 0.3 at 75 % of training. Predict which curve climbs fastest, which plateaus highest, and which never recovers. Then check TensorBoard. The lesson is that DQN's wallclock-to-solve depends as much on the ε schedule as on the network.
+
+**Head-to-head DQN vs PPO.** Train CrossTheRoad with PPO using the same total step budget (e.g. 500k). Plot both `ep_rew_mean` curves on the same TensorBoard. Which one reaches the goal first? Which one ends higher? Write down a one-sentence hypothesis for *why* before you run it. CrossTheRoad's discrete actions + sparse rewards favour DQN — confirm or falsify on your own machine.
+
+**Implement Double DQN by hand.** Without SB3, write a small training loop that learns CartPole-v1 using two networks: an online Q-network for action selection and a target network for evaluation. The Double DQN target is `r + γ · Q_target(s', argmax_a Q_online(s', a))` — not `r + γ · max_a Q_target(s', a)`. Copy the online weights into the target every 500 steps.
+
+!!! warning "Pseudocode"
+    ```python
+    import gymnasium as gym
+    import torch
+    import torch.nn as nn
+
+    env = gym.make("CartPole-v1")
+    q_online = nn.Sequential(nn.Linear(4, 64), nn.ReLU(), nn.Linear(64, 2))
+    q_target = nn.Sequential(nn.Linear(4, 64), nn.ReLU(), nn.Linear(64, 2))
+    q_target.load_state_dict(q_online.state_dict())
+
+    # In the update step:
+    next_action = q_online(next_obs).argmax(dim=-1)              # online picks
+    next_q = q_target(next_obs).gather(-1, next_action.unsqueeze(-1))  # target evaluates
+    td_target = reward + gamma * next_q.squeeze(-1) * (1 - done)
+    loss = ((q_online(obs).gather(-1, action.unsqueeze(-1)).squeeze(-1) - td_target.detach()) ** 2).mean()
+    ```
+
+    Watch `ep_rew_mean` rise toward 500. Compare against a single-network baseline — the gap is small on CartPole, large on Atari.
+
+---
+
 ## What's next
 
 **Unit 4:** JumperHard — the canonical PPO benchmark, headless export, hyperparameter tuning.

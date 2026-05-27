@@ -328,3 +328,28 @@ Logging `n_parallel` and `speedup` lets you compare wall-clock efficiency across
 
 !!! warning "Parallel Godot subprocesses and logging"
     When `n_parallel > 1`, godot-rl-agents returns batched `infos`. Index correctly when extracting episode reward: `infos[0].get("episode", {}).get("r", 0)` only captures the first subprocess. Use `np.mean([i.get("episode", {}).get("r", 0) for i in infos if "episode" in i])` for a more representative mean across all parallel envs.
+
+## 9 · Stretch Goals
+
+**Run a 3-axis sweep.** Use the W&B sweep config in Section 3 as a starting point, then add a third axis — e.g. `n_steps ∈ {1024, 2048, 4096}`. That gives you a 3-D parallel-coordinates view in the W&B UI. Train for at least 5 runs per cell and write down which axis dominates the others. The point is to feel how quickly cost grows once a sweep is more than 1-D.
+
+**Reproduce a run from artifacts only.** From an old W&B run (your own, from any unit), download just the config + model artifact and recreate the trained model on a fresh machine without copying any local code. Replay 10 episodes. Did you get the same reward? If not, what was missing from the artifact — was it the env binary, a seed, a code commit hash? Patch the gap in your logging template so the next run is genuinely reproducible.
+
+**Set up MLflow alongside W&B for one run.** Wire both `MlflowOutputFormat` and `WandbCallback` into the same SB3 training script (see Sections 2 and 5). Compare the two UIs side by side on the same run. Decide — for your own use — which one you would keep if you had to pick one, and write down *why*. The answer differs by team and threat model; the exercise is to form your own.
+
+!!! warning "Pseudocode"
+    ```python
+    import mlflow
+    from wandb.integration.sb3 import WandbCallback
+    import wandb
+
+    wandb.init(project="godot-rl-course", sync_tensorboard=True)
+    mlflow.set_tracking_uri("http://localhost:5000")
+    mlflow.set_experiment("godot-rl-course")
+
+    with mlflow.start_run():
+        mlflow.log_params({"algorithm": "PPO", "env": "FlyBy"})
+        model.learn(total_timesteps=200_000, callback=WandbCallback())
+        mlflow.log_artifact("ppo_flyby.zip")
+    wandb.finish()
+    ```
