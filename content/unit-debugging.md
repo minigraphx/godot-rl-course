@@ -462,3 +462,22 @@ gdrl --env_path=./MyEnv.x86_64 \
 | `train/policy_gradient_loss` | Train | Near 0 | Exploding → lower lr |
 | `train/explained_variance` | Train | Approaching 1.0 | Near 0 → critic not learning |
 | `time/fps` | Time | >1000 | Low → see Section 9 |
+
+## 12 · Stretch Goals
+
+**Break a run on purpose.** Pick one failure mode from Sections 3–6 — say, "reward going down" — and engineer a training run that exhibits it. Easiest recipe: multiply your reward by 100 and lower the entropy coefficient. Then walk yourself through the diagnostic flowchart in Section 2 *as if you didn't already know what you did*. The goal is to feel the diagnosis steps in your fingers before the real bug shows up at 11 pm.
+
+**Write your own diagnostic entry.** Find a bug you actually hit this course (any unit, your own training run). Write a new Section in the same `symptom → diagnosis → fix` format and submit it as a PR against this page. The course wants more first-hand bug entries, not fewer. Reference issue #48 if you're not sure where to drop it.
+
+**Automate one alert.** Pick one metric from Section 11 and write a 20-line Python script that tails the TensorBoard `events.out.*` file (or polls `tensorboard --logdir`'s data) and prints a warning when the metric leaves the healthy band — e.g. `explained_variance < 0.1` for 50k steps. The point isn't a production monitor; it's to realise that "watch TensorBoard" can be partially automated.
+
+!!! warning "Pseudocode"
+    ```python
+    from tensorboard.backend.event_processing import event_accumulator
+
+    ea = event_accumulator.EventAccumulator("logs/sb3/myenv/PPO_1")
+    ea.Reload()
+    values = [s.value for s in ea.Scalars("train/explained_variance")]
+    if values and values[-1] < 0.1:
+        print(f"ALERT: explained_variance={values[-1]:.3f} — critic may not be learning")
+    ```

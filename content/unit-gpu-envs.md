@@ -328,4 +328,35 @@ model.save("ppo_pong_envpool")
 
 ---
 
+## 7 · Stretch Goals
+
+**Measure your own SubprocVecEnv → EnvPool speedup.** Run PPO on `PongNoFrameskip-v4` twice — once with the SB3 `SubprocVecEnv` wrapper and 16 processes, once with `envpool.make_gymnasium("Pong-v5", num_envs=16)`. Use identical hyperparameters and step budget (e.g. 2 M steps). Record `time/fps` from TensorBoard and the wall-clock time to reach a fixed reward. The ratio is your speedup — and the gap between the marketing number and your number is the most informative result.
+
+**Pick the right tool for one task.** Take any *one* environment idea (yours, or borrow from the Phase 4 list) and write a one-paragraph decision: which framework — Godot, EnvPool, Isaac Lab, or Brax — would you train it in, and why? Reference Section 4 ("When Godot wins") explicitly. The output is a decision, not a long memo — three sentences is plenty.
+
+**Profile a Godot rollout.** Run an existing Godot training (Unit 5 or later) with `n_parallel=8, speedup=32` and look at `time/fps`. Then bring up `htop` or Activity Monitor in another window. Is the bottleneck CPU, GPU, or socket throughput? Match what you see against Section 1's three failure modes. The point is to know *why* your specific machine is slow before you reach for a different framework.
+
+!!! warning "Pseudocode"
+    ```python
+    import envpool, time
+    from stable_baselines3 import PPO
+    from stable_baselines3.common.vec_env import SubprocVecEnv
+
+    def make_subproc():
+        import gymnasium as gym
+        return SubprocVecEnv([lambda: gym.make("PongNoFrameskip-v4") for _ in range(16)])
+
+    def make_envpool():
+        return envpool.make_gymnasium("Pong-v5", num_envs=16)
+
+    for name, factory in [("subproc", make_subproc), ("envpool", make_envpool)]:
+        env = factory()
+        model = PPO("CnnPolicy", env, n_steps=128, verbose=0)
+        t0 = time.time()
+        model.learn(total_timesteps=200_000)
+        print(f"{name}: {200_000 / (time.time() - t0):.0f} steps/sec")
+    ```
+
+---
+
 *Next steps:* if you are curious about how transfer learning between physics engines works in practice, read [unit-sim-to-real.md](unit-sim-to-real.md). If you want to understand the PPO implementation running inside all of the frameworks discussed here, see [unit-cleanrl.md](unit-cleanrl.md).
