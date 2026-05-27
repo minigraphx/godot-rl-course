@@ -125,16 +125,11 @@ Die macOS/Linux-Befehle `chmod +x godot_binary` gelten nicht für Windows. Godot
 
 Das Godot-seitige Plugin ist vom Python-Paket getrennt.
 
-**Option A — AssetLib (am einfachsten)**
+!!! info "Nicht in der Asset-Bibliothek"
+    Das Plugin ist nicht in Godots AssetLib verfügbar — du musst es manuell von GitHub installieren.
 
-- Öffne den Godot-Editor → Tab **AssetLib** (oben in der Mitte)
-- Suche nach **rl**, wähle **Godot RL Agents**
-- Klicke auf **Download**, deaktiviere `LICENSE` und `README.md`, dann **Install**
-
-**Option B — Manuell (immer aktuell)**
-
-- Klone [github.com/edbeeching/godot_rl_agents_plugin](https://github.com/edbeeching/godot_rl_agents_plugin)
-- Kopiere `addons/godot_rl_agents` in den `addons/`-Ordner deines Projekts
+- Klone oder lade [github.com/edbeeching/godot_rl_agents_plugin](https://github.com/edbeeching/godot_rl_agents_plugin) herunter
+- Kopiere den Ordner `addons/godot_rl_agents` in den `addons/`-Ordner deines Projekts
 
 !!! warning "Zwei verschiedene Repositories"
     `godot_rl_agents` ist das *Python*-Paket (`pip install`). Das Godot-Plugin befindet sich im separaten Repository `godot_rl_agents_plugin`.
