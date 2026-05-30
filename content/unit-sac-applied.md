@@ -99,7 +99,7 @@ python train_jumperhard_ppo.py
 python train_jumperhard_sac.py
 ```
 
-Point a single TensorBoard at both logdirs so you can overlay the curves:
+Point a single TensorBoard at both logdirs so you can overlay the curves (requires TensorBoard ≥ 2.x — the version SB3 currently pins):
 
 ```bash
 tensorboard --logdir_spec ppo:./tb_logs_ppo,sac:./tb_logs_sac
