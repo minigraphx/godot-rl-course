@@ -8,7 +8,7 @@ Learn deep reinforcement learning by building and training agents inside real Go
 |-------|---------|----------------|
 | **Phase 1 — Foundations** | Setup · RL loop · first custom env · reward design | How RL works, how to design rewards |
 | **Phase 2 — Value-Based** | Q-Learning · DQN · curiosity | Bellman equation, Q-tables, DQN, sparse reward exploration |
-| **Phase 3 — Policy-Based** | REINFORCE · Actor-Critic · PPO · SAC · PPO from scratch (CleanRL) | Policy gradient theorem, PPO internals, continuous control |
+| **Phase 3 — Policy-Based** | REINFORCE · Actor-Critic · PPO · SAC · Apply It · PPO from scratch (CleanRL) | Policy gradient theorem, PPO internals, continuous control |
 | **Phase 4 — Scale & Complexity** | Parallel · 3D · Multi-agent · Memory | Real-world training at scale |
 | **Phase 5 — Beyond Reward** | Multi-task RL · Imitation learning · ONNX/WASM · Capstone project | Alternative learning signals, generalist policies, shipping |
 | **Phase 6 — Robotics** | Robot sensors · HER · sim-to-real · Safe RL | Robot observation/action design, goal-conditioned RL, deploying policies to hardware safely |

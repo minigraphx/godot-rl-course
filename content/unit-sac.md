@@ -453,11 +453,11 @@ Try these to deepen your understanding:
 
 ## What's next
 
-You now have two tools in the toolbox: PPO (your workhorse for game environments) and SAC (your specialist for continuous control). The next unit goes back to PPO and asks a different question — how do we scale data collection by running many environments in parallel?
+You now have two tools in the toolbox: PPO (your workhorse for game environments) and SAC (your specialist for continuous control). Theory is one thing — seeing the tradeoff with your own eyes is another.
 
-**Unit 5: Parallel Training** covers `n_parallel`, how rollouts are stitched across envs, and how to think about throughput vs sample efficiency. Note that parallelism helps PPO substantially (linear scaling up to dozens of envs) but barely helps SAC — another illustration of the on-policy / off-policy divide.
+**Apply It — SAC vs PPO on JumperHard** is a short interlude that has you swap PPO for SAC on the existing JumperHard project, overlay both `ep_rew_mean` curves in TensorBoard, and walk away with a felt sense of sample efficiency vs wall-clock time. After that, **PPO From Scratch (CleanRL)** strips PPO down to ~400 lines of single-file PyTorch.
 
-Want to go deeper into how PPO actually works in code? **PPO From Scratch (CleanRL)** walks through every line of a single-file PPO implementation before you scale up.
+You can also skip ahead to **Unit 5: Parallel Training** (`n_parallel`, throughput vs sample efficiency) — parallelism helps PPO substantially but barely helps SAC, which is itself another illustration of the on-policy / off-policy divide.
 
 !!! info "Self-check before you move on"
     Can you answer these in your own words?

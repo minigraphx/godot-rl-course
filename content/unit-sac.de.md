@@ -453,11 +453,11 @@ Probier diese, um dein Verständnis zu vertiefen:
 
 ## Was kommt als Nächstes
 
-Du hast jetzt zwei Werkzeuge im Koffer: PPO (dein Arbeitspferd für Spielumgebungen) und SAC (dein Spezialist für kontinuierliche Steuerung). Die nächste Unit geht zurück zu PPO und stellt eine andere Frage — wie skalieren wir Datensammlung, indem wir viele Umgebungen parallel laufen lassen?
+Du hast jetzt zwei Werkzeuge im Koffer: PPO (dein Arbeitspferd für Spielumgebungen) und SAC (dein Spezialist für kontinuierliche Steuerung). Theorie ist eine Sache — den Tradeoff mit eigenen Augen zu sehen, eine andere.
 
-**Unit 5: Paralleles Training** deckt `n_parallel` ab, wie Rollouts über Envs zusammengenäht werden, und wie man über Durchsatz vs. Stichprobeneffizienz nachdenkt. Beachte, dass Parallelismus PPO substantiell hilft (lineare Skalierung bis zu Dutzenden Envs), SAC aber kaum hilft — eine weitere Illustration der On-Policy- / Off-Policy-Trennung.
+**Anwenden — SAC vs PPO auf JumperHard** ist ein kurzes Interlude, in dem du auf dem bestehenden JumperHard-Projekt PPO gegen SAC tauschst, beide `ep_rew_mean`-Kurven in TensorBoard übereinanderlegst und mit einem gefühlten Verständnis von Stichprobeneffizienz vs. Wall-Clock-Zeit weiterziehst. Danach zerlegt **PPO von Grund auf (CleanRL)** PPO auf ~400 Zeilen Single-File-PyTorch.
 
-Willst du tiefer in PPOs Code-Funktionsweise eintauchen? **PPO von Grund auf (CleanRL)** geht jede Zeile einer Single-File-PPO-Implementierung durch, bevor du skalierst.
+Alternativ kannst du auf **Unit 5: Paralleles Training** vorgreifen (`n_parallel`, Durchsatz vs. Stichprobeneffizienz) — Parallelismus hilft PPO substantiell, SAC aber kaum, was selbst wieder die On-Policy- / Off-Policy-Trennung illustriert.
 
 !!! info "Selbstcheck, bevor du weitermachst"
     Kannst du diese Fragen in eigenen Worten beantworten?
