@@ -1,6 +1,6 @@
 # Reward Engineering — Designing Signals That Actually Work
 
-[← Unit 2: Lunar Lander](unit-02.md) · [Course home](index.md)
+[← Unit 1: Foundations](unit-01.md) · [Course home](index.md)
 
 !!! info "Time"
     Reading: ~35 min
@@ -557,8 +557,8 @@ If you finished the unit and want more practice:
 
 You now have the most important skill in applied RL: designing rewards that produce the behavior you actually want.
 
-In the next unit we leave reward design behind and look at the first real algorithm: **Q-Learning**. You'll learn how the agent uses the rewards you design to build a value function — a map from states to expected future reward.
+In the next unit you put this directly into practice: building **Lunar Lander** in Godot from scratch, including writing the lander's per-step reward function in GDScript. The shaping you write there in §5 is potential-based — the theory you just learned.
 
 If you only remember one thing from this unit: **the reward is not a description of the goal. The reward is the goal.** Whatever you write down, that's what the agent will maximize. Make sure that's what you want.
 
-[→ Q-Learning](unit-q-learning.md)
+[→ Unit 2: Build Lunar Lander in Godot](unit-02.md)

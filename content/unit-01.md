@@ -527,4 +527,4 @@ You have the vocabulary, a reward tweak under your belt, and a trained run to re
 
     If you can answer all seven — you're ready.
 
-[→ Unit 2: Build Lunar Lander in Godot](unit-02.md)
+[→ Reward Engineering](unit-reward-engineering.md)

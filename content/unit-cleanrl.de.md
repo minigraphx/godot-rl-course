@@ -1,8 +1,9 @@
 # PPO von Grund auf — CleanRL und die Implementierungsschicht
 
-[← SAC](unit-sac.md) · [Kursstartseite](index.md)
+[← Anwenden — SAC vs PPO auf JumperHard](unit-sac-applied.md) · [Kursstartseite](index.md)
 
 !!! note "Voraussetzungen"
+    - **[Anwenden — SAC vs PPO auf JumperHard](unit-sac-applied.md)** — du hast den PPO-vs-SAC-Vergleich in der Praxis gesehen
     - **[PPO Deep Dive](unit-ppo-deep.md)** — das geclippte Objektiv und GAE-λ sollten sitzen
     - **[Actor-Critic](unit-actor-critic.md)** — die Actor-/Critic-Aufteilung
     - **[Unit 4](unit-04.md)** — PPO-Hyperparameter mit SB3 einmal getunt zu haben
@@ -898,4 +899,4 @@ Diese sind offen. Es gibt keine vorgegebenen Lösungen — nutze CleanRLs Quellc
 
     Wenn du alle fünf beantworten kannst — du kannst jede PPO-Implementierung in freier Wildbahn lesen.
 
-[← SAC](unit-sac.md) · [Kursstartseite](index.md) · [→ Paralleles Training](unit-05.md)
+[← Anwenden — SAC vs PPO auf JumperHard](unit-sac-applied.md) · [Kursstartseite](index.md) · [→ Paralleles Training](unit-05.md)

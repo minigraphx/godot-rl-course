@@ -1,6 +1,6 @@
 # Reward Engineering — Signale entwerfen, die wirklich funktionieren
 
-[← Unit 2: Lunar Lander](unit-02.md) · [Kursstartseite](index.md)
+[← Unit 1: Grundlagen](unit-01.md) · [Kursstartseite](index.md)
 
 !!! info "Zeit"
     Lesen: ~35 min
@@ -557,8 +557,8 @@ Für mehr Übung nach der Unit:
 
 Du hast jetzt die wichtigste Fähigkeit im angewandten RL: Belohnungen entwerfen, die das gewünschte Verhalten erzeugen.
 
-In der nächsten Unit lassen wir das Belohnungsdesign hinter uns und betrachten den ersten echten Algorithmus: **Q-Learning**. Du wirst sehen, wie der Agent aus deinen Belohnungen eine Wertfunktion baut — eine Karte von Zuständen auf erwarteten zukünftigen Return.
+In der nächsten Unit setzt du das direkt in die Praxis um: du baust **Lunar Lander** in Godot von Grund auf und schreibst die Per-Schritt-Belohnungsfunktion des Landers in GDScript. Das Shaping, das du dort in §5 schreibst, ist potential-basiert — genau die Theorie, die du gerade gelernt hast.
 
 Wenn du nur eines aus dieser Unit mitnimmst: **die Belohnung ist keine Beschreibung des Ziels. Die Belohnung *ist* das Ziel.** Was immer du aufschreibst — das wird der Agent maximieren. Stelle sicher, dass es das ist, was du willst.
 
-[→ Q-Learning](unit-q-learning.md)
+[→ Unit 2: Lunar Lander in Godot bauen](unit-02.md)

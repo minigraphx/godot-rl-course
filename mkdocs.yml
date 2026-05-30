@@ -63,8 +63,8 @@ nav:
   - "Phase 1 — Foundations":
     - "Unit 0 — Setup & First Run": unit-00.md
     - "Unit 1 — RL Foundations": unit-01.md
-    - "Unit 2 — Build Your First Env": unit-02.md
     - "Reward Engineering": unit-reward-engineering.md
+    - "Unit 2 — Build Your First Env": unit-02.md
   - "Phase 2 — Value-Based Methods":
     - "Q-Learning": unit-q-learning.md
     - "Deep Q-Learning (DQN)": unit-03.md
@@ -75,6 +75,7 @@ nav:
     - "PPO Deep Dive": unit-ppo-deep.md
     - "PPO in Practice (JumperHard)": unit-04.md
     - "SAC — Soft Actor-Critic": unit-sac.md
+    - "Apply It — SAC vs PPO on JumperHard": unit-sac-applied.md
     - "PPO From Scratch (CleanRL)": unit-cleanrl.md
   - "Phase 4 — Scale & Complexity":
     - "Parallel Training": unit-05.md

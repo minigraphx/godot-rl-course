@@ -1,8 +1,9 @@
 # PPO From Scratch — CleanRL and the Implementation Layer
 
-[← SAC](unit-sac.md) · [Course home](index.md)
+[← Apply It — SAC vs PPO on JumperHard](unit-sac-applied.md) · [Course home](index.md)
 
 !!! note "Prerequisites"
+    - **[Apply It — SAC vs PPO on JumperHard](unit-sac-applied.md)** — you've seen the PPO vs SAC comparison in practice
     - **[PPO Deep Dive](unit-ppo-deep.md)** — the clipped objective and GAE-λ should be solid
     - **[Actor-Critic](unit-actor-critic.md)** — the actor / critic split
     - **[Unit 4](unit-04.md)** — having tuned PPO hyperparameters with SB3 once
@@ -898,4 +899,4 @@ These are open-ended. There are no provided solutions — use CleanRL's source a
 
     If you can answer all five — you can read any PPO implementation in the wild.
 
-[← SAC](unit-sac.md) · [Course home](index.md) · [→ Parallel Training](unit-05.md)
+[← Apply It — SAC vs PPO on JumperHard](unit-sac-applied.md) · [Course home](index.md) · [→ Parallel Training](unit-05.md)

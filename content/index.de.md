@@ -8,7 +8,7 @@ Lerne Deep Reinforcement Learning durch das Bauen und Trainieren von Agenten in 
 |-------|--------|---------------|
 | **Phase 1 — Grundlagen** | Einrichtung · RL-Schleife · erste eigene Umgebung · Belohnungsdesign | Wie RL funktioniert, wie man Belohnungen entwirft |
 | **Phase 2 — Wertbasiert** | Q-Learning · DQN · Neugier | Bellman-Gleichung, Q-Tabellen, DQN, Erkundung bei spärlichen Belohnungen |
-| **Phase 3 — Richtlinienbasiert** | REINFORCE · Actor-Critic · PPO · SAC · PPO von Grund auf (CleanRL) | Policy-Gradient-Theorem, PPO-Interna, kontinuierliche Steuerung |
+| **Phase 3 — Richtlinienbasiert** | REINFORCE · Actor-Critic · PPO · SAC · Anwenden · PPO von Grund auf (CleanRL) | Policy-Gradient-Theorem, PPO-Interna, kontinuierliche Steuerung |
 | **Phase 4 — Skalierung** | Parallel · 3D · Multi-Agent · Gedächtnis | Realwelttraining in großem Maßstab |
 | **Phase 5 — Jenseits der Belohnung** | Multi-Task RL · Imitationslernen · ONNX/WASM · Abschlussprojekt | Alternative Lernsignale, generalistische Policies, Deployment |
 | **Phase 6 — Robotik** | Robotersensoren · HER · Sim-to-Real · Safe RL | Roboter-Beobachtungs-/Aktionsdesign, zielkonditioniertes RL |
@@ -28,8 +28,8 @@ Lerne Deep Reinforcement Learning durch das Bauen und Trainieren von Agenten in 
 
 - [Einheit 0 — Einrichtung & Erster Start](unit-00.md)
 - [Einheit 1 — RL-Grundlagen](unit-01.md)
-- [Einheit 2 — Erste eigene Umgebung](unit-02.md)
 - [Belohnungsdesign](unit-reward-engineering.md)
+- [Einheit 2 — Erste eigene Umgebung](unit-02.md)
 
 **Phase 2 — Wertbasierte Methoden**
 
@@ -44,6 +44,7 @@ Lerne Deep Reinforcement Learning durch das Bauen und Trainieren von Agenten in 
 - [PPO im Detail](unit-ppo-deep.md)
 - [PPO in der Praxis (JumperHard)](unit-04.md)
 - [SAC — Soft Actor-Critic](unit-sac.md)
+- [Anwenden — SAC vs PPO auf JumperHard](unit-sac-applied.md)
 - [PPO von Grund auf (CleanRL)](unit-cleanrl.md)
 
 **Phase 4 — Skalierung & Komplexität**
