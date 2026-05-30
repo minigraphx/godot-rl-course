@@ -899,4 +899,4 @@ These are open-ended. There are no provided solutions — use CleanRL's source a
 
     If you can answer all five — you can read any PPO implementation in the wild.
 
-[← SAC](unit-sac.md) · [Course home](index.md) · [→ Parallel Training](unit-05.md)
+[← Apply It — SAC vs PPO on JumperHard](unit-sac-applied.md) · [Course home](index.md) · [→ Parallel Training](unit-05.md)

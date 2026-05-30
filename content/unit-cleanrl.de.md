@@ -899,4 +899,4 @@ Diese sind offen. Es gibt keine vorgegebenen Lösungen — nutze CleanRLs Quellc
 
     Wenn du alle fünf beantworten kannst — du kannst jede PPO-Implementierung in freier Wildbahn lesen.
 
-[← SAC](unit-sac.md) · [Kursstartseite](index.md) · [→ Paralleles Training](unit-05.md)
+[← Anwenden — SAC vs PPO auf JumperHard](unit-sac-applied.md) · [Kursstartseite](index.md) · [→ Paralleles Training](unit-05.md)
