@@ -6,13 +6,33 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Course material for a Godot Reinforcement Learning course. Students learn **godot-rl-agents** through a step-by-step example progression (simple → complex). Published as a static MkDocs site.
 
-## Build & verify
+## Environments
 
-The maintainer uses **conda** (env name: `godot_env`). Activate before running mkdocs:
+This repo has **two** dependency sets, served by **two** conda envs — keep them separate:
+
+| Purpose | Requirements file | Conda env |
+|---------|-------------------|-----------|
+| Build the docs site | `requirements.txt` (mkdocs + material + static-i18n) | `mkdocs-env` |
+| Run the course training code | `requirements-course.txt` (godot-rl, stable-baselines3, torch, gymnasium) | `godot_env` |
+
+`godot_env` is the env name students are told to create in `content/setup.md`; the whole course corpus uses it, so keep that name for the training stack. `mkdocs-env` is docs-only and never referenced by student-facing pages.
+
+Create them once:
 
 ```bash
-conda activate godot_env
-pip install -r requirements.txt   # mkdocs + mkdocs-material + mkdocs-static-i18n, all pinned — do NOT upgrade
+conda create -n mkdocs-env python=3.11 -y
+conda activate mkdocs-env && pip install -r requirements.txt   # all pinned — do NOT upgrade
+
+conda create -n godot_env python=3.10 -y   # 3.10 = the tested version per requirements-course.txt
+conda activate godot_env && pip install -r requirements-course.txt
+```
+
+## Build & verify
+
+Docs work runs in **`mkdocs-env`**:
+
+```bash
+conda activate mkdocs-env
 mkdocs serve                      # live-reload at localhost:8000
 mkdocs build --strict             # canonical pre-commit check; CI runs the same
 ```

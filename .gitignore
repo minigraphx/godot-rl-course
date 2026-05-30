@@ -18,3 +18,7 @@ __pycache__/
 logs/
 *.zip
 *.onnx
+
+# Stray default Godot project icon (this is a docs repo, not a Godot project)
+icon.svg
+icon.svg.import

@@ -18,8 +18,8 @@ git clone https://github.com/minigraphx/godot-rl-course.git
 cd godot-rl-course
 
 # 2. Create / activate the conda env and install pinned deps
-conda create -n godot_env python=3.11 -y       # one time
-conda activate godot_env
+conda create -n mkdocs-env python=3.11 -y       # one time
+conda activate mkdocs-env
 pip install -r requirements.txt                # mkdocs, mkdocs-material, mkdocs-static-i18n
 
 # 3. Serve with live reload at http://localhost:8000
