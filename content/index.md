@@ -28,8 +28,8 @@ Learn deep reinforcement learning by building and training agents inside real Go
 
 - [Unit 0 — Setup & First Run](unit-00.md)
 - [Unit 1 — RL Foundations](unit-01.md)
-- [Unit 2 — Build Your First Env](unit-02.md)
 - [Reward Engineering](unit-reward-engineering.md)
+- [Unit 2 — Build Your First Env](unit-02.md)
 
 **Phase 2 — Value-Based Methods**
 

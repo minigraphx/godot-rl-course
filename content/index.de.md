@@ -28,8 +28,8 @@ Lerne Deep Reinforcement Learning durch das Bauen und Trainieren von Agenten in 
 
 - [Einheit 0 — Einrichtung & Erster Start](unit-00.md)
 - [Einheit 1 — RL-Grundlagen](unit-01.md)
-- [Einheit 2 — Erste eigene Umgebung](unit-02.md)
 - [Belohnungsdesign](unit-reward-engineering.md)
+- [Einheit 2 — Erste eigene Umgebung](unit-02.md)
 
 **Phase 2 — Wertbasierte Methoden**
 

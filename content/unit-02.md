@@ -2,11 +2,12 @@
 
 Two wins in one unit: **Phase A** — run and tweak **SimpleReachGoal** (raycasts, discrete actions). **Phase B** — build Lunar Lander from scratch using the same `AIController` patterns. Train with Stable-Baselines3 via **godot-rl**.
 
-[← Unit 1: Foundations](unit-01.md) · [Course home](index.md)
+[← Reward Engineering](unit-reward-engineering.md) · [Course home](index.md)
 
 !!! note "Prerequisites"
     - **[Unit 0](unit-00.md) complete** — Conda env, Godot .NET, working BallChase run
     - **[Unit 1](unit-01.md) read** — MDP loop, reward, policy, PPO at a high level
+    - **[Reward Engineering](unit-reward-engineering.md) read** — potential-based shaping; you'll write the shaped reward in §5
     - Comfortable editing GDScript (variables, functions, signals — no advanced features)
     - No PyTorch, no SB3 internals, no game-engine experience required
 

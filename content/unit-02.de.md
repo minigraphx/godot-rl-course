@@ -2,7 +2,14 @@
 
 Zwei Erfolge in einer Einheit: **Phase A** — Ausführen und Anpassen von **SimpleReachGoal** (Raycasts, diskrete Aktionen (discrete actions)). **Phase B** — Lunar Lander von Grund auf neu bauen, mit denselben `AIController`-Mustern. Training mit Stable-Baselines3 über **godot-rl**.
 
-[← Unit 1: Grundlagen](unit-01.md) · [Kursübersicht](index.md)
+[← Belohnungsdesign](unit-reward-engineering.md) · [Kursübersicht](index.md)
+
+!!! note "Voraussetzungen"
+    - **[Unit 0](unit-00.md) abgeschlossen** — Conda env, Godot .NET, erfolgreicher BallChase-Lauf
+    - **[Unit 1](unit-01.md) gelesen** — RL-Schleife, Belohnung, Policy, PPO auf hoher Ebene
+    - **[Belohnungsdesign](unit-reward-engineering.md) gelesen** — potential-basiertes Shaping; du schreibst die geformte Belohnung in §5
+    - Sicherer Umgang mit GDScript (Variablen, Funktionen, Signale — keine erweiterten Features)
+    - Keine PyTorch-, keine SB3-Interna-, keine Game-Engine-Erfahrung erforderlich
 
 ---
 
