@@ -470,4 +470,4 @@ Willst du tiefer in PPOs Code-Funktionsweise eintauchen? **PPO von Grund auf (Cl
 
     Wenn du alle fünf beantworten kannst — du kannst auf einer neuen Aufgabe zwischen PPO und SAC wählen, ohne zu raten.
 
-[→ PPO von Grund auf (CleanRL)](unit-cleanrl.md) · [→ Paralleles Training](unit-05.md)
+[→ Anwenden — SAC vs PPO auf JumperHard](unit-sac-applied.md) · [→ Paralleles Training](unit-05.md)

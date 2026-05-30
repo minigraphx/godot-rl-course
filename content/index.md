@@ -44,6 +44,7 @@ Learn deep reinforcement learning by building and training agents inside real Go
 - [PPO Deep Dive](unit-ppo-deep.md)
 - [PPO in Practice (JumperHard)](unit-04.md)
 - [SAC — Soft Actor-Critic](unit-sac.md)
+- [Apply It — SAC vs PPO on JumperHard](unit-sac-applied.md)
 - [PPO From Scratch (CleanRL)](unit-cleanrl.md)
 
 **Phase 4 — Scale & Complexity**

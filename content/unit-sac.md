@@ -470,4 +470,4 @@ Want to go deeper into how PPO actually works in code? **PPO From Scratch (Clean
 
     If you can answer all five — you can pick between PPO and SAC on a new task without guessing.
 
-[→ PPO From Scratch (CleanRL)](unit-cleanrl.md) · [→ Parallel Training](unit-05.md)
+[→ Apply It — SAC vs PPO on JumperHard](unit-sac-applied.md) · [→ Parallel Training](unit-05.md)

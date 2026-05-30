@@ -44,6 +44,7 @@ Lerne Deep Reinforcement Learning durch das Bauen und Trainieren von Agenten in 
 - [PPO im Detail](unit-ppo-deep.md)
 - [PPO in der Praxis (JumperHard)](unit-04.md)
 - [SAC — Soft Actor-Critic](unit-sac.md)
+- [Anwenden — SAC vs PPO auf JumperHard](unit-sac-applied.md)
 - [PPO von Grund auf (CleanRL)](unit-cleanrl.md)
 
 **Phase 4 — Skalierung & Komplexität**
