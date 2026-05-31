@@ -527,4 +527,13 @@ You have the vocabulary, a reward tweak under your belt, and a trained run to re
 
     If you can answer all seven — you're ready.
 
+??? success "Self-check answers"
+    1. **State → action → reward → next state.** The agent observes a state, picks an action, receives a reward, and lands in the next state; repeat until the episode ends.
+    2. A **state** fully describes the world; an **observation** is the (often partial) slice of it the agent actually receives. In most Godot envs the agent sees an observation, not the true state.
+    3. The **discount rate γ** sets how much future rewards count versus immediate ones. γ→0 makes the agent myopic (only the next reward matters); γ→1 makes it weigh long-term return almost equally.
+    4. A **policy π** is the agent's decision function — it maps a state to an action (or a distribution over actions). It is the "brain."
+    5. **Monte Carlo** learns from complete episodes using the actual return (unbiased, high variance, must wait for the episode to end). **TD** updates after every step from a bootstrapped estimate rₜ + γV(sₜ₊₁) (lower variance, works online before the episode ends).
+    6. PPO keeps a **stochastic policy** and adds an **entropy bonus** that penalises over-confident action distributions, so it keeps sampling varied actions — no explicit ε needed.
+    7. Value-based: **DQN** (or Q-Learning) · policy-based: **REINFORCE** (or PPO) · Actor-Critic: **A2C** (or PPO) · model-based: **Dyna-Q** / MuZero (learns a model of transitions and rewards).
+
 [→ Reward Engineering](unit-reward-engineering.md)
