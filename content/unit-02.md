@@ -373,6 +373,9 @@ gdrl --resume_model_path=lander_ppo.zip \
 
 Checkpoints are saved under `logs/sb3/<experiment_name>/` and can be loaded with `--resume_model_path`.
 
+!!! check "Done when"
+    Mean episodic return reaches **`ep_rew_mean ≥ 200`** — the standard "solved" score for LunarLander. A healthy run climbs past 200 and holds there; watch it in the editor log or TensorBoard. Still under ~100 after 1M steps almost always means a reward-shaping or observation bug — work the *Training stalled?* checklist before training longer.
+
 ---
 
 ## 10 · Monitor training with TensorBoard
