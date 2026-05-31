@@ -417,7 +417,10 @@ Re-run the trained policy with `--viz` or Play Scene in Godot. Screenshot behavi
 
 ---
 
-## 10 · DQN limitations
+## 10 · DQN limitations and variants (optional on a first read)
+
+!!! note "First pass? Skim or skip this section."
+    Sections 1–9 are the core DQN lesson and everything you need to train CrossTheRoad. The variants below (Double, Dueling, Noisy, Rainbow) deepen your understanding but are not required to finish the unit — come back to them when you want them.
 
 DQN is elegant but has real constraints you will hit in later units.
 
@@ -460,7 +463,7 @@ This helps the agent learn that some states are simply bad regardless of what it
 !!! tip "Bridge to continuous control"
     For continuous actions — Unit 6 FlyBy, JumperHard with joint torques — we need policy-based methods that output action *distributions* rather than Q-value tables. That is exactly what PPO does, and why the next unit focuses on it. See [Unit 4: JumperHard & PPO](unit-04.md).
 
-### Noisy Networks and Rainbow DQN
+### Noisy Networks and Rainbow DQN (advanced)
 
 **Noisy Networks** replace the final linear layers of the Q-network with `NoisyLinear` layers that inject *learned* noise into the weights. The network controls its own exploration by adjusting the noise magnitude — no ε schedule needed.
 
