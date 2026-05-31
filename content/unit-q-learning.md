@@ -476,6 +476,9 @@ You can read the path with your eyes: from the start (top-left), follow the arro
 !!! tip "Sanity check"
     If your trained policy still looks random, you probably trained for too few episodes, or ε never decayed (so the agent never tried exploiting). Print ε at the end of training — it should be near `epsilon_min`.
 
+!!! check "Done when"
+    Evaluate the **greedy** policy (no exploration) over 100 episodes on non-slippery FrozenLake (`is_slippery=False`): it should reach the goal in **~100%** of them. The environment is deterministic, so an optimal Q-table solves it every time. Well below that means too few training episodes or ε never decayed — print ε at the end of training; it should sit near `epsilon_min`.
+
 ---
 
 ## 11 · Stretch goals
