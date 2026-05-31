@@ -599,6 +599,6 @@ func reset() -> void:
     4. The **control mode** selects who drives the agents: *Training* sends observations to Python and applies the actions it returns; *ONNX Inference* runs the exported policy locally with no Python; *Human* lets you drive manually to test rewards and resets.
     5. **ONNX** is a portable, framework-independent model Godot can run at inference time with no Python or SB3. The `.zip` checkpoint only loads back into SB3 in Python.
 
-**What's next:** In Unit 3 you'll study **CrossTheRoad** and train with **DQN**.
+**What's next:** Next is **Q-Learning** — the tabular intuition that makes DQN click — then **CrossTheRoad** with **DQN** in Unit 3.
 
-[→ Unit 3: CrossTheRoad & DQN](unit-03.md)
+[→ Q-Learning](unit-q-learning.md)
