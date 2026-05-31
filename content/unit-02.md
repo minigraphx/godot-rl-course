@@ -589,6 +589,13 @@ func reset() -> void:
 
     If you can answer all five — you're ready.
 
+??? success "Self-check answers"
+    1. **`AIController`** exposes the RL interface to Python — `get_obs()`, `get_action_space()`, `set_action()`, `get_reward()`. **`lander.gd`** owns the game itself — physics, thrust, collisions, reward shaping, `game_over()`, `reset()`. The controller is the bridge; the game script is the world.
+    2. Neural nets train best on inputs of similar, bounded scale (≈[-1, 1]). Raw positions and velocities differ by orders of magnitude, which ill-conditions the gradients and slows or destabilises learning. Normalising keeps updates well-behaved.
+    3. A **terminal** reward (land +, crash −) defines the true goal but is sparse; a **per-step shaped** reward (closer to the pad, angle/fuel penalties) gives dense guidance so the agent gets signal *before* it ever lands. You need the terminal reward to define success and the shaped reward to make it learnable.
+    4. The **control mode** selects who drives the agents: *Training* sends observations to Python and applies the actions it returns; *ONNX Inference* runs the exported policy locally with no Python; *Human* lets you drive manually to test rewards and resets.
+    5. **ONNX** is a portable, framework-independent model Godot can run at inference time with no Python or SB3. The `.zip` checkpoint only loads back into SB3 in Python.
+
 **What's next:** In Unit 3 you'll study **CrossTheRoad** and train with **DQN**.
 
 [→ Unit 3: CrossTheRoad & DQN](unit-03.md)
