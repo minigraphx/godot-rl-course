@@ -398,6 +398,9 @@ Watch `ep_rew_mean` — sparse rewards may stay flat for thousands of episodes, 
 | `train/entropy_loss` | Present | Not applicable |
 | `train/loss` | Policy + value losses | TD loss only |
 
+!!! check "Done when"
+    CrossTheRoad has no published benchmark, so judge success two ways: (1) the **viz checkpoint** (Section 9) shows the agent reaching the far side in the majority of episodes, and (2) `ep_rew_mean` has clearly stepped up out of its early flat phase and stabilised — the characteristic DQN "flat → sharp jump" curve. A curve still flat after your full step budget points to the ε schedule or a reward-sign bug, not to needing more time.
+
 ---
 
 ## 9 · Tweak & viz checkpoint
