@@ -550,4 +550,11 @@ Because the replay buffer contains transitions collected by old policies, the Q-
 
     If you can answer all five — you're ready.
 
+??? success "Self-check answers"
+    1. Real environments have too many (or continuous) states to store one Q-value each. A **network approximates Q(s, a)** and generalises across similar states it has never seen — a table cannot.
+    2. The **replay buffer** breaks the temporal correlation between consecutive transitions (and lets each transition be reused). Random minibatches behave more like i.i.d. data, which stabilises training. On-policy methods discard data after each update, so they never face this correlation/reuse problem.
+    3. If the target network is updated **every step**, the bootstrap target moves with the online network — the net chases a constantly shifting target, causing oscillation or divergence. Freezing it for N steps gives a stable target to regress toward.
+    4. DQN learns deterministic **Q-values** with no built-in randomness, so it needs an explicit explore/exploit knob — **ε-greedy**. PPO already has a **stochastic policy + entropy bonus**, so exploration is intrinsic and ε is unnecessary.
+    5. Example — **CrossTheRoad: DQN.** Discrete actions plus sparse rewards are DQN's sweet spot, and off-policy replay is sample-efficient there. (A dense-reward or continuous-action env would point to PPO instead.)
+
 [→ Unit 4: JumperHard & PPO](unit-04.md)
