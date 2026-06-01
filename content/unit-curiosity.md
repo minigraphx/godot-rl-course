@@ -274,6 +274,38 @@ The second term is the exploration bonus: high when an action has rarely been tr
 
 **Practical recommendation:** use RND for most Godot tasks. SimHash is worth trying when the observation space is low-to-medium dimensional and you want something simpler than a neural network. Count-based comparison: train FrozenLake Q-Learning with and without `1/sqrt(N)` — measuring how many fewer steps are needed to find the optimal policy is a useful exercise (Stretch goal, Section 9).
 
+### Build it · Count bonus on FrozenLake
+
+Take the FrozenLake Q-Learning loop from the [Q-Learning unit](unit-q-learning.md) and add a `1/√N` novelty bonus. The point: see a count-based intrinsic reward replace ε-greedy as the exploration driver.
+
+```python
+import numpy as np
+import gymnasium as gym
+
+env = gym.make("FrozenLake-v1", is_slippery=False)
+n_states = env.observation_space.n
+Q = np.zeros((n_states, env.action_space.n))
+N = np.zeros(n_states)                       # state visit counts
+alpha, gamma, beta = 0.1, 0.99, 0.1
+
+for episode in range(5000):
+    s, _ = env.reset()
+    done = False
+    while not done:
+        a = int(np.argmax(Q[s]))             # greedy — the count bonus drives exploration
+        s2, r_ext, terminated, truncated, _ = env.step(a)
+        N[s2] += 1
+        r_int = beta / np.sqrt(N[s2])         # intrinsic novelty bonus
+        r = r_ext + r_int
+        Q[s, a] += alpha * (r + gamma * np.max(Q[s2]) - Q[s, a])
+        s, done = s2, terminated or truncated
+
+env.close()
+```
+
+!!! check "Done when"
+    The count-bonus agent reaches a ~100% greedy success rate (Q-Learning unit's eval) in **noticeably fewer episodes** than the ε-greedy baseline. The `1/√N` term, not ε, is now doing the exploring — confirm by checking it works with a *fully greedy* action selection (no ε at all).
+
 ---
 
 ## 7 · Entropy bonus vs. curiosity
@@ -323,7 +355,6 @@ The curiosity signal should show a clear decay curve: high prediction error in t
 
 ## 9 · Stretch goals
 
-- **Count-based comparison:** Train the FrozenLake Q-Learning example from the [Q-Learning unit](unit-q-learning.md) with and without a `1/sqrt(N)` count bonus. How many fewer steps are needed to find the optimal policy?
 - **CrossTheRoad (Unit 3) test:** Apply RND to CrossTheRoad. Does curiosity help (sparse reward) or hurt (small but non-zero forward progress bonus)? Measure `ep_rew_mean` convergence speed.
 - **Read the paper:** Burda et al. 2018, "Exploration by Random Network Distillation." ~10 pages, clearly written, includes Atari results. The ablation in Section 5 is particularly instructive — it shows why the fixed random target is essential.
 - **β sweep:** Train MultiLevelRobot with β ∈ {0.01, 0.1, 0.5, 1.0}. Plot `ep_rew_mean` vs timesteps for each. What is the cost of β being too large?

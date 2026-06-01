@@ -8,7 +8,7 @@ Train the **JumperHard** example — a 3D jumping robot that serves as a standar
     - **[Unit 2](unit-02.md)** — a working SB3 PPO run end-to-end (training + ONNX export)
     - **[Unit 3](unit-03.md)** — DQN trained on CrossTheRoad; on-policy vs off-policy distinction
     - Comfort reading TensorBoard scalars (`ep_rew_mean`, `approx_kl`, `entropy_loss`)
-    - **[Actor-Critic unit](unit-actor-critic.md)** (optional but useful) — makes Section 0 click immediately
+    - **[Actor-Critic unit](unit-actor-critic.md)** — **do this first if reading straight through:** PPO is an Actor-Critic method, and Section 0 assumes the actor/critic split.
 
 !!! info "Time"
     Reading: ~40 min · Training: ~45 min GPU / ~3 h CPU

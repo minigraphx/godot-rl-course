@@ -2,12 +2,12 @@
 
 Study the official **CrossTheRoad** example — discrete 2D navigation with sparse rewards — then train it with **DQN** instead of PPO. Default workflow from here: exported binary, headless.
 
-[← Unit 2: Lunar Lander](unit-02.md) · [Course home](index.md)
+[← Q-Learning](unit-q-learning.md) · [Course home](index.md)
 
 !!! note "Prerequisites"
     - **[Unit 1](unit-01.md)** — Q-values, value-based vs policy-based families, on-policy vs off-policy
     - **[Unit 2](unit-02.md)** — `AIController` interface, `get_obs()` / `set_action()`, training a PPO agent end-to-end
-    - **[Q-Learning unit](unit-q-learning.md)** — tabular Q-Learning (recommended; helps Section 2 click instantly)
+    - **[Q-Learning unit](unit-q-learning.md)** — tabular Q-Learning. **Do this first if reading straight through:** DQN is "Q-Learning with a neural network," and the table version makes every trick below click.
     - Comfort exporting a Godot project to a headless binary
 
 !!! info "Time"
@@ -398,6 +398,9 @@ Watch `ep_rew_mean` — sparse rewards may stay flat for thousands of episodes, 
 | `train/entropy_loss` | Present | Not applicable |
 | `train/loss` | Policy + value losses | TD loss only |
 
+!!! check "Done when"
+    CrossTheRoad has no published benchmark, so judge success two ways: (1) the **viz checkpoint** (Section 9) shows the agent reaching the far side in the majority of episodes, and (2) `ep_rew_mean` has clearly stepped up out of its early flat phase and stabilised — the characteristic DQN "flat → sharp jump" curve. A curve still flat after your full step budget points to the ε schedule or a reward-sign bug, not to needing more time.
+
 ---
 
 ## 9 · Tweak & viz checkpoint
@@ -414,7 +417,10 @@ Re-run the trained policy with `--viz` or Play Scene in Godot. Screenshot behavi
 
 ---
 
-## 10 · DQN limitations
+## 10 · DQN limitations and variants (optional on a first read)
+
+!!! note "First pass? Skim or skip this section."
+    Sections 1–9 are the core DQN lesson and everything you need to train CrossTheRoad. The variants below (Double, Dueling, Noisy, Rainbow) deepen your understanding but are not required to finish the unit — come back to them when you want them.
 
 DQN is elegant but has real constraints you will hit in later units.
 
@@ -457,7 +463,7 @@ This helps the agent learn that some states are simply bad regardless of what it
 !!! tip "Bridge to continuous control"
     For continuous actions — Unit 6 FlyBy, JumperHard with joint torques — we need policy-based methods that output action *distributions* rather than Q-value tables. That is exactly what PPO does, and why the next unit focuses on it. See [Unit 4: JumperHard & PPO](unit-04.md).
 
-### Noisy Networks and Rainbow DQN
+### Noisy Networks and Rainbow DQN (advanced)
 
 **Noisy Networks** replace the final linear layers of the Q-network with `NoisyLinear` layers that inject *learned* noise into the weights. The network controls its own exploration by adjusting the noise magnitude — no ε schedule needed.
 
@@ -549,5 +555,12 @@ Because the replay buffer contains transitions collected by old policies, the Q-
     5. Pick one Godot environment from Phase 2 — would you reach for DQN or PPO, and why?
 
     If you can answer all five — you're ready.
+
+??? success "Self-check answers"
+    1. Real environments have too many (or continuous) states to store one Q-value each. A **network approximates Q(s, a)** and generalises across similar states it has never seen — a table cannot.
+    2. The **replay buffer** breaks the temporal correlation between consecutive transitions (and lets each transition be reused). Random minibatches behave more like i.i.d. data, which stabilises training. On-policy methods discard data after each update, so they never face this correlation/reuse problem.
+    3. If the target network is updated **every step**, the bootstrap target moves with the online network — the net chases a constantly shifting target, causing oscillation or divergence. Freezing it for N steps gives a stable target to regress toward.
+    4. DQN learns deterministic **Q-values** with no built-in randomness, so it needs an explicit explore/exploit knob — **ε-greedy**. PPO already has a **stochastic policy + entropy bonus**, so exploration is intrinsic and ε is unnecessary.
+    5. Example — **CrossTheRoad: DQN.** Discrete actions plus sparse rewards are DQN's sweet spot, and off-policy replay is sample-efficient there. (A dense-reward or continuous-action env would point to PPO instead.)
 
 [→ Unit 4: JumperHard & PPO](unit-04.md)
