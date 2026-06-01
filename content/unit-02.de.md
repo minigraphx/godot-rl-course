@@ -11,6 +11,9 @@ Zwei Erfolge in einer Einheit: **Phase A** — Ausführen und Anpassen von **Sim
     - Sicherer Umgang mit GDScript (Variablen, Funktionen, Signale — keine erweiterten Features)
     - Keine PyTorch-, keine SB3-Interna-, keine Game-Engine-Erfahrung erforderlich
 
+!!! info "Zeit"
+    Lesen: ~35 min · Training: ~30 min GPU / ~2 Std CPU
+
 ---
 
 !!! info "Drei Wege, deine KI zu beobachten"

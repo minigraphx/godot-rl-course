@@ -4,6 +4,15 @@ Dieselbe **BallChase**-Umgebung, die du bereits kennst — aber diesmal öffnest
 
 [← Unit 4: JumperHard & PPO](unit-04.md) · [Kursübersicht](index.md)
 
+!!! note "Voraussetzungen"
+    - **[Unit 4](unit-04.md)** — ein funktionierender PPO-Trainingslauf + sicherer Umgang mit TensorBoard
+    - **[Unit 2](unit-02.md)** — BallChase-Quellcode mindestens einmal im Editor geöffnet
+    - Sicherer Umgang mit dem Export eines headless Godot-Binarys (Unit 3 §9)
+    - Kein neues Python — diese Unit ändert nur die *Trainingsszene* und CLI-Flags
+
+!!! info "Zeit"
+    Lesen: ~25 min · Training: ~20 min GPU / ~1 Std CPU
+
 ---
 
 !!! info "Drei Wege, deine KI zu beobachten"
@@ -206,4 +215,18 @@ Verwende in TensorBoard die Schattierungsansicht (IQM oder Mittelwert ± Standar
 
 **Unit 6:** Kontinuierliche Steuerung (continuous control) in 3D — FlyBy / HovercraftRacing, kontinuierliche Aktionsräume (action spaces), Beobachtungsnormalisierung für 3D-Sensoren.
 
+!!! info "Selbstcheck, bevor du weitermachst"
+    Kannst du diese Fragen mit eigenen Worten beantworten?
+
+    1. Warum liefern N parallele Umgebungen *bessere* Gradientenschätzungen, nicht nur *mehr* davon?
+    2. Was ist der Unterschied zwischen prozessinternen parallelen Umgebungen (der Trainingsszene) und `--n_parallel`-Subprozessen, und wann würdest du was verwenden?
+    3. Wenn Schritte/Sekunde bis 8 Umgebungen linear skaliert, aber bei 16 abflacht — wo liegt der Engpass vermutlich?
+    4. Warum ist eine Belohnungskurve mit nur einem Seed nie ein ausreichender Beleg dafür, dass eine Änderung „geholfen" hat?
+    5. Warum braucht eine Verdopplung von `n_parallel` oft eine entsprechende Erhöhung von `batch_size`?
+
+    Wenn du alle fünf beantworten kannst — bist du bereit.
+
 [→ Unit 6: Kontinuierliche 3D-Steuerung](unit-06.md)
+
+!!! tip "Wenn paralleles Training langsam oder instabil wirkt"
+    Siehe den [Leitfaden zum Debuggen von RL-Training](unit-debugging.md#9-performance-langsames-training) für Durchsatz-Engpässe, Probleme beim Start von Subprozessen und VecEnv-Fehlkonfigurationen.

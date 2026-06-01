@@ -10,6 +10,9 @@ Trainiere das **JumperHard**-Beispiel — einen 3D-Springer-Roboter, der als Sta
     - Sicherheit im Lesen von TensorBoard-Skalaren (`ep_rew_mean`, `approx_kl`, `entropy_loss`)
     - **[Actor-Critic-Einheit](unit-actor-critic.md)** — **mach das zuerst, wenn du durchgehend liest:** PPO ist ein Actor-Critic-Verfahren, und Abschnitt 0 setzt die Actor-/Critic-Aufteilung voraus.
 
+!!! info "Zeit"
+    Lesen: ~40 min · Training: ~45 min GPU / ~3 Std CPU
+
 ---
 
 !!! info "Drei Wege, deine KI zu beobachten"
@@ -420,5 +423,16 @@ Installation: `pip install optuna`
 ## Was kommt als nächstes
 
 **Unit 5:** Gleiche BallChase-Umgebung — neue Fähigkeit: Skalierung paralleler Rollouts mit `n_parallel` und ein ordentliches Evaluierungsprotokoll.
+
+!!! info "Selbstcheck, bevor du weitermachst"
+    Kannst du diese Fragen mit eigenen Worten beantworten?
+
+    1. Was genau beschneidet (clippt) die **Clip-Range** in PPO, und was verhindert sie?
+    2. Wie tauscht GAE-λ Bias gegen Varianz ab, und worauf reduziert sich λ = 1?
+    3. Wenn `approx_kl` dauerhaft über 0,05 liegt — welchen Hyperparameter würdest du zuerst anpassen, und in welche Richtung?
+    4. Warum schneidet Optunas Pruner schlechte Trials früh ab, und was würde passieren, wenn du nicht prunst?
+    5. Was ist der Unterschied zwischen „Training konvergiert" und „Policy ist gut genug zum Ausliefern"?
+
+    Wenn du alle fünf beantworten kannst — bist du bereit.
 
 [→ Unit 5: Paralleles Training](unit-05.md)

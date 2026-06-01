@@ -1,5 +1,8 @@
 # Unit 1 — Grundlagen des Verstärkungslernens (Reinforcement Learning)
 
+!!! info "Zeit"
+    Lesen: ~40 min
+
 Lerne das mentale Modell des Verstärkungslernens (reinforcement learning) und übertrage es auf Godot — aber warte nicht bis zum Ende, um *etwas zu tun*. Überfliege die Schleife, passe eine BallChase-Belohnungsfunktion (reward function) an, und lies die tiefergehenden Abschnitte, während das Training läuft.
 
 ---

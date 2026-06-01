@@ -1,5 +1,8 @@
 # Unit 0 — Setup & Erster Start
 
+!!! info "Zeit"
+    Lesen: ~20 min · Training: ~15 min GPU / ~1 Std CPU
+
 Installiere den Godot-.NET-Editor, die Python-Toolchain und das godot-rl-agents-Plugin. Starte deine erste Trainingssitzung mit dem **BallChase**-Beispiel und bestätige, dass der Godot ↔ Python Socket funktioniert.
 
 ---
@@ -153,6 +156,21 @@ Morgen: Unit 1 Lektüre + Glossar abschließen, dann Unit 2 Phase A (SimpleReach
     Die häufigsten Hindernisse am ersten Abend: falsche Godot-Version (du benötigst **.NET**), Plugin nicht aktiviert, Python vor Godot F6 gestartet, oder Firewall blockiert den localhost-Socket. Lies Abschnitt 1 erneut, wenn die geteilte Architektur unklar ist.
 
 ---
+
+## Stretch Goals
+
+**Den anderen Trainingsmodus ausführen.** Wenn du Option A (Headless-Hub-Binary) verwendet hast, probiere Option B (im Editor mit `--viz`) — oder umgekehrt. Gleicher Agent, gleicher Algorithmus; es geht darum, den Unterschied zwischen *Konsole-zuerst*-Geschwindigkeit und *Editor*-Sichtbarkeit zu spüren. Notiere im Terminal, welcher Modus einen bestimmten `ep_rew_mean` zuerst erreicht.
+
+**Das exportierte ONNX inspizieren.** Öffne `ballchase_brain.onnx` in [Netron](https://netron.app/) (ziehe die Datei in den Browser-Tab — keine Installation). Identifiziere die Form des Eingabetensors, die Form des Ausgabetensors und die Aktivierung zwischen den Schichten. Das ist die Datei, die Godot zur Inferenzzeit in Phase 3 lädt — zu wissen, was darin steckt, zahlt sich in Unit 9 aus.
+
+**Ein zweites Beispiel aus dem Hub ausprobieren.** Lade ein anderes Binary und führe einen kurzen 50k-Schritt-Smoke-Test aus:
+
+```python
+from godot_rl.env_from_hub import env_from_hub
+env_from_hub("edbeeching/godot_rl_JumperHard")
+```
+
+Richte dann `--env_path` auf das neue Binary. Das Ziel ist nicht, es gut zu trainieren — es geht darum, zu bestätigen, dass deine Installation mehr als eine Umgebung verarbeitet, und die Belohnungskurven in TensorBoard zu vergleichen.
 
 ## Wie geht es weiter?
 

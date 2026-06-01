@@ -4,6 +4,15 @@ Studiere das offizielle **CrossTheRoad**-Beispiel — diskrete 2D-Navigation mit
 
 [← Q-Learning](unit-q-learning.md) · [Kursübersicht](index.md)
 
+!!! note "Voraussetzungen"
+    - **[Unit 1](unit-01.md)** — Q-Werte (Q-values), wertbasierte vs. richtlinienbasierte Familien, on-policy vs. off-policy
+    - **[Unit 2](unit-02.md)** — die `AIController`-Schnittstelle, `get_obs()` / `set_action()`, einen PPO-Agenten end-to-end trainieren
+    - **[Q-Learning-Einheit](unit-q-learning.md)** — tabellarisches Q-Learning. **Mach das zuerst, wenn du durchgehend liest:** DQN ist „Q-Learning mit einem neuronalen Netz", und die Tabellenversion lässt jeden Trick unten verständlich werden.
+    - Sicherer Umgang mit dem Export eines Godot-Projekts in ein Binary ohne Fenster (headless)
+
+!!! info "Zeit"
+    Lesen: ~45 min · Training: ~45 min GPU / ~3 Std CPU
+
 ---
 
 !!! warning "Ab hier primär die Kommandozeile"
@@ -499,6 +508,36 @@ Da der Wiederholungspuffer Übergänge enthält, die von alten Richtlinien gesam
 - DQN mit einem großen Wiederholungspuffer kann stichprobeneffizienter als PPO bei Aktionen mit diskretem Aktionsraum sein — jeder Übergang wird hunderte Male wiederverwendet
 - PPO skaliert besser mit parallelen Umgebungen (siehe [Unit 5: Paralleles Training](unit-05.md)) — das Ausführen von N Umgebungen parallel liefert N-mal mehr On-Policy-Daten pro Sekunde
 - Für kontinuierliche Aktionen verwendet SAC dasselbe Off-Policy-Prinzip wie DQN, erweitert es aber auf kontinuierliche Steuerung — siehe [Unit SAC](unit-sac.md)
+
+---
+
+## 12 · Stretch Goals
+
+**Den ε-Zeitplan durchprobieren.** Führe CrossTheRoad dreimal aus und ändere nur den Explorationszeitplan: (a) schneller Zerfall — ε erreicht 0,05 bei 25 % des Trainings, (b) der Standard, (c) langsamer Zerfall — ε liegt bei 75 % des Trainings noch bei 0,3. Sage voraus, welche Kurve am schnellsten steigt, welche am höchsten plateauiert und welche sich nie erholt. Prüfe dann TensorBoard. Die Lektion: DQNs Wanduhrzeit bis zur Lösung hängt ebenso vom ε-Zeitplan ab wie vom Netz.
+
+**DQN vs. PPO im direkten Vergleich.** Trainiere CrossTheRoad mit PPO bei gleichem Gesamtschritt-Budget (z. B. 500k). Zeichne beide `ep_rew_mean`-Kurven in dasselbe TensorBoard. Welche erreicht das Ziel zuerst? Welche endet höher? Schreibe eine Ein-Satz-Hypothese für das *Warum* auf, bevor du es ausführst. Die diskreten Aktionen + spärlichen Belohnungen von CrossTheRoad begünstigen DQN — bestätige oder widerlege das auf deiner eigenen Maschine.
+
+**Double DQN von Hand implementieren.** Ohne SB3: schreibe eine kleine Trainingsschleife, die CartPole-v1 mit zwei Netzen lernt: ein Online-Q-Netz für die Aktionsauswahl und ein Zielnetz für die Bewertung. Das Double-DQN-Ziel ist `r + γ · Q_target(s', argmax_a Q_online(s', a))` — nicht `r + γ · max_a Q_target(s', a)`. Kopiere die Online-Gewichte alle 500 Schritte in das Zielnetz.
+
+!!! warning "Pseudocode"
+    ```python
+    import gymnasium as gym
+    import torch
+    import torch.nn as nn
+
+    env = gym.make("CartPole-v1")
+    q_online = nn.Sequential(nn.Linear(4, 64), nn.ReLU(), nn.Linear(64, 2))
+    q_target = nn.Sequential(nn.Linear(4, 64), nn.ReLU(), nn.Linear(64, 2))
+    q_target.load_state_dict(q_online.state_dict())
+
+    # In the update step:
+    next_action = q_online(next_obs).argmax(dim=-1)              # online picks
+    next_q = q_target(next_obs).gather(-1, next_action.unsqueeze(-1))  # target evaluates
+    td_target = reward + gamma * next_q.squeeze(-1) * (1 - done)
+    loss = ((q_online(obs).gather(-1, action.unsqueeze(-1)).squeeze(-1) - td_target.detach()) ** 2).mean()
+    ```
+
+    Beobachte, wie `ep_rew_mean` Richtung 500 steigt. Vergleiche mit einer Einzelnetz-Baseline — der Abstand ist bei CartPole klein, bei Atari groß.
 
 ---
 

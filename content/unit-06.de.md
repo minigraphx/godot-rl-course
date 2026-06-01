@@ -4,6 +4,15 @@ Wechsle von diskreten Tastendrücken zu **kontinuierlichen Kräften und Lenkung*
 
 [← Unit 5: Paralleltraining](unit-05.md) · [Kursübersicht](index.md)
 
+!!! note "Voraussetzungen"
+    - **[Unit 4](unit-04.md)** — PPO end-to-end, sicherer Umgang mit `clip_range`, GAE-λ, `approx_kl`
+    - **[Unit 5](unit-05.md)** — parallele Umgebungen und das Evaluierungsprotokoll
+    - GDScript-Sicherheit: Vektoren, Raycasts, `_physics_process`
+    - **[Policy-Gradients-Einheit](unit-policy-gradients.md)** (empfohlen) — Gaußsche Policies lassen Abschnitt 1 verständlich werden
+
+!!! info "Zeit"
+    Lesen: ~30 min · Training: ~30 min GPU / ~2 Std CPU
+
 ---
 
 !!! info "Drei Wege, deine KI zu beobachten"
@@ -347,5 +356,16 @@ Wie gewichtest du diese drei Terme, ohne dass einer die anderen überwältigt? P
 ## Was kommt als Nächstes
 
 **Visuelle Beobachtungen:** Wechsle von Strahlenwerfer-Sensoren zu rohen Pixeln — SubViewport-Pipeline, NatureCNN und Frame-Stacking in Godot.
+
+!!! info "Selbstcheck, bevor du weitermachst"
+    Kannst du diese Fragen mit eigenen Worten beantworten?
+
+    1. Warum kann DQN CrossTheRoad trainieren, aber nicht FlyBy — was kann PPO, das DQN nicht kann?
+    2. Zwei Raycast-Sensoren liefern Rohwerte: `dist = 47.3` Meter und `velocity = 0.012`. Warum ist das fatal für das neuronale Netz, und wie behebst du es?
+    3. Was verfolgt `VecNormalize` pro Umgebung, und warum musst du diese Statistiken mit dem Modell speichern?
+    4. Was sagt dir die `train/std` der Aktionsverteilung darüber, wie sicher die Policy ist?
+    5. Wähle eine der beiden Umgebungen (FlyBy vs. HovercraftRacing) — was genau an ihrer Belohnungsform macht sie zu einem anderen Lehrbeispiel als die andere?
+
+    Wenn du alle fünf beantworten kannst — bist du bereit.
 
 [→ Visuelle Beobachtungen](unit-visual-observations.md)

@@ -73,6 +73,13 @@ Lerne Deep Reinforcement Learning durch das Bauen und Trainieren von Agenten in 
 - [Sim-to-Real Transfer](unit-sim-to-real.md)
 - [Safe RL / Constrained MDPs](unit-safe-rl.md)
 
+## Nach diesem Kurs
+
+!!! info "Anschlusskurs: Model Alignment (separater Kurs)"
+    Dieser Kurs endet bei ONNX-Vektor-Policies. Ein geplanter Folgekurs behandelt das Alignment von Sprachmodellen (SFT, Präferenzen, RLHF/DPO). Das Imitationslernen aus Unit 9 ist der Einstieg. Optional — die Units 0–10 sind für sich genommen vollständig.
+
+    Repository des Alignment-Kurses: *demnächst verfügbar*.
+
 ---
 
 !!! info "Übersetzung"
