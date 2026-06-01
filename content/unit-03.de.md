@@ -2,7 +2,7 @@
 
 Studiere das offizielle **CrossTheRoad**-Beispiel — diskrete 2D-Navigation mit spärlichen Belohnungen — und trainiere es dann mit **DQN** statt PPO. Ab hier ist der Standardarbeitsablauf: exportiertes Binary, ohne Fenster (headless).
 
-[← Unit 2: Lunar Lander](unit-02.md) · [Kursübersicht](index.md)
+[← Q-Learning](unit-q-learning.md) · [Kursübersicht](index.md)
 
 ---
 
@@ -40,7 +40,7 @@ Verwende DQN, wenn der Aktionsraum **diskret** und die Belohnungen spärlich sin
 
 ## 2 · Von Q-Tabellen zu neuronalen Netzen
 
-Falls du die Q-Learning-Unit noch nicht gelesen hast, ist jetzt der richtige Zeitpunkt — das tabellarische Fundament lässt hier alles „klick" machen: [Q-Learning-Unit](unit-q-learning.md).
+Falls du die Q-Learning-Unit noch nicht gelesen hast, ist jetzt der richtige Zeitpunkt — **mach das zuerst, wenn du durchgehend liest:** DQN ist „Q-Learning mit einem neuronalen Netz", und die Tabellen-Version lässt jeden Trick hier unten „klick" machen: [Q-Learning-Unit](unit-q-learning.md).
 
 **Das Problem mit Q-Tabellen**
 
@@ -389,6 +389,9 @@ Beobachte `ep_rew_mean` — bei spärlichen Belohnungen kann es über tausende E
 | `train/entropy_loss` | Vorhanden | Nicht anwendbar |
 | `train/loss` | Richtlinien- + Wertverluste | Nur TD-Verlust |
 
+!!! check "Fertig, wenn"
+    CrossTheRoad hat keinen veröffentlichten Benchmark, beurteile den Erfolg also auf zwei Arten: (1) der **Viz-Checkpoint** (Abschnitt 9) zeigt, dass der Agent in der Mehrheit der Episoden die andere Seite erreicht, und (2) `ep_rew_mean` ist klar aus seiner anfänglichen flachen Phase herausgetreten und hat sich stabilisiert — die charakteristische DQN-Kurve „flach → scharfer Sprung". Eine nach deinem vollen Schrittbudget noch immer flache Kurve deutet auf den ε-Zeitplan oder einen Vorzeichenfehler in der Belohnung hin, nicht auf zu wenig Trainingszeit.
+
 ---
 
 ## 9 · Anpassen & Viz-Checkpoint
@@ -405,7 +408,10 @@ Führe die trainierte Richtlinie erneut mit `--viz` oder Play Scene in Godot aus
 
 ---
 
-## 10 · DQN-Einschränkungen
+## 10 · DQN-Einschränkungen und -Varianten (beim ersten Lesen optional)
+
+!!! note "Erster Durchgang? Überfliege oder überspringe diesen Abschnitt."
+    Die Abschnitte 1–9 sind die DQN-Kernlektion und alles, was du brauchst, um CrossTheRoad zu trainieren. Die Varianten unten (Double, Dueling, Noisy, Rainbow) vertiefen dein Verständnis, sind aber nicht erforderlich, um die Unit abzuschließen — komm zurück, wenn du sie brauchst.
 
 DQN ist elegant, hat aber echte Einschränkungen, auf die du in späteren Units stoßen wirst.
 
@@ -448,7 +454,7 @@ Das hilft dem Agenten zu lernen, dass manche Zustände einfach schlecht sind, un
 !!! tip "Brücke zur kontinuierlichen Steuerung"
     Für kontinuierliche Aktionen — Unit 6 FlyBy, JumperHard mit Gelenkdrehmomenten — brauchen wir richtlinienbasierte Methoden, die Aktions*verteilungen* statt Q-Wert-Tabellen ausgeben. Genau das macht PPO, und deshalb konzentriert sich die nächste Unit darauf. Siehe [Unit 4: JumperHard & PPO](unit-04.md).
 
-### Noisy Networks und Rainbow DQN
+### Noisy Networks und Rainbow DQN (fortgeschritten)
 
 **Noisy Networks** ersetzen die letzten linearen Schichten des Q-Netzes durch `NoisyLinear`-Schichten, die *gelerntes* Rauschen in die Gewichte injizieren. Das Netz kontrolliert seine eigene Erkundung durch Anpassung der Rauschstärke — kein ε-Zeitplan nötig.
 
@@ -499,5 +505,23 @@ Da der Wiederholungspuffer Übergänge enthält, die von alten Richtlinien gesam
 ## Was kommt als Nächstes
 
 **Unit 4:** JumperHard — der kanonische PPO-Benchmark, headless-Export, Hyperparameter-Tuning.
+
+!!! info "Selbstcheck, bevor du weitermachst"
+    Kannst du diese Fragen mit eigenen Worten beantworten?
+
+    1. Warum ersetzt ein neuronales Netz die Q-Tabelle, sobald du Gitterwelten verlässt?
+    2. Was behebt der **Experience-Replay-Buffer**, worum sich On-Policy-Methoden nicht kümmern müssen?
+    3. Was geht schief, wenn das Target-Netz jeden Schritt statt alle N Schritte aktualisiert wird?
+    4. Warum ist ε-greedy die natürliche Explorationsstrategie für DQN, aber nicht für PPO?
+    5. Wähle eine Godot-Umgebung aus Phase 2 — würdest du zu DQN oder PPO greifen, und warum?
+
+    Wenn du alle fünf beantworten kannst — bist du bereit.
+
+??? success "Antworten zum Selbstcheck"
+    1. Echte Umgebungen haben zu viele (oder kontinuierliche) Zustände, um je einen Q-Wert pro Zustand zu speichern. Ein **Netz approximiert Q(s, a)** und verallgemeinert über ähnliche, nie gesehene Zustände — eine Tabelle kann das nicht.
+    2. Der **Replay-Buffer** bricht die zeitliche Korrelation zwischen aufeinanderfolgenden Übergängen (und lässt jeden Übergang wiederverwenden). Zufällige Minibatches verhalten sich eher wie i.i.d.-Daten, was das Training stabilisiert. On-Policy-Methoden verwerfen Daten nach jedem Update und haben dieses Korrelations-/Wiederverwendungsproblem daher nie.
+    3. Wird das Target-Netz **jeden Schritt** aktualisiert, wandert das Bootstrap-Ziel mit dem Online-Netz — das Netz jagt einem ständig wandernden Ziel hinterher, was Oszillation oder Divergenz verursacht. Es für N Schritte einzufrieren gibt ein stabiles Ziel, auf das hin regrediert wird.
+    4. DQN lernt deterministische **Q-Werte** ohne eingebaute Zufälligkeit und braucht daher einen expliziten Explore/Exploit-Regler — **ε-greedy**. PPO hat bereits eine **stochastische Policy + Entropie-Bonus**, die Exploration ist also intrinsisch und ε unnötig.
+    5. Beispiel — **CrossTheRoad: DQN.** Diskrete Aktionen plus spärliche Belohnungen sind DQNs Stärke, und Off-Policy-Replay ist dort stichprobeneffizient. (Eine Umgebung mit dichten Belohnungen oder kontinuierlichen Aktionen würde eher auf PPO deuten.)
 
 [→ Unit 4: JumperHard & PPO](unit-04.md)

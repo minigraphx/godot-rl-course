@@ -274,6 +274,38 @@ Der zweite Term ist der Erkundungs-Bonus: hoch, wenn eine Aktion selten probiert
 
 **Praktische Empfehlung:** für die meisten Godot-Aufgaben RND. SimHash lohnt einen Versuch, wenn der Beobachtungsraum niedrig- bis mitteldimensional ist und du etwas Einfacheres als ein neuronales Netz willst. Count-Vergleich: FrozenLake-Q-Learning mit und ohne `1/sqrt(N)` trainieren — die Differenz der Schritte bis zur optimalen Policy ist eine sinnvolle Übung (Zusatzaufgabe, Abschnitt 9).
 
+### Bau es · Count-Bonus auf FrozenLake
+
+Nimm die FrozenLake-Q-Learning-Schleife aus der [Q-Learning-Unit](unit-q-learning.md) und ergänze einen `1/√N`-Neuheitsbonus. Der Punkt: sieh, wie eine zählbasierte intrinsische Belohnung ε-greedy als Treiber der Erkundung ersetzt.
+
+```python
+import numpy as np
+import gymnasium as gym
+
+env = gym.make("FrozenLake-v1", is_slippery=False)
+n_states = env.observation_space.n
+Q = np.zeros((n_states, env.action_space.n))
+N = np.zeros(n_states)                       # state visit counts
+alpha, gamma, beta = 0.1, 0.99, 0.1
+
+for episode in range(5000):
+    s, _ = env.reset()
+    done = False
+    while not done:
+        a = int(np.argmax(Q[s]))             # greedy — the count bonus drives exploration
+        s2, r_ext, terminated, truncated, _ = env.step(a)
+        N[s2] += 1
+        r_int = beta / np.sqrt(N[s2])         # intrinsic novelty bonus
+        r = r_ext + r_int
+        Q[s, a] += alpha * (r + gamma * np.max(Q[s2]) - Q[s, a])
+        s, done = s2, terminated or truncated
+
+env.close()
+```
+
+!!! check "Fertig, wenn"
+    Der Count-Bonus-Agent erreicht eine ~100 %ige gierige Erfolgsrate (die Evaluierung der Q-Learning-Unit) in **deutlich weniger Episoden** als die ε-greedy-Baseline. Der `1/√N`-Term, nicht ε, übernimmt jetzt die Erkundung — bestätige das, indem du prüfst, dass es mit *vollständig gieriger* Aktionswahl funktioniert (ganz ohne ε).
+
 ---
 
 ## 7 · Entropie-Bonus vs. Neugier
@@ -323,7 +355,6 @@ Das Neugier-Signal sollte eine deutliche Abklingkurve zeigen: hoher Vorhersagefe
 
 ## 9 · Stretch Goals
 
-- **Count-Vergleich:** Trainiere das FrozenLake-Q-Learning-Beispiel aus der [Q-Learning-Unit](unit-q-learning.md) mit und ohne `1/sqrt(N)`-Count-Bonus. Wie viele weniger Schritte braucht es bis zur optimalen Policy?
 - **CrossTheRoad-Test (Unit 3):** Wende RND auf CrossTheRoad an. Hilft Neugier (spärliche Belohnung) oder schadet sie (kleiner, aber von null verschiedener Vorwärts-Bonus)? Miss die Konvergenzgeschwindigkeit von `ep_rew_mean`.
 - **Paper lesen:** Burda et al. 2018, „Exploration by Random Network Distillation". ~10 Seiten, klar geschrieben, mit Atari-Resultaten. Die Ablation in Abschnitt 5 ist besonders lehrreich — sie zeigt, warum das feste zufällige Target essenziell ist.
 - **β-Sweep:** Trainiere MultiLevelRobot mit β ∈ {0,01, 0,1, 0,5, 1,0}. Plotte `ep_rew_mean` über Timesteps für jedes β. Was kostet ein zu großes β?

@@ -370,6 +370,9 @@ gdrl --resume_model_path=lander_ppo.zip \
 
 Checkpoints werden unter `logs/sb3/<experiment_name>/` gespeichert und können mit `--resume_model_path` geladen werden.
 
+!!! check "Fertig, wenn"
+    Der mittlere Episodenertrag erreicht **`ep_rew_mean ≥ 200`** — der Standardwert für „gelöst" bei LunarLander. Ein gesunder Lauf klettert über 200 und hält sich dort; beobachte das im Editor-Log oder in TensorBoard. Wenn du nach 1M Schritten noch unter ~100 liegst, steckt fast immer ein Fehler in der Belohnungsformung oder den Beobachtungen — arbeite die Checkliste *Training stagniert?* ab, bevor du länger trainierst.
+
 ---
 
 ## 10 · Training mit TensorBoard überwachen
@@ -575,6 +578,24 @@ func reset() -> void:
     _ai.reset()
 ```
 
-**Was kommt als Nächstes:** In Unit 3 untersuchst du **CrossTheRoad** und trainierst mit **DQN**.
+!!! info "Selbstcheck, bevor du weitermachst"
+    Kannst du diese Fragen mit eigenen Worten beantworten?
 
-[→ Unit 3: CrossTheRoad & DQN](unit-03.md)
+    1. Was stellt der `AIController` der Python-Seite bereit, und was besitzt `lander.gd`?
+    2. Warum gibt `get_obs()` *normalisierte* Floats zurück statt roher Positionen und Geschwindigkeiten?
+    3. Was ist der Unterschied zwischen einer *terminalen* Belohnung (Absturz / Landung) und einer *schrittweise geformten* Belohnung, und warum brauchst du für LunarLander beide?
+    4. Worüber entscheidet der *Control Mode* des Sync-Knotens, und was tut jeder Modus?
+    5. Was gibt dir der ONNX-Export nach dem Training, was der `.zip`-SB3-Checkpoint nicht bietet?
+
+    Wenn du alle fünf beantworten kannst — bist du bereit.
+
+??? success "Antworten zum Selbstcheck"
+    1. Der **`AIController`** stellt die RL-Schnittstelle zu Python bereit — `get_obs()`, `get_action_space()`, `set_action()`, `get_reward()`. **`lander.gd`** besitzt das Spiel selbst — Physik, Schub, Kollisionen, Belohnungsformung, `game_over()`, `reset()`. Der Controller ist die Brücke; das Spielskript ist die Welt.
+    2. Neuronale Netze trainieren am besten mit Eingaben ähnlicher, begrenzter Skala (≈[-1, 1]). Rohe Positionen und Geschwindigkeiten unterscheiden sich um Größenordnungen, was die Gradienten schlecht konditioniert und das Lernen verlangsamt oder destabilisiert. Normalisieren hält die Updates wohlverhalten.
+    3. Eine **terminale** Belohnung (Landung +, Absturz −) definiert das eigentliche Ziel, ist aber sparse; eine **schrittweise geformte** Belohnung (näher zur Plattform, Winkel-/Treibstoffstrafen) gibt dichte Führung, sodass der Agent ein Signal bekommt, *bevor* er je landet. Du brauchst die terminale Belohnung, um Erfolg zu definieren, und die geformte, um ihn lernbar zu machen.
+    4. Der **Control Mode** wählt, wer die Agenten steuert: *Training* schickt Beobachtungen an Python und wendet die zurückgegebenen Aktionen an; *ONNX Inference* führt die exportierte Policy lokal ohne Python aus; *Human* lässt dich manuell steuern, um Belohnungen und Resets zu testen.
+    5. **ONNX** ist ein portables, framework-unabhängiges Modell, das Godot zur Inferenzzeit ohne Python oder SB3 ausführen kann. Der `.zip`-Checkpoint lädt nur in SB3 unter Python zurück.
+
+**Was kommt als Nächstes:** Als Nächstes kommt **Q-Learning** — die tabellarische Intuition, die DQN verständlich macht — dann **CrossTheRoad** mit **DQN** in Unit 3.
+
+[→ Q-Learning](unit-q-learning.md)

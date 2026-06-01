@@ -476,6 +476,9 @@ Du kannst den Pfad mit den Augen lesen: vom Start (oben links), den Pfeilen nach
 !!! tip "Sanity-Check"
     Sieht deine trainierte Policy zufällig aus, hast du wahrscheinlich zu wenige Episoden trainiert oder ε klang nie ab (Agent hat nie ausgenutzt). Drucke ε am Ende des Trainings — es sollte nahe `epsilon_min` sein.
 
+!!! check "Fertig, wenn"
+    Evaluiere die **gierige** Policy (keine Exploration) über 100 Episoden auf nicht-rutschigem FrozenLake (`is_slippery=False`): Sie sollte in **~100 %** davon das Ziel erreichen. Die Umgebung ist deterministisch, eine optimale Q-Tabelle löst sie also jedes Mal. Deutlich darunter heißt zu wenige Trainingsepisoden oder ε klang nie ab — drucke ε am Ende des Trainings; es sollte nahe `epsilon_min` liegen.
+
 ---
 
 ## 11 · Stretch Goals
@@ -651,5 +654,12 @@ In der nächsten Unit ersetzt du die Tabelle durch ein neuronales Netz und triff
     5. Warum passt FrozenLake in eine Tabelle, CrossTheRoad aber nicht?
 
     Wenn du alle fünf beantworten kannst — du bist bereit für DQN.
+
+??? success "Antworten zum Selbstcheck"
+    1. **Q(s, a)** ist der erwartete (abgezinste) Ertrag, wenn man in Zustand s die Aktion a wählt und danach optimal weiterhandelt — „wie gut ist diese Aktion, hier".
+    2. **Q(s, a) ← Q(s, a) + α · [ r + γ · maxₐ′ Q(s′, a′) − Q(s, a) ]**. α ist die **Lernrate** (Schrittweite); die Klammer ist der **TD-Fehler** δ — die Lücke zwischen dem gebootstrappten Ziel r + γ·maxₐ′Q(s′,a′) und der aktuellen Schätzung.
+    3. Das Update bootstrappt von **maxₐ′ Q(s′, a′)** (der gierigen Zielpolicy), unabhängig davon, welche Aktion die Exploration tatsächlich gewählt hat. Es lernt also die *optimale* Policy aus Daten, die eine *andere* Verhaltenspolicy erzeugt hat (ε-greedy oder sogar zufällig) — konkret kann es aus alten oder explorativen Übergängen lernen.
+    4. **γ = 0** reduziert das Verhalten auf reine Gier nach der unmittelbaren Belohnung (kurzsichtig); **γ → 1** lässt den Agenten den langfristigen kumulierten Ertrag schätzen und viele Schritte vorausplanen.
+    5. FrozenLake hat einen winzigen, diskreten, aufzählbaren Zustandsraum (16 Zellen), sodass jedes Q(s, a) in eine Tabelle passt. CrossTheRoad hat weit mehr (effektiv kontinuierliche) Zustände, als du aufzählen kannst, und braucht daher ein neuronales Netz, um über ungesehene Zustände zu **verallgemeinern**.
 
 [→ Deep Q-Learning](unit-03.md)

@@ -4,6 +4,12 @@ Trainiere das **JumperHard**-Beispiel — einen 3D-Springer-Roboter, der als Sta
 
 [← Unit 3: CrossTheRoad & DQN](unit-03.md) · [Kursübersicht](index.md)
 
+!!! note "Voraussetzungen"
+    - **[Unit 2](unit-02.md)** — ein vollständig laufender SB3-PPO-Durchlauf (Training + ONNX-Export)
+    - **[Unit 3](unit-03.md)** — DQN auf CrossTheRoad trainiert; Unterscheidung on-policy vs. off-policy
+    - Sicherheit im Lesen von TensorBoard-Skalaren (`ep_rew_mean`, `approx_kl`, `entropy_loss`)
+    - **[Actor-Critic-Einheit](unit-actor-critic.md)** — **mach das zuerst, wenn du durchgehend liest:** PPO ist ein Actor-Critic-Verfahren, und Abschnitt 0 setzt die Actor-/Critic-Aufteilung voraus.
+
 ---
 
 !!! info "Drei Wege, deine KI zu beobachten"

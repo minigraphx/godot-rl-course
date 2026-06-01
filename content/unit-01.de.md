@@ -524,4 +524,13 @@ Du hast das Vokabular, eine Belohnungsanpassung vorgenommen und einen trainierte
 
     Wenn du alle sieben beantworten kannst — bist du bereit.
 
+??? success "Antworten zum Selbstcheck"
+    1. **Zustand → Aktion → Belohnung → Folgezustand.** Der Agent beobachtet einen Zustand, wählt eine Aktion, erhält eine Belohnung und landet im Folgezustand; das wiederholt sich bis zum Episodenende.
+    2. Ein **Zustand** beschreibt die Welt vollständig; eine **Beobachtung** ist der (oft unvollständige) Ausschnitt davon, den der Agent tatsächlich erhält. In den meisten Godot-Umgebungen sieht der Agent eine Beobachtung, nicht den wahren Zustand.
+    3. Der **Abzinsungsfaktor γ** legt fest, wie stark zukünftige Belohnungen gegenüber unmittelbaren zählen. γ→0 macht den Agenten kurzsichtig (nur die nächste Belohnung zählt); γ→1 lässt ihn langfristige Erträge fast gleich gewichten.
+    4. Eine **Richtlinie (policy) π** ist die Entscheidungsfunktion des Agenten — sie bildet einen Zustand auf eine Aktion (oder eine Verteilung über Aktionen) ab. Sie ist das „Gehirn".
+    5. **Monte Carlo** lernt aus vollständigen Episoden über den tatsächlichen Ertrag (erwartungstreu, hohe Varianz, muss bis zum Episodenende warten). **TD** aktualisiert nach jedem Schritt aus einer gebootstrappten Schätzung rₜ + γV(sₜ₊₁) (geringere Varianz, funktioniert online vor Episodenende).
+    6. PPO behält eine **stochastische Richtlinie** und ergänzt einen **Entropie-Bonus**, der überzuversichtliche Aktionsverteilungen bestraft — so werden weiterhin variierte Aktionen gezogen, ganz ohne explizites ε.
+    7. Wertbasiert: **DQN** (oder Q-Learning) · richtlinienbasiert: **REINFORCE** (oder PPO) · Actor-Critic: **A2C** (oder PPO) · modellbasiert: **Dyna-Q** / MuZero (lernt ein Modell von Übergängen und Belohnungen).
+
 [→ Belohnungsdesign](unit-reward-engineering.md)
