@@ -134,6 +134,7 @@ The site uses [`mkdocs-static-i18n`](https://github.com/ultrabug/mkdocs-static-i
 - **PR description:** explain *why* the change exists (which gap it closes, what reader confusion it removes). Reference issues with `Closes #NN`.
 - **Pre-merge checklist:**
   - [ ] `mkdocs build --strict` passes locally (CI runs the same).
+  - [ ] Neural Foundations changes: `./scripts/test-neural-foundations.sh` (falls back to `conda run -n godot_env python` when `python` is not on PATH).
   - [ ] Nav chain (`← / →` breadcrumbs) is consistent end-to-end through the touched units.
   - [ ] `mkdocs.yml`, `content/index.md`, and adjacent units are updated for any new unit.
   - [ ] Code examples compile / parse in their respective languages.

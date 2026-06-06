@@ -38,7 +38,7 @@ python examples/stable_baselines3_example.py \
 **Erkunden → Anpassen → Neu trainieren**
 
 1. Öffne das Projekt in Godot; verfolge `AIController`, Raycasts und die Trainingsszene.
-2. Ändere einen Sensorabstand oder einen Belohnungsterm (gleiche Idee wie in Unit 1).
+2. Ändere einen Sensorabstand oder einen Belohnungsterm (gleiche Idee wie in RL Essentials).
 3. Trainiere kurz neu; vergleiche das Godot-Verhalten und TensorBoard mit deiner Vorhersage.
 
 Dann geht es weiter zu Phase B — du kopierst diese Muster, du entdeckst sie nicht von Null an.

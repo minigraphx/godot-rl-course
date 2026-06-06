@@ -4,6 +4,7 @@
 
 !!! note "Prerequisites"
     - **[RL Essentials](unit-01.md)** — MDP loop, return, discount factor
+    - **[RL Foundations Deep Dive](unit-rl-foundations-deep.md)** — on-policy vs off-policy, Monte Carlo vs TD
     - **[Q-Learning unit](unit-q-learning.md)** — for the value-based contrast in §1
     - **[Unit 3](unit-03.md)** (recommended) — DQN as the value-based foil
     - Comfort with basic gradients (`∇`, chain rule); we re-derive the log-derivative trick in §3
@@ -436,7 +437,7 @@ This is the family A2C, A3C, PPO, SAC all belong to. The next unit develops it f
 
 ## 9 · Connection to PPO
 
-You have been using PPO in earlier Godot units (Unit 1, Unit 2). It is worth pausing to see how PPO relates to what you just learned:
+You have been using PPO in earlier Godot units (RL Essentials and Unit 2). It is worth pausing to see how PPO relates to what you just learned:
 
 PPO **is** a policy gradient method. The objective at its core is still:
 

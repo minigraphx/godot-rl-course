@@ -4,6 +4,7 @@
 
 !!! note "Voraussetzungen"
     - **[RL Essentials](unit-01.md)** — MDP-Schleife, Return, Diskontierungsfaktor
+    - **[RL Foundations Deep Dive](unit-rl-foundations-deep.md)** — On-Policy vs. Off-Policy, Monte Carlo vs. TD
     - **[Q-Learning-Unit](unit-q-learning.md)** — für den wertbasierten Kontrast in §1
     - **[Unit 3](unit-03.md)** (empfohlen) — DQN als wertbasiertes Gegenstück
     - Sicherheit mit Grund-Gradienten (`∇`, Kettenregel); den Log-Derivative-Trick leiten wir in §3 neu her
@@ -436,7 +437,7 @@ Das ist die Familie, zu der A2C, A3C, PPO, SAC gehören. Die nächste Unit baut 
 
 ## 9 · Verbindung zu PPO
 
-Du hast PPO in früheren Godot-Units (Unit 1, Unit 2) bereits genutzt. Es lohnt sich, kurz zu sehen, wie PPO zu dem passt, was du gerade gelernt hast:
+Du hast PPO in früheren Godot-Units (RL Essentials und Unit 2) bereits genutzt. Es lohnt sich, kurz zu sehen, wie PPO zu dem passt, was du gerade gelernt hast:
 
 PPO **ist** eine Policy-Gradient-Methode. Sein Kernobjektiv ist nach wie vor:
 

@@ -38,7 +38,7 @@ python examples/stable_baselines3_example.py \
 **Study → tweak → retrain**
 
 1. Open the project in Godot; trace `AIController`, raycasts, and the training scene.
-2. Change one sensor distance or reward term (same idea as Unit 1).
+2. Change one sensor distance or reward term (same idea as RL Essentials).
 3. Retrain briefly; compare Godot behavior and TensorBoard to your prediction.
 
 Then continue to Phase B — you are copying these patterns, not discovering them from zero.

@@ -1,5 +1,7 @@
 # Unit 0 — Setup & First Run
 
+[Course home](index.md)
+
 !!! info "Time"
     Reading: ~20 min · Training: ~15 min GPU / ~1 h CPU
 

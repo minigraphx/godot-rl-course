@@ -45,8 +45,12 @@ pip install -r requirements-course.txt
     - `stable-baselines3` — PPO, SAC und andere Algorithmen
     - `torch` — PyTorch-Backend für das Training
     - `tensorboard` — Visualisierung der Trainingskurven
+    - `matplotlib`, `onnx`, `onnxruntime`, `ncnn`, `opencv-python` — Plots, Modell-Export und Paritätsprüfungen in Neuronalen Grundlagen
 
 Überprüfen: `python -c "import godot_rl; print('ok')"`
+
+!!! note "Neuronale Grundlagen 3 — Game-Pfad (nur macOS arm64)"
+    Der PPO-Racer in [Neuronale Grundlagen 3](unit-neural-03.md) nutzt einen gebündelten **godot-native-rl**-ncnn-Runner, der derzeit nur für **macOS Apple Silicon** mitgeliefert wird. Der Research-Pfad (Python-REINFORCE-Punktroboter) funktioniert auf allen Plattformen in der Kompatibilitätstabelle unten.
 
 !!! tip "macOS / Linux — erster Start"
     Der Installer fordert dich möglicherweise auf, `conda init` auszuführen — folge der Anweisung und öffne dann ein neues Terminal.
