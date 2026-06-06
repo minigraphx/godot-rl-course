@@ -16,25 +16,29 @@ Students should leave Unit 0 with:
 ## Curriculum decision: neural-network foundations
 
 The course will include an integrated three-unit **Neural-Network Foundations
-Track** after Unit 2 and before Q-Learning / DQN:
+Track** after Unit 2 and before Q-Learning / DQN. Learners choose one practical
+path and view short comparison demonstrations from the other:
 
-1. one neuron with a visible two-action decision;
-2. two neurons, a small hidden layer, loss, and gradient descent;
-3. a sensor-driven 2D vehicle that progresses from hand-set neurons to a
-   PPO-trained policy.
+1. one neuron — Python decision boundary or Godot enemy decision;
+2. a tiny network — Python nonlinear classifier or Godot arena collector;
+3. reward learning — Python REINFORCE point robot or a PPO-trained Godot racer.
 
 The track is required for beginners and skippable through a diagnostic for
 learners who already understand forward passes and backpropagation. It is not a
 separate course because these concepts are prerequisites for DQN, policy
 gradients, PPO, SAC, and ONNX inference.
 
+The Game path uses `godot-native-rl` for C#-free training integration and native
+ncnn deployment. ONNX is a mandatory inspection and parity stage between the
+Python policy and ncnn. Existing units retain their current stack until a
+separate migration project is approved.
+
 The planned language-model sequel will reuse this track as a prerequisite and
 map the concepts to embeddings, token logits, and transformer training rather
 than duplicating the material.
 
-See [neural-foundations-plan.md](neural-foundations-plan.md) for the placement,
-unit specifications, vehicle environment, scope boundary, and completion
-criteria.
+See [neural-foundations-plan.md](neural-foundations-plan.md) for the overview
+and the linked approved teaching design.
 
 ## Three ways to see your AI
 

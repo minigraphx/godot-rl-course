@@ -8,6 +8,7 @@ Thumbs.db
 # Local tooling
 .claude/
 .cursor/
+.superpowers/
 
 # Python
 .venv/
