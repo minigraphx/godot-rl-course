@@ -176,6 +176,13 @@ The Game path uses the same hidden-layer idea for a small collector:
 - the overlay compares target and predicted arrows;
 - the loss display shows whether the network is learning.
 
+Run the current scene:
+
+```bash
+godot --path examples/neural_foundations/game \
+  res://unit_02_collector/unit_02_collector.tscn
+```
+
 Build the scene from primitives first. Keep the teacher visible and simple:
 
 ```text
