@@ -4,6 +4,7 @@ import numpy as np
 import torch
 
 from examples.neural_foundations.research.tiny_mlp import TinyMLP
+from examples.neural_foundations.research.train_tiny_mlp import train_demo
 
 
 def fixed_network() -> TinyMLP:
@@ -75,6 +76,12 @@ class TinyMLPTests(unittest.TestCase):
         np.testing.assert_allclose(gradients["b_hidden"], b_hidden.grad.numpy(), atol=1e-5)
         np.testing.assert_allclose(gradients["w_output"], w_output.grad.numpy(), atol=1e-5)
         np.testing.assert_allclose(gradients["b_output"], b_output.grad.numpy(), atol=1e-5)
+
+    def test_training_demo_reduces_loss(self):
+        result = train_demo(epochs=200, learning_rate=0.05, seed=7)
+
+        self.assertLess(result["final_loss"], result["initial_loss"] * 0.55)
+        self.assertGreaterEqual(result["accuracy"], 0.75)
 
 
 if __name__ == "__main__":
