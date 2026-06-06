@@ -12,7 +12,7 @@ func _run() -> void:
 	var agent_script := load("res://unit_02_collector/collector_agent.gd")
 	if agent_script == null:
 		harness.assert_true(false, "collector agent script exists")
-		quit(harness.failures)
+		harness.finish(self)
 		return
 
 	var collector: Node2D = agent_script.new()
@@ -26,7 +26,7 @@ func _run() -> void:
 	harness.assert_true(inputs.size() == 4, "collector exposes four learnable inputs")
 	if inputs.size() != 4:
 		collector.free()
-		quit(harness.failures)
+		harness.finish(self)
 		return
 	harness.assert_close(inputs[0], 0.6, 0.000001, "gem direction x")
 	harness.assert_close(inputs[1], 0.8, 0.000001, "gem direction y")
@@ -50,4 +50,4 @@ func _run() -> void:
 	harness.assert_true(velocity.y < 0.0, "velocity keeps y direction")
 
 	collector.free()
-	quit(harness.failures)
+	harness.finish(self)

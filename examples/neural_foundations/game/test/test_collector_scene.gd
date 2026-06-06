@@ -12,7 +12,7 @@ func _run() -> void:
 	var scene := load("res://unit_02_collector/unit_02_collector.tscn")
 	if scene == null:
 		harness.assert_true(false, "collector scene exists")
-		quit(harness.failures)
+		harness.finish(self)
 		return
 
 	var demo: Node2D = scene.instantiate()
@@ -59,4 +59,4 @@ func _run() -> void:
 	harness.assert_true(counts_label.text.begins_with("Steps:"), "counter label updates")
 
 	demo.queue_free()
-	quit(harness.failures)
+	harness.finish(self)

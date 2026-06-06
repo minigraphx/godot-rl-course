@@ -12,7 +12,7 @@ func _run() -> void:
 	var teacher_script := load("res://unit_02_collector/teacher.gd")
 	if teacher_script == null:
 		harness.assert_true(false, "collector teacher script exists")
-		quit(harness.failures)
+		harness.finish(self)
 		return
 
 	var teacher: RefCounted = teacher_script.new()
@@ -34,4 +34,4 @@ func _run() -> void:
 	harness.assert_close(away_from_hazard.x, -1.0, 0.000001, "close hazard moves away x")
 	harness.assert_close(away_from_hazard.y, 0.0, 0.000001, "close hazard moves away y")
 
-	quit(harness.failures)
+	harness.finish(self)

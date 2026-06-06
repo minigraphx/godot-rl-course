@@ -11,14 +11,17 @@ func _init() -> void:
 func _run() -> void:
 	var harness := Harness.new()
 	var neuron := TinyNeuron.new()
+	var section_inputs := PackedFloat32Array([0.5, -0.25])
 	neuron.weights = PackedFloat32Array([0.8, -0.4])
 	neuron.bias = 0.1
+	var section_output := neuron.forward(section_inputs)
 	harness.assert_close(
-		neuron.forward(PackedFloat32Array([0.5, -0.25])),
+		section_output,
 		tanh(0.6),
 		0.000001,
 		"forward pass"
 	)
+	_print_frozen_neuron(section_inputs, neuron.weights, neuron.bias, section_output)
 	var demo := EnemyScene.instantiate()
 	root.add_child(demo)
 	demo._physics_process(1.0 / 60.0)
@@ -49,5 +52,47 @@ func _run() -> void:
 		),
 		"distance label uses the displayed decision input"
 	)
+	_print_enemy_demo(demo, displayed_distance, displayed_normalized_distance)
 	demo.queue_free()
-	quit(harness.failures)
+	harness.finish(self)
+
+
+func _print_frozen_neuron(
+	inputs: PackedFloat32Array,
+	weights: PackedFloat32Array,
+	bias: float,
+	output: float
+) -> void:
+	var weighted_sum := bias
+	print("Frozen neuron (same numbers as section 1):")
+	for index in range(inputs.size()):
+		var contribution := inputs[index] * weights[index]
+		weighted_sum += contribution
+		print(
+			"  x%d=%.2f × w%d=%+.2f  ->  %+.2f"
+			% [index + 1, inputs[index], index + 1, weights[index], contribution]
+		)
+	print("  bias                 %+.2f" % bias)
+	print("  z = %+.3f" % weighted_sum)
+	var sign := "positive" if output >= 0.0 else "negative"
+	print("  tanh(z) = %+.3f  (%s)" % [output, sign])
+	print()
+
+
+func _print_enemy_demo(
+	demo: Node2D,
+	distance_px: float,
+	normalized_distance: float
+) -> void:
+	print("Enemy demo (default scene wiring):")
+	print(
+		"  player/enemy distance: %.0f px  ->  input %.2f"
+		% [distance_px, normalized_distance]
+	)
+	print("  %s" % demo.get_node("Interface/Panel/Margin/Rows/HealthCalculation").text)
+	print("  %s" % demo.get_node("Interface/Panel/Margin/Rows/DistanceCalculation").text)
+	print("  %s" % demo.get_node("Interface/Panel/Margin/Rows/BiasCalculation").text)
+	print("  %s" % demo.get_node("Interface/Panel/Margin/Rows/SumCalculation").text)
+	print("  %s" % demo.get_node("Interface/Panel/Margin/Rows/OutputCalculation").text)
+	print("  Decision: %s" % demo.get_node("Interface/Panel/Margin/Rows/Behavior").text)
+	print()

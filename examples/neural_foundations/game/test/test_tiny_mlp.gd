@@ -12,7 +12,7 @@ func _run() -> void:
 	var tiny_mlp_script := load("res://shared/tiny_mlp.gd")
 	if tiny_mlp_script == null:
 		harness.assert_true(false, "TinyMLP script exists")
-		quit(harness.failures)
+		harness.finish(self)
 		return
 
 	var network: RefCounted = tiny_mlp_script.new()
@@ -103,4 +103,4 @@ func _run() -> void:
 	var final_loss: float = network.mse_loss(network.forward(inputs), target)
 	harness.assert_true(final_loss < first_loss, "training lowers loss")
 
-	quit(harness.failures)
+	harness.finish(self)

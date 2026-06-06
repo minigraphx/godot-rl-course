@@ -12,7 +12,7 @@ func _run() -> void:
 	var racer_script := load("res://unit_03_racer/racer.gd")
 	if racer_script == null:
 		harness.assert_true(false, "racer script exists")
-		quit(harness.failures)
+		harness.finish(self)
 		return
 
 	var racer: Node2D = racer_script.new()
@@ -67,4 +67,4 @@ func _run() -> void:
 	harness.assert_true(not racer.done, "reset clears done")
 
 	racer.free()
-	quit(harness.failures)
+	harness.finish(self)

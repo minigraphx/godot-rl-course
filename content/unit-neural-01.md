@@ -54,13 +54,16 @@ The activation then produces \(\tanh(0.6) \approx 0.537\).
 
 ```bash
 conda activate godot_env
-python -m unittest \
-  examples.neural_foundations.research.tests.test_neuron -v
+python -m examples.neural_foundations.research.tests.test_neuron
 
 godot --headless \
   --path examples/neural_foundations/game \
   --script res://test/test_tiny_neuron.gd
 ```
+
+Both commands print the section-1 walkthrough (`z = 0.6`, `tanh(z) ≈ 0.537`) and
+then end with `OK`. The Godot run also shows the enemy demo's live labels
+(health, distance, weighted sum, chase/retreat).
 
 Both tests call the forward pass you will inspect next.
 
