@@ -25,15 +25,14 @@ Zwei Erfolge in einer Einheit: **Phase A** — Ausführen und Anpassen von **Sim
 
 **Erst ausführen, dann bauen**
 
-Hol dir einen weiteren schnellen Erfolg, bevor du mit dem Lunar-Lander-Aufbau beginnst. Verwende das Hub-Binary oder klone [SimpleReachGoal](https://github.com/edbeeching/godot_rl_agents_examples/tree/main/examples/SimpleReachGoal).
+Hol dir einen weiteren schnellen Erfolg, bevor du mit dem Lunar-Lander-Aufbau beginnst. Klone [SimpleReachGoal](https://github.com/edbeeching/godot_rl_agents_examples/tree/main/examples/SimpleReachGoal) und öffne es in Godot .NET (aktiviere das Godot-RL-Agents-Plugin).
 
 ```bash
-python -c "from godot_rl.env_from_hub import env_from_hub; env_from_hub('edbeeching/godot_rl_SimpleReachGoal')"
-
-python examples/stable_baselines3_example.py \
-  --env_path=examples/godot_rl_SimpleReachGoal/bin/SimpleReachGoal.x86_64 \
-  --experiment_name=unit2-warmup --timesteps=100000 --viz
+conda activate godot_env
+gdrl --experiment_name=unit2-warmup --timesteps=100000 --viz
 ```
+
+Godot — öffne die SimpleReachGoal-Trainingsszene, drücke **F6** (Szene abspielen).
 
 **Erkunden → Anpassen → Neu trainieren**
 

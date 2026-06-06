@@ -245,10 +245,12 @@ Führe eine kurze visuelle Trainingssitzung aus:
 
 ```bash
 conda activate godot_env
-python examples/stable_baselines3_example.py \
-  --env_path=examples/godot_rl_BallChase/bin/BallChase.x86_64 \
-  --experiment_name=unit1-reward-tweak --timesteps=100000 --viz
+gdrl --experiment_name=unit1-reward-tweak --viz \
+  --save_model_path=ballchase_brain \
+  --onnx_export_path=ballchase_brain.onnx
 ```
+
+Godot — öffne die BallChase-Trainingsszene, drücke **F6** (Szene abspielen).
 
 Beobachte drei Ansichten:
 

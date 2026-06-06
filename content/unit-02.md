@@ -25,15 +25,14 @@ Two wins in one unit: **Phase A** — run and tweak **SimpleReachGoal** (raycast
 
 **Run before you build**
 
-Get a second quick win before the Lunar Lander build. Use the hub binary or clone [SimpleReachGoal](https://github.com/edbeeching/godot_rl_agents_examples/tree/main/examples/SimpleReachGoal).
+Get a second quick win before the Lunar Lander build. Clone [SimpleReachGoal](https://github.com/edbeeching/godot_rl_agents_examples/tree/main/examples/SimpleReachGoal) and open it in Godot .NET (enable the Godot RL Agents plugin).
 
 ```bash
-python -c "from godot_rl.env_from_hub import env_from_hub; env_from_hub('edbeeching/godot_rl_SimpleReachGoal')"
-
-python examples/stable_baselines3_example.py \
-  --env_path=examples/godot_rl_SimpleReachGoal/bin/SimpleReachGoal.x86_64 \
-  --experiment_name=unit2-warmup --timesteps=100000 --viz
+conda activate godot_env
+gdrl --experiment_name=unit2-warmup --timesteps=100000 --viz
 ```
+
+Godot — open the SimpleReachGoal training scene, press **F6** (Play Scene).
 
 **Study → tweak → retrain**
 

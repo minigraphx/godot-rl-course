@@ -10,7 +10,7 @@ Install the Godot .NET editor, Python toolchain, and godot-rl-agents plugin. Run
 ---
 
 !!! success "First success (one session)"
-    1. **Godot** — agent moving (hub binary or `--viz`)
+    1. **Godot** — agent moving (`gdrl --viz` + Play Scene)
     2. **Python** — terminal shows steps; `ep_rew_mean` trends up
     3. **TensorBoard** (optional) — `tensorboard --logdir=logs` shows a curve
     4. **Neural Foundations** — you will build visible neurons before the RL loop
@@ -53,17 +53,6 @@ conda activate godot_env
 
 ## 3 · Godot project & plugin
 
-**Option A — Hub binary (fastest smoke test)**
-
-```bash
-python -c "from godot_rl.env_from_hub import env_from_hub; env_from_hub('edbeeching/godot_rl_BallChase')"
-chmod +x examples/godot_rl_BallChase/bin/BallChase.x86_64
-```
-
-On macOS, use the downloaded binary path in training commands below.
-
-**Option B — Open example source (recommended for learning)**
-
 1. Clone [godot_rl_agents_examples](https://github.com/edbeeching/godot_rl_agents_examples)
 2. Godot → Import → `examples/BallChase` → open `project.godot`
 3. Project → Project Settings → Plugins → enable **Godot RL Agents**
@@ -73,19 +62,7 @@ On macOS, use the downloaded binary path in training commands below.
 
 ## 4 · First training run
 
-**A — Headless hub binary (console-first)**
-
-```bash
-python examples/stable_baselines3_example.py \
-  --env_path=examples/godot_rl_BallChase/bin/BallChase.x86_64 \
-  --experiment_name=BallChase_smoke \
-  --timesteps=50000 \
-  --speedup=8
-```
-
-Omit `--viz` for headless training. Watch the terminal for rising episode reward.
-
-**B — In-editor (macOS / debugging)**
+**In-editor**
 
 Terminal 1 — start Python listener:
 
@@ -102,7 +79,7 @@ Terminal 2 optional: `tensorboard --logdir=logs`
 Godot — open the training scene, press **F6** (Play Scene). The agent should connect and learn.
 
 !!! success "Success criteria"
-    Agent visible in Godot (or hub window); episode reward trends upward; no socket errors; TensorBoard curve optional but recommended.
+    Agent visible in Godot; episode reward trends upward; no socket errors; TensorBoard curve optional but recommended.
 
 ---
 
@@ -122,12 +99,12 @@ After training, copy `ballchase_brain.onnx` into the Godot project. On the Sync 
 
 ## First evening script (~2½–3 hours) { #first-evening-script }
 
-One sitting: tooling works, agent learns, you change a reward. Times are guides — install steps vary by machine. Use **Option A (hub binary)** in Section 3 unless you already have Godot .NET open.
+One sitting: tooling works, agent learns, you change a reward. Times are guides — install steps vary by machine.
 
 | Block | Time | Do this | Done when |
 |-------|------|---------|-----------|
-| **1 · Install** | 45–75 min | [Section 2](#2-conda-environment) — install Miniconda → create `godot_env` → `pip install`<br>[Section 3](#3-godot-project-plugin) — hub download BallChase | `import godot_rl` prints ok; binary path exists |
-| **2 · First train** | 30–45 min | [Section 4B](#4-first-training-run) — `gdrl --viz` + Godot F6<br>Second terminal: `tensorboard --logdir=logs` | Agent moves; `ep_rew_mean` rises; no socket errors |
+| **1 · Install** | 45–75 min | [Section 2](#2-conda-environment) — install Miniconda → create `godot_env` → `pip install`<br>[Section 3](#3-godot-project-plugin) — clone examples repo, open BallChase in Godot | `import godot_rl` prints ok; BallChase project opens with plugin enabled |
+| **2 · First train** | 30–45 min | [Section 4](#4-first-training-run) — `gdrl --viz` + Godot F6<br>Second terminal: `tensorboard --logdir=logs` | Agent moves; `ep_rew_mean` rises; no socket errors |
 | **3 · Start Foundations 1** | 45–60 min | Open [Neural Foundations 1](unit-neural-01.md)<br>Predict the hand calculation (~15 min) → run the research plot or Godot enemy scene<br>While exploring: read Sections 2–3 | You can name each contribution, weighted sum, and activation output |
 
 **Minimal command cheat sheet (Block 2)**
@@ -142,8 +119,6 @@ gdrl --experiment_name=evening_ballchase --viz \
 
 # Godot: BallChase training scene → F6 (Play Scene)
 ```
-
-Headless alternative (no Godot window): Section 4A with `--timesteps=50000 --speedup=8`.
 
 **End-of-evening checklist**
 
@@ -161,18 +136,9 @@ Tomorrow: finish Foundations 1–2, then [RL Essentials](unit-01.md) (BallChase 
 
 ## Stretch Goals
 
-**Run the other training mode.** If you used Option A (headless hub binary), try Option B (in-editor with `--viz`) — or vice versa. Same agent, same algorithm; the point is to feel the difference between *console-first* speed and *editor* visibility. Note in the terminal which mode reaches a given `ep_rew_mean` first.
-
 **Inspect the exported ONNX.** Open `ballchase_brain.onnx` in [Netron](https://netron.app/) (drag the file into the browser tab — no install). Identify the input tensor shape, the output tensor shape, and the activation between layers. This is the file Godot loads at inference time in Phase 3 — knowing what's inside it now pays off in Unit 9.
 
-**Try a second example from the hub.** Pull a different binary and run a short 50k-step smoke test:
-
-```python
-from godot_rl.env_from_hub import env_from_hub
-env_from_hub("edbeeching/godot_rl_JumperHard")
-```
-
-Then point `--env_path` at the new binary. The goal isn't to train it well — it's to confirm your install handles more than one environment and to compare reward curves on TensorBoard.
+**Try a second example from the repo.** Open `examples/JumperHard` in Godot, run a short `gdrl --viz` session, and compare reward curves on TensorBoard. The goal isn't to train it well — it's to confirm your install handles more than one environment.
 
 ## What's next
 

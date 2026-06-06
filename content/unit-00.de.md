@@ -10,7 +10,7 @@ Installiere den Godot-.NET-Editor, die Python-Toolchain und das godot-rl-agents-
 ---
 
 !!! success "Erster Erfolg (eine Sitzung)"
-    1. **Godot** — Akteur (agent) bewegt sich (Hub-Binary oder `--viz`)
+    1. **Godot** — Akteur (agent) bewegt sich (`gdrl --viz` + Szene abspielen)
     2. **Python** — Terminal zeigt Steps; `ep_rew_mean` steigt
     3. **TensorBoard** (optional) — `tensorboard --logdir=logs` zeigt eine Kurve
     4. **Neuronale Grundlagen** — du wirst sichtbare Neuronen bauen, bevor die RL-Schleife beginnt
@@ -53,17 +53,6 @@ conda activate godot_env
 
 ## 3 · Godot-Projekt & Plugin
 
-**Option A — Hub-Binary (schnellster Smoke-Test)**
-
-```bash
-python -c "from godot_rl.env_from_hub import env_from_hub; env_from_hub('edbeeching/godot_rl_BallChase')"
-chmod +x examples/godot_rl_BallChase/bin/BallChase.x86_64
-```
-
-Unter macOS verwende den heruntergeladenen Binary-Pfad in den Trainingsbefehlen unten.
-
-**Option B — Beispiel-Quellcode öffnen (empfohlen zum Lernen)**
-
 1. Klone [godot_rl_agents_examples](https://github.com/edbeeching/godot_rl_agents_examples)
 2. Godot → Import → `examples/BallChase` → öffne `project.godot`
 3. Projekt → Projekteinstellungen → Plugins → aktiviere **Godot RL Agents**
@@ -73,19 +62,7 @@ Unter macOS verwende den heruntergeladenen Binary-Pfad in den Trainingsbefehlen 
 
 ## 4 · Erster Trainingslauf
 
-**A — Headless Hub-Binary (console-first)**
-
-```bash
-python examples/stable_baselines3_example.py \
-  --env_path=examples/godot_rl_BallChase/bin/BallChase.x86_64 \
-  --experiment_name=BallChase_smoke \
-  --timesteps=50000 \
-  --speedup=8
-```
-
-Lasse `--viz` weg für Headless-Training. Beobachte im Terminal den ansteigenden Episoden-Rückgabewert (episode reward).
-
-**B — Im Editor (macOS / Debugging)**
+**Im Editor**
 
 Terminal 1 — Python-Listener starten:
 
@@ -102,7 +79,7 @@ Terminal 2 optional: `tensorboard --logdir=logs`
 Godot — öffne die Trainingsszene, drücke **F6** (Szene abspielen). Der Akteur sollte sich verbinden und lernen.
 
 !!! success "Erfolgskriterien"
-    Akteur in Godot sichtbar (oder im Hub-Fenster); Episoden-Belohnung steigt; keine Socket-Fehler; TensorBoard-Kurve optional, aber empfohlen.
+    Akteur in Godot sichtbar; Episoden-Belohnung steigt; keine Socket-Fehler; TensorBoard-Kurve optional, aber empfohlen.
 
 ---
 
@@ -122,12 +99,12 @@ Kopiere nach dem Training `ballchase_brain.onnx` in das Godot-Projekt. Am Sync-N
 
 ## Erster-Abend-Skript (~2½–3 Stunden) { #erster-abend-skript }
 
-Eine Sitzung: Tooling funktioniert, Akteur lernt, du änderst eine Belohnung. Die Zeiten sind Richtwerte — Installationsschritte variieren je nach Rechner. Nutze **Option A (Hub-Binary)** in Abschnitt 3, sofern du Godot .NET nicht bereits geöffnet hast.
+Eine Sitzung: Tooling funktioniert, Akteur lernt, du änderst eine Belohnung. Die Zeiten sind Richtwerte — Installationsschritte variieren je nach Rechner.
 
 | Block | Zeit | Aufgabe | Fertig wenn |
 |-------|------|---------|-----------|
-| **1 · Installieren** | 45–75 Min | [Abschnitt 2](#2-conda-umgebung) — Miniconda installieren → `godot_env` erstellen → `pip install`<br>[Abschnitt 3](#3-godot-projekt-plugin) — Hub lädt BallChase herunter | `import godot_rl` gibt ok aus; Binary-Pfad vorhanden |
-| **2 · Erster Trainingslauf** | 30–45 Min | [Abschnitt 4B](#4-erster-trainingslauf) — `gdrl --viz` + Godot F6<br>Zweites Terminal: `tensorboard --logdir=logs` | Akteur bewegt sich; `ep_rew_mean` steigt; keine Socket-Fehler |
+| **1 · Installieren** | 45–75 Min | [Abschnitt 2](#2-conda-umgebung) — Miniconda installieren → `godot_env` erstellen → `pip install`<br>[Abschnitt 3](#3-godot-projekt-plugin) — Examples-Repo klonen, BallChase in Godot öffnen | `import godot_rl` gibt ok aus; BallChase-Projekt öffnet sich mit aktiviertem Plugin |
+| **2 · Erster Trainingslauf** | 30–45 Min | [Abschnitt 4](#4-erster-trainingslauf) — `gdrl --viz` + Godot F6<br>Zweites Terminal: `tensorboard --logdir=logs` | Akteur bewegt sich; `ep_rew_mean` steigt; keine Socket-Fehler |
 | **3 · Grundlagen 1 beginnen** | 45–60 Min | Öffne [Neuronale Grundlagen 1](unit-neural-01.md)<br>Handrechnung vorhersagen (~15 Min) → Research-Plot oder Godot-Enemy-Szene starten<br>Während des Erkundens: Abschnitte 2–3 lesen | Du kannst jeden Beitrag, die gewichtete Summe und den Aktivierungswert benennen |
 
 **Minimales Befehls-Spickzettel (Block 2)**
@@ -142,8 +119,6 @@ gdrl --experiment_name=evening_ballchase --viz \
 
 # Godot: BallChase-Trainingsszene → F6 (Szene abspielen)
 ```
-
-Headless-Alternative (kein Godot-Fenster): Abschnitt 4A mit `--timesteps=50000 --speedup=8`.
 
 **Checkliste zum Abend**
 
@@ -161,18 +136,9 @@ Morgen: Grundlagen 1–2 abschließen, dann [RL Essentials](unit-01.md) (BallCha
 
 ## Stretch Goals
 
-**Den anderen Trainingsmodus ausführen.** Wenn du Option A (Headless-Hub-Binary) verwendet hast, probiere Option B (im Editor mit `--viz`) — oder umgekehrt. Gleicher Agent, gleicher Algorithmus; es geht darum, den Unterschied zwischen *Konsole-zuerst*-Geschwindigkeit und *Editor*-Sichtbarkeit zu spüren. Notiere im Terminal, welcher Modus einen bestimmten `ep_rew_mean` zuerst erreicht.
-
 **Das exportierte ONNX inspizieren.** Öffne `ballchase_brain.onnx` in [Netron](https://netron.app/) (ziehe die Datei in den Browser-Tab — keine Installation). Identifiziere die Form des Eingabetensors, die Form des Ausgabetensors und die Aktivierung zwischen den Schichten. Das ist die Datei, die Godot zur Inferenzzeit in Phase 3 lädt — zu wissen, was darin steckt, zahlt sich in Unit 9 aus.
 
-**Ein zweites Beispiel aus dem Hub ausprobieren.** Lade ein anderes Binary und führe einen kurzen 50k-Schritt-Smoke-Test aus:
-
-```python
-from godot_rl.env_from_hub import env_from_hub
-env_from_hub("edbeeching/godot_rl_JumperHard")
-```
-
-Richte dann `--env_path` auf das neue Binary. Das Ziel ist nicht, es gut zu trainieren — es geht darum, zu bestätigen, dass deine Installation mehr als eine Umgebung verarbeitet, und die Belohnungskurven in TensorBoard zu vergleichen.
+**Ein zweites Beispiel aus dem Repo ausprobieren.** Öffne `examples/JumperHard` in Godot, führe eine kurze `gdrl --viz`-Sitzung aus und vergleiche die Belohnungskurven in TensorBoard. Das Ziel ist nicht, es gut zu trainieren — es geht darum, zu bestätigen, dass deine Installation mehr als eine Umgebung verarbeitet.
 
 ## Wie geht es weiter?
 
