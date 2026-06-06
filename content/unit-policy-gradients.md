@@ -3,7 +3,7 @@
 [← Deep Q-Learning](unit-03.md) · [Course home](index.md)
 
 !!! note "Prerequisites"
-    - **[Unit 1](unit-01.md)** — MDP loop, return, discount factor
+    - **[RL Essentials](unit-01.md)** — MDP loop, return, discount factor
     - **[Q-Learning unit](unit-q-learning.md)** — for the value-based contrast in §1
     - **[Unit 3](unit-03.md)** (recommended) — DQN as the value-based foil
     - Comfort with basic gradients (`∇`, chain rule); we re-derive the log-derivative trick in §3

@@ -54,7 +54,11 @@ Ships · ZombieGame · ItemSortingCart · AirHockey · VirtualCamera
 | File | Status |
 |------|--------|
 | `content/unit-00.md` | Done |
-| `content/unit-01.md` | Done |
+| `content/unit-neural-01.md` | Done |
+| `content/unit-neural-02.md` | Done |
+| `content/unit-01.md` | Done (RL Essentials) |
+| `content/unit-neural-03.md` | Done |
+| `content/unit-rl-foundations-deep.md` | Done |
 | `content/unit-02.md` | Done |
 | `content/unit-03.md` | Done |
 | `content/unit-04.md` | Done |

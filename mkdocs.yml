@@ -37,6 +37,15 @@ plugins:
             Setup: Einrichtung
             Reference: Referenz
             Guides: Anleitungen
+            "Phase 1 — Foundations": "Phase 1 — Grundlagen"
+            "Unit 0 — Setup & First Run": "Einheit 0 — Einrichtung & Erster Start"
+            "Neural Foundations 1 — One Neuron": "Neuronale Grundlagen 1 — Ein Neuron"
+            "Neural Foundations 2 — Tiny Networks": "Neuronale Grundlagen 2 — Kleine Netze"
+            "RL Essentials": "RL Essentials"
+            "Neural Foundations 3 — Learn from Reward": "Neuronale Grundlagen 3 — Aus Belohnung lernen"
+            "RL Foundations Deep Dive": "RL Foundations Deep Dive"
+            "Reward Engineering": "Belohnungsdesign"
+            "Unit 2 — Build Your First Env": "Einheit 2 — Erste eigene Umgebung"
 
 extra_css:
   - stylesheets/extra.css

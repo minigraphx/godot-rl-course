@@ -7,7 +7,7 @@ REINFORCE hat die Policy direkt gelernt, aber um den Preis, auf ganze Episoden z
 !!! note "Voraussetzungen"
     - **[Policy Gradients](unit-policy-gradients.md)** — REINFORCE, Baselines, das Varianzproblem
     - **[Q-Learning-Unit](unit-q-learning.md)** — der Critic *ist* eine Wertfunktion; Bellman sollte vertraut sein
-    - **[Unit 1](unit-01.md)** — Diskontierungsfaktor, Return, MDP-Schleife
+    - **[RL Essentials](unit-01.md)** — Diskontierungsfaktor, Return, MDP-Schleife
     - PyTorch-Sicherheit (Forward Pass, Optimizer, `loss.backward()`) für §5
 
 !!! info "Zeit"

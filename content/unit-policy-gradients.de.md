@@ -3,7 +3,7 @@
 [← Deep Q-Learning](unit-03.md) · [Kursstartseite](index.md)
 
 !!! note "Voraussetzungen"
-    - **[Unit 1](unit-01.md)** — MDP-Schleife, Return, Diskontierungsfaktor
+    - **[RL Essentials](unit-01.md)** — MDP-Schleife, Return, Diskontierungsfaktor
     - **[Q-Learning-Unit](unit-q-learning.md)** — für den wertbasierten Kontrast in §1
     - **[Unit 3](unit-03.md)** (empfohlen) — DQN als wertbasiertes Gegenstück
     - Sicherheit mit Grund-Gradienten (`∇`, Kettenregel); den Log-Derivative-Trick leiten wir in §3 neu her
