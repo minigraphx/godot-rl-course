@@ -24,7 +24,7 @@ func _run() -> void:
 	var prediction: PackedFloat32Array = demo.get("last_prediction")
 	var loss: float = demo.get("last_loss")
 
-	harness.assert_true(inputs.size() == 3, "scene exposes three inputs")
+	harness.assert_true(inputs.size() == 4, "scene exposes four inputs")
 	harness.assert_true(target.size() == 2, "scene exposes two target values")
 	harness.assert_true(prediction.size() == 2, "scene exposes two predictions")
 	harness.assert_true(loss >= 0.0, "scene exposes non-negative loss")

@@ -62,7 +62,7 @@ built and link-checked directly.
 |------|----------------|
 | `examples/neural_foundations/game/project.godot` | One minimal project hosting all three scenes |
 | `examples/neural_foundations/game/shared/tiny_neuron.gd` | Scalar neuron used by Unit 1 |
-| `examples/neural_foundations/game/shared/tiny_mlp.gd` | `3 → 4 → 2` MLP and backprop used by Unit 2 |
+| `examples/neural_foundations/game/shared/tiny_mlp.gd` | `4 → 4 → 2` MLP and backprop used by Unit 2 |
 | `examples/neural_foundations/game/unit_01_enemy/` | Enemy decision scene and scripts |
 | `examples/neural_foundations/game/unit_02_collector/` | Arena collector scene and scripts |
 | `examples/neural_foundations/game/unit_03_racer/` | Racer, controller, rewards, training and eval scenes |
@@ -453,7 +453,7 @@ class TinyMLP:
 Use only NumPy inside this class. PyTorch appears only in the verification test
 and comparison section.
 
-- [ ] **Step 4: Implement the GDScript `3 → 4 → 2` MLP**
+- [ ] **Step 4: Implement the GDScript `4 → 4 → 2` MLP**
 
 `tiny_mlp.gd` must expose:
 

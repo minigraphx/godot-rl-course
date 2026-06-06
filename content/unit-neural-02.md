@@ -44,10 +44,10 @@ The Research path uses a `2 → 4 → 1` network:
 two inputs → four hidden neurons → one output
 ```
 
-The Game path uses the same idea with a `3 → 4 → 2` network:
+The Game path uses the same idea with a `4 → 4 → 2` network:
 
 ```text
-gem direction + hazard distance → four hidden neurons → movement x/y
+gem direction + hazard offset → four hidden neurons → movement x/y
 ```
 
 The tested Python implementation lives in
@@ -132,7 +132,7 @@ improving.
 
 | | Research path | Game path |
 |---|---|---|
-| Inputs | Two normalized features | Gem direction and hazard signal |
+| Inputs | Two normalized features | Gem direction and hazard offset |
 | Output | One class score | Two movement values |
 | Evidence | Loss, accuracy, decision regions | Target arrow versus predicted arrow |
 | Tool | NumPy, PyTorch check, Matplotlib | Standard Godot 4 + GDScript |
@@ -185,10 +185,11 @@ godot --path examples/neural_foundations/game \
 
 Build the scene from primitives first. Keep the teacher visible and simple:
 
-```text
-if hazard is close: move away from hazard
-else: move toward gem
-```
+!!! warning "Pseudocode"
+    ```text
+    if hazard is close: move away from hazard
+    else: move toward gem
+    ```
 
 The teacher is not the final AI. It exists to generate examples so you can
 watch supervised learning before reward learning begins.

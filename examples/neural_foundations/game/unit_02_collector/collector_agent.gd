@@ -47,12 +47,15 @@ func observation_inputs(
 		gem_direction = gem_offset.normalized()
 
 	var hazard_distance := agent_position.distance_to(hazard_position)
-	var hazard_proximity := 1.0 - clampf(hazard_distance / sensor_radius, 0.0, 1.0)
+	var hazard_offset := (hazard_position - agent_position) / sensor_radius
+	if hazard_distance > sensor_radius and hazard_offset.length() > 0.0:
+		hazard_offset = hazard_offset.normalized()
 
 	return PackedFloat32Array([
 		gem_direction.x,
 		gem_direction.y,
-		hazard_proximity,
+		hazard_offset.x,
+		hazard_offset.y,
 	])
 
 
@@ -122,10 +125,11 @@ func _update_arrows(target_vector: Vector2) -> void:
 
 func _update_labels() -> void:
 	if input_label != null:
-		input_label.text = "Inputs: gem=(%+.2f, %+.2f) hazard=%.2f" % [
+		input_label.text = "Inputs: gem=(%+.2f, %+.2f) hazard=(%+.2f, %+.2f)" % [
 			last_inputs[0],
 			last_inputs[1],
 			last_inputs[2],
+			last_inputs[3],
 		]
 	if target_label != null:
 		target_label.text = "Target: (%+.2f, %+.2f)" % [

@@ -23,16 +23,23 @@ func _run() -> void:
 		Vector2(3.0, 4.0),
 		Vector2(6.0, 8.0)
 	)
+	harness.assert_true(inputs.size() == 4, "collector exposes four learnable inputs")
+	if inputs.size() != 4:
+		collector.free()
+		quit(harness.failures)
+		return
 	harness.assert_close(inputs[0], 0.6, 0.000001, "gem direction x")
 	harness.assert_close(inputs[1], 0.8, 0.000001, "gem direction y")
-	harness.assert_close(inputs[2], 0.0, 0.000001, "hazard at sensor edge")
+	harness.assert_close(inputs[2], 0.6, 0.000001, "hazard offset x")
+	harness.assert_close(inputs[3], 0.8, 0.000001, "hazard offset y")
 
 	var close_hazard_inputs: PackedFloat32Array = collector.observation_inputs(
 		Vector2.ZERO,
 		Vector2(3.0, 4.0),
 		Vector2(3.0, 4.0)
 	)
-	harness.assert_close(close_hazard_inputs[2], 0.5, 0.000001, "hazard proximity")
+	harness.assert_close(close_hazard_inputs[2], 0.3, 0.000001, "close hazard offset x")
+	harness.assert_close(close_hazard_inputs[3], 0.4, 0.000001, "close hazard offset y")
 
 	var velocity: Vector2 = collector.prediction_to_velocity(
 		PackedFloat32Array([2.0, -0.5]),
