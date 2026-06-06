@@ -1,0 +1,139 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://unit_01_enemy/enemy_agent.gd" id="1_script"]
+
+[node name="OneNeuronEnemy" type="Node2D"]
+script = ExtResource("1_script")
+
+[node name="Background" type="ColorRect" parent="."]
+offset_right = 960.0
+offset_bottom = 540.0
+color = Color(0.055, 0.071, 0.102, 1)
+mouse_filter = 2
+show_behind_parent = true
+
+[node name="Title" type="Label" parent="."]
+offset_left = 24.0
+offset_top = 18.0
+offset_right = 660.0
+offset_bottom = 48.0
+theme_override_colors/font_color = Color(0.9, 0.93, 0.98, 1)
+theme_override_font_sizes/font_size = 22
+text = "One neuron: should the enemy chase or retreat?"
+
+[node name="Hint" type="Label" parent="."]
+offset_left = 24.0
+offset_top = 48.0
+offset_right = 680.0
+offset_bottom = 72.0
+theme_override_colors/font_color = Color(0.65, 0.7, 0.78, 1)
+text = "Move the player with arrow keys. Change health with the slider."
+
+[node name="Player" type="Polygon2D" parent="."]
+position = Vector2(720, 300)
+polygon = PackedVector2Array(-16, -16, 18, 0, -16, 16)
+color = Color(0.25, 0.82, 0.55, 1)
+
+[node name="PlayerLabel" type="Label" parent="Player"]
+offset_left = -25.0
+offset_top = 22.0
+offset_right = 35.0
+offset_bottom = 46.0
+text = "PLAYER"
+
+[node name="Enemy" type="Polygon2D" parent="."]
+position = Vector2(380, 300)
+polygon = PackedVector2Array(0, -22, 20, -10, 20, 12, 0, 22, -20, 12, -20, -10)
+color = Color(0.94, 0.51, 0.33, 1)
+
+[node name="EnemyLabel" type="Label" parent="Enemy"]
+offset_left = -28.0
+offset_top = 26.0
+offset_right = 40.0
+offset_bottom = 50.0
+text = "ENEMY"
+
+[node name="Interface" type="CanvasLayer" parent="."]
+
+[node name="Panel" type="PanelContainer" parent="Interface"]
+offset_left = 24.0
+offset_top = 82.0
+offset_right = 350.0
+offset_bottom = 326.0
+
+[node name="Margin" type="MarginContainer" parent="Interface/Panel"]
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 12
+
+[node name="Rows" type="VBoxContainer" parent="Interface/Panel/Margin"]
+theme_override_constants/separation = 7
+
+[node name="InputTitle" type="Label" parent="Interface/Panel/Margin/Rows"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 17
+text = "Visible forward pass"
+
+[node name="HealthBar" type="ProgressBar" parent="Interface/Panel/Margin/Rows"]
+layout_mode = 2
+value = 75.0
+show_percentage = false
+
+[node name="HealthSlider" type="HSlider" parent="Interface/Panel/Margin/Rows"]
+layout_mode = 2
+value = 75.0
+
+[node name="HealthCalculation" type="Label" parent="Interface/Panel/Margin/Rows"]
+layout_mode = 2
+text = "Health:"
+
+[node name="DistanceCalculation" type="Label" parent="Interface/Panel/Margin/Rows"]
+layout_mode = 2
+text = "Distance:"
+
+[node name="BiasCalculation" type="Label" parent="Interface/Panel/Margin/Rows"]
+layout_mode = 2
+text = "Bias:"
+
+[node name="SumCalculation" type="Label" parent="Interface/Panel/Margin/Rows"]
+layout_mode = 2
+text = "Weighted sum z:"
+
+[node name="OutputCalculation" type="Label" parent="Interface/Panel/Margin/Rows"]
+layout_mode = 2
+text = "tanh(z):"
+
+[node name="Behavior" type="Label" parent="Interface/Panel/Margin/Rows"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "CHASE"
+horizontal_alignment = 1
+
+[node name="Buttons" type="HBoxContainer" parent="Interface"]
+offset_left = 24.0
+offset_top = 338.0
+offset_right = 350.0
+offset_bottom = 378.0
+theme_override_constants/separation = 10
+
+[node name="Pause" type="Button" parent="Interface/Buttons"]
+custom_minimum_size = Vector2(154, 38)
+layout_mode = 2
+text = "Pause"
+
+[node name="Reset" type="Button" parent="Interface/Buttons"]
+custom_minimum_size = Vector2(154, 38)
+layout_mode = 2
+text = "Reset"
+
+[node name="Weights" type="Label" parent="Interface"]
+offset_left = 24.0
+offset_top = 395.0
+offset_right = 350.0
+offset_bottom = 486.0
+theme_override_colors/font_color = Color(0.69, 0.75, 0.84, 1)
+text = "Inspector experiment:
+Select the root node and change
+health_weight, distance_weight, or bias.
+The overlay updates immediately."
