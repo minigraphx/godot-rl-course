@@ -244,8 +244,8 @@ runs the trained policy for inference.
 ## What's next
 
 You now have the pieces inside a policy network: inputs, hidden activations,
-loss, gradients, and weight updates. Next you will connect that network to the
-reinforcement-learning loop: observations, actions, rewards, episodes, and
-exploration.
+loss, gradients, and weight updates. In [RL Essentials](unit-01.md), you will
+connect that network to the reinforcement-learning loop: observations, actions,
+rewards, episodes, and exploration.
 
 [← Neural Foundations 1](unit-neural-01.md) · [Course home](index.md) · [→ RL Essentials](unit-01.md)
