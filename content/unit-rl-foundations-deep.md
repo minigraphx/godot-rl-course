@@ -1,6 +1,6 @@
 # RL Foundations Deep Dive
 
-Previous planned: Neural Foundations 3 · [Course home](index.md)
+[← Neural Foundations 3](unit-neural-03.md) · [Course home](index.md)
 
 !!! info "Time"
     Reading: ~45 min · Best read after you have a Foundations 3 point-robot or racer run to inspect
@@ -276,4 +276,4 @@ You now have the algorithm map behind the visual runs. Next, return to the main
 course sequence and use that map when reward design, Q-learning, DQN, PPO
 configuration, and native inference start to overlap.
 
-Previous planned: Neural Foundations 3 · [Course home](index.md) · [→ Reward Engineering](unit-reward-engineering.md)
+[← Neural Foundations 3](unit-neural-03.md) · [Course home](index.md) · [→ Reward Engineering](unit-reward-engineering.md)

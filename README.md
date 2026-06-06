@@ -54,7 +54,7 @@ If you see `Config value 'plugins': The "i18n" plugin is not installed`, your en
 Related contributor docs:
 
 - [`docs/curriculum.md`](docs/curriculum.md) — full syllabus and pacing.
-- [`docs/neural-foundations-plan.md`](docs/neural-foundations-plan.md) — planned neuron-to-network track ending in a learning 2D vehicle.
+- [`docs/neural-foundations-plan.md`](docs/neural-foundations-plan.md) — neural-foundations track (Units Neural 1–3) ending in a learning 2D vehicle; published in Phase 1 navigation.
 - [`docs/architecture.md`](docs/architecture.md) — training-vs-inference architecture of the example projects.
 - [`docs/example-progression.md`](docs/example-progression.md) — the example ladder the units build on.
 - [`docs/html-units.md`](docs/html-units.md) — historical conventions from the pre-MkDocs HTML build (still useful for pedagogy block names).

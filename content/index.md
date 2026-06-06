@@ -6,7 +6,7 @@ Learn deep reinforcement learning by building and training agents inside real Go
 
 | Phase | Content | What you learn |
 |-------|---------|----------------|
-| **Phase 1 — Foundations** | Setup · RL loop · first custom env · reward design | How RL works, how to design rewards |
+| **Phase 1 — Foundations** | Setup · neural networks · RL loop · reward learning · deep dive · first custom env · reward design | Neurons to policies, how RL works, how to design rewards |
 | **Phase 2 — Value-Based** | Q-Learning · DQN · curiosity | Bellman equation, Q-tables, DQN, sparse reward exploration |
 | **Phase 3 — Policy-Based** | REINFORCE · Actor-Critic · PPO · SAC · Apply It · PPO from scratch (CleanRL) | Policy gradient theorem, PPO internals, continuous control |
 | **Phase 4 — Scale & Complexity** | Parallel · 3D · Multi-agent · Memory | Real-world training at scale |
@@ -27,7 +27,11 @@ Learn deep reinforcement learning by building and training agents inside real Go
 **Phase 1 — Foundations**
 
 - [Unit 0 — Setup & First Run](unit-00.md)
-- [Unit 1 — RL Foundations](unit-01.md)
+- [Neural Foundations 1 — One Neuron](unit-neural-01.md)
+- [Neural Foundations 2 — Tiny Networks](unit-neural-02.md)
+- [RL Essentials](unit-01.md)
+- [Neural Foundations 3 — Learn from Reward](unit-neural-03.md)
+- [RL Foundations Deep Dive](unit-rl-foundations-deep.md)
 - [Reward Engineering](unit-reward-engineering.md)
 - [Unit 2 — Build Your First Env](unit-02.md)
 

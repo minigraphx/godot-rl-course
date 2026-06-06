@@ -11,13 +11,13 @@ Installiere den Godot-.NET-Editor, die Python-Toolchain und das godot-rl-agents-
     1. **Godot** — Akteur (agent) bewegt sich (Hub-Binary oder `--viz`)
     2. **Python** — Terminal zeigt Steps; `ep_rew_mean` steigt
     3. **TensorBoard** (optional) — `tensorboard --logdir=logs` zeigt eine Kurve
-    4. **Unit 1** — du wirst eine Belohnungsfunktion (reward function) anpassen und eine Verhaltensänderung beobachten
+    4. **Neuronale Grundlagen** — du wirst sichtbare Neuronen bauen, bevor die RL-Schleife beginnt
 
 !!! info "Drei Wege, deine KI zu beobachten (jede Einheit)"
     Godot-Verhalten · TensorBoard-Kurven · was du in `AIController` änderst
 
 !!! tip "Wenig Zeit?"
-    Folge dem [Erster-Abend-Skript](#erster-abend-skript) (~2½–3 Std.), um Unit 0 abzuschließen und Unit 1 in einer Sitzung zu beginnen.
+    Folge dem [Erster-Abend-Skript](#erster-abend-skript) (~2½–3 Std.), um Unit 0 abzuschließen und Neuronale Grundlagen 1 in einer Sitzung zu beginnen.
 
 ---
 
@@ -126,7 +126,7 @@ Eine Sitzung: Tooling funktioniert, Akteur lernt, du änderst eine Belohnung. Di
 |-------|------|---------|-----------|
 | **1 · Installieren** | 45–75 Min | [Abschnitt 2](#2-conda-umgebung) — Miniconda installieren → `godot_env` erstellen → `pip install`<br>[Abschnitt 3](#3-godot-projekt-plugin) — Hub lädt BallChase herunter | `import godot_rl` gibt ok aus; Binary-Pfad vorhanden |
 | **2 · Erster Trainingslauf** | 30–45 Min | [Abschnitt 4B](#4-erster-trainingslauf) — `gdrl --viz` + Godot F6<br>Zweites Terminal: `tensorboard --logdir=logs` | Akteur bewegt sich; `ep_rew_mean` steigt; keine Socket-Fehler |
-| **3 · Unit 1 beginnen** | 45–60 Min | Öffne [Unit 1](unit-01.md)<br>MDP-Schleife überfliegen (~15 Min) → BallChase-Quellcode öffnen → eine Belohnung anpassen → mit `--viz` neu trainieren<br>Während des Trainings: Unit 1 Abschnitte 3–5 lesen | Du kannst benennen, welche Zeile du geändert hast; Verhalten oder Kurve hat sich verändert |
+| **3 · Grundlagen 1 beginnen** | 45–60 Min | Öffne [Neuronale Grundlagen 1](unit-neural-01.md)<br>Handrechnung vorhersagen (~15 Min) → Research-Plot oder Godot-Enemy-Szene starten<br>Während des Erkundens: Abschnitte 2–3 lesen | Du kannst jeden Beitrag, die gewichtete Summe und den Aktivierungswert benennen |
 
 **Minimales Befehls-Spickzettel (Block 2)**
 
@@ -148,9 +148,9 @@ Headless-Alternative (kein Godot-Fenster): Abschnitt 4A mit `--timesteps=50000 -
 - [ ] Godot — Akteur in Aktion gesehen
 - [ ] Python — Training ohne Verbindungsfehler durchgelaufen
 - [ ] TensorBoard — mindestens einmal geöffnet (localhost:6006)
-- [ ] Code — eine Belohnungszeile in BallChase bearbeitet
+- [ ] Code — einen Neuron-Forward-Pass-Test oder ein visuelles Beispiel ausgeführt
 
-Morgen: Unit 1 Lektüre + Glossar abschließen, dann Unit 2 Phase A (SimpleReachGoal).
+Morgen: Grundlagen 1–2 abschließen, dann [RL Essentials](unit-01.md) (BallChase-Belohnung anpassen) und Unit 2 Phase A (SimpleReachGoal).
 
 !!! warning "Nicht weitergekommen?"
     Die häufigsten Hindernisse am ersten Abend: falsche Godot-Version (du benötigst **.NET**), Plugin nicht aktiviert, Python vor Godot F6 gestartet, oder Firewall blockiert den localhost-Socket. Lies Abschnitt 1 erneut, wenn die geteilte Architektur unklar ist.
@@ -174,6 +174,6 @@ Richte dann `--env_path` auf das neue Binary. Das Ziel ist nicht, es gut zu trai
 
 ## Wie geht es weiter?
 
-Das Tooling funktioniert. In **Unit 1** wirst du die MDP-Schleife überfliegen, eine BallChase-Belohnung anpassen und die Theorie vertiefen, während das Training läuft.
+Das Tooling funktioniert. In **Neuronale Grundlagen 1** baust du ein sichtbares Neuron und verbindest Netze später mit der RL-Schleife.
 
-[→ Unit 1: RL-Grundlagen](unit-01.md)
+[→ Neuronale Grundlagen 1](unit-neural-01.md)

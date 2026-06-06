@@ -1,7 +1,7 @@
 # Design: Visual Neural Foundations for Research and Game Development
 
 **Date:** 2026-06-06
-**Status:** Approved design; implementation plan not yet written
+**Status:** Implemented
 **Decision:** Add a three-unit neural-foundations track with one shared conceptual
 spine and two audience-specific practical paths.
 
@@ -961,3 +961,23 @@ The track succeeds when a learner with only basic programming knowledge can:
 | Existing course migration | Deferred to a separate later design |
 | ONNX | Mandatory inspection and parity stage |
 | Native deployment | ONNX converted to ncnn; no C#/.NET runtime |
+
+---
+
+## Implementation references
+
+**Course pages:** `content/unit-neural-01.md` through `content/unit-neural-03.md`,
+`content/unit-01.md` (RL Essentials), `content/unit-rl-foundations-deep.md`
+
+**Research examples:** `examples/neural_foundations/research/`
+
+**Game examples:** `examples/neural_foundations/game/`
+
+**Validation:**
+
+```bash
+./scripts/test-neural-foundations.sh
+conda run -n mkdocs-env mkdocs build --strict
+conda run -n godot_env ./scripts/train-foundations-racer.sh
+conda run -n godot_env python scripts/verify_racer_policy.py
+```

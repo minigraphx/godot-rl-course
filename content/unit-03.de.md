@@ -5,7 +5,8 @@ Studiere das offizielle **CrossTheRoad**-Beispiel — diskrete 2D-Navigation mit
 [← Q-Learning](unit-q-learning.md) · [Kursübersicht](index.md)
 
 !!! note "Voraussetzungen"
-    - **[Unit 1](unit-01.md)** — Q-Werte (Q-values), wertbasierte vs. richtlinienbasierte Familien, on-policy vs. off-policy
+    - **[RL Essentials](unit-01.md)** — MDP-Schleife, Policy, Return, Diskontierungsfaktor γ
+    - **[RL Foundations Deep Dive](unit-rl-foundations-deep.md)** — Q-Werte (Q-values), wertbasierte vs. richtlinienbasierte Familien, on-policy vs. off-policy
     - **[Unit 2](unit-02.md)** — die `AIController`-Schnittstelle, `get_obs()` / `set_action()`, einen PPO-Agenten end-to-end trainieren
     - **[Q-Learning-Einheit](unit-q-learning.md)** — tabellarisches Q-Learning. **Mach das zuerst, wenn du durchgehend liest:** DQN ist „Q-Learning mit einem neuronalen Netz", und die Tabellenversion lässt jeden Trick unten verständlich werden.
     - Sicherer Umgang mit dem Export eines Godot-Projekts in ein Binary ohne Fenster (headless)

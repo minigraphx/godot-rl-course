@@ -66,8 +66,8 @@ then nudges the policy toward actions that appeared in high-return episodes.
 ## 4 · Choose your path
 
 The Research path uses a tiny Python point-robot environment and hand-written
-REINFORCE loop. The Game path will add the arcade racer, PPO training, and native
-Godot inference in the next task.
+REINFORCE loop. The Game path uses the arcade racer, PPO training, and native
+Godot inference.
 
 Complete the Research path first if you want to see every tensor in the policy
 gradient update before moving to the larger game example.

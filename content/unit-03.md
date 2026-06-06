@@ -5,7 +5,8 @@ Study the official **CrossTheRoad** example — discrete 2D navigation with spar
 [← Q-Learning](unit-q-learning.md) · [Course home](index.md)
 
 !!! note "Prerequisites"
-    - **[Unit 1](unit-01.md)** — Q-values, value-based vs policy-based families, on-policy vs off-policy
+    - **[RL Essentials](unit-01.md)** — MDP loop, policy, return, discount factor γ
+    - **[RL Foundations Deep Dive](unit-rl-foundations-deep.md)** — Q-values, value-based vs policy-based families, on-policy vs off-policy
     - **[Unit 2](unit-02.md)** — `AIController` interface, `get_obs()` / `set_action()`, training a PPO agent end-to-end
     - **[Q-Learning unit](unit-q-learning.md)** — tabular Q-Learning. **Do this first if reading straight through:** DQN is "Q-Learning with a neural network," and the table version makes every trick below click.
     - Comfort exporting a Godot project to a headless binary

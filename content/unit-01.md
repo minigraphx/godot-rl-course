@@ -332,4 +332,4 @@ you can watch a policy improve from trajectories.
     7. Godot simulates the environment, applies actions, computes rewards, and
        resets episodes.
 
-[← Neural Foundations 2](unit-neural-02.md) · [Course home](index.md) · Next planned: Neural Foundations 3
+[← Neural Foundations 2](unit-neural-02.md) · [Course home](index.md) · [→ Neural Foundations 3](unit-neural-03.md)
