@@ -41,7 +41,7 @@ jobs:
 
       - name: Install Godot
         run: |
-          GODOT_VERSION=4.3.2
+          GODOT_VERSION=4.3
           wget -q "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip"
           unzip -q "Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip"
           sudo mv "Godot_v${GODOT_VERSION}-stable_linux.x86_64" /usr/local/bin/godot
