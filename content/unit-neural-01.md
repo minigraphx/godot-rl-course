@@ -75,6 +75,12 @@ A neuron gives each normalized input a **weight**:
 - a larger magnitude gives that input more influence;
 - the bias shifts the decision before any input contribution.
 
+Build the forward pass before changing any visualization. In your primary path,
+open the matching file and type the loop yourself:
+
+- Research: `examples/neural_foundations/research/neuron.py`
+- Game development: `examples/neural_foundations/game/shared/tiny_neuron.gd`
+
 The shared implementation is deliberately small:
 
 ```python
@@ -85,10 +91,8 @@ def neuron_output(inputs, weights, bias, activation):
     return activate(weighted_sum + bias, activation)
 ```
 
-The full typed version is in
-`examples/neural_foundations/research/neuron.py`. The Godot version in
-`examples/neural_foundations/game/shared/tiny_neuron.gd` performs the same
-loop.
+Run the tests after you finish the loop. The research and Godot versions should
+return the same value for the hand-calculated example above.
 
 ### Why normalize?
 
