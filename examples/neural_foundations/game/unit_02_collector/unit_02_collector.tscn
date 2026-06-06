@@ -1,0 +1,148 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://unit_02_collector/collector_agent.gd" id="1_script"]
+
+[node name="TinyNetworkCollector" type="Node2D"]
+script = ExtResource("1_script")
+
+[node name="Background" type="ColorRect" parent="."]
+offset_right = 960.0
+offset_bottom = 540.0
+color = Color(0.055, 0.071, 0.102, 1)
+mouse_filter = 2
+show_behind_parent = true
+
+[node name="Title" type="Label" parent="."]
+offset_left = 24.0
+offset_top = 18.0
+offset_right = 760.0
+offset_bottom = 48.0
+theme_override_colors/font_color = Color(0.9, 0.93, 0.98, 1)
+theme_override_font_sizes/font_size = 22
+text = "Tiny network: target movement versus prediction"
+
+[node name="Hint" type="Label" parent="."]
+offset_left = 24.0
+offset_top = 48.0
+offset_right = 760.0
+offset_bottom = 72.0
+theme_override_colors/font_color = Color(0.65, 0.7, 0.78, 1)
+text = "Green/red lines = visible inputs. Orange/blue arrows = target versus prediction."
+
+[node name="Agent" type="Polygon2D" parent="."]
+position = Vector2(420, 300)
+polygon = PackedVector2Array(0, -18, 18, 18, -18, 18)
+color = Color(0.38, 0.65, 1, 1)
+
+[node name="AgentLabel" type="Label" parent="Agent"]
+offset_left = -24.0
+offset_top = 24.0
+offset_right = 40.0
+offset_bottom = 48.0
+text = "AGENT"
+
+[node name="Gem" type="Polygon2D" parent="."]
+position = Vector2(720, 260)
+polygon = PackedVector2Array(0, -18, 18, 0, 0, 18, -18, 0)
+color = Color(0.35, 0.9, 0.55, 1)
+
+[node name="GemLabel" type="Label" parent="Gem"]
+offset_left = -16.0
+offset_top = 24.0
+offset_right = 40.0
+offset_bottom = 48.0
+text = "GEM"
+
+[node name="Hazard" type="Polygon2D" parent="."]
+position = Vector2(330, 360)
+polygon = PackedVector2Array(-18, -18, 18, -18, 18, 18, -18, 18)
+color = Color(0.93, 0.31, 0.31, 1)
+
+[node name="HazardLabel" type="Label" parent="Hazard"]
+offset_left = -28.0
+offset_top = 24.0
+offset_right = 48.0
+offset_bottom = 48.0
+text = "HAZARD"
+
+[node name="GemDirectionLine" type="Line2D" parent="."]
+width = 2.0
+default_color = Color(0.35, 0.9, 0.55, 0.75)
+
+[node name="HazardDirectionLine" type="Line2D" parent="."]
+width = 2.0
+default_color = Color(0.93, 0.31, 0.31, 0.75)
+
+[node name="TargetArrow" type="Line2D" parent="."]
+width = 5.0
+default_color = Color(1, 0.63, 0.24, 1)
+
+[node name="PredictionArrow" type="Line2D" parent="."]
+width = 3.0
+default_color = Color(0.36, 0.66, 1, 1)
+
+[node name="Interface" type="CanvasLayer" parent="."]
+
+[node name="Panel" type="PanelContainer" parent="Interface"]
+offset_left = 24.0
+offset_top = 88.0
+offset_right = 420.0
+offset_bottom = 392.0
+
+[node name="Margin" type="MarginContainer" parent="Interface/Panel"]
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 12
+
+[node name="Rows" type="VBoxContainer" parent="Interface/Panel/Margin"]
+theme_override_constants/separation = 8
+
+[node name="InputTitle" type="Label" parent="Interface/Panel/Margin/Rows"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 17
+text = "Visible supervised update"
+
+[node name="Inputs" type="Label" parent="Interface/Panel/Margin/Rows"]
+layout_mode = 2
+text = "Inputs:"
+
+[node name="Target" type="Label" parent="Interface/Panel/Margin/Rows"]
+layout_mode = 2
+text = "Target:"
+
+[node name="Prediction" type="Label" parent="Interface/Panel/Margin/Rows"]
+layout_mode = 2
+text = "Prediction:"
+
+[node name="TargetXBar" type="ProgressBar" parent="Interface/Panel/Margin/Rows"]
+layout_mode = 2
+max_value = 100.0
+value = 50.0
+show_percentage = false
+
+[node name="TargetYBar" type="ProgressBar" parent="Interface/Panel/Margin/Rows"]
+layout_mode = 2
+max_value = 100.0
+value = 50.0
+show_percentage = false
+
+[node name="PredictionXBar" type="ProgressBar" parent="Interface/Panel/Margin/Rows"]
+layout_mode = 2
+max_value = 100.0
+value = 50.0
+show_percentage = false
+
+[node name="PredictionYBar" type="ProgressBar" parent="Interface/Panel/Margin/Rows"]
+layout_mode = 2
+max_value = 100.0
+value = 50.0
+show_percentage = false
+
+[node name="Loss" type="Label" parent="Interface/Panel/Margin/Rows"]
+layout_mode = 2
+text = "Loss:"
+
+[node name="Counts" type="Label" parent="Interface/Panel/Margin/Rows"]
+layout_mode = 2
+text = "Teacher:"

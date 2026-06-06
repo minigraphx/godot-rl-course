@@ -6,7 +6,7 @@ Two wins in one unit: **Phase A** — run and tweak **SimpleReachGoal** (raycast
 
 !!! note "Prerequisites"
     - **[Unit 0](unit-00.md) complete** — Conda env, Godot .NET, working BallChase run
-    - **[Unit 1](unit-01.md) read** — MDP loop, reward, policy, PPO at a high level
+    - **[RL Essentials](unit-01.md) read** — MDP loop, reward, policy, PPO at a high level
     - **[Reward Engineering](unit-reward-engineering.md) read** — potential-based shaping; you'll write the shaped reward in §5
     - Comfortable editing GDScript (variables, functions, signals — no advanced features)
     - No PyTorch, no SB3 internals, no game-engine experience required
@@ -38,7 +38,7 @@ python examples/stable_baselines3_example.py \
 **Study → tweak → retrain**
 
 1. Open the project in Godot; trace `AIController`, raycasts, and the training scene.
-2. Change one sensor distance or reward term (same idea as Unit 1).
+2. Change one sensor distance or reward term (same idea as RL Essentials).
 3. Retrain briefly; compare Godot behavior and TensorBoard to your prediction.
 
 Then continue to Phase B — you are copying these patterns, not discovering them from zero.

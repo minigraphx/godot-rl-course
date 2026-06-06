@@ -1,5 +1,7 @@
 # Unit 0 — Setup & First Run
 
+[Course home](index.md)
+
 !!! info "Time"
     Reading: ~20 min · Training: ~15 min GPU / ~1 h CPU
 
@@ -11,13 +13,13 @@ Install the Godot .NET editor, Python toolchain, and godot-rl-agents plugin. Run
     1. **Godot** — agent moving (hub binary or `--viz`)
     2. **Python** — terminal shows steps; `ep_rew_mean` trends up
     3. **TensorBoard** (optional) — `tensorboard --logdir=logs` shows a curve
-    4. **Unit 1** — you will tweak one reward and see behavior change
+    4. **Neural Foundations** — you will build visible neurons before the RL loop
 
 !!! info "Three ways to see your AI (every unit)"
     Godot behavior · TensorBoard curves · what you change in `AIController`
 
 !!! tip "Short on time?"
-    Follow the [first evening script](#first-evening-script) (~2½–3 h) to finish Unit 0 and start Unit 1 in one sitting.
+    Follow the [first evening script](#first-evening-script) (~2½–3 h) to finish Unit 0 and start Neural Foundations 1 in one sitting.
 
 ---
 
@@ -126,7 +128,7 @@ One sitting: tooling works, agent learns, you change a reward. Times are guides 
 |-------|------|---------|-----------|
 | **1 · Install** | 45–75 min | [Section 2](#2-conda-environment) — install Miniconda → create `godot_env` → `pip install`<br>[Section 3](#3-godot-project-plugin) — hub download BallChase | `import godot_rl` prints ok; binary path exists |
 | **2 · First train** | 30–45 min | [Section 4B](#4-first-training-run) — `gdrl --viz` + Godot F6<br>Second terminal: `tensorboard --logdir=logs` | Agent moves; `ep_rew_mean` rises; no socket errors |
-| **3 · Start Unit 1** | 45–60 min | Open [Unit 1](unit-01.md)<br>Skim MDP loop (~15 min) → open BallChase source → tweak one reward → retrain with `--viz`<br>While training: read Unit 1 Sections 3–5 | You can name which line you changed; behavior or curve shifted |
+| **3 · Start Foundations 1** | 45–60 min | Open [Neural Foundations 1](unit-neural-01.md)<br>Predict the hand calculation (~15 min) → run the research plot or Godot enemy scene<br>While exploring: read Sections 2–3 | You can name each contribution, weighted sum, and activation output |
 
 **Minimal command cheat sheet (Block 2)**
 
@@ -148,9 +150,9 @@ Headless alternative (no Godot window): Section 4A with `--timesteps=50000 --spe
 - [ ] Godot — saw the agent act
 - [ ] Python — training ran without connection errors
 - [ ] TensorBoard — opened at least once (localhost:6006)
-- [ ] Code — edited one reward line in BallChase
+- [ ] Code — ran one neuron forward-pass test or visual example
 
-Tomorrow: finish Unit 1 reading + glossary, then Unit 2 Phase A (SimpleReachGoal).
+Tomorrow: finish Foundations 1–2, then [RL Essentials](unit-01.md) (BallChase reward tweak) and Unit 2 Phase A (SimpleReachGoal).
 
 !!! warning "Stuck?"
     Most first-evening blockers: wrong Godot build (need **.NET**), plugin not enabled, Python started before Godot F6, or firewall blocking localhost socket. Re-read Section 1 if the split architecture is unclear.
@@ -174,6 +176,6 @@ Then point `--env_path` at the new binary. The goal isn't to train it well — i
 
 ## What's next
 
-Tooling works. In **Unit 1** you'll skim the MDP loop, tweak one BallChase reward, then deepen the theory while training runs.
+Tooling works. In **Neural Foundations 1** you'll build one visible neuron, then connect networks to the RL loop in later units.
 
-[→ Unit 1: RL Foundations](unit-01.md)
+[→ Neural Foundations 1](unit-neural-01.md)

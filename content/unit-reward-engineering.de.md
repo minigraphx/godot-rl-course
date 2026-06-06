@@ -1,6 +1,6 @@
 # Reward Engineering — Signale entwerfen, die wirklich funktionieren
 
-[← Unit 1: Grundlagen](unit-01.md) · [Kursstartseite](index.md)
+[← RL Foundations Deep Dive](unit-rl-foundations-deep.md) · [Kursstartseite](index.md)
 
 !!! info "Zeit"
     Lesen: ~35 min
@@ -561,4 +561,4 @@ In der nächsten Unit setzt du das direkt in die Praxis um: du baust **Lunar Lan
 
 Wenn du nur eines aus dieser Unit mitnimmst: **die Belohnung ist keine Beschreibung des Ziels. Die Belohnung *ist* das Ziel.** Was immer du aufschreibst — das wird der Agent maximieren. Stelle sicher, dass es das ist, was du willst.
 
-[→ Unit 2: Lunar Lander in Godot bauen](unit-02.md)
+[← RL Foundations Deep Dive](unit-rl-foundations-deep.md) · [Kursstartseite](index.md) · [→ Unit 2: Lunar Lander in Godot bauen](unit-02.md)

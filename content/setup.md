@@ -45,8 +45,12 @@ pip install -r requirements-course.txt
     - `stable-baselines3` — PPO, SAC, and other algorithms
     - `torch` — PyTorch backend for training
     - `tensorboard` — training-curve visualisation
+    - `matplotlib`, `onnx`, `onnxruntime`, `ncnn`, `opencv-python` — Neural Foundations plots, model export, and parity checks
 
 Verify: `python -c "import godot_rl; print('ok')"`
+
+!!! note "Neural Foundations 3 — Game path (macOS arm64 only)"
+    The PPO racer in [Neural Foundations 3](unit-neural-03.md) uses a bundled **godot-native-rl** ncnn runner shipped for **macOS Apple Silicon** only. The Research path (Python REINFORCE point robot) works on every platform in the compatibility table below.
 
 !!! tip "macOS / Linux first run"
     The installer may ask you to run `conda init` — follow the prompt, then open a new terminal.

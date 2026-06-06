@@ -9,18 +9,21 @@ Source: [godot_rl_agents_examples](https://github.com/edbeeching/godot_rl_agents
 | Step | Example | HTML unit | New skill |
 |------|---------|-----------|-----------|
 | 0 | — | Unit 0 | Conda, plugin, BallChase run (first success checklist) |
-| 1 | BallChase | Unit 1 | MDP vocabulary + **one reward tweak** |
-| 2 | SimpleReachGoal | Unit 2 (Phase A) | Hub/source run, tweak sensor or reward |
-| 3 | Lunar Lander | Unit 2 (Phase B) | Full scene from scratch |
-| 4 | CrossTheRoad | Unit 3 | DQN, sparse 2D rewards |
-| 5 | JumperHard | Unit 4 | PPO benchmark, headless export |
-| 6 | BallChase (source) | Unit 5 | Parallel instances |
-| 7 | FlyBy / HovercraftRacing | Unit 6 | Continuous 3D |
-| 8 | Racer | Unit 7 | Mixed actions |
-| 9 | MultiAgentSimple | Unit 7 | Multi-agent |
-| 10 | FPS / RobotFPS | Unit 8 | RecurrentPPO |
-| 11 | MultiLevelRobot | Unit 9 | Imitation learning |
-| 12 | Any model | Unit 10 | ONNX + WASM |
+| 1 | — | Neural Foundations 1–2 | One neuron, tiny MLP, visible forward pass and gradients |
+| 2 | BallChase | RL Essentials | MDP vocabulary + **one reward tweak** |
+| 3 | — | Neural Foundations 3 | REINFORCE point robot or PPO racer + ONNX/ncnn parity |
+| 4 | — | RL Foundations Deep Dive | MC/TD, exploration, algorithm taxonomy |
+| 5 | SimpleReachGoal | Unit 2 (Phase A) | Hub/source run, tweak sensor or reward |
+| 6 | Lunar Lander | Unit 2 (Phase B) | Full scene from scratch |
+| 7 | CrossTheRoad | Unit 3 | DQN, sparse 2D rewards |
+| 8 | JumperHard | Unit 4 | PPO benchmark, headless export |
+| 9 | BallChase (source) | Unit 5 | Parallel instances |
+| 10 | FlyBy / HovercraftRacing | Unit 6 | Continuous 3D |
+| 11 | Racer | Unit 7 | Mixed actions |
+| 12 | MultiAgentSimple | Unit 7 | Multi-agent |
+| 13 | FPS / RobotFPS | Unit 8 | RecurrentPPO |
+| 14 | MultiLevelRobot | Unit 9 | Imitation learning |
+| 15 | Any model | Unit 10 | ONNX + WASM |
 
 ## Per-unit rhythm
 
@@ -51,7 +54,11 @@ Ships · ZombieGame · ItemSortingCart · AirHockey · VirtualCamera
 | File | Status |
 |------|--------|
 | `content/unit-00.md` | Done |
-| `content/unit-01.md` | Done |
+| `content/unit-neural-01.md` | Done |
+| `content/unit-neural-02.md` | Done |
+| `content/unit-01.md` | Done (RL Essentials) |
+| `content/unit-neural-03.md` | Done |
+| `content/unit-rl-foundations-deep.md` | Done |
 | `content/unit-02.md` | Done |
 | `content/unit-03.md` | Done |
 | `content/unit-04.md` | Done |

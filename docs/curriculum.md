@@ -17,7 +17,11 @@ understand.
 
 ## Curriculum decision: neural-network foundations
 
-The course will include an integrated three-unit **Neural-Network Foundations
+**Status:** Published in Phase 1 navigation (see `content/unit-neural-*.md`).
+Main course units still use `godot-rl-agents`; native migration tracked in
+[#71](https://github.com/minigraphx/godot-rl-course/issues/71).
+
+The course includes an integrated three-unit **Neural-Network Foundations
 Track** immediately after Unit 0, split around a compact RL Essentials bridge.
 Learners choose one practical path and view short comparison demonstrations
 from the other:

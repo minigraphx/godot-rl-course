@@ -46,6 +46,7 @@ If you see `Config value 'plugins': The "i18n" plugin is not installed`, your en
 | `mkdocs.yml` | Site config, **the navigation tree**, and the `i18n` plugin config. Adding a unit or a language means editing here. |
 | `requirements.txt` | Pinned MkDocs + Material + i18n plugin versions. |
 | `.github/workflows/docs-ci.yml` | CI: runs `mkdocs build --strict` and a `linkchecker` pass on every PR. |
+| `.github/workflows/neural-foundations-ci.yml` | CI: Python + Godot headless tests for `examples/neural_foundations/` when that tree changes. |
 | `docs/` | Internal docs for contributors (curriculum map, architecture, conventions). **Not** published. |
 | `internal/` | Working notes, gap analyses. Not published. |
 | `site/` | Build output (`site/` is English, `site/de/` is German). Gitignored. |
@@ -54,7 +55,7 @@ If you see `Config value 'plugins': The "i18n" plugin is not installed`, your en
 Related contributor docs:
 
 - [`docs/curriculum.md`](docs/curriculum.md) — full syllabus and pacing.
-- [`docs/neural-foundations-plan.md`](docs/neural-foundations-plan.md) — planned neuron-to-network track ending in a learning 2D vehicle.
+- [`docs/neural-foundations-plan.md`](docs/neural-foundations-plan.md) — neural-foundations track (Units Neural 1–3) ending in a learning 2D vehicle; published in Phase 1 navigation.
 - [`docs/architecture.md`](docs/architecture.md) — training-vs-inference architecture of the example projects.
 - [`docs/example-progression.md`](docs/example-progression.md) — the example ladder the units build on.
 - [`docs/html-units.md`](docs/html-units.md) — historical conventions from the pre-MkDocs HTML build (still useful for pedagogy block names).
@@ -134,6 +135,7 @@ The site uses [`mkdocs-static-i18n`](https://github.com/ultrabug/mkdocs-static-i
 - **PR description:** explain *why* the change exists (which gap it closes, what reader confusion it removes). Reference issues with `Closes #NN`.
 - **Pre-merge checklist:**
   - [ ] `mkdocs build --strict` passes locally (CI runs the same).
+  - [ ] Neural Foundations changes: `./scripts/test-neural-foundations.sh` (falls back to `conda run -n godot_env python` when `python` is not on PATH).
   - [ ] Nav chain (`← / →` breadcrumbs) is consistent end-to-end through the touched units.
   - [ ] `mkdocs.yml`, `content/index.md`, and adjacent units are updated for any new unit.
   - [ ] Code examples compile / parse in their respective languages.

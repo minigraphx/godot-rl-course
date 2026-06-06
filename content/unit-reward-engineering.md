@@ -1,6 +1,6 @@
 # Reward Engineering — Designing Signals That Actually Work
 
-[← Unit 1: Foundations](unit-01.md) · [Course home](index.md)
+[← RL Foundations Deep Dive](unit-rl-foundations-deep.md) · [Course home](index.md)
 
 !!! info "Time"
     Reading: ~35 min
@@ -561,4 +561,4 @@ In the next unit you put this directly into practice: building **Lunar Lander** 
 
 If you only remember one thing from this unit: **the reward is not a description of the goal. The reward is the goal.** Whatever you write down, that's what the agent will maximize. Make sure that's what you want.
 
-[→ Unit 2: Build Lunar Lander in Godot](unit-02.md)
+[← RL Foundations Deep Dive](unit-rl-foundations-deep.md) · [Course home](index.md) · [→ Unit 2: Build Lunar Lander in Godot](unit-02.md)

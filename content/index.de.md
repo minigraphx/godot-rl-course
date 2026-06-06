@@ -6,7 +6,7 @@ Lerne Deep Reinforcement Learning durch das Bauen und Trainieren von Agenten in 
 
 | Phase | Inhalt | Was du lernst |
 |-------|--------|---------------|
-| **Phase 1 — Grundlagen** | Einrichtung · RL-Schleife · erste eigene Umgebung · Belohnungsdesign | Wie RL funktioniert, wie man Belohnungen entwirft |
+| **Phase 1 — Grundlagen** | Einrichtung · neuronale Netze · RL-Schleife · Belohnungslernen · Deep Dive · erste eigene Umgebung · Belohnungsdesign | Von Neuronen zu Policies, wie RL funktioniert, wie man Belohnungen entwirft |
 | **Phase 2 — Wertbasiert** | Q-Learning · DQN · Neugier | Bellman-Gleichung, Q-Tabellen, DQN, Erkundung bei spärlichen Belohnungen |
 | **Phase 3 — Richtlinienbasiert** | REINFORCE · Actor-Critic · PPO · SAC · Anwenden · PPO von Grund auf (CleanRL) | Policy-Gradient-Theorem, PPO-Interna, kontinuierliche Steuerung |
 | **Phase 4 — Skalierung** | Parallel · 3D · Multi-Agent · Gedächtnis | Realwelttraining in großem Maßstab |
@@ -27,7 +27,11 @@ Lerne Deep Reinforcement Learning durch das Bauen und Trainieren von Agenten in 
 **Phase 1 — Grundlagen**
 
 - [Einheit 0 — Einrichtung & Erster Start](unit-00.md)
-- [Einheit 1 — RL-Grundlagen](unit-01.md)
+- [Neuronale Grundlagen 1 — Ein Neuron](unit-neural-01.md)
+- [Neuronale Grundlagen 2 — Kleine Netze](unit-neural-02.md)
+- [RL Essentials](unit-01.md)
+- [Neuronale Grundlagen 3 — Aus Belohnung lernen](unit-neural-03.md)
+- [RL Foundations Deep Dive](unit-rl-foundations-deep.md)
 - [Belohnungsdesign](unit-reward-engineering.md)
 - [Einheit 2 — Erste eigene Umgebung](unit-02.md)
 

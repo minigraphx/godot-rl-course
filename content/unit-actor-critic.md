@@ -7,7 +7,7 @@ REINFORCE taught the policy directly, but at the cost of waiting for whole episo
 !!! note "Prerequisites"
     - **[Policy Gradients](unit-policy-gradients.md)** — REINFORCE, baselines, the variance problem
     - **[Q-Learning unit](unit-q-learning.md)** — the critic *is* a value function; Bellman should feel familiar
-    - **[Unit 1](unit-01.md)** — discount factor, return, MDP loop
+    - **[RL Essentials](unit-01.md)** — discount factor, return, MDP loop
     - PyTorch comfort (forward pass, optimizer, `loss.backward()`) for §5
 
 !!! info "Time"

@@ -101,7 +101,7 @@ Chi et al. (2023) took DDPM and conditioned it on observations, producing **Diff
 | Transformer | Low-dim state vector | Cross-attention from obs tokens to action tokens | State-based control, fast inference |
 | **MLP (course choice)** | Low-dim state vector | Concatenation of `(noisy_action, obs, time_emb)` | Godot agents with vector obs |
 
-The MLP variant is the simplest and matches the course's standard observation setup (the `AIController.get_obs()` dictionaries we have been using since Unit 1). It is also fast enough to run inside the Godot loop at 60 Hz once we add DDIM sampling in Section 4.
+The MLP variant is the simplest and matches the course's standard observation setup (the `AIController.get_obs()` dictionaries we have been using since RL Essentials). It is also fast enough to run inside the Godot loop at 60 Hz once we add DDIM sampling in Section 4.
 
 Here is a complete minimal implementation. It is small enough to read in one sitting and works as a drop-in policy head for any continuous-action Godot env.
 

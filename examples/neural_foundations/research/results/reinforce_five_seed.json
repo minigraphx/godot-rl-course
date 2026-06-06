@@ -1,0 +1,21 @@
+{
+  "episodes": 180,
+  "gamma": 0.95,
+  "learning_rate": 0.01,
+  "training_seed": 0,
+  "evaluation_seeds": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "initial_training_return": 1.2344453562414468,
+  "final_training_return": 8.182768043357386,
+  "evaluation": {
+    "mean_return": 8.094655751035981,
+    "std_return": 0.0,
+    "success_rate": 1.0,
+    "mean_episode_length": 19.0
+  }
+}

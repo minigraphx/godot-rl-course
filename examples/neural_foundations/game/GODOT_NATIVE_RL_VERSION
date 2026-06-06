@@ -1,0 +1,6 @@
+source_path=/Users/andreas/Documents/Godot Native RL
+source_commit=4013370
+platform_scope=macos_arm64_only
+wire_protocol_override=0.3
+macos_arm64_debug_sha256=f7c99cd437a2153691beb736d0770a6fc117f8f910cd1e2fd1660a5bdaa5f8dd
+macos_arm64_release_sha256=eeb2f63cae6dff98adad580122a191c2c86d111c74637564f8de8baa622dc957

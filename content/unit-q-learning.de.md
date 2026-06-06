@@ -5,7 +5,8 @@ Bevor wir Policies durch neuronale Netze ersetzen (Unit 3 / DQN), müssen wir de
 [← Unit 2: Lunar Lander](unit-02.md) · [Kursstartseite](index.md)
 
 !!! note "Voraussetzungen"
-    - **[Unit 1](unit-01.md)** — MDP-Schleife, Policy, Return, Diskontierungsfaktor γ
+    - **[RL Essentials](unit-01.md)** — MDP-Schleife, Policy, Return, Diskontierungsfaktor γ
+    - **[RL Foundations Deep Dive](unit-rl-foundations-deep.md)** (empfohlen) — Monte Carlo vs. TD, On-Policy vs. Off-Policy
     - **[Unit 2](unit-02.md)** — ein laufender PPO-Trainingsdurchlauf (nützlich für den Kontrast in §1)
     - Sicheres Ausführen eines Python-Skripts (`pip install gymnasium`, dann laufen lassen)
     - Keine Vorkenntnis in dynamischer Programmierung nötig — wir leiten Bellman in §2 her

@@ -1,9 +1,12 @@
 # Neural-Network Foundations Track
 
+**Status:** Shipped in Phase 1 navigation (PR #70). Main course Units 0–10 still
+use `godot-rl-agents`; see [#71](https://github.com/minigraphx/godot-rl-course/issues/71) for the native migration follow-up.
+
 ## Decision
 
-The course will add a three-unit neural-foundations track around a split version
-of the current RL Foundations unit.
+The course includes a three-unit neural-foundations track around a split version
+of the former RL Foundations unit.
 
 The full approved teaching design is:
 
@@ -52,9 +55,9 @@ The mandatory deployment path is:
 > **PyTorch/SB3 → ONNX inspection and parity → ncnn conversion → native Godot
 > inference**
 
-Prebuilt GDExtensions will be included for supported platforms in the course
-release. The existing course remains unchanged initially; adding or replacing
-its current `godot-rl-agents` route is a separate future migration project.
+Prebuilt GDExtensions are included for supported platforms in the foundations
+release (currently macOS arm64 in the course copy). Adding or replacing the main
+course `godot-rl-agents` route is tracked separately as a migration project.
 
 ## Scope
 

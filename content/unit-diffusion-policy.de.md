@@ -101,7 +101,7 @@ Chi et al. (2023) haben DDPM auf Observations konditioniert und damit **Diffusio
 | Transformer | Niedrigdim. Zustandsvektor | Cross-Attention von Obs-Tokens zu Action-Tokens | Zustandsbasierte Regelung, schnelle Inferenz |
 | **MLP (Kurswahl)** | Niedrigdim. Zustandsvektor | Konkatenation von `(noisy_action, obs, time_emb)` | Godot-Agenten mit Vektor-Obs |
 
-Die MLP-Variante ist die einfachste und passt zum Standard-Observation-Setup des Kurses (die `AIController.get_obs()`-Dictionaries, die wir seit Unit 1 nutzen). Sie ist auch schnell genug, um mit DDIM-Sampling aus Abschnitt 4 in der Godot-Schleife mit 60 Hz zu laufen.
+Die MLP-Variante ist die einfachste und passt zum Standard-Observation-Setup des Kurses (die `AIController.get_obs()`-Dictionaries, die wir seit RL Essentials nutzen). Sie ist auch schnell genug, um mit DDIM-Sampling aus Abschnitt 4 in der Godot-Schleife mit 60 Hz zu laufen.
 
 Hier eine vollständige minimale Implementierung. Sie ist klein genug, um in einer Sitzung gelesen zu werden, und funktioniert als Drop-in-Policy-Kopf für jede kontinuierliche-Aktion-Godot-Env.
 

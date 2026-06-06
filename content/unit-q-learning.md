@@ -5,7 +5,8 @@ Before we replace policies with neural networks (Unit 3 / DQN), we need to under
 [← Unit 2: Lunar Lander](unit-02.md) · [Course home](index.md)
 
 !!! note "Prerequisites"
-    - **[Unit 1](unit-01.md)** — MDP loop, policy, return, discount factor γ
+    - **[RL Essentials](unit-01.md)** — MDP loop, policy, return, discount factor γ
+    - **[RL Foundations Deep Dive](unit-rl-foundations-deep.md)** (recommended) — Monte Carlo vs TD, on-policy vs off-policy
     - **[Unit 2](unit-02.md)** — a working PPO training run (useful as a contrast in §1)
     - Comfort running a Python script (`pip install gymnasium`, then run)
     - No prior dynamic-programming knowledge required — we re-derive Bellman in §2
