@@ -117,16 +117,71 @@ evidence, and tooling to match each audience.
 
 ## Placement and course boundary
 
-The track remains conceptually placed after **Unit 2 — Build Your First Env**
-and before **Q-Learning / DQN**.
+The three foundations units are intentionally split around a compact RL bridge.
+The approved learning order is:
 
-This ordering preserves the existing fast-start principle:
+1. **Current Unit 0 — Setup & First Run:** preserve the immediate first
+   training success.
+2. **Neural Foundations 1 — One Neuron:** open the policy black box while the
+   first successful agent is still fresh.
+3. **Neural Foundations 2 — Tiny Network:** learn forward passes, loss, and
+   backpropagation with fixed examples.
+4. **RL Essentials:** extract the minimum operational RL concepts from current
+   Unit 1.
+5. **Neural Foundations 3 — Reward Learning:** combine the network model with
+   observations, actions, reward, exploration, and episodes.
+6. **RL Foundations Deep Dive:** place the algorithmic and mathematical depth
+   from current Unit 1 after learners have trained the point robot or racer.
+7. Continue with **Reward Engineering**, current **Unit 2**, Q-Learning, and
+   DQN.
 
-1. Learners first observe a working RL agent.
-2. They understand observations, actions, rewards, and episodes.
-3. They open the policy black box and build its neural components.
-4. Q-Learning supplies the tabular baseline.
-5. DQN becomes a comprehensible replacement of the table with a network.
+This ordering preserves the existing fast-start principle without allowing PPO
+to remain a black box for several units:
+
+1. learners see one complete training run before theory;
+2. they learn what the network computes;
+3. they learn the minimum RL loop needed to train it;
+4. they apply both ideas in Foundations 3;
+5. they study TD, taxonomy, and algorithm families with a concrete trained
+   policy to reference;
+6. Q-Learning supplies the tabular baseline;
+7. DQN becomes a comprehensible replacement of the table with a network.
+
+### Required split of current Unit 1
+
+Implementation must split the current `content/unit-01.md` into two learning
+moments rather than placing the whole page before or after Foundations 3.
+
+**RL Essentials — before Foundations 3**
+
+- what reinforcement learning is;
+- agent, environment, observation, action, reward, next observation;
+- episodes and reset;
+- policy as the action-producing network;
+- return and discount factor at operational level;
+- exploration versus exploitation at intuitive level;
+- the Godot ↔ Python training loop;
+- one visible reward change and retraining checkpoint.
+
+Target duration: **45–60 minutes**. The page must stop once learners can label
+and run the complete interaction loop. It must not front-load algorithm
+taxonomy.
+
+**RL Foundations Deep Dive — after Foundations 3**
+
+- Monte Carlo versus Temporal Difference learning;
+- bootstrapping and TD error;
+- ε-greedy, entropy, and curiosity in greater depth;
+- value-based, policy-based, Actor-Critic, and model-based families;
+- on-policy versus off-policy implications;
+- algorithm comparison and taxonomy self-test;
+- links forward to Q-Learning, DQN, policy gradients, and PPO.
+
+Target duration: **40–60 minutes**. Every abstract distinction must refer back
+to an observed failure, trajectory, return curve, or policy from Foundations 3.
+
+The implementation plan may choose final filenames and navigation labels, but
+it must preserve this content split and sequence.
 
 During the transition period:
 
@@ -146,7 +201,9 @@ backpropagation update.
 
 ## Track structure
 
-The track contains three units of **90–120 minutes each**.
+The track contains three visual neural-foundations units of **90–120 minutes
+each**, plus the existing Unit-1 material reorganized into the shorter RL
+Essentials bridge and the later RL Foundations Deep Dive.
 
 Learners:
 
@@ -877,7 +934,7 @@ The track succeeds when a learner with only basic programming knowledge can:
 
 | Decision | Approved choice |
 |----------|-----------------|
-| Course placement | Integrated foundations track, not a separate full course |
+| Course placement | Unit 0 → Foundations 1–2 → RL Essentials → Foundations 3 → RL Deep Dive |
 | Audience structure | Shared concepts with Research and Game paths |
 | Path participation | Complete one path; view short demos of the other |
 | Prerequisites | Basic programming only |

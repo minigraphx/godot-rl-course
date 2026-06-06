@@ -2,8 +2,8 @@
 
 ## Decision
 
-The course will add a three-unit neural-foundations track after Unit 2 and
-before Q-Learning / DQN.
+The course will add a three-unit neural-foundations track around a split version
+of the current RL Foundations unit.
 
 The full approved teaching design is:
 
@@ -19,6 +19,21 @@ from the other:
 | 1 · One neuron | NumPy neuron and visible decision boundary | GDScript enemy choosing chase or retreat |
 | 2 · Tiny network | nonlinear classification and PyTorch verification | GDScript arena collector learning gems versus hazards |
 | 3 · Reward learning | 2D point robot with hand-written REINFORCE | 2D arcade racer with PPO and `godot-native-rl` |
+
+The intended learning order is:
+
+1. current Unit 0 — first successful training;
+2. Neural Foundations 1 — one neuron;
+3. Neural Foundations 2 — tiny network and backpropagation;
+4. RL Essentials — the operational RL loop extracted from current Unit 1;
+5. Neural Foundations 3 — reward-only RL;
+6. RL Foundations Deep Dive — MC/TD, exploration mechanisms, and algorithm
+   taxonomy from current Unit 1;
+7. Reward Engineering, current Unit 2, Q-Learning, and DQN.
+
+This keeps the immediate first success, teaches neural computation early, and
+delays deeper RL taxonomy until learners can connect it to a policy they
+trained themselves.
 
 Every unit follows:
 

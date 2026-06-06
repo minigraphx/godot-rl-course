@@ -9,19 +9,37 @@ Students should leave Unit 0 with:
 1. **Godot** — agent moving (hub binary or `--viz`)
 2. **Python** — training log shows steps / rising `ep_rew_mean`
 3. **TensorBoard** (optional same day) — a learning curve
-4. **Ownership** (Unit 1) — one reward tweak with visible behavior change
 
-**Timed path:** [Unit-00.html#first-evening](../Unit-00.html#first-evening) — ~2½–3 h covering Unit 0 + Unit 1 fast path in one sitting.
+Unit 0 remains the self-contained first-session success. The first reward tweak
+and visible behavior change move to **RL Essentials** after Neural Foundations
+2, where learners can connect the reward-driven update to the network they now
+understand.
 
 ## Curriculum decision: neural-network foundations
 
 The course will include an integrated three-unit **Neural-Network Foundations
-Track** after Unit 2 and before Q-Learning / DQN. Learners choose one practical
-path and view short comparison demonstrations from the other:
+Track** immediately after Unit 0, split around a compact RL Essentials bridge.
+Learners choose one practical path and view short comparison demonstrations
+from the other:
 
 1. one neuron — Python decision boundary or Godot enemy decision;
 2. a tiny network — Python nonlinear classifier or Godot arena collector;
 3. reward learning — Python REINFORCE point robot or a PPO-trained Godot racer.
+
+Intended sequence:
+
+1. Unit 0 — first successful training;
+2. Neural Foundations 1–2;
+3. RL Essentials — agent, environment, observations, actions, reward, policy,
+   episodes, return, and intuitive exploration;
+4. Neural Foundations 3;
+5. RL Foundations Deep Dive — MC versus TD, bootstrapping, exploration
+   mechanisms, and algorithm taxonomy;
+6. Reward Engineering and current Unit 2 onward.
+
+Current Unit 1 will be split across steps 3 and 5. This prevents Foundations 3
+from introducing RL and neural networks simultaneously while avoiding a long
+theory block before learners have a concrete policy to analyze.
 
 The track is required for beginners and skippable through a diagnostic for
 learners who already understand forward passes and backpropagation. It is not a
@@ -72,7 +90,10 @@ Optional stretch: inspect exported **ONNX** in [Netron](https://netron.app) befo
 
 ## Unit pacing notes
 
-- **Unit 1:** Skim MDP loop (~15 min) → tweak one BallChase reward → read deeper theory while training runs.
+- **RL Essentials (from current Unit 1):** operational loop + one reward tweak
+  before Foundations 3; target 45–60 min.
+- **RL Foundations Deep Dive (from current Unit 1):** MC/TD, exploration, and
+  taxonomy after Foundations 3; target 40–60 min.
 - **Unit 2:** Phase A — run/tweak **SimpleReachGoal** hub or source; Phase B — build Lunar Lander from scratch.
 - **Unit 5:** Same BallChase env, new skill — parallel rollouts (`n_parallel`), not a repeat lesson.
 - **After headless units (3+):** Schedule a short **viz checkpoint** — re-run with `--viz` or editor to screenshot before/after behavior.
