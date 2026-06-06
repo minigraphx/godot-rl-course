@@ -715,6 +715,14 @@ Each release package must include:
 - checksum or release version;
 - a smoke-test scene.
 
+The foundations release must pass a complete handshake, reset, observation,
+continuous-action, reward, and episode-end smoke test with the course's pinned
+`godot-rl==0.5.0`. That package advertises wire protocol `0.3`, while the
+current `godot-native-rl` development branch advertises protocol `0.7`.
+Compatibility must be implemented and tested in the native bridge; this track
+must not silently upgrade `requirements-course.txt` and risk changing existing
+units.
+
 Platforms without a published binary are not advertised as supported in the
 foundations release.
 
