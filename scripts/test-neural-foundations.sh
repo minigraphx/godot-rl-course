@@ -35,4 +35,6 @@ for test_script in examples/neural_foundations/game/test/test_*.gd; do
     --script "res://test/$(basename "$test_script")"
 done
 
-conda run -n mkdocs-env mkdocs build --strict
+if [[ "${SKIP_MKDOCS:-}" != "1" ]]; then
+  conda run -n mkdocs-env mkdocs build --strict
+fi

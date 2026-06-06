@@ -46,6 +46,7 @@ If you see `Config value 'plugins': The "i18n" plugin is not installed`, your en
 | `mkdocs.yml` | Site config, **the navigation tree**, and the `i18n` plugin config. Adding a unit or a language means editing here. |
 | `requirements.txt` | Pinned MkDocs + Material + i18n plugin versions. |
 | `.github/workflows/docs-ci.yml` | CI: runs `mkdocs build --strict` and a `linkchecker` pass on every PR. |
+| `.github/workflows/neural-foundations-ci.yml` | CI: Python + Godot headless tests for `examples/neural_foundations/` when that tree changes. |
 | `docs/` | Internal docs for contributors (curriculum map, architecture, conventions). **Not** published. |
 | `internal/` | Working notes, gap analyses. Not published. |
 | `site/` | Build output (`site/` is English, `site/de/` is German). Gitignored. |
