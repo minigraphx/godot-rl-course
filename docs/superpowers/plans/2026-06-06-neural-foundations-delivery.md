@@ -416,6 +416,7 @@ git commit -m "feat: add visual one-neuron foundations unit"
 - Create: `examples/neural_foundations/game/unit_02_collector/unit_02_collector.tscn`
 - Create: `examples/neural_foundations/game/test/test_tiny_mlp.gd`
 - Create: `content/unit-neural-02.md`
+- Modify: `content/unit-neural-01.md`
 
 - [ ] **Step 1: Test a deterministic manual forward pass**
 
@@ -500,7 +501,21 @@ Required section order:
 The bottom breadcrumb points to `unit-01.md`, which will become RL Essentials
 in Task 4.
 
-- [ ] **Step 7: Validate and commit**
+- [ ] **Step 7: Restore the Foundations 1 forward link**
+
+Update the bottom breadcrumb in `content/unit-neural-01.md` from:
+
+```markdown
+[← Unit 0](unit-00.md) · [Course home](index.md) · Next planned: Neural Foundations 2
+```
+
+to:
+
+```markdown
+[← Unit 0](unit-00.md) · [Course home](index.md) · [→ Neural Foundations 2](unit-neural-02.md)
+```
+
+- [ ] **Step 8: Validate and commit**
 
 Run:
 
