@@ -27,7 +27,7 @@ offset_top = 48.0
 offset_right = 760.0
 offset_bottom = 72.0
 theme_override_colors/font_color = Color(0.65, 0.7, 0.78, 1)
-text = "Orange arrow = teacher target. Blue arrow = network prediction."
+text = "Green/red lines = visible inputs. Orange/blue arrows = target versus prediction."
 
 [node name="Agent" type="Polygon2D" parent="."]
 position = Vector2(420, 300)
@@ -65,6 +65,14 @@ offset_right = 48.0
 offset_bottom = 48.0
 text = "HAZARD"
 
+[node name="GemDirectionLine" type="Line2D" parent="."]
+width = 2.0
+default_color = Color(0.35, 0.9, 0.55, 0.75)
+
+[node name="HazardDirectionLine" type="Line2D" parent="."]
+width = 2.0
+default_color = Color(0.93, 0.31, 0.31, 0.75)
+
 [node name="TargetArrow" type="Line2D" parent="."]
 width = 5.0
 default_color = Color(1, 0.63, 0.24, 1)
@@ -79,7 +87,7 @@ default_color = Color(0.36, 0.66, 1, 1)
 offset_left = 24.0
 offset_top = 88.0
 offset_right = 420.0
-offset_bottom = 280.0
+offset_bottom = 392.0
 
 [node name="Margin" type="MarginContainer" parent="Interface/Panel"]
 theme_override_constants/margin_left = 14
@@ -106,6 +114,30 @@ text = "Target:"
 [node name="Prediction" type="Label" parent="Interface/Panel/Margin/Rows"]
 layout_mode = 2
 text = "Prediction:"
+
+[node name="TargetXBar" type="ProgressBar" parent="Interface/Panel/Margin/Rows"]
+layout_mode = 2
+max_value = 100.0
+value = 50.0
+show_percentage = false
+
+[node name="TargetYBar" type="ProgressBar" parent="Interface/Panel/Margin/Rows"]
+layout_mode = 2
+max_value = 100.0
+value = 50.0
+show_percentage = false
+
+[node name="PredictionXBar" type="ProgressBar" parent="Interface/Panel/Margin/Rows"]
+layout_mode = 2
+max_value = 100.0
+value = 50.0
+show_percentage = false
+
+[node name="PredictionYBar" type="ProgressBar" parent="Interface/Panel/Margin/Rows"]
+layout_mode = 2
+max_value = 100.0
+value = 50.0
+show_percentage = false
 
 [node name="Loss" type="Label" parent="Interface/Panel/Margin/Rows"]
 layout_mode = 2

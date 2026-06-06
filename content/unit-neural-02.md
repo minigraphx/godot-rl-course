@@ -3,7 +3,8 @@
 [← Neural Foundations 1](unit-neural-01.md) · [Course home](index.md)
 
 !!! info "Three ways to see the computation"
-    Decision regions · loss curve · gradients you can compare against PyTorch
+    Decision regions · train/validation curves · gradients you can compare
+    against PyTorch
 
 One neuron draws one straight boundary. A tiny network can bend that boundary by
 combining several neurons in a hidden layer. In this unit you will calculate one
@@ -88,8 +89,8 @@ python examples/neural_foundations/research/train_tiny_mlp.py \
   --save artifacts/neural-foundations/tiny-mlp.png
 ```
 
-The script prints the initial loss, final loss, and accuracy, then saves a
-decision-region plot and loss curve.
+The script prints train/validation loss, accuracy, and seed comparisons, then
+saves decision regions, loss curves, gradient signs, and seed evidence.
 
 ---
 
@@ -134,7 +135,7 @@ improving.
 |---|---|---|
 | Inputs | Two normalized features | Gem direction and hazard offset |
 | Output | One class score | Two movement values |
-| Evidence | Loss, accuracy, decision regions | Target arrow versus predicted arrow |
+| Evidence | Train/validation loss, seed comparison, decision regions | Input lines, output bars, target versus prediction arrows |
 | Tool | NumPy, PyTorch check, Matplotlib | Standard Godot 4 + GDScript |
 
 Choose one primary path:
@@ -157,12 +158,16 @@ answer:
 
 1. Did final loss fall below initial loss?
 2. Did accuracy reach at least 75%?
-3. Which region of the plot changed most during training?
+3. Do the train and validation curves tell the same story?
+4. Which seed finished with the lowest validation loss?
 
 ??? success "Answer key"
     With the default seed and learning rate, the loss falls sharply and the
-    fixed examples reach 100% accuracy. If you raise the learning rate too far,
-    the model may stop improving even though the code is correct.
+    fixed examples reach 100% accuracy. The validation curve can stay higher or
+    move differently because it contains held-out examples. With the default
+    comparison seeds, seed `1` finishes with the lowest validation loss. If you
+    raise the learning rate too far, the model may stop improving even though
+    the code is correct.
 
 ---
 
@@ -173,8 +178,10 @@ The Game path uses the same hidden-layer idea for a small collector:
 - inputs describe where the gem is and whether the hazard is threatening;
 - a scripted teacher provides target movement examples;
 - the network predicts movement;
-- the overlay compares target and predicted arrows;
-- the loss display shows whether the network is learning.
+- green and red lines show gem and hazard inputs;
+- output bars show target and predicted movement components;
+- arrows compare target and predicted movement;
+- counters show steps, collections, hazard hits, and replay state.
 
 Run the current scene:
 
@@ -227,7 +234,7 @@ runs the trained policy for inference.
 ## 11 · Stretch goals
 
 - Plot three learning rates on the same loss chart.
-- Add a validation split and compare train versus validation error.
+- Compare five seeds and explain the most unstable run.
 - Save the trained tiny network weights and reload them.
 - Add a second hazard position to the Game path and test whether behavior
   still improves.

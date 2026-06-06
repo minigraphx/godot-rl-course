@@ -83,6 +83,27 @@ class TinyMLPTests(unittest.TestCase):
         self.assertLess(result["final_loss"], result["initial_loss"] * 0.55)
         self.assertGreaterEqual(result["accuracy"], 0.75)
 
+    def test_training_demo_exposes_research_evidence(self):
+        result = train_demo(
+            epochs=80,
+            learning_rate=0.05,
+            seed=0,
+            comparison_seeds=(0, 1, 2),
+        )
+
+        self.assertEqual(
+            len(result["train_loss_curve"]),
+            len(result["validation_loss_curve"]),
+        )
+        self.assertLess(result["final_train_loss"], result["initial_train_loss"])
+        self.assertTrue(np.isfinite(result["final_validation_loss"]))
+        self.assertEqual(
+            set(result["gradient_signs"].keys()),
+            {"w_hidden[0,0]", "w_output[0,0]"},
+        )
+        self.assertEqual(len(result["seed_results"]), 3)
+        self.assertEqual(result["seed_results"][0]["seed"], 0)
+
 
 if __name__ == "__main__":
     unittest.main()

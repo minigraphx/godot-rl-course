@@ -41,8 +41,22 @@ func _run() -> void:
 
 	var target_arrow: Line2D = demo.get_node("TargetArrow")
 	var prediction_arrow: Line2D = demo.get_node("PredictionArrow")
+	var gem_direction_line: Line2D = demo.get_node("GemDirectionLine")
+	var hazard_direction_line: Line2D = demo.get_node("HazardDirectionLine")
 	harness.assert_true(target_arrow.points.size() == 2, "target arrow updates")
 	harness.assert_true(prediction_arrow.points.size() == 2, "prediction arrow updates")
+	harness.assert_true(gem_direction_line.points.size() == 2, "gem direction line updates")
+	harness.assert_true(
+		hazard_direction_line.points.size() == 2,
+		"hazard direction line updates"
+	)
+
+	var target_x_bar: ProgressBar = demo.get_node("Interface/Panel/Margin/Rows/TargetXBar")
+	var prediction_x_bar: ProgressBar = demo.get_node("Interface/Panel/Margin/Rows/PredictionXBar")
+	var counts_label: Label = demo.get_node("Interface/Panel/Margin/Rows/Counts")
+	harness.assert_true(target_x_bar.value >= 0.0, "target x bar updates")
+	harness.assert_true(prediction_x_bar.value >= 0.0, "prediction x bar updates")
+	harness.assert_true(counts_label.text.begins_with("Steps:"), "counter label updates")
 
 	demo.queue_free()
 	quit(harness.failures)
