@@ -438,4 +438,4 @@ One neuron can only draw a straight boundary through its inputs. In **Neural
 Foundations 2**, you will connect a few neurons, make a nonlinear decision
 region, measure error, and update weights from examples.
 
-[← Unit 0](unit-00.md) · [Course home](index.md) · Next planned: Neural Foundations 2
+[← Unit 0](unit-00.md) · [Course home](index.md) · [→ Neural Foundations 2](unit-neural-02.md)
