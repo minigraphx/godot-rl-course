@@ -13,6 +13,29 @@ Students should leave Unit 0 with:
 
 **Timed path:** [Unit-00.html#first-evening](../Unit-00.html#first-evening) — ~2½–3 h covering Unit 0 + Unit 1 fast path in one sitting.
 
+## Curriculum decision: neural-network foundations
+
+The course will include an integrated three-unit **Neural-Network Foundations
+Track** after Unit 2 and before Q-Learning / DQN:
+
+1. one neuron with a visible two-action decision;
+2. two neurons, a small hidden layer, loss, and gradient descent;
+3. a sensor-driven 2D vehicle that progresses from hand-set neurons to a
+   PPO-trained policy.
+
+The track is required for beginners and skippable through a diagnostic for
+learners who already understand forward passes and backpropagation. It is not a
+separate course because these concepts are prerequisites for DQN, policy
+gradients, PPO, SAC, and ONNX inference.
+
+The planned language-model sequel will reuse this track as a prerequisite and
+map the concepts to embeddings, token logits, and transformer training rather
+than duplicating the material.
+
+See [neural-foundations-plan.md](neural-foundations-plan.md) for the placement,
+unit specifications, vehicle environment, scope boundary, and completion
+criteria.
+
 ## Three ways to see your AI
 
 Use in every unit so training never feels like a black box:
@@ -100,3 +123,4 @@ Do not add LLM, Hugging Face, or RLHF content to Units 0–10.
 - [example-progression.md](example-progression.md)
 - [architecture.md](architecture.md)
 - [html-units.md](html-units.md)
+- [neural-foundations-plan.md](neural-foundations-plan.md)
