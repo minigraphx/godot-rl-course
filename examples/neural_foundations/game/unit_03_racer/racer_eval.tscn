@@ -1,0 +1,53 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://addons/godot_native_rl/sync.gd" id="1_sync"]
+[ext_resource type="Script" path="res://unit_03_racer/racer.gd" id="2_racer"]
+[ext_resource type="Script" path="res://unit_03_racer/racer_agent.gd" id="3_agent"]
+
+[node name="FoundationsRacerEval" type="Node2D"]
+
+[node name="Sync" type="Node" parent="."]
+script = ExtResource("1_sync")
+control_mode = 2
+action_repeat = 4
+speed_up = 1.0
+
+[node name="Background" type="ColorRect" parent="."]
+offset_right = 960.0
+offset_bottom = 540.0
+color = Color(0.055, 0.071, 0.102, 1)
+mouse_filter = 2
+show_behind_parent = true
+
+[node name="Track" type="ColorRect" parent="."]
+offset_left = 80.0
+offset_top = 60.0
+offset_right = 880.0
+offset_bottom = 480.0
+color = Color(0.12, 0.15, 0.2, 1)
+
+[node name="Racer" type="Node2D" parent="."]
+script = ExtResource("2_racer")
+
+[node name="Body" type="Polygon2D" parent="Racer"]
+polygon = PackedVector2Array(22, 0, -16, -12, -10, 0, -16, 12)
+color = Color(0.38, 0.65, 1, 1)
+
+[node name="Agent" type="Node2D" parent="."]
+script = ExtResource("3_agent")
+control_mode = 3
+model_param_path = "res://unit_03_racer/models/foundations_racer.ncnn.param"
+model_bin_path = "res://unit_03_racer/models/foundations_racer.ncnn.bin"
+input_blob_name = "in0"
+output_blob_name = "out0"
+inference_seed = 0
+racer_path = NodePath("../Racer")
+
+[node name="HUD" type="Label" parent="."]
+offset_left = 24.0
+offset_top = 18.0
+offset_right = 820.0
+offset_bottom = 48.0
+theme_override_colors/font_color = Color(0.9, 0.93, 0.98, 1)
+theme_override_font_sizes/font_size = 22
+text = "Foundations Racer: native inference evaluation"

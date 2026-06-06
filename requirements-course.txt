@@ -24,3 +24,5 @@ gymnasium==0.29.1
 matplotlib==3.9.0
 onnx==1.16.1
 onnxruntime==1.18.1
+ncnn==1.0.20260526
+opencv-python==4.11.0.86

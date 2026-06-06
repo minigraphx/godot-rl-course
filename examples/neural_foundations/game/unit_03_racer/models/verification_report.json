@@ -1,0 +1,12 @@
+{
+  "input_names": [
+    "obs"
+  ],
+  "output_names": [
+    "out0"
+  ],
+  "observations": 20,
+  "torch_onnx_max_abs_error": 2.9802322387695312e-08,
+  "onnx_ncnn_max_abs_error": 0.0001993328332901001,
+  "status": "passed"
+}

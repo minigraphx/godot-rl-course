@@ -144,4 +144,141 @@ For each ablation, write down both the visible symptom and the metric that caugh
 it. You are looking for the connection between reward design, sensors, and the
 behavior the policy discovers.
 
-[← RL Essentials](unit-01.md) · [Course home](index.md) · Next planned: Game path and native deployment
+---
+
+## 9 · Game path — build the arcade racer
+
+The Game path uses `examples/neural_foundations/game/unit_03_racer/`. The scene
+is intentionally primitive: a rectangular track, visible rays, checkpoint markers,
+and a triangle car.
+
+!!! note "Current native scope"
+    This course copy imports the macOS arm64 native runner from the local
+    `godot-native-rl` checkout. Windows and Linux binaries stay out of scope until
+    the multi-platform release is available.
+
+---
+
+## 10 · Define observations and actions
+
+The racer observation contains three normalized ray distances, heading error to
+the next checkpoint, normalized speed, and checkpoint progress. The action space
+is one continuous two-value head:
+
+```text
+drive = [steering, throttle]
+```
+
+Run the deterministic math checks:
+
+```bash
+godot --headless \
+  --path examples/neural_foundations/game \
+  --script res://test/test_racer_math.gd
+```
+
+---
+
+## 11 · Design reward and episode boundaries
+
+The reward combines:
+
+- a small step penalty;
+- ordered-checkpoint reward;
+- collision penalty;
+- immobility timeout.
+
+The important habit is to test reward math before training. A wrong sign in a
+reward term can look like an algorithm problem for hours.
+
+---
+
+## 12 · Train with PPO
+
+The training scene uses `NcnnSync` in training mode and the same socket protocol
+as `godot-rl`. Start the reference command:
+
+```bash
+conda activate godot_env
+./scripts/train-foundations-racer.sh
+```
+
+The command saves a Stable-Baselines3 checkpoint and exports ONNX under
+`examples/neural_foundations/game/unit_03_racer/models/`.
+
+---
+
+## 13 · Inspect the ONNX graph
+
+The exported graph has input `obs` and output `out0`. Before converting it, check
+that the shapes match the six observation values and two drive outputs.
+
+---
+
+## 14 · Verify PyTorch, ONNX, and ncnn
+
+Run the parity verifier:
+
+```bash
+conda activate godot_env
+python scripts/verify_racer_policy.py
+```
+
+The verifier uses twenty fixed observations. PyTorch and ONNX must match within
+`1e-5`; ONNX and ncnn must match within `1e-2`.
+
+---
+
+## 15 · Run native inference in Godot
+
+The evaluation scene uses `NcnnSync` in native inference mode and points the agent
+at the converted ncnn files:
+
+```bash
+godot --path examples/neural_foundations/game \
+  res://unit_03_racer/racer_eval.tscn
+```
+
+Watch the same rays and checkpoint markers you used during training. Native
+inference should behave like the Python policy on the fixed starts.
+
+---
+
+## 16 · Diagnose reward and sensor failures
+
+When the racer fails, inspect in this order:
+
+1. ray normalization;
+2. heading error sign;
+3. steering and throttle clamp;
+4. checkpoint ordering;
+5. collision and timeout conditions.
+
+The deterministic tests cover these pieces so you can separate environment bugs
+from training variance.
+
+---
+
+## 17 · Compare the two paths
+
+The Research path made the policy-gradient update visible. The Game path keeps the
+same idea but adds Godot timing, native inference, and model export. In both cases,
+reward is the teacher.
+
+---
+
+## 18 · Stretch goals
+
+- Add a second track and compare success rate.
+- Plot checkpoint reach time over training.
+- Change the ray angles and rerun parity checks.
+- Add a reward term for smooth steering and test whether behavior changes.
+
+---
+
+## What's next
+
+You can now connect reward learning to the algorithm vocabulary in the deep dive:
+returns, bootstrapping, exploration, on-policy training, and actor-critic methods.
+
+[← RL Essentials](unit-01.md) · [Course home](index.md) · [→ RL Foundations Deep Dive](unit-rl-foundations-deep.md)
