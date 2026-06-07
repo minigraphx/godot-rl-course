@@ -337,40 +337,38 @@ They build:
 - explicit parameter table;
 - short hypothesis before each run.
 
-### Game path: enemy decision
+### Game path: cliff-jump timing
 
-**Question:** Can one neuron choose whether an enemy should chase or retreat?
+**Question:** Can one neuron combine speed and distance to time a cliff jump?
 
-Learners build a minimal top-down room with:
+Learners build a minimal side-view platform scene with:
 
-- one player represented by a primitive shape;
-- one enemy represented by a different primitive shape;
-- normalized player distance;
-- normalized enemy health;
+- an automatically running character;
+- a cliff, lava gap, and target platform;
+- normalized running speed;
+- normalized remaining distance, converted to closeness;
 - one neuron implemented directly in GDScript;
-- two behaviors: chase and retreat.
+- two event states: wait and jump.
 
 **Visible result**
 
-- a line displays player distance;
-- a health bar displays the second input;
+- sliders freeze speed and distance for laboratory inspection;
 - labels display both weights, bias, weighted sum, and activation;
-- the enemy's color and motion show the selected behavior;
-- changing exported weights updates behavior immediately.
+- the jump arc shows too-early, too-late, and successful timing;
+- changing sliders updates behavior immediately;
+- three fixed cases report whether one parameter set generalizes.
 
 **Controlled experiments**
 
-1. Reverse the health weight and explain the resulting bad behavior.
-2. Add positive bias and identify when the enemy becomes over-aggressive.
-3. Move the player across the decision threshold and observe behavior
-   oscillation.
+1. Tune closeness weight so a slow runner waits when far and jumps when near.
+2. Tune speed weight so a fast runner jumps earlier than a slow runner.
+3. Shift all decisions with bias until all three guided cases pass.
 
 **Game-development evidence**
 
-- expected versus actual behavior in three test positions;
+- expected versus actual behavior in three speed-distance cases;
 - one diagnosed failure using the overlay;
-- explanation of how the same decision could be authored with rules and why a
-  differentiable neuron becomes useful later.
+- explanation of why a fixed distance threshold fails when speed varies.
 
 ### Unit 1 completion check
 
@@ -658,8 +656,8 @@ earlier:
 
 | Earlier concept | Racer transfer |
 |-----------------|----------------|
-| enemy health and distance inputs | normalized ray, speed, and heading inputs |
-| chase/retreat scalar decision | continuous steering and throttle outputs |
+| jumper speed and distance inputs | normalized ray, speed, and heading inputs |
+| wait/jump event decision | continuous steering and throttle outputs |
 | arena hidden layer | policy network capacity |
 | visible activation and failures | live sensor/action/reward instrumentation |
 | supervised loss | policy objective driven by return |
@@ -953,7 +951,7 @@ The track succeeds when a learner with only basic programming knowledge can:
 | Visual requirement | Running visual example in every unit |
 | Research tools | Python, NumPy, PyTorch, Matplotlib |
 | Research capstone | 2D point robot with hand-written REINFORCE |
-| Game Unit 1 | Enemy chooses chase or retreat |
+| Game Unit 1 | Runner times a jump across a lava gap |
 | Game Unit 2 | Arena collector learns gems versus hazards |
 | Game capstone | Minimal 2D arcade racer |
 | Final learning method | Reward-only RL |

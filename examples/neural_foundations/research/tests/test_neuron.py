@@ -2,9 +2,9 @@ import unittest
 
 from examples.neural_foundations.research.neuron import activate, neuron_output
 
-SECTION_INPUTS = [0.5, -0.25]
-SECTION_WEIGHTS = [0.8, -0.4]
-SECTION_BIAS = 0.1
+SECTION_INPUTS = [0.5, 0.25]
+SECTION_WEIGHTS = [0.8, 1.2]
+SECTION_BIAS = -0.5
 
 
 def print_walkthrough() -> None:
@@ -16,23 +16,27 @@ def print_walkthrough() -> None:
         SECTION_INPUTS, SECTION_WEIGHTS, SECTION_BIAS, "identity"
     )
     output = neuron_output(
-        SECTION_INPUTS, SECTION_WEIGHTS, SECTION_BIAS, "tanh"
+        SECTION_INPUTS, SECTION_WEIGHTS, SECTION_BIAS, "sigmoid"
     )
     def show(line: str = "") -> None:
         print(line, flush=True)
 
-    show("Frozen neuron (same numbers as section 1):")
-    for index, (value, weight, contribution) in enumerate(
-        zip(SECTION_INPUTS, SECTION_WEIGHTS, contributions, strict=True),
-        start=1,
+    show("Fixed-number neuron (same numbers as section 1):")
+    for name, value, weight, contribution in zip(
+        ("speed", "closeness"),
+        SECTION_INPUTS,
+        SECTION_WEIGHTS,
+        contributions,
+        strict=True,
     ):
         show(
-            f"  x{index}={value:.2f} × w{index}={weight:+.2f}  ->  {contribution:+.2f}"
+            f"  {name} input {value:.2f} × weight {weight:+.2f}"
+            f"  ->  {contribution:+.2f}"
         )
     show(f"  bias                 {SECTION_BIAS:+.2f}")
-    show(f"  z = {weighted_sum:+.3f}")
-    sign = "positive" if output >= 0.0 else "negative"
-    show(f"  tanh(z) = {output:+.3f}  ({sign})")
+    show(f"  sum (z) = {weighted_sum:+.3f}")
+    decision = "fires: JUMP" if output > 0.5 else "quiet: WAIT"
+    show(f"  sigmoid(sum) = {output:.3f}  ({decision})")
     bounded = activate(10.0, "tanh")
     show()
     show("tanh stays bounded:")
@@ -43,8 +47,8 @@ def print_walkthrough() -> None:
 class NeuronTests(unittest.TestCase):
     def test_weighted_sum_with_bias(self):
         self.assertAlmostEqual(
-            neuron_output([0.5, -0.25], [0.8, -0.4], 0.1, "identity"),
-            0.6,
+            neuron_output([0.5, 0.25], [0.8, 1.2], -0.5, "identity"),
+            0.2,
         )
 
     def test_tanh_is_bounded(self):

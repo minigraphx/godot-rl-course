@@ -19,7 +19,7 @@ from the other:
 
 | Unit | Research path | Game-development path |
 |------|---------------|-----------------------|
-| 1 · One neuron | NumPy neuron and visible decision boundary | GDScript enemy choosing chase or retreat |
+| 1 · One neuron | NumPy neuron and visible decision boundary | GDScript runner timing a cliff jump |
 | 2 · Tiny network | nonlinear classification and PyTorch verification | GDScript arena collector learning gems versus hazards |
 | 3 · Reward learning | 2D point robot with hand-written REINFORCE | 2D arcade racer with PPO and `godot-native-rl` |
 

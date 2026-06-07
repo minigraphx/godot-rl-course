@@ -2,7 +2,7 @@ extends SceneTree
 
 const Harness = preload("res://test/harness.gd")
 const TinyNeuron = preload("res://shared/tiny_neuron.gd")
-const EnemyScene = preload("res://unit_01_enemy/unit_01_enemy.tscn")
+const JumperScene = preload("res://unit_01_jumper/unit_01_jumper.tscn")
 
 func _init() -> void:
 	call_deferred("_run")
@@ -11,88 +11,95 @@ func _init() -> void:
 func _run() -> void:
 	var harness := Harness.new()
 	var neuron := TinyNeuron.new()
-	var section_inputs := PackedFloat32Array([0.5, -0.25])
-	neuron.weights = PackedFloat32Array([0.8, -0.4])
-	neuron.bias = 0.1
+	var section_inputs := PackedFloat32Array([0.5, 0.25])
+	neuron.weights = PackedFloat32Array([0.8, 1.2])
+	neuron.bias = -0.5
+	neuron.activation = "sigmoid"
 	var section_output := neuron.forward(section_inputs)
 	harness.assert_close(
 		section_output,
-		tanh(0.6),
+		1.0 / (1.0 + exp(-0.2)),
 		0.000001,
 		"forward pass"
 	)
-	_print_frozen_neuron(section_inputs, neuron.weights, neuron.bias, section_output)
-	var demo := EnemyScene.instantiate()
+	_print_fixed_number_neuron(
+		section_inputs,
+		neuron.weights,
+		neuron.bias,
+		section_output
+	)
+	var demo := JumperScene.instantiate()
 	root.add_child(demo)
-	demo._physics_process(1.0 / 60.0)
-	var displayed_player: Vector2 = demo.get("displayed_player_position")
-	var displayed_enemy: Vector2 = demo.get("displayed_enemy_position")
-	var displayed_distance: float = demo.get("displayed_distance")
-	var displayed_normalized_distance: float = demo.get(
-		"displayed_normalized_distance"
-	)
-	harness.assert_close(
-		displayed_distance,
-		displayed_player.distance_to(displayed_enemy),
-		0.000001,
-		"displayed line distance"
-	)
-	harness.assert_close(
-		displayed_normalized_distance,
-		clampf(displayed_distance / demo.get("normalization_distance"), 0.0, 1.0),
-		0.000001,
-		"displayed normalized distance"
-	)
-	var distance_label: Label = demo.get_node(
-		"Interface/Panel/Margin/Rows/DistanceCalculation"
+	demo.refresh_lab()
+	harness.assert_true(
+		not demo.should_jump(0.30, 0.80),
+		"slow and far waits"
 	)
 	harness.assert_true(
-		distance_label.text.begins_with(
-			"Distance: %.2f" % displayed_normalized_distance
-		),
-		"distance label uses the displayed decision input"
+		demo.should_jump(0.90, 0.45),
+		"fast and medium jumps"
 	)
-	_print_enemy_demo(demo, displayed_distance, displayed_normalized_distance)
+	harness.assert_true(
+		demo.should_jump(0.30, 0.10),
+		"slow and near jumps"
+	)
+	harness.assert_true(
+		demo.get_node("Interface/LabPanel/Rows/SpeedCalculation").text.begins_with(
+			"Speed input:"
+		),
+		"speed contribution is visible"
+	)
+	harness.assert_true(
+		demo.get_node("Interface/LabPanel/Rows/ClosenessCalculation").text.begins_with(
+			"Closeness input:"
+		),
+		"closeness contribution is visible"
+	)
+	harness.assert_true(
+		demo.get_node("Interface/LabPanel/Rows/OutputCalculation").text.begins_with(
+			"Sigmoid output:"
+		),
+		"sigmoid output is visible"
+	)
+	harness.assert_true(
+		demo.get_node("Interface/LabPanel/Rows/CaseScore").text == "3 / 3 cases pass",
+		"default parameters pass all guided cases"
+	)
+	_print_jumper_demo(demo)
 	demo.queue_free()
 	harness.finish(self)
 
 
-func _print_frozen_neuron(
+func _print_fixed_number_neuron(
 	inputs: PackedFloat32Array,
 	weights: PackedFloat32Array,
 	bias: float,
 	output: float
 ) -> void:
 	var weighted_sum := bias
-	print("Frozen neuron (same numbers as section 1):")
+	var names := ["speed", "closeness"]
+	print("Fixed-number neuron (same numbers as section 1):")
 	for index in range(inputs.size()):
 		var contribution := inputs[index] * weights[index]
 		weighted_sum += contribution
 		print(
-			"  x%d=%.2f × w%d=%+.2f  ->  %+.2f"
-			% [index + 1, inputs[index], index + 1, weights[index], contribution]
+			"  %s input %.2f x weight %+.2f  ->  %+.2f"
+			% [names[index], inputs[index], weights[index], contribution]
 		)
 	print("  bias                 %+.2f" % bias)
-	print("  z = %+.3f" % weighted_sum)
-	var sign := "positive" if output >= 0.0 else "negative"
-	print("  tanh(z) = %+.3f  (%s)" % [output, sign])
+	print("  sum (z) = %+.3f" % weighted_sum)
+	var fires := "fires: JUMP" if output > 0.5 else "quiet: WAIT"
+	print("  sigmoid(sum) = %.3f  (%s)" % [output, fires])
 	print()
 
 
-func _print_enemy_demo(
-	demo: Node2D,
-	distance_px: float,
-	normalized_distance: float
-) -> void:
-	print("Enemy demo (default scene wiring):")
-	print(
-		"  player/enemy distance: %.0f px  ->  input %.2f"
-		% [distance_px, normalized_distance]
-	)
-	print("  %s" % demo.get_node("Interface/Panel/Margin/Rows/HealthCalculation").text)
-	print("  %s" % demo.get_node("Interface/Panel/Margin/Rows/DistanceCalculation").text)
-	print("  %s" % demo.get_node("Interface/Panel/Margin/Rows/BiasCalculation").text)
-	print("  %s" % demo.get_node("Interface/Panel/Margin/Rows/SumCalculation").text)
-	print("  %s" % demo.get_node("Interface/Panel/Margin/Rows/OutputCalculation").text)
-	print("  Decision: %s" % demo.get_node("Interface/Panel/Margin/Rows/Behavior").text)
+func _print_jumper_demo(demo: Node2D) -> void:
+	print("Cliff jumper demo (default scene wiring):")
+	print("  %s" % demo.get_node("Interface/LabPanel/Rows/SpeedCalculation").text)
+	print("  %s" % demo.get_node("Interface/LabPanel/Rows/ClosenessCalculation").text)
+	print("  %s" % demo.get_node("Interface/LabPanel/Rows/BiasCalculation").text)
+	print("  %s" % demo.get_node("Interface/LabPanel/Rows/SumCalculation").text)
+	print("  %s" % demo.get_node("Interface/LabPanel/Rows/OutputCalculation").text)
+	print("  Decision: %s" % demo.get_node("Interface/LabPanel/Rows/Decision").text)
+	print("  Guided check: %s" % demo.get_node("Interface/LabPanel/Rows/CaseScore").text)
 	print()

@@ -7,7 +7,7 @@
 
 A trained policy can look mysterious, but every decision begins with ordinary
 arithmetic. In this unit you will build one neuron, watch every term change, and
-use the same calculation for a research classification and a game enemy.
+use the same calculation for a research classification and a jump trigger.
 
 > **Question for both paths:** How can two measurements become one visible
 > decision?
@@ -19,36 +19,46 @@ primary path, then spend ten minutes viewing the other path.
 
 ## 1 · Predict before running
 
-Start with this frozen neuron:
+Start with this **fixed-number neuron**. The names describe what each number
+means before we introduce mathematical shorthand:
 
-| Input | Value | Weight | Contribution |
+| Named input | Value | Weight | Contribution |
 |---|---:|---:|---:|
-| \(x_1\) | 0.50 | +0.80 | +0.40 |
-| \(x_2\) | -0.25 | -0.40 | +0.10 |
-| Bias | — | — | +0.10 |
+| Speed | 0.50 | +0.80 | +0.40 |
+| Closeness to edge | 0.25 | +1.20 | +0.30 |
+| Bias | — | — | -0.50 |
 
 Before using Python or Godot, write down:
 
 1. the weighted sum;
-2. whether `tanh` returns a negative or positive value;
+2. whether `sigmoid` returns a value above `0.5`;
 3. which input contributes most to the decision.
 
-The complete calculation is:
+First add the named contributions and bias:
 
 $$
-z = w_1x_1 + w_2x_2 + b
+\text{sum} =
+(\text{speed}\times\text{speed weight}) +
+(\text{closeness}\times\text{closeness weight}) +
+\text{bias}
 $$
 
 $$
-z = (0.8)(0.5) + (-0.4)(-0.25) + 0.1 = 0.6
+\text{sum} = (0.5)(0.8) + (0.25)(1.2) - 0.5 = 0.2
 $$
 
-The activation then produces \(\tanh(0.6) \approx 0.537\).
+The activation produces \(\operatorname{sigmoid}(0.2) \approx 0.550\). Because
+`0.550 > 0.5`, the neuron **fires** and the game action is `JUMP`.
+
+Mathematics often shortens input to \(x\), weight to \(w\), bias to \(b\), and
+the sum to \(z\). Therefore the same calculation may later appear as
+\(z=w_1x_1+w_2x_2+b\). These are abbreviations, not different values. Weight
+always uses a lowercase \(w\) in this course.
 
 ??? success "Answer key"
-    The weighted sum is `0.6`, so the activated output is positive. The first
-    contribution is largest: `+0.40`, compared with `+0.10` from the second
-    input and `+0.10` from the bias.
+    The sum is `0.2`, so the sigmoid output is about `0.550` and the neuron
+    fires. Speed contributes `+0.40`, closeness contributes `+0.30`, and the
+    bias subtracts `0.50`.
 
 **Visible check:** the automated examples use these same numbers:
 
@@ -61,9 +71,9 @@ godot --headless \
   --script res://test/test_tiny_neuron.gd
 ```
 
-Both commands print the section-1 walkthrough (`z = 0.6`, `tanh(z) ≈ 0.537`) and
-then end with `OK`. The Godot run also shows the enemy demo's live labels
-(health, distance, weighted sum, chase/retreat).
+Both commands print the Section 1 walkthrough (`sum = 0.2`,
+`sigmoid(sum) ≈ 0.550`) and then end with `OK`. The Godot run also shows the
+jumper demo's live labels (speed, closeness, sum, output, and `WAIT`/`JUMP`).
 
 Both tests call the forward pass you will inspect next.
 
@@ -120,7 +130,7 @@ they enter the neuron.
 
 ## 3 · Activation functions
 
-The weighted sum \(z\) can be any number. An **activation function** turns it
+The sum \(z\) can be any number. An **activation function** turns it
 into the form needed by the decision.
 
 | Activation | Output | Useful visible interpretation |
@@ -148,7 +158,7 @@ rotating it.
 
 **Visible check:** choose `step`, `sigmoid`, and `tanh` in the research plot.
 The black boundary stays at \(z=0\), while the displayed output for the star
-probe changes. In Godot, the sign of `tanh(z)` selects `CHASE` or `RETREAT`.
+probe changes. In Godot, `sigmoid(z) > 0.5` fires the `JUMP` event.
 
 ---
 
@@ -158,9 +168,9 @@ The equation is shared; the evidence differs.
 
 | | Research path | Game path |
 |---|---|---|
-| Inputs | Normalized temperature and pressure | Normalized health and player distance |
-| Output | Safe or unsafe class | Chase or retreat tendency |
-| Main visual | Colored points and decision boundary | Enemy color, movement, line, and health bar |
+| Inputs | Normalized temperature and pressure | Normalized speed and closeness to the edge |
+| Output | Safe or unsafe class | Wait or fire the jump event |
+| Main visual | Colored points and decision boundary | Input sliders, visible arc, cliff, and lava |
 | Evidence | Accuracy and misclassified points | Expected versus actual behavior |
 | Tool | Python + Matplotlib | Standard Godot 4 + GDScript |
 
@@ -266,10 +276,10 @@ One-variable-at-a-time changes make your explanation testable.
 
 ---
 
-## 6 · Game path — chase or retreat
+## 6 · Game path — cliff-jump timing
 
-**Game-AI question:** Can one neuron choose whether an enemy should chase or
-retreat?
+**Game-AI question:** Can one neuron combine speed and distance to fire a jump
+at the right moment?
 
 Open the self-contained Standard Godot project:
 
@@ -277,79 +287,71 @@ Open the self-contained Standard Godot project:
 godot --editor --path examples/neural_foundations/game
 ```
 
-Open `unit_01_enemy/unit_01_enemy.tscn` and press **F6**. Use the arrow keys to
-move the player and the slider to change enemy health.
+Open `unit_01_jumper/unit_01_jumper.tscn` and press **F6**.
 
-The scene exposes the complete forward pass:
+The scene starts in **Lab mode**. Nothing moves while you investigate:
 
-- the dashed line and distance label show the first spatial relationship;
-- the health bar shows the second input;
-- five calculation labels show contributions, bias, \(z\), and `tanh(z)`;
-- orange movement means `CHASE`;
-- blue movement means `RETREAT`;
-- **Pause** freezes the enemy while values remain visible;
-- **Reset** restores a repeatable starting position.
+- `Speed input` controls how fast the runner would move;
+- `Remaining distance` controls how far the runner is from the cliff;
+- `Speed weight`, `Closeness weight`, and `Bias` are the parameters you tune;
+- every contribution, the sum, and the sigmoid output remain visible;
+- `WAIT` means the output is at most `0.5`;
+- `JUMP` means the output is greater than `0.5`.
 
-At reset, the approximate calculation is:
+Distance is converted into **closeness**:
 
 $$
-z = (0.75)(1.4) + (0.68)(-1.2) - 0.1 \approx 0.134
+\text{closeness}=1-\text{remaining distance}
 $$
 
-The positive result makes the enemy chase. The overlay's displayed weighted
-sum uses the same input values, weights, and bias as
-`TinyNeuron.forward()` before activation.
+This makes both positive weights intuitive: more speed pushes toward jumping
+earlier, and more closeness pushes toward jumping now.
 
-Select the scene root to change the exported `health_weight`,
-`distance_weight`, and `bias` in the Inspector.
+### Experiment 1 — make the distance signal useful
 
-### Experiment 1 — reverse the health weight
+Set speed to `0.30`. Move remaining distance from `0.80` toward `0.10`.
+Adjust only `Closeness weight` until the neuron waits when far away and fires
+near the edge.
 
-**Prediction first:** with the player held at the same distance, what should a
-healthy enemy do after `health_weight` changes from `+1.4` to `-1.4`?
+??? success "What you should discover"
+    A positive closeness weight makes the contribution grow as the cliff gets
+    nearer. A negative weight produces the dangerous opposite behavior.
 
-Test low, medium, and high health. Record expected and actual behavior.
+### Experiment 2 — make speed change the timing
 
-??? success "Answer key"
-    More health now lowers the weighted sum. The healthiest enemy becomes more
-    likely to retreat, while low health removes less from the sum. The overlay
-    exposes the bad sign immediately: the health contribution is negative.
+Keep the remaining distance at `0.45`. Compare speed `0.30` and `0.90`.
+Adjust only `Speed weight` until the fast runner fires while the slow runner
+still waits.
 
-### Experiment 2 — add positive bias
+??? success "What you should discover"
+    A positive speed contribution moves the fast case above the threshold
+    sooner. A fixed rule such as `distance < 0.2` cannot make this distinction.
 
-Restore `health_weight` to `+1.4`. Increase bias from `-0.1` to `+0.8`, then
-test the same three player positions.
+### Experiment 3 — shift all decisions with bias
 
-??? success "Answer key"
-    Positive bias shifts every situation toward chase. The enemy can remain
-    aggressive at low health or long range because `+0.8` must be overcome
-    before the output becomes negative. The line does not cause this behavior;
-    the bias label reveals it.
+Use the Bias slider to move the overall trigger point. Too much positive bias
+makes all situations jump. Too much negative bias makes all situations wait.
+Tune it until the display reads **3 / 3 cases pass**:
 
-### Experiment 3 — cross the threshold
-
-Restore the defaults. Move the player slowly around the distance where the
-behavior changes. Do not change health.
-
-??? success "Answer key"
-    Near \(z=0\), tiny distance changes flip the selected behavior. The enemy
-    may oscillate because a single hard threshold has no memory or hysteresis.
-    The smoothly changing `tanh(z)` number shows that the underlying score is
-    stable even when the chosen action switches.
+| Case | Speed | Remaining distance | Expected |
+|---|---:|---:|---|
+| Slow and far | 0.30 | 0.80 | WAIT |
+| Fast and medium | 0.90 | 0.45 | JUMP |
+| Slow and near | 0.30 | 0.10 | JUMP |
 
 ### Game-development evidence
 
-Pause the scene and fill in:
+Record the parameters that pass all three cases:
 
-| Situation | Expected | Actual | Health term | Distance term | Diagnosis |
-|---|---|---|---:|---:|---|
-| High health, close | | | | | |
-| Low health, close | | | | | |
-| High health, far | | | | | |
+| Speed weight | Closeness weight | Bias | Cases passed |
+|---:|---:|---:|---:|
+| | | | / 3 |
 
-A rule such as `if health > 0.5 and distance < 200` can author this behavior
-directly. The neuron becomes useful later because its differentiable weights
-can be adjusted from examples or reward instead of hand-tuning every rule.
+Then press **Test run** several times. The runner receives a random slow,
+medium, or fast speed. Watch whether the neuron fires too early, too late, or
+inside the useful timing window. You are manually doing what a learning
+algorithm will automate later: observe an error, adjust parameters, and test
+again.
 
 ---
 
@@ -370,7 +372,8 @@ Use this diagnosis order:
 | Almost every case has one class | Bias contribution | Bias magnitude too large |
 | One feature controls everything | Weighted contributions | Missing normalization or oversized weight |
 | Decision is backwards | Contribution sign | Reversed weight |
-| Rapid switching near boundary | Weighted sum near zero | No margin, memory, or hysteresis |
+| Jump always fires | Bias contribution | Bias too positive |
+| Jump never fires | Sum remains below zero | Bias too negative or weights too small |
 
 ??? question "Completion check"
     Can you calculate one output by hand, predict a weight or bias change,
@@ -387,17 +390,17 @@ Use this diagnosis order:
 
 ## 8 · Compare the two paths
 
-The research boundary and enemy behavior are two views of the same forward
+The research boundary and jumper behavior are two views of the same forward
 calculation.
 
 | Shared role | Research visual | Game visual |
 |---|---|---|
-| Input \(x_1\) | Temperature position | Health bar |
-| Input \(x_2\) | Pressure position | Player distance line |
+| Input \(x_1\) | Temperature position | Speed slider |
+| Input \(x_2\) | Pressure position | Closeness to edge |
 | Weighted sum \(z\) | Side-panel calculation | Overlay calculation |
-| Threshold | Point color | Chase/retreat switch |
-| Parameter effect | Boundary rotates or shifts | Behavior changes in space |
-| Error evidence | Red misclassification ring | Expected/actual mismatch |
+| Threshold | Point color | `WAIT`/`JUMP` event |
+| Parameter effect | Boundary rotates or shifts | Trigger time changes |
+| Error evidence | Red misclassification ring | Too early, too late, or landed |
 
 For a researcher, the boundary summarizes many observations at once. For a
 game developer, motion shows one state changing over time. Neither view changes
@@ -408,8 +411,8 @@ normalized inputs → weighted contributions → bias → activation → decisio
 ```
 
 Explain the equivalence aloud: rotating a classification boundary changes
-which points fall on each side; changing enemy weights changes which game
-states fall on the chase or retreat side.
+which points fall on each side; changing jumper weights changes which
+speed-distance combinations fire the jump.
 
 ---
 
@@ -425,9 +428,9 @@ MPLBACKEND=Agg python \
 
 Add your hypothesis and parameter table beside the saved image.
 
-**Game development — add a decision margin.** Keep chasing until the output is
-below `-0.1`, and keep retreating until it is above `+0.1`. Compare oscillation
-with the original zero threshold.
+**Game development — add coyote time.** Allow the jump event for a few frames
+after the runner crosses the edge. Compare how this changes late failures
+without changing the neuron's calculation.
 
 **Both paths — add a third normalized input.** Choose a meaningful feature,
 predict its sign, update the forward-pass test first, then update the visual.

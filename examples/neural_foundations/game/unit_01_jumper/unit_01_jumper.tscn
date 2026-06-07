@@ -1,0 +1,168 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://unit_01_jumper/cliff_jumper.gd" id="1_script"]
+
+[node name="CliffJumper" type="Node2D"]
+script = ExtResource("1_script")
+
+[node name="Interface" type="CanvasLayer" parent="."]
+
+[node name="Title" type="Label" parent="Interface"]
+offset_left = 24.0
+offset_top = 18.0
+offset_right = 760.0
+offset_bottom = 50.0
+theme_override_colors/font_color = Color(0.9, 0.93, 0.98, 1)
+theme_override_font_sizes/font_size = 24
+text = "One neuron: when should the runner jump?"
+
+[node name="Hint" type="Label" parent="Interface"]
+offset_left = 24.0
+offset_top = 52.0
+offset_right = 820.0
+offset_bottom = 78.0
+theme_override_colors/font_color = Color(0.65, 0.7, 0.78, 1)
+text = "Adjust inputs first. Then tune two weights and the bias until all three cases pass."
+
+[node name="LabPanel" type="PanelContainer" parent="Interface"]
+offset_left = 24.0
+offset_top = 92.0
+offset_right = 430.0
+offset_bottom = 688.0
+
+[node name="Rows" type="VBoxContainer" parent="Interface/LabPanel"]
+layout_mode = 2
+theme_override_constants/separation = 7
+
+[node name="LabTitle" type="Label" parent="Interface/LabPanel/Rows"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "LAB: make the neuron fire"
+
+[node name="SpeedPrompt" type="Label" parent="Interface/LabPanel/Rows"]
+layout_mode = 2
+text = "Speed input"
+
+[node name="SpeedSlider" type="HSlider" parent="Interface/LabPanel/Rows"]
+layout_mode = 2
+max_value = 1.0
+step = 0.05
+value = 0.5
+
+[node name="DistancePrompt" type="Label" parent="Interface/LabPanel/Rows"]
+layout_mode = 2
+text = "Remaining distance to edge"
+
+[node name="DistanceSlider" type="HSlider" parent="Interface/LabPanel/Rows"]
+layout_mode = 2
+max_value = 1.0
+step = 0.05
+value = 0.5
+
+[node name="Divider1" type="HSeparator" parent="Interface/LabPanel/Rows"]
+layout_mode = 2
+
+[node name="SpeedWeightPrompt" type="Label" parent="Interface/LabPanel/Rows"]
+layout_mode = 2
+text = "Speed weight"
+
+[node name="SpeedWeightSlider" type="HSlider" parent="Interface/LabPanel/Rows"]
+layout_mode = 2
+min_value = -3.0
+max_value = 3.0
+step = 0.05
+value = 1.2
+
+[node name="ClosenessWeightPrompt" type="Label" parent="Interface/LabPanel/Rows"]
+layout_mode = 2
+text = "Closeness weight"
+
+[node name="ClosenessWeightSlider" type="HSlider" parent="Interface/LabPanel/Rows"]
+layout_mode = 2
+min_value = -3.0
+max_value = 3.0
+step = 0.05
+value = 2.0
+
+[node name="BiasPrompt" type="Label" parent="Interface/LabPanel/Rows"]
+layout_mode = 2
+text = "Bias"
+
+[node name="BiasSlider" type="HSlider" parent="Interface/LabPanel/Rows"]
+layout_mode = 2
+min_value = -3.0
+max_value = 3.0
+step = 0.05
+value = -1.6
+
+[node name="Divider2" type="HSeparator" parent="Interface/LabPanel/Rows"]
+layout_mode = 2
+
+[node name="SpeedCalculation" type="Label" parent="Interface/LabPanel/Rows"]
+layout_mode = 2
+text = "Speed input:"
+
+[node name="ClosenessCalculation" type="Label" parent="Interface/LabPanel/Rows"]
+layout_mode = 2
+text = "Closeness input:"
+
+[node name="BiasCalculation" type="Label" parent="Interface/LabPanel/Rows"]
+layout_mode = 2
+text = "Bias:"
+
+[node name="SumCalculation" type="Label" parent="Interface/LabPanel/Rows"]
+layout_mode = 2
+text = "Sum (z):"
+
+[node name="OutputCalculation" type="Label" parent="Interface/LabPanel/Rows"]
+layout_mode = 2
+text = "Sigmoid output:"
+
+[node name="Decision" type="Label" parent="Interface/LabPanel/Rows"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "WAIT"
+horizontal_alignment = 1
+
+[node name="CaseScore" type="Label" parent="Interface/LabPanel/Rows"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "0 / 3 cases pass"
+horizontal_alignment = 1
+
+[node name="RunStatus" type="Label" parent="Interface"]
+offset_left = 470.0
+offset_top = 92.0
+offset_right = 1210.0
+offset_bottom = 125.0
+theme_override_colors/font_color = Color(0.9, 0.93, 0.98, 1)
+theme_override_font_sizes/font_size = 18
+text = "LAB MODE: set the neuron, then press Test run."
+
+[node name="Cases" type="Label" parent="Interface"]
+offset_left = 470.0
+offset_top = 135.0
+offset_right = 850.0
+offset_bottom = 225.0
+theme_override_colors/font_color = Color(0.69, 0.75, 0.84, 1)
+text = "Guided cases:
+1. slow + far -> WAIT
+2. fast + medium -> JUMP
+3. slow + near -> JUMP"
+
+[node name="Buttons" type="HBoxContainer" parent="Interface"]
+offset_left = 24.0
+offset_top = 710.0
+offset_right = 430.0
+offset_bottom = 754.0
+theme_override_constants/separation = 10
+
+[node name="TestRun" type="Button" parent="Interface/Buttons"]
+custom_minimum_size = Vector2(198, 40)
+layout_mode = 2
+text = "Test run"
+
+[node name="Reset" type="Button" parent="Interface/Buttons"]
+custom_minimum_size = Vector2(198, 40)
+layout_mode = 2
+text = "Reset"
