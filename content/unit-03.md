@@ -544,7 +544,7 @@ Because the replay buffer contains transitions collected by old policies, the Q-
 
 ## What's next
 
-**Unit 4:** JumperHard — the canonical PPO benchmark, headless export, hyperparameter tuning.
+**Intrinsic Motivation & Curiosity:** give your agent an internal drive to explore so it can handle environments where the reward is too sparse to learn from.
 
 !!! info "Self-check before you move on"
     Can you answer these in your own words?
@@ -564,4 +564,4 @@ Because the replay buffer contains transitions collected by old policies, the Q-
     4. DQN learns deterministic **Q-values** with no built-in randomness, so it needs an explicit explore/exploit knob — **ε-greedy**. PPO already has a **stochastic policy + entropy bonus**, so exploration is intrinsic and ε is unnecessary.
     5. Example — **CrossTheRoad: DQN.** Discrete actions plus sparse rewards are DQN's sweet spot, and off-policy replay is sample-efficient there. (A dense-reward or continuous-action env would point to PPO instead.)
 
-[→ Unit 4: JumperHard & PPO](unit-04.md)
+[→ Intrinsic Motivation & Curiosity](unit-curiosity.md)

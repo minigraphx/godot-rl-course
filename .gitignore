@@ -5,8 +5,9 @@ site/
 .DS_Store
 Thumbs.db
 
-# Local tooling
-.claude/
+# Local tooling (commit .claude/settings.json so plugins load in web sessions)
+.claude/*
+!.claude/settings.json
 .cursor/
 .superpowers/
 
