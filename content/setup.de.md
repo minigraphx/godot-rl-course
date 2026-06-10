@@ -4,12 +4,56 @@ Einmalige Installation für alle Einheiten dieses Kurses. Führe dies vor Unit 0
 
 ---
 
+## Kurs-Repository — zuerst klonen { #course-repo }
+
+Alles in diesem Kurs — `requirements-course.txt`, der `examples/`-Code der Neuronalen Grundlagen, Hilfsskripte — liegt im Kurs-Repository. Klone es und arbeite aus seinem Stammverzeichnis:
+
+```bash
+git clone https://github.com/minigraphx/godot-rl-course.git
+cd godot-rl-course
+```
+
+Kein git? Nutze stattdessen **Code → Download ZIP** auf [github.com/minigraphx/godot-rl-course](https://github.com/minigraphx/godot-rl-course), entpacke das Archiv und wechsle mit `cd` in den entpackten Ordner.
+
+!!! info "Alle Kursbefehle im Repo-Stammverzeichnis ausführen"
+    Sofern eine Einheit nichts anderes sagt, setzt jeder `pip`-, `python -m examples.…`- und `godot --headless`-Befehl in diesem Kurs voraus, dass dein Terminal sich im Stammverzeichnis des Kurs-Repos befindet — dem Ordner mit `requirements-course.txt`.
+
+---
+
 ## Godot 4 — .NET-Edition
 
 Lade die **.NET / Mono**-Version von Godot 4 von [godotengine.org](https://godotengine.org) herunter (nicht die Standard-Version). Getestet mit Godot 4.3+.
 
 !!! warning "Verwende die .NET-Edition — nicht die Standard-Version"
     Das godot-rl-Plugin kompiliert native C#-Tasks (NuGet-Referenzen), die Godot mit der ONNX-Laufzeit verbinden. Die Standard-Version kann diese nicht laden. Du musst außerdem das [.NET SDK](https://dotnet.microsoft.com/download) installieren.
+
+---
+
+## Godot auf der Kommandozeile { #godot-cli }
+
+Mehrere Einheiten starten Godot aus dem Terminal (`godot --headless …`). Der Editor-Download legt **keinen** `godot`-Befehl auf deinen PATH — richte das einmalig ein:
+
+**macOS** — die Binärdatei liegt im App-Bundle. Füge deinem Shell-Profil (`~/.zshrc`) einen Alias hinzu:
+
+```bash
+alias godot="/Applications/Godot_mono.app/Contents/MacOS/Godot"
+```
+
+**Windows** — füge den Ordner mit `Godot_*.exe` zu deinem PATH hinzu (Einstellungen → System → Info → Erweiterte Systemeinstellungen → Umgebungsvariablen) oder rufe die Datei über ihren vollständigen Pfad auf. Forward Slashes funktionieren in jeder Shell:
+
+```bash
+C:/Tools/Godot/Godot_v4.3-stable_mono_win64.exe --version
+```
+
+**Linux** — mache die heruntergeladene Binärdatei ausführbar und verlinke sie auf deinen PATH:
+
+```bash
+chmod +x Godot_v4.3-stable_mono_linux.x86_64
+sudo ln -s "$PWD/Godot_v4.3-stable_mono_linux.x86_64" /usr/local/bin/godot
+```
+
+!!! tip "Überprüfen"
+    Öffne ein neues Terminal und führe `godot --version` aus — es sollte eine 4.x-Versionsnummer ausgeben.
 
 ---
 
@@ -38,7 +82,7 @@ conda activate godot_env
 pip install -r requirements-course.txt
 ```
 
-`requirements-course.txt` befindet sich im Stammverzeichnis dieses Kurs-Repos. Es fixiert alle Pakete auf bekannte, funktionierende Versionen — siehe die [Kompatibilitätstabelle](#kompatibilitatstabelle) unten.
+`requirements-course.txt` befindet sich im Stammverzeichnis des Kurs-Repos, das du [oben geklont hast](#course-repo) — führe den Befehl von dort aus. Es fixiert alle Pakete auf bekannte, funktionierende Versionen — siehe die [Kompatibilitätstabelle](#kompatibilitatstabelle) unten.
 
 !!! info "Was installiert wird"
     - `godot-rl` — Python ↔ Godot Socket-Bridge, Stable-Baselines3-Wrapper und die `gdrl`-CLI

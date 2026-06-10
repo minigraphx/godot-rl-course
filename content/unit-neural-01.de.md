@@ -64,6 +64,9 @@ Werte. Gewicht wird in diesem Kurs immer mit einem kleinen \(w\) abgekürzt.
 
 **Sichtbare Prüfung:** Die automatisierten Beispiele verwenden dieselben Zahlen:
 
+!!! note "Im Repo-Stammverzeichnis ausführen"
+    Diese Befehle setzen voraus, dass dein Terminal im [Stammverzeichnis des Kurs-Repos](setup.md#course-repo) liegt und `godot` auf deinem PATH ist — siehe [Godot auf der Kommandozeile](setup.md#godot-cli).
+
 ```bash
 conda activate godot_env
 python -m examples.neural_foundations.research.tests.test_neuron
