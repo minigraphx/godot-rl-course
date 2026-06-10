@@ -50,6 +50,42 @@ $$
 The activation produces \(\operatorname{sigmoid}(0.2) \approx 0.550\). Because
 `0.550 > 0.5`, the neuron **fires** and the game action is `JUMP`.
 
+The whole calculation as one picture:
+
+<div class="diagram-scroll">
+
+<svg class="course-diagram" viewBox="0 0 800 300" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, sans-serif" role="img" aria-label="One neuron: speed 0.50 times weight 0.80 gives plus 0.40, closeness 0.25 times weight 1.20 gives plus 0.30, summed with bias minus 0.50 gives 0.20; sigmoid gives 0.550, which is above 0.5, so the neuron fires JUMP">
+  <defs>
+    <marker id="arN" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 1 L10 5 L0 9 z" fill="#8892b0"/>
+    </marker>
+  </defs>
+  <rect x="20" y="40" width="180" height="60" rx="10" fill="#1a1d27" stroke="#6c8ef7" stroke-width="1.5"/>
+  <text x="110" y="65" text-anchor="middle" fill="#e2e8f0" font-size="14" font-weight="700">Speed</text>
+  <text x="110" y="86" text-anchor="middle" fill="#8892b0" font-size="13">0.50</text>
+  <rect x="20" y="180" width="180" height="60" rx="10" fill="#1a1d27" stroke="#6c8ef7" stroke-width="1.5"/>
+  <text x="110" y="205" text-anchor="middle" fill="#e2e8f0" font-size="14" font-weight="700">Closeness to edge</text>
+  <text x="110" y="226" text-anchor="middle" fill="#8892b0" font-size="13">0.25</text>
+  <path d="M200 70 C280 70, 290 115, 350 122" fill="none" stroke="#8892b0" stroke-width="1.6" marker-end="url(#arN)"/>
+  <text x="272" y="58" text-anchor="middle" fill="#6c8ef7" font-size="12" font-weight="700">× 0.80 → +0.40</text>
+  <path d="M200 210 C280 210, 290 165, 350 158" fill="none" stroke="#8892b0" stroke-width="1.6" marker-end="url(#arN)"/>
+  <text x="272" y="232" text-anchor="middle" fill="#6c8ef7" font-size="12" font-weight="700">× 1.20 → +0.30</text>
+  <rect x="350" y="100" width="140" height="80" rx="10" fill="#1a1d27" stroke="#8892b0" stroke-width="1.5"/>
+  <text x="420" y="132" text-anchor="middle" fill="#e2e8f0" font-size="15" font-weight="700">Σ + bias</text>
+  <text x="420" y="158" text-anchor="middle" fill="#8892b0" font-size="13">= 0.20</text>
+  <path d="M420 242 L420 184" fill="none" stroke="#8892b0" stroke-width="1.6" marker-end="url(#arN)"/>
+  <text x="420" y="264" text-anchor="middle" fill="#8892b0" font-size="13">bias −0.50</text>
+  <path d="M490 140 L540 140" fill="none" stroke="#8892b0" stroke-width="1.6" marker-end="url(#arN)"/>
+  <rect x="540" y="100" width="140" height="80" rx="10" fill="#1a1d27" stroke="#4ecca3" stroke-width="1.5"/>
+  <text x="610" y="132" text-anchor="middle" fill="#e2e8f0" font-size="15" font-weight="700">sigmoid</text>
+  <text x="610" y="158" text-anchor="middle" fill="#8892b0" font-size="13">≈ 0.550</text>
+  <path d="M680 140 L716 140" fill="none" stroke="#8892b0" stroke-width="1.6" marker-end="url(#arN)"/>
+  <text x="755" y="136" text-anchor="middle" fill="#4ecca3" font-size="16" font-weight="700">JUMP</text>
+  <text x="755" y="160" text-anchor="middle" fill="#8892b0" font-size="11">0.550 &gt; 0.5</text>
+</svg>
+
+</div>
+
 Mathematics often shortens input to \(x\), weight to \(w\), bias to \(b\), and
 the sum to \(z\). Therefore the same calculation may later appear as
 \(z=w_1x_1+w_2x_2+b\). These are abbreviations, not different values. Weight
