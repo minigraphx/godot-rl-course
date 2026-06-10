@@ -2,7 +2,7 @@
 
 Train the **JumperHard** example — a 3D jumping robot that serves as a standard PPO benchmark in the godot-rl-agents repo. Focus: reading PPO hyperparameters, tuning them, and knowing when training has genuinely solved the task.
 
-[← Unit 3: CrossTheRoad & DQN](unit-03.md) · [Course home](index.md)
+[← PPO Deep Dive](unit-ppo-deep.md) · [Course home](index.md)
 
 !!! note "Prerequisites"
     - **[Unit 2](unit-02.md)** — a working SB3 PPO run end-to-end (training + ONNX export)

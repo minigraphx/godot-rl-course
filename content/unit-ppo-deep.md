@@ -156,7 +156,7 @@ $$
 
 This says: *push up the probability of actions with positive advantage, push down the probability of actions with negative advantage, weighted by how much we've already moved*. It's mathematically equivalent to REINFORCE when r_t = 1 (single gradient step), but generalizes to multiple steps via the ratio.
 
-Compare to the REINFORCE objective from Unit 5:
+Compare to the REINFORCE objective from the [Policy Gradients unit](unit-policy-gradients.md):
 
 $$
 L^{\text{REINFORCE}}(\theta) = \mathbb{E}_t \big[ \log \pi_\theta(a_t|s_t) \cdot A_t \big]
@@ -539,7 +539,7 @@ The `StableBaselinesGodotEnv` wrapper is just a Gymnasium environment. **PPO has
 
 | Method | Sample efficiency | Stability | Continuous actions | Discrete actions | Memory |
 |--------|-------------------|-----------|--------------------|------------------|--------|
-| REINFORCE (Unit 5) | Low | Low | Yes | Yes | Low |
+| REINFORCE (Policy Gradients) | Low | Low | Yes | Yes | Low |
 | A2C (Unit Actor-Critic) | Medium | Medium | Yes | Yes | Low |
 | **PPO (this unit)** | **High** | **High** | **Yes** | **Yes** | **Medium** |
 | DQN (Unit DQN) | High | High | No | Yes (only) | High (replay buffer) |

@@ -2,7 +2,7 @@
 
 Before we replace policies with neural networks (Unit 3 / DQN), we need to understand the algorithm at the heart of value-based RL. This unit fills the gap between RL Foundations and Deep Q-Networks: it explains the **Bellman equation**, the **Q-table**, the **Q-Learning update rule**, and shows you a 50-line Python implementation that solves FrozenLake from scratch.
 
-[← Unit 2: Lunar Lander](unit-02.md) · [Course home](index.md)
+[← Reward Engineering](unit-reward-engineering.md) · [Course home](index.md)
 
 !!! note "Prerequisites"
     - **[RL Essentials](unit-01.md)** — MDP loop, policy, return, discount factor γ
