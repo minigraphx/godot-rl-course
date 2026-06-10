@@ -53,10 +53,20 @@ conda activate godot_env
 
 ## 3 · Godot project & plugin
 
-1. Clone [godot_rl_agents_examples](https://github.com/edbeeching/godot_rl_agents_examples)
-2. Godot → Import → `examples/BallChase` → open `project.godot`
-3. Project → Project Settings → Plugins → enable **Godot RL Agents**
-4. Wait for MSBuild to finish
+The training environments come from the separate **godot_rl_agents_examples** repo — not the course repo's own `examples/` folder. Clone it as a sibling of the course repo:
+
+```bash
+cd ..   # step out of godot-rl-course
+git clone https://github.com/edbeeching/godot_rl_agents_examples.git
+```
+
+No git? Use **Code → Download ZIP** on [github.com/edbeeching/godot_rl_agents_examples](https://github.com/edbeeching/godot_rl_agents_examples) and unpack it next to the course repo.
+
+Then:
+
+1. Godot → Import → browse to `godot_rl_agents_examples/examples/BallChase/project.godot`
+2. Project → Project Settings → Plugins → enable **Godot RL Agents**
+3. Wait for MSBuild to finish
 
 ---
 
