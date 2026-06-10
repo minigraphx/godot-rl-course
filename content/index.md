@@ -2,6 +2,16 @@
 
 Learn deep reinforcement learning by building and training agents inside real Godot game environments.
 
+## Before you start
+
+**Who this course is for.** Developers who want to train game AI with reinforcement learning. You need basic Python (functions, loops, running scripts) and comfort with a terminal. No prior Godot, machine-learning, or RL experience is required — neurons, networks, and the RL loop are built from scratch in Phase 1. The math stays at high-school algebra, and every formula is walked through with concrete numbers first.
+
+**What you need.** A desktop or laptop running macOS, Windows, or Linux. A GPU helps but is not required — early units train in minutes on CPU, and each unit's time box lists CPU and GPU estimates. See the [Hardware Setup Guide](hardware-setup.md) before buying anything.
+
+**Time commitment.** Every unit opens with a time estimate. Unit 0 plus your first neuron fits in [one evening (~2½–3 h)](unit-00.md#first-evening-script); most units take 1–3 hours of attention, with longer training runs happening in the background.
+
+**Where to start.** Complete [Setup](setup.md) once — clone the course repo, install Godot and the Python environment. Then begin with [Unit 0](unit-00.md), your first training run.
+
 ## What you'll build
 
 | Phase | Content | What you learn |
