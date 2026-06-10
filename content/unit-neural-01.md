@@ -62,6 +62,9 @@ always uses a lowercase \(w\) in this course.
 
 **Visible check:** the automated examples use these same numbers:
 
+!!! note "Run from the course repo root"
+    These commands assume your terminal is in the [course repo root](setup.md#course-repo) and that `godot` is on your PATH — see [Godot on the command line](setup.md#godot-cli).
+
 ```bash
 conda activate godot_env
 python -m examples.neural_foundations.research.tests.test_neuron
