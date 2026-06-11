@@ -27,6 +27,38 @@ Installiere den Godot-.NET-Editor, die Python-Toolchain und das godot-rl-agents-
 
 Zwei Laufzeitumgebungen kommunizieren über einen lokalen Socket — Godot sendet Beobachtungen (observations) und empfängt Aktionen (actions); Python führt die Trainingsschleife aus.
 
+<div class="diagram-scroll">
+
+<svg class="course-diagram" viewBox="0 0 720 300" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, sans-serif" role="img" aria-label="Geteilte Architektur: der Godot-Spielprozess (Szene plus Sync-Node) tauscht Beobachtungen, Belohnungen und Aktionen über einen lokalen Socket mit dem Python-Trainingsprozess aus; nach dem Training lädt der Sync-Node stattdessen die exportierte ONNX-Datei">
+  <defs>
+    <marker id="arS" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 1 L10 5 L0 9 z" fill="#8892b0"/>
+    </marker>
+  </defs>
+  <rect x="20" y="30" width="250" height="200" rx="14" fill="#1a1d27" stroke="#4ecca3" stroke-width="1.5"/>
+  <text x="145" y="58" text-anchor="middle" fill="#e2e8f0" font-size="16" font-weight="700">Godot</text>
+  <text x="145" y="78" text-anchor="middle" fill="#8892b0" font-size="13">Spielprozess</text>
+  <rect x="40" y="95" width="210" height="50" rx="8" fill="#22263a" stroke="#2e3350"/>
+  <text x="145" y="125" text-anchor="middle" fill="#e2e8f0" font-size="14">Szene · Physik · Belohnungen</text>
+  <rect x="40" y="160" width="210" height="50" rx="8" fill="#22263a" stroke="#2e3350"/>
+  <text x="145" y="190" text-anchor="middle" fill="#e2e8f0" font-size="14">Sync-Node (Plugin, C#)</text>
+  <rect x="450" y="30" width="250" height="200" rx="14" fill="#1a1d27" stroke="#6c8ef7" stroke-width="1.5"/>
+  <text x="575" y="58" text-anchor="middle" fill="#e2e8f0" font-size="16" font-weight="700">Python</text>
+  <text x="575" y="78" text-anchor="middle" fill="#8892b0" font-size="13">Trainingsprozess</text>
+  <rect x="470" y="95" width="210" height="50" rx="8" fill="#22263a" stroke="#2e3350"/>
+  <text x="575" y="125" text-anchor="middle" fill="#e2e8f0" font-size="14">godot-rl-Wrapper</text>
+  <rect x="470" y="160" width="210" height="50" rx="8" fill="#22263a" stroke="#2e3350"/>
+  <text x="575" y="190" text-anchor="middle" fill="#e2e8f0" font-size="14">SB3 — PPO- / DQN-Training</text>
+  <path d="M270 120 L450 120" fill="none" stroke="#8892b0" stroke-width="1.8" marker-end="url(#arS)"/>
+  <text x="360" y="106" text-anchor="middle" fill="#4ecca3" font-size="13" font-weight="700">Beobachtung + Belohnung</text>
+  <path d="M450 190 L270 190" fill="none" stroke="#8892b0" stroke-width="1.8" marker-end="url(#arS)"/>
+  <text x="360" y="208" text-anchor="middle" fill="#6c8ef7" font-size="13" font-weight="700">Aktionen</text>
+  <text x="360" y="252" text-anchor="middle" fill="#8892b0" font-size="13">lokaler Socket · Port 11008</text>
+  <text x="360" y="284" text-anchor="middle" fill="#8892b0" font-size="13" font-style="italic">nach dem Training: der Sync-Node lädt die exportierte ONNX-Datei — kein Python zur Laufzeit (siehe §5)</text>
+</svg>
+
+</div>
+
 | Komponente | Rolle | Laufzeit |
 |-----------|------|---------|
 | **Godot** | Physik, Beobachtungen, Belohnungen | Godot 4 .NET + GDScript |
