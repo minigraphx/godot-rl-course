@@ -247,6 +247,9 @@ Episode 700: total reward = 200
 
 CartPole-v1's max reward is **500** (the episode-length cap). REINFORCE typically reaches the cap in **500–800 episodes**. But the curve is **noisy** — some episodes will randomly drop back to 30. That brings us to the central weakness of REINFORCE.
 
+!!! check "Done when"
+    CartPole-v1 counts as **solved at an average return ≥ 475 over 100 consecutive episodes** (max 500). With this script, expect single episodes to first touch the 500 cap somewhere in the 500–800 episode range — but judge success on the rolling average, not one lucky episode. If rewards still hover around the initial ~20 after a few hundred episodes, check the loss sign and the `compute_returns` logic before training longer.
+
 ---
 
 ## 5 · The variance problem
@@ -272,7 +275,10 @@ A common cheap fix is in the code above: **normalize returns** to zero mean and 
 
 The gradient `∇log π(a|s) · G_t` multiplies a log-probability by the return. The return G_t has high variance because different episodes take wildly different paths through the environment. The product amplifies this variance — every gradient step is a noisy estimate of the true gradient direction. A baseline b(s) removes the "how good is this state overall" noise and isolates "how good was this specific action" — reducing variance without changing the gradient in expectation (since `E[∇log π · b(s)] = 0`).
 
-### The reparameterization trick (SAC, low-variance alternative)
+### The reparameterization trick (SAC, low-variance alternative) (optional on a first read)
+
+!!! note "First pass? Skim or skip this section."
+    The core REINFORCE thread — theorem (§3), algorithm (§4), variance (§5), baseline (§6) — continues directly in §6; this subsection previews how SAC sidesteps the variance problem and only becomes load-bearing in the SAC unit.
 
 Instead of sampling `a ~ π(a|s)` and differentiating *through* the sampling step (which the score function estimator does), write:
 
@@ -372,7 +378,10 @@ policy_loss.backward()
 optimizer.step()
 ```
 
-Run this side-by-side with vanilla REINFORCE. The baseline version will reach 200 reward faster and oscillate noticeably less. You have just built your first **actor-critic** — the policy is the actor, `V_φ` is the critic.
+!!! check "Done when"
+    Run this side-by-side with vanilla REINFORCE. The baseline version reaches an average reward of 200 in **clearly fewer episodes** than the vanilla run, and its reward curve oscillates visibly less between episodes. If the two curves are indistinguishable, check that the advantages use `.detach()` on the critic output and that `value_loss` is actually decreasing.
+
+You have just built your first **actor-critic** — the policy is the actor, `V_φ` is the critic.
 
 ---
 
@@ -558,5 +567,12 @@ In the next unit, we build a full actor-critic — two networks training in lock
     5. What does Actor-Critic replace the Monte-Carlo return with — and why is that a *bias / variance* trade?
 
     If you can answer all five — you're ready for Actor-Critic.
+
+??? success "Self-check answers"
+    1. Handle **continuous or high-dimensional action spaces** (the network just outputs μ and σ — no per-step `argmax` optimization), and represent **stochastic policies** like the uniformly random Nash strategy in rock-paper-scissors, which an argmax over Q-values can never express.
+    2. `∇_θ J(θ) = E[ Σ_t ∇_θ log π_θ(a_t|s_t) · G_t ]`. The **log-prob gradient** is the direction in θ that makes action `a_t` more likely; the return **G_t** is a scalar weight scaling that nudge — actions followed by high returns become more probable, those followed by low returns less.
+    3. It turns the gradient of an expectation into an expectation of `∇ log π_θ` — a plain **neural-net forward pass** that autograd handles. The non-differentiable `env.step()` is never backpropagated through; the return enters only as a constant weight.
+    4. The gradient is estimated from a **single sampled trajectory**, and returns can swing 10x between episodes by pure chance — so updates are noisy and training curves oscillate. Subtracting a baseline `b(s)` is free in expectation (`E[∇log π · b(s)] = 0`) but removes the "how good is this state anyway" noise, leaving the lower-variance **advantage** `G_t − V(s_t)`.
+    5. The **bootstrapped TD estimate** `r_t + γ·V_φ(s_{t+1})`. It cuts variance dramatically (no full-episode Monte-Carlo noise, and updates are possible mid-episode) at the cost of **bias**, because `V_φ` is itself an imperfect learned estimate.
 
 [→ Actor-Critic](unit-actor-critic.md)

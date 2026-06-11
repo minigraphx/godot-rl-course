@@ -418,7 +418,7 @@ Führe die trainierte Richtlinie erneut mit `--viz` oder Play Scene in Godot aus
 
 ---
 
-## 10 · DQN-Einschränkungen und -Varianten (beim ersten Lesen optional)
+## 10 · DQN-Einschränkungen und -Varianten (optional beim ersten Lesen)
 
 !!! note "Erster Durchgang? Überfliege oder überspringe diesen Abschnitt."
     Die Abschnitte 1–9 sind die DQN-Kernlektion und alles, was du brauchst, um CrossTheRoad zu trainieren. Die Varianten unten (Double, Dueling, Noisy, Rainbow) vertiefen dein Verständnis, sind aber nicht erforderlich, um die Unit abzuschließen — komm zurück, wenn du sie brauchst.

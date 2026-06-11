@@ -137,7 +137,8 @@ gdrl --env_path=./JumperHard.x86_64 \
   --speedup=20
 ```
 
-Target: `ep_rew_mean` should climb steadily and stabilise above 150–200 by 1M steps.
+!!! check "Done when"
+    JumperHard has no published benchmark, so judge success two ways: (1) `rollout/ep_rew_mean` has climbed steadily out of its initial noisy band and stabilised above 150–200 by 1M steps, and (2) the **viz checkpoint** (the Section 7 eval script with `show_window=True`) shows the robot clearing platforms in most episodes. Judge only from the 200k–1M step window — the first 50–100k steps are dominated by random initial weights (Section 6).
 
 ---
 
@@ -252,7 +253,10 @@ gdrl --env_path=./JumperHard.x86_64 \
 
 ---
 
-## 9 · Locomotion reward engineering
+## 9 · Locomotion reward engineering (optional on a first read)
+
+!!! note "First pass? Skim or skip this section."
+    The core path is §0–§8 — train, diagnose, tune, and evaluate JumperHard. This section pays off when you reach legged agents (Walker / Crawler in the Robotics phase); nothing else in the unit depends on it.
 
 Navigation tasks have a single objective: get from A to B. Locomotion is different — the robot must discover a **gait** (a coordinated pattern of limb movements) as an emergent side effect of maximizing forward progress. The reward function is not just measuring success; it is sculpting which gait appears.
 
@@ -434,5 +438,12 @@ Install: `pip install optuna`
     5. What's the difference between "training converged" and "policy is good enough to ship"?
 
     If you can answer all five — you're ready.
+
+??? success "Self-check answers"
+    1. It clips the **probability ratio** r_t(θ) = π_θ(a|s) / π_θ_old(a|s) to the band [1−ε, 1+ε]. Once a move past the band would *improve* the objective, the gradient is zeroed (drifting the wrong way is still penalised) — a cheap **trust region** that prevents one lucky rollout from overwriting everything learned so far.
+    2. Higher λ weights longer n-step returns more heavily: **lower bias, higher variance**. Lower λ leans on the value-function bootstrap: smoother estimates, but biased by critic errors. At **λ = 1** GAE becomes the full **Monte Carlo** advantage, G_t − V(s_t).
+    3. Lower **`--learning_rate`** first — it is the most sensitive knob — or alternatively lower `--clip_range`. Both shrink how far the policy moves per update, which is exactly what a high `approx_kl` is telling you went wrong.
+    4. Every trial costs a full training run (200k steps in this unit's script). A **pruner** kills trials whose early reward curve already lags the others, reallocating compute to promising regions. Without pruning, each bad combination burns its entire budget and you explore far fewer configurations for the same compute.
+    5. "Converged" only means the training curve has flattened — possibly at a **suboptimal policy**. "Good enough to ship" requires the Section 7 **eval protocol**: `deterministic=True` over fixed episodes, a mean ± std you trust, and a viz checkpoint confirming the behavior matches the numbers.
 
 [→ Unit 5: Parallel Training](unit-05.md)

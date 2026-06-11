@@ -137,7 +137,8 @@ gdrl --env_path=./JumperHard.x86_64 \
   --speedup=20
 ```
 
-Ziel: `ep_rew_mean` sollte stetig steigen und sich nach 1M Schritten über 150–200 einpendeln.
+!!! check "Fertig, wenn"
+    JumperHard hat keinen veröffentlichten Benchmark, beurteile den Erfolg also auf zwei Arten: (1) `rollout/ep_rew_mean` ist stetig aus seinem anfänglichen verrauschten Band herausgestiegen und hat sich nach 1M Schritten über 150–200 stabilisiert, und (2) der **Visualisierungs-Checkpoint** (das Evaluierungsskript aus Abschnitt 7 mit `show_window=True`) zeigt, dass der Roboter in den meisten Episoden die Plattformen überwindet. Beurteile nur anhand des 200k–1M-Schritte-Fensters — die ersten 50–100k Schritte werden von den zufälligen Anfangsgewichten dominiert (Abschnitt 6).
 
 ---
 
@@ -252,7 +253,10 @@ gdrl --env_path=./JumperHard.x86_64 \
 
 ---
 
-## 9 · Belohnungsmodellierung für Fortbewegung
+## 9 · Belohnungsmodellierung für Fortbewegung (optional beim ersten Lesen)
+
+!!! note "Erster Durchgang? Überfliege oder überspringe diesen Abschnitt."
+    Der Kernpfad ist §0–§8 — JumperHard trainieren, diagnostizieren, tunen und evaluieren. Dieser Abschnitt zahlt sich aus, wenn du Agenten mit Beinen erreichst (Walker / Crawler in der Robotik-Phase); nichts anderes in der Einheit hängt davon ab.
 
 Navigationsaufgaben haben ein einziges Ziel: von A nach B gelangen. Fortbewegung ist anders — der Roboter muss einen **Gang** (ein koordiniertes Muster von Gliedmaßenbewegungen) als emergenten Nebeneffekt der Maximierung des Vorwärtsfortschritts entdecken. Die Belohnungsfunktion misst nicht nur Erfolg; sie formt, welcher Gang entsteht.
 
@@ -434,5 +438,12 @@ Installation: `pip install optuna`
     5. Was ist der Unterschied zwischen „Training konvergiert" und „Policy ist gut genug zum Ausliefern"?
 
     Wenn du alle fünf beantworten kannst — bist du bereit.
+
+??? success "Antworten zum Selbstcheck"
+    1. Sie beschneidet das **Wahrscheinlichkeitsverhältnis** r_t(θ) = π_θ(a|s) / π_θ_old(a|s) auf das Band [1−ε, 1+ε]. Sobald ein Schritt über das Band hinaus das Objektiv *verbessern* würde, wird der Gradient auf null gesetzt (Drift in die falsche Richtung wird weiterhin bestraft) — eine günstige **Trust Region**, die verhindert, dass ein einzelner glücklicher Rollout alles bisher Gelernte überschreibt.
+    2. Höheres λ gewichtet längere n-Schritt-Erträge stärker: **niedrigerer Bias, höhere Varianz**. Niedrigeres λ stützt sich auf das Bootstrap der Wertfunktion: glattere Schätzungen, aber durch Critic-Fehler verzerrt. Bei **λ = 1** wird GAE zum vollen **Monte-Carlo**-Vorteil, G_t − V(s_t).
+    3. Zuerst **`--learning_rate`** senken — die Lernrate ist der empfindlichste Parameter — oder alternativ `--clip_range` senken. Beides verkleinert, wie weit sich die Policy pro Aktualisierung bewegt, und genau das ist es, was ein hohes `approx_kl` dir als Problem anzeigt.
+    4. Jeder Trial kostet einen vollen Trainingslauf (200k Schritte im Skript dieser Einheit). Ein **Pruner** bricht Trials ab, deren frühe Belohnungskurve bereits hinter den anderen zurückliegt, und verlagert Rechenzeit auf vielversprechende Bereiche. Ohne Pruning verbraucht jede schlechte Kombination ihr gesamtes Budget, und du erkundest für dieselbe Rechenzeit deutlich weniger Konfigurationen.
+    5. „Konvergiert" heißt nur, dass die Trainingskurve abgeflacht ist — möglicherweise bei einer **suboptimalen Policy**. „Gut genug zum Ausliefern" verlangt das **Evaluierungsprotokoll** aus Abschnitt 7: `deterministic=True` über feste Episoden, ein Mean ± Std, dem du vertraust, und einen Visualisierungs-Checkpoint, der bestätigt, dass das Verhalten zu den Zahlen passt.
 
 [→ Unit 5: Paralleles Training](unit-05.md)

@@ -233,7 +233,10 @@ for update in range(max_updates):
               f"critic_loss={critic_loss.item():.3f} entropy={entropy.item():.3f}")
 ```
 
-Lass das laufen. Nach ~150 Updates solltest du `ep_rew_mean` über 200 klettern und sich der CartPole-v1-Obergrenze von 500 nähern sehen. Die Entropie sinkt von ~0,69 (das Maximum für zwei gleich wahrscheinliche Aktionen, `ln 2`) Richtung 0,3, sobald sich die Policy festlegt.
+Lass das laufen. Die Entropie sinkt von ~0,69 (das Maximum für zwei gleich wahrscheinliche Aktionen, `ln 2`) Richtung 0,3, sobald sich die Policy festlegt.
+
+!!! check "Fertig, wenn"
+    `ep_rew_mean` innerhalb von ~150 Updates über 200 klettert und weiter Richtung CartPole-v1-Obergrenze von 500 steigt. CartPole-v1 gilt als **gelöst bei einem durchschnittlichen Return ≥ 475 über 100 aufeinanderfolgende Episoden** — wenn deine Kurve weit darunter stagniert, während die Entropie nahe 0 liegt, siehst du Entropie-Kollaps (Abschnitt 8), keinen konvergierten Agenten.
 
 !!! tip "Vergleich mit REINFORCE"
     Steck das gleiche Netz in dein REINFORCE-Skript aus der vorigen Unit (Critic-Head weglassen, rohes `G_t` statt `A_t` nutzen). Du wirst sehen, dass A2C dieselbe Belohnung in etwa einer Größenordnung weniger Umgebungsschritten erreicht — dieselbe Beobachtung, die das Feld überhaupt von REINFORCE zu A2C getrieben hat.
@@ -349,7 +352,10 @@ Für Studierende, die vor PPO tiefer graben wollen:
 
 ---
 
-## 13 · Der Actor und Critic in SB3s PPO
+## 13 · Der Actor und Critic in SB3s PPO (optional beim ersten Lesen)
+
+!!! note "Erster Durchgang? Überfliege oder überspringe diesen Abschnitt."
+    Der Kernpfad sind die Abschnitte 1–11 — die Vorteilsfunktion, die A2C-Schleife, die CartPole-Implementierung und die Brücke zu PPO; komm hierher zurück, sobald du einen trainierten Godot-Agenten zum Inspizieren hast.
 
 SB3s PPO ist eine Actor-Critic-Methode — sie hat genau die zwei Heads, die du in Abschnitt 5 gebaut hast. Die `ActorCritic`-Klasse, die du geschrieben hast, mappt direkt auf `model.policy` in einem trainierten SB3-Modell.
 
@@ -430,5 +436,12 @@ Du hast jetzt jede konzeptionelle Zutat, die PPO braucht. Die nächste Unit nimm
     5. Was ist das *eine* verbleibende Problem von A2C, das PPO speziell zu beheben versucht?
 
     Wenn du alle fünf beantworten kannst — du bist bereit für den PPO-Deep-Dive.
+
+??? success "Antworten zum Selbstcheck"
+    1. Der **Vorteil** `A(s, a) = Q(s, a) - V(s)` misst, wie viel besser Aktion `a` ist als die *durchschnittliche* Aktion aus Zustand `s`. Er hat niedrigere Varianz als der rohe Return `G`, weil das Abziehen der Baseline `V(s)` den Anteil des Returns entfernt, der nur daher kam, dass der Zustand einfach oder schwer war — übrig bleibt allein der Beitrag der Aktion.
+    2. Ein schwacher Critic liefert verrauschte Vorteilsschätzungen, der Actor läuft also faktisch wieder **REINFORCE mit hoher Varianz**. Die TensorBoard-Signatur ist `train/explained_variance` nahe 0 oder negativ — behebe es mit einem höheren `vf_coef`, mehr `n_steps` oder einer niedrigeren Lernrate.
+    3. Weil der Critic **bootstrappt**: die 1-Schritt-Schätzung `A_t ≈ r + γ V(s') - V(s)` braucht nur eine echte Belohnung und die Vorhersage des nächsten Zustands. REINFORCEs `G_t` lässt sich schlicht nicht berechnen, bevor jede Belohnung nach Schritt `t` beobachtet wurde.
+    4. Der **Entropie-Bonus** verhindert vorzeitigen Policy-Kollaps — dass die Wahrscheinlichkeit einer Aktion früh auf 1,0 gedrückt wird und der Agent für immer aufhört zu erkunden. Ist er zu groß, bleibt die Policy nahezu gleichverteilt (Entropie hängt nahe `ln 2` fest) und legt sich nie fest, die Belohnung bleibt also niedrig.
+    5. A2C kann sicher nur **ein Gradienten-Update pro Rollout** machen — danach sind die Daten off-policy und die Vorteilsschätzungen werden verzerrt. PPOs geclipptes Wahrscheinlichkeitsverhältnis macht mehrere Epochen über dasselbe Rollout sicher, genau das, was `n_epochs=10` in `gdrl` tut.
 
 [← Policy Gradients](unit-policy-gradients.md) · [Kursstartseite](index.md) · [→ PPO Deep Dive](unit-ppo-deep.md)

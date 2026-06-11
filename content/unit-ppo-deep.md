@@ -87,7 +87,10 @@ The mental model that unlocks PPO is the **trust region**.
 
 In policy optimization terms: the data you collected gives you a good estimate of which actions are better than average **near the current policy**. Once the new policy is too different from the data-collecting policy, those estimates are no longer reliable. The "trust region" is the set of policies close enough to the old one that the old data still gives valid advantage estimates.
 
-### TRPO — the formal version
+### TRPO — the formal version (optional on a first read)
+
+!!! note "First pass? Skim or skip this section."
+    Only this TRPO subsection is optional — the rest of §2, including *PPO — the practical version* below, is core. The cliff-in-fog intuition above is all the trust-region background PPO needs; come back for TRPO's second-order machinery when you want the formal version.
 
 PPO's predecessor, **TRPO** (Trust Region Policy Optimization, Schulman et al. 2015), formalized this idea with a hard mathematical constraint:
 
@@ -460,9 +463,33 @@ Related metrics to track:
 - `train/explained_variance` — how well the critic predicts returns. Should creep toward 1.0; values below 0 mean the critic is worse than predicting the mean.
 - `train/clip_fraction` — fraction of samples where the clip activated. 0.1–0.3 is typical. Near 0 = clip never engaging (try larger LR). Near 1 = clip always engaging (LR or clip too aggressive).
 
+### Build it · Clip-range ablation
+
+Don't just read the diagnostics table — generate the data yourself. Train the same environment three times, varying only `clip_range`, and watch §4's trust-region argument show up in the §9 metrics. CartPole-v1 keeps the loop fast; once it works, repeat on your Godot environment with `gdrl --clip_range=...`.
+
+```python
+import gymnasium as gym
+from stable_baselines3 import PPO
+
+for clip in (0.1, 0.2, 0.4):
+    env = gym.make("CartPole-v1")
+    model = PPO("MlpPolicy", env, clip_range=clip, verbose=0,
+                tensorboard_log="runs/clip_ablation")
+    model.learn(total_timesteps=100_000, tb_log_name=f"clip_{clip}")
+    env.close()
+```
+
+Then open `tensorboard --logdir runs/clip_ablation` and overlay `rollout/ep_rew_mean`, `train/approx_kl`, and `train/clip_fraction` for all three runs. Write a one-paragraph explanation of what you see, citing §4 and §9.
+
+!!! check "Done when"
+    All three runs show up in TensorBoard and the `clip_range=0.2` run's `rollout/ep_rew_mean` climbs clearly toward CartPole-v1's 500-step return cap. Expect the pattern §4 predicts — the 0.4 run drifting fastest on `train/approx_kl` (loosest trust region), the 0.1 run clipping most often on `train/clip_fraction` (tightest range). The contrast is clearest between 0.1 and 0.4; single runs are seed-noisy, so a swapped neighbouring pair means rerun, not broken theory. If you can explain the pattern in your paragraph without rereading §4, the clip has clicked.
+
 ---
 
-## 10 · CleanRL reference implementation
+## 10 · CleanRL reference implementation (optional on a first read)
+
+!!! note "First pass? Skim or skip this section."
+    The core lesson is §1–§9 — the clipped objective, GAE, the training loop, and the hyperparameter/diagnostic dictionaries; come back to this 30-minute code walkthrough once you have trained PPO at least once.
 
 !!! tip "Read `ppo.py` while reading this section"
     Open `https://github.com/vwxyzjn/cleanrl/blob/master/cleanrl/ppo.py` in another tab. The entire algorithm is ~300 lines, single file, no abstractions. Every PPO concept in this unit is right there in plain PyTorch.
@@ -567,6 +594,13 @@ After that, the course moves from theory to engineering: curriculum design, rewa
 
     If you can answer all five — you understand PPO well enough to read the paper without skipping equations.
 
+??? success "Self-check answers"
+    1. L^CLIP(θ) = 𝔼_t[ min( r_t·A_t, clip(r_t, 1−ε, 1+ε)·A_t ) ]. The **clip** flattens the objective once r_t leaves [1−ε, 1+ε] in the *profitable* direction — no gradient rewards pushing a good action's ratio above 1+ε or a bad action's below 1−ε. The **min** keeps the bound pessimistic: when the policy has already drifted the *wrong* way (say a bad action's ratio above 1+ε), the unclipped term is the smaller one and stays active, so its gradient still pulls the ratio back.
+    2. **r_t(θ) = π_θ(a_t|s_t) / π_θ_old(a_t|s_t)** — a per-transition trust-region meter for how far the current policy has moved on this particular action. r_t = 1 means the new policy assigns a_t the same probability the old one did (always true before the first gradient step, when θ = θ_old).
+    3. **GAE-λ** trades **bias against variance** in the advantage estimate. λ = 0 collapses to the 1-step TD error δ_t (maximum bias, minimum variance); λ = 1 telescopes to full Monte Carlo, G_t − V(s_t) (zero bias, maximum variance).
+    4. `approx_kl > 0.05` means the policy is moving very fast and is likely heading for collapse. Change **`learning_rate`** first (lower it, e.g. to 1e-4); `clip_range` and `n_epochs` are the next knobs down the §9 list.
+    5. Collecting data is the bottleneck (especially in Godot), so PPO reuses each rollout for `n_epochs` passes instead of one. It doesn't break the on-policy assumption because the frozen advantages A_t stay valid as long as the policy stays close to π_θ_old — and the **clip** removes any incentive to push a ratio further outside [1−ε, 1+ε] (while the min keeps penalising drift in the wrong direction), confining every update to roughly that region.
+
 ---
 
 ## Stretch goals
@@ -575,9 +609,8 @@ If you want to go deeper, in increasing order of effort:
 
 1. **Read the original PPO paper.** Schulman et al. 2017, "Proximal Policy Optimization Algorithms" — 8 pages, very readable. Every equation in the paper maps to a section of this unit. Notice that the paper proposes *two* variants: the clipped objective (what we covered, used everywhere) and an adaptive KL penalty (mostly forgotten).
 2. **Implement PPO from scratch.** Fork CleanRL's `ppo.py`, train on CartPole-v1 (should solve in <1 minute) and LunarLander-v2 (~10 minutes on CPU). Do *not* use SB3; the point is to type every line yourself.
-3. **Run a clip-range ablation.** Train the same Godot environment three times with `--clip_range=0.1`, `--clip_range=0.2`, `--clip_range=0.4`. Plot `ep_rew_mean`, `approx_kl`, and `clip_fraction` for all three on the same TensorBoard. Write a one-paragraph explanation of what you see, citing §4 and §9.
-4. **Reproduce the GAE λ-sweep figure** (Figure 1 of the GAE paper, Schulman et al. 2015). Train PPO with λ ∈ {0.0, 0.5, 0.9, 0.95, 0.99, 1.0} and observe how variance vs bias plays out.
-5. **Try `target_kl`-based early stopping.** Add a check that breaks the inner update loop if `approx_kl > 0.015`. Compare training stability with and without.
+3. **Reproduce the GAE λ-sweep figure** (Figure 1 of the GAE paper, Schulman et al. 2015). Train PPO with λ ∈ {0.0, 0.5, 0.9, 0.95, 0.99, 1.0} and observe how variance vs bias plays out.
+4. **Try `target_kl`-based early stopping.** Add a check that breaks the inner update loop if `approx_kl > 0.015`. Compare training stability with and without.
 
 If you finish (2), you officially understand PPO better than 95% of people who use it. That is the real goal of this unit.
 

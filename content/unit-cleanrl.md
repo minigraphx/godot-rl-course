@@ -84,6 +84,9 @@ global_step=81920, episodic_return=500.0
 
 And TensorBoard at `http://localhost:6006` (run `tensorboard --logdir runs/`).
 
+!!! check "Done when"
+    `charts/episodic_return` climbs out of the ~20 range and plateaus at the **500 cap** — CartPole-v1 counts as solved at an average return of **≥ 475 over 100 consecutive episodes** (500 is the maximum). With the flags above that happens well inside the 500k-step budget, typically around 80–100k steps (see the sample output). If the curve is still flat at 100k steps, re-check the command flags before suspecting the algorithm.
+
 ### Mapping CleanRL TensorBoard to SB3 TensorBoard
 
 You already know SB3's metrics from previous units. Here is the direct correspondence:
@@ -609,7 +612,10 @@ for epoch in range(args.update_epochs):
 
 **What to watch:** `losses/approx_kl` should hover around 0.005–0.015. If early stopping fires consistently in epoch 2 of 4, your learning rate may be too high for the current environment. Try reducing `learning_rate` by 2×.
 
-### Hack 3 — Running reward normalization
+### Hack 3 — Running reward normalization (optional on a first read)
+
+!!! note "First pass? Skim or skip this section."
+    Hacks 1 and 2 plus Sections 1–5 are the core of this unit; this normalization trick only pays off in environments with wildly varying reward scales.
 
 **What:** Normalize rewards by a running mean and standard deviation before they enter the GAE computation. This stabilizes training when reward magnitudes vary across environments or training phases.
 
@@ -664,7 +670,10 @@ rewards[step] = (rewards[step] - reward_rms.mean) / reward_rms.std
 
 ---
 
-## 7 · Sample Factory — maximum throughput
+## 7 · Sample Factory — maximum throughput (optional on a first read)
+
+!!! note "First pass? Skim or skip this section."
+    The core of this unit is Sections 1–5 plus Hacks 1–2 in §6 — running `ppo.py`, the file walkthrough, GAE, the update loop, and the Godot wrapper; come back here when a slow environment makes throughput your bottleneck.
 
 For large-scale training — millions of steps in environments that are slow per step — you eventually hit the ceiling of SB3 and CleanRL. Sample Factory is the answer.
 
@@ -898,5 +907,12 @@ These are open-ended. There are no provided solutions — use CleanRL's source a
     5. What does CleanRL deliberately *not* support that SB3 does — and why is that a feature, not a bug?
 
     If you can answer all five — you can read any PPO implementation in the wild.
+
+??? success "Self-check answers"
+    1. The **rollout** happens in the per-step collection loop (§2.5): store the observation, sample an action under `torch.no_grad()`, step the envs, store the reward. **GAE** is computed right after, in the backwards `no_grad` sweep of §3. The **policy update** fires in the epoch/mini-batch loop of §4, where `loss.backward()` and `optimizer.step()` run — with the defaults, 16 gradient steps per rollout.
+    2. `np.random.permutation` **decorrelates the mini-batches**: the flattened buffer is ordered by time and environment, so without reshuffling every mini-batch would hold consecutive, correlated transitions and each epoch would replay the identical batch sequence — gradient steps get biased toward particular slices of the rollout and training becomes noisier.
+    3. `clipfrac` is the **fraction of transitions whose ratio left the `[1−ε, 1+ε]` interval** — i.e. where clipping actually fired. A constant `clipfrac = 0` is bad when it means the policy is not moving at all: a learning rate so low (or gradients so small) that the trust region never binds and no learning is happening.
+    4. The line `rewards[step] = torch.tensor(reward)` in the rollout loop — compute the **intrinsic bonus** there and add it to the stored reward before GAE sees it, exactly as the curiosity stretch goal describes.
+    5. CleanRL deliberately drops **abstraction and modularity** — no class hierarchies, callbacks, or pluggable policies like SB3's 15+-file structure. Every algorithm is one self-contained file, and that is the feature: you can read, trace, and hack the whole thing in 30 minutes.
 
 [← Apply It — SAC vs PPO on JumperHard](unit-sac-applied.md) · [Course home](index.md) · [→ Parallel Training](unit-05.md)
