@@ -90,7 +90,7 @@ In Policy-Optimierungssprache: die Daten, die du gesammelt hast, geben dir eine 
 ### TRPO — die formale Version (optional beim ersten Lesen)
 
 !!! note "Erster Durchgang? Überfliege oder überspringe diesen Abschnitt."
-    Der Kernpfad ist §1 und §3–§7 — die Ratio, der Clip, GAE und die Trainingsschleife; PPOs praktische Version unten braucht nur die Klippen-im-Nebel-Intuition von oben, nicht TRPOs Second-Order-Maschinerie.
+    Nur dieser TRPO-Unterabschnitt ist optional — der Rest von §2, einschließlich *PPO — die praktische Version* unten, ist Kernstoff. Die Klippen-im-Nebel-Intuition oben ist alles an Trust-Region-Hintergrund, das PPO braucht; komm für TRPOs Second-Order-Maschinerie zurück, wenn du die formale Version willst.
 
 PPOs Vorgänger, **TRPO** (Trust Region Policy Optimization, Schulman et al. 2015), formalisierte diese Idee mit einer harten mathematischen Nebenbedingung:
 
@@ -482,7 +482,7 @@ for clip in (0.1, 0.2, 0.4):
 Öffne dann `tensorboard --logdir runs/clip_ablation` und lege `rollout/ep_rew_mean`, `train/approx_kl` und `train/clip_fraction` für alle drei Runs übereinander. Schreibe eine einabsätzige Erklärung dessen, was du siehst, mit Bezug auf §4 und §9.
 
 !!! check "Fertig, wenn"
-    Alle drei Runs erscheinen in TensorBoard und `rollout/ep_rew_mean` des `clip_range=0.2`-Runs klettert deutlich Richtung CartPole-v1s 500-Schritte-Return-Obergrenze. Die Runs ordnen sich so, wie §4 es vorhersagt: der 0.4-Run zeigt das höchste `train/approx_kl` (lockerste Trust Region, schnellste Drift), der 0.1-Run die höchste `train/clip_fraction` (engster Bereich, Clip greift am häufigsten). Wenn du diese Reihenfolge in deinem Absatz erklären kannst, ohne §4 erneut zu lesen, hat der Clip Klick gemacht.
+    Alle drei Runs erscheinen in TensorBoard und `rollout/ep_rew_mean` des `clip_range=0.2`-Runs klettert deutlich Richtung CartPole-v1s 500-Schritte-Return-Obergrenze. Erwarte das Muster, das §4 vorhersagt — der 0.4-Run driftet am schnellsten bei `train/approx_kl` (lockerste Trust Region), der 0.1-Run clippt am häufigsten bei `train/clip_fraction` (engster Bereich). Der Kontrast ist zwischen 0.1 und 0.4 am deutlichsten; einzelne Runs sind Seed-verrauscht — ein vertauschtes Nachbarpaar heißt also: noch einmal laufen lassen, nicht: Theorie kaputt. Wenn du das Muster in deinem Absatz erklären kannst, ohne §4 erneut zu lesen, hat es beim Clip-Mechanismus Klick gemacht.
 
 ---
 
@@ -595,11 +595,11 @@ Danach bewegt sich der Kurs von der Theorie zur Engineering: Curriculum-Design, 
     Wenn du alle fünf beantworten kannst — du verstehst PPO gut genug, das Paper zu lesen, ohne Gleichungen zu überspringen.
 
 ??? success "Antworten zum Selbstcheck"
-    1. L^CLIP(θ) = 𝔼_t[ min( r_t·A_t, clip(r_t, 1−ε, 1+ε)·A_t ) ]. Der **clip** flacht das Objektiv ab, sobald r_t [1−ε, 1+ε] verlässt, und setzt den Gradienten auf null, damit keine einzelne Transition die Policy aus der Trust Region drücken kann; das **min** hält die Schranke pessimistisch, sodass der Agent das Clipping nie ausnutzen kann, um ein Update *besser* aussehen zu lassen als das ungeclippte.
+    1. L^CLIP(θ) = 𝔼_t[ min( r_t·A_t, clip(r_t, 1−ε, 1+ε)·A_t ) ]. Der **clip** flacht das Objektiv ab, sobald r_t [1−ε, 1+ε] in der *profitablen* Richtung verlässt — kein Gradient belohnt es, die Ratio einer guten Aktion über 1+ε oder die einer schlechten unter 1−ε zu drücken. Das **min** hält die Schranke pessimistisch: Ist die Policy bereits in die *falsche* Richtung gedriftet (etwa die Ratio einer schlechten Aktion über 1+ε), ist der ungeclippte Term der kleinere und bleibt aktiv — sein Gradient zieht die Ratio wieder zurück.
     2. **r_t(θ) = π_θ(a_t|s_t) / π_θ_old(a_t|s_t)** — ein Per-Transition-Trust-Region-Messgerät dafür, wie weit sich die aktuelle Policy bei dieser spezifischen Aktion bewegt hat. r_t = 1 bedeutet, die neue Policy weist a_t dieselbe Wahrscheinlichkeit zu wie die alte (immer wahr vor dem ersten Gradientenschritt, wenn θ = θ_old).
     3. **GAE-λ** wägt **Bias gegen Varianz** in der Vorteilsschätzung ab. λ = 0 kollabiert zum 1-Schritt-TD-Fehler δ_t (maximaler Bias, minimale Varianz); λ = 1 teleskopiert zu vollem Monte Carlo, G_t − V(s_t) (null Bias, maximale Varianz).
     4. `approx_kl > 0,05` bedeutet, die Policy bewegt sich sehr schnell und ist wahrscheinlich auf dem Weg zum Kollaps. Ändere zuerst die **`learning_rate`** (senke sie, z. B. auf 1e-4); `clip_range` und `n_epochs` sind die nächsten Regler in der Liste aus §9.
-    5. Datensammeln ist der Flaschenhals (besonders in Godot), also verwendet PPO jedes Rollout für `n_epochs` Durchläufe wieder statt für einen. Das bricht die On-Policy-Annahme nicht, weil die eingefrorenen Vorteile A_t valide bleiben, solange die Policy nahe an π_θ_old bleibt — und der **clip** setzt den Gradienten für jede Transition auf null, deren Ratio aus [1−ε, 1+ε] driftet, und beschränkt damit jedes Update auf genau diese Region.
+    5. Datensammeln ist der Flaschenhals (besonders in Godot), also verwendet PPO jedes Rollout für `n_epochs` Durchläufe wieder statt für einen. Das bricht die On-Policy-Annahme nicht, weil die eingefrorenen Vorteile A_t valide bleiben, solange die Policy nahe an π_θ_old bleibt — und der **clip** nimmt jeden Anreiz, eine Ratio weiter aus [1−ε, 1+ε] hinauszuschieben (während das min Drift in die falsche Richtung weiter bestraft), und beschränkt damit jedes Update auf ungefähr diese Region.
 
 ---
 

@@ -673,7 +673,7 @@ rewards[step] = (rewards[step] - reward_rms.mean) / reward_rms.std
 ## 7 · Sample Factory — maximum throughput (optional on a first read)
 
 !!! note "First pass? Skim or skip this section."
-    The core of this unit is Sections 1–6 — running `ppo.py`, the file walkthrough, GAE, the update loop, and the Godot wrapper; come back here when a slow environment makes throughput your bottleneck.
+    The core of this unit is Sections 1–5 plus Hacks 1–2 in §6 — running `ppo.py`, the file walkthrough, GAE, the update loop, and the Godot wrapper; come back here when a slow environment makes throughput your bottleneck.
 
 For large-scale training — millions of steps in environments that are slow per step — you eventually hit the ceiling of SB3 and CleanRL. Sample Factory is the answer.
 

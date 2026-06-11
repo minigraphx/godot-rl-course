@@ -108,7 +108,7 @@ tensorboard --logdir_spec ppo:./tb_logs_ppo,sac:./tb_logs_sac
 Öffne jetzt `localhost:6006` und beobachte `rollout/ep_rew_mean` für beide Läufe gleichzeitig.
 
 !!! check "Fertig, wenn"
-    JumperHard hat keinen veröffentlichten Benchmark, also beurteile den Vergleich, nicht einen Score: (1) beide Läufe erscheinen als getrennte `rollout/ep_rew_mean`-Kurven unter den Tags `ppo` und `sac` in einem TensorBoard-Fenster, und (2) nachdem beide fertig sind, kannst du ein beliebiges Belohnungsniveau wählen, das beide Kurven erreicht haben, und sagen, welcher Algorithmus in weniger Env-Schritten dort ankam — und erklären warum, mit dem Replay-Buffer-Wiederverwendungs-Argument aus Abschnitt 1. Wenn einer der Läufe stirbt, bevor er eine Kurve produziert, behebe das, bevor du irgendetwas vergleichst.
+    JumperHard hat keinen veröffentlichten Benchmark, also beurteile den Vergleich, nicht einen Score: (1) beide Läufe erscheinen als getrennte `rollout/ep_rew_mean`-Kurven unter den Tags `ppo` und `sac` in einem TensorBoard-Fenster, und (2) nachdem beide fertig sind, kannst du ein beliebiges Belohnungsniveau wählen, das beide Kurven erreicht haben, sagen, welcher Algorithmus in weniger Env-Schritten dort ankam, und das Ergebnis in beide Richtungen erklären — mit dem Replay-Buffer-Wiederverwendungs-Argument aus Abschnitt 1, wenn SAC gewonnen hat, oder mit der Troubleshooting-Liste aus Abschnitt 4, wenn nicht (ein ehrliches „PPO hat gewonnen, und das ist der wahrscheinliche Grund" zählt auch). Wenn einer der Läufe stirbt, bevor er eine Kurve produziert, behebe das, bevor du irgendetwas vergleichst.
 
 ---
 

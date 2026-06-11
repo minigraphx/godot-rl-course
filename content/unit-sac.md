@@ -268,7 +268,7 @@ A few notes on the hyperparameters:
 | `rollout/ep_rew_mean` | The main performance metric — same as PPO |
 
 !!! check "Done when"
-    FlyBy has no published benchmark, so judge the run by its signals: (1) `rollout/ep_rew_mean` has clearly climbed above the level it sat at during the random-policy warm-up (`learning_starts`) and keeps trending up, and (2) `train/ent_coef` has settled at a small positive value — neither collapsed to 0 nor stuck near its initial value. A reward curve still flat at the random baseline well past `learning_starts` points to a setup problem (is the action space purely continuous?), not to needing more steps.
+    FlyBy has no published benchmark, so judge the run by its signals: (1) `rollout/ep_rew_mean` has clearly climbed above the level it sat at during the random-policy warm-up (`learning_starts`) and keeps trending up, and (2) `train/ent_coef` has moved off its initial value — auto-tuning is doing its job. A smooth decay toward a small value late in training is normal as the policy commits; the failure signature is α crashing toward zero *early, while the reward is still flat* (the policy went deterministic before it learned anything). A reward curve still flat at the random baseline well past `learning_starts` points to a setup problem (is the action space purely continuous?), not to needing more steps.
 
 !!! warning "Don't expect parallel speed-ups"
     SAC's update is per-environment-step. Adding more parallel envs increases data collection but does **not** proportionally increase gradient steps. Set `n_parallel=1` (or 2–4 if your sim is very fast) and let the algorithm do its work.
@@ -305,6 +305,7 @@ This is the table to come back to whenever you start a new project.
 ## 6 · The reparameterization trick — why SAC's actor update works (optional on a first read)
 
 !!! note "First pass? Skim or skip this section."
+    The core path is §0–§5 plus §7–§8 — the max-entropy idea, the three networks, the hands-on run, and the Godot workflow. This derivation explains *why* the actor update works; SAC trains fine without it.
 
 The actor update in §3.2 contains this expectation:
 

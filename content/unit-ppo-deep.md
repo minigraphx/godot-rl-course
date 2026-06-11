@@ -90,7 +90,7 @@ In policy optimization terms: the data you collected gives you a good estimate o
 ### TRPO — the formal version (optional on a first read)
 
 !!! note "First pass? Skim or skip this section."
-    The core path is §1 and §3–§7 — the ratio, the clip, GAE, and the training loop; PPO's practical version below needs only the cliff-in-fog intuition above, not TRPO's second-order machinery.
+    Only this TRPO subsection is optional — the rest of §2, including *PPO — the practical version* below, is core. The cliff-in-fog intuition above is all the trust-region background PPO needs; come back for TRPO's second-order machinery when you want the formal version.
 
 PPO's predecessor, **TRPO** (Trust Region Policy Optimization, Schulman et al. 2015), formalized this idea with a hard mathematical constraint:
 
@@ -482,7 +482,7 @@ for clip in (0.1, 0.2, 0.4):
 Then open `tensorboard --logdir runs/clip_ablation` and overlay `rollout/ep_rew_mean`, `train/approx_kl`, and `train/clip_fraction` for all three runs. Write a one-paragraph explanation of what you see, citing §4 and §9.
 
 !!! check "Done when"
-    All three runs show up in TensorBoard and the `clip_range=0.2` run's `rollout/ep_rew_mean` climbs clearly toward CartPole-v1's 500-step return cap. The runs order the way §4 predicts: the 0.4 run shows the highest `train/approx_kl` (loosest trust region, fastest drift), the 0.1 run the highest `train/clip_fraction` (tightest range, clip engages most often). If you can explain that ordering in your paragraph without rereading §4, the clip has clicked.
+    All three runs show up in TensorBoard and the `clip_range=0.2` run's `rollout/ep_rew_mean` climbs clearly toward CartPole-v1's 500-step return cap. Expect the pattern §4 predicts — the 0.4 run drifting fastest on `train/approx_kl` (loosest trust region), the 0.1 run clipping most often on `train/clip_fraction` (tightest range). The contrast is clearest between 0.1 and 0.4; single runs are seed-noisy, so a swapped neighbouring pair means rerun, not broken theory. If you can explain the pattern in your paragraph without rereading §4, the clip has clicked.
 
 ---
 
@@ -595,11 +595,11 @@ After that, the course moves from theory to engineering: curriculum design, rewa
     If you can answer all five — you understand PPO well enough to read the paper without skipping equations.
 
 ??? success "Self-check answers"
-    1. L^CLIP(θ) = 𝔼_t[ min( r_t·A_t, clip(r_t, 1−ε, 1+ε)·A_t ) ]. The **clip** flattens the objective once r_t leaves [1−ε, 1+ε], zeroing the gradient so no single transition can push the policy outside the trust region; the **min** keeps the bound pessimistic, so the agent can never exploit clipping to make an update look *better* than the unclipped one.
+    1. L^CLIP(θ) = 𝔼_t[ min( r_t·A_t, clip(r_t, 1−ε, 1+ε)·A_t ) ]. The **clip** flattens the objective once r_t leaves [1−ε, 1+ε] in the *profitable* direction — no gradient rewards pushing a good action's ratio above 1+ε or a bad action's below 1−ε. The **min** keeps the bound pessimistic: when the policy has already drifted the *wrong* way (say a bad action's ratio above 1+ε), the unclipped term is the smaller one and stays active, so its gradient still pulls the ratio back.
     2. **r_t(θ) = π_θ(a_t|s_t) / π_θ_old(a_t|s_t)** — a per-transition trust-region meter for how far the current policy has moved on this particular action. r_t = 1 means the new policy assigns a_t the same probability the old one did (always true before the first gradient step, when θ = θ_old).
     3. **GAE-λ** trades **bias against variance** in the advantage estimate. λ = 0 collapses to the 1-step TD error δ_t (maximum bias, minimum variance); λ = 1 telescopes to full Monte Carlo, G_t − V(s_t) (zero bias, maximum variance).
     4. `approx_kl > 0.05` means the policy is moving very fast and is likely heading for collapse. Change **`learning_rate`** first (lower it, e.g. to 1e-4); `clip_range` and `n_epochs` are the next knobs down the §9 list.
-    5. Collecting data is the bottleneck (especially in Godot), so PPO reuses each rollout for `n_epochs` passes instead of one. It doesn't break the on-policy assumption because the frozen advantages A_t stay valid as long as the policy stays close to π_θ_old — and the **clip** zeroes the gradient for any transition whose ratio drifts outside [1−ε, 1+ε], confining every update to exactly that region.
+    5. Collecting data is the bottleneck (especially in Godot), so PPO reuses each rollout for `n_epochs` passes instead of one. It doesn't break the on-policy assumption because the frozen advantages A_t stay valid as long as the policy stays close to π_θ_old — and the **clip** removes any incentive to push a ratio further outside [1−ε, 1+ε] (while the min keeps penalising drift in the wrong direction), confining every update to roughly that region.
 
 ---
 

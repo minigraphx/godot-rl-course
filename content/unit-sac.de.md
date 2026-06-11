@@ -268,7 +268,7 @@ Ein paar Notizen zu den Hyperparametern:
 | `rollout/ep_rew_mean` | Die Haupt-Performance-Metrik — wie bei PPO |
 
 !!! check "Fertig, wenn"
-    FlyBy hat keinen veröffentlichten Benchmark, also beurteile den Lauf an seinen Signalen: (1) `rollout/ep_rew_mean` ist klar über das Niveau gestiegen, auf dem es während der Zufalls-Policy-Aufwärmphase (`learning_starts`) lag, und steigt weiter, und (2) `train/ent_coef` hat sich bei einem kleinen positiven Wert eingependelt — weder auf 0 kollabiert noch beim Anfangswert hängen geblieben. Eine Belohnungskurve, die weit nach `learning_starts` noch flach auf der Zufalls-Baseline liegt, deutet auf ein Setup-Problem (ist der Aktionsraum rein kontinuierlich?), nicht auf zu wenige Schritte.
+    FlyBy hat keinen veröffentlichten Benchmark, also beurteile den Lauf an seinen Signalen: (1) `rollout/ep_rew_mean` ist klar über das Niveau gestiegen, auf dem es während der Zufalls-Policy-Aufwärmphase (`learning_starts`) lag, und steigt weiter, und (2) `train/ent_coef` hat sich von seinem Anfangswert wegbewegt — das Auto-Tuning arbeitet. Ein sanfter Abfall auf einen kleinen Wert spät im Training ist normal, wenn die Policy sich festlegt; die Fehlersignatur ist ein α, das *früh* gegen null stürzt, *während die Belohnung noch flach ist* (die Policy wurde deterministisch, bevor sie etwas gelernt hat). Eine Belohnungskurve, die weit nach `learning_starts` noch flach auf der Zufalls-Baseline liegt, deutet auf ein Setup-Problem (ist der Aktionsraum rein kontinuierlich?), nicht auf zu wenige Schritte.
 
 !!! warning "Erwarte keine Parallel-Speedups"
     SACs Update ist pro Umgebungsschritt. Mehr parallele Envs erhöhen Datensammlung, aber **nicht** proportional die Gradientenschritte. Setze `n_parallel=1` (oder 2–4, wenn deine Sim sehr schnell ist) und lass den Algorithmus arbeiten.
@@ -305,6 +305,7 @@ Das ist die Tabelle, zu der du zurückkehren solltest, wann immer du ein neues P
 ## 6 · Der Reparameterisierungs-Trick — warum SACs Actor-Update funktioniert (optional beim ersten Lesen)
 
 !!! note "Erster Durchgang? Überfliege oder überspringe diesen Abschnitt."
+    Der Kernpfad ist §0–§5 plus §7–§8 — die Max-Entropy-Idee, die drei Netze, der Hands-on-Lauf und der Godot-Workflow. Diese Herleitung erklärt, *warum* das Actor-Update funktioniert; SAC trainiert auch ohne sie.
 
 Das Actor-Update in §3.2 enthält diesen Erwartungswert:
 

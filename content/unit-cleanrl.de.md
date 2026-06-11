@@ -85,7 +85,7 @@ global_step=81920, episodic_return=500.0
 Und TensorBoard unter `http://localhost:6006` (führe `tensorboard --logdir runs/` aus).
 
 !!! check "Fertig, wenn"
-    `charts/episodic_return` aus dem ~20er-Bereich herausklettert und an der **500er-Kappe** plateauiert — CartPole-v1 gilt als gelöst bei einem durchschnittlichen Return von **≥ 475 über 100 aufeinanderfolgende Episoden** (500 ist das Maximum). Mit den Flags oben passiert das deutlich innerhalb des 500k-Schritte-Budgets, typischerweise um 80–100k Schritte (siehe die Beispielausgabe). Wenn die Kurve bei 100k Schritten noch flach ist, prüfe zuerst die Kommando-Flags, bevor du den Algorithmus verdächtigst.
+    `charts/episodic_return` aus dem ~20er-Bereich herausklettert und an der **Obergrenze von 500** ein Plateau erreicht — CartPole-v1 gilt als gelöst bei einem durchschnittlichen Return von **≥ 475 über 100 aufeinanderfolgende Episoden** (500 ist das Maximum). Mit den Flags oben passiert das deutlich innerhalb des 500k-Schritte-Budgets, typischerweise um 80–100k Schritte (siehe die Beispielausgabe). Wenn die Kurve bei 100k Schritten noch flach ist, prüfe zuerst die Kommando-Flags, bevor du den Algorithmus verdächtigst.
 
 ### CleanRL-TensorBoard auf SB3-TensorBoard abbilden
 
@@ -673,7 +673,7 @@ rewards[step] = (rewards[step] - reward_rms.mean) / reward_rms.std
 ## 7 · Sample Factory — maximaler Durchsatz (optional beim ersten Lesen)
 
 !!! note "Erster Durchgang? Überfliege oder überspringe diesen Abschnitt."
-    Der Kern dieser Unit sind die Abschnitte 1–6 — `ppo.py` laufen lassen, der Datei-Durchgang, GAE, die Update-Schleife und der Godot-Wrapper; komm hierher zurück, wenn eine langsame Umgebung den Durchsatz zum Engpass macht.
+    Der Kern dieser Unit sind die Abschnitte 1–5 plus Hacks 1–2 in §6 — `ppo.py` laufen lassen, der Datei-Durchgang, GAE, die Update-Schleife und der Godot-Wrapper; komm hierher zurück, wenn eine langsame Umgebung den Durchsatz zum Engpass macht.
 
 Für Training im großen Maßstab — Millionen Schritte in Umgebungen, die pro Schritt langsam sind — stößt du irgendwann an die Decke von SB3 und CleanRL. Sample Factory ist die Antwort.
 
@@ -910,7 +910,7 @@ Diese sind offen. Es gibt keine vorgegebenen Lösungen — nutze CleanRLs Quellc
 
 ??? success "Antworten zum Selbstcheck"
     1. Das **Rollout** passiert in der Schritt-für-Schritt-Sammelschleife (§2.5): Beobachtung speichern, Aktion unter `torch.no_grad()` samplen, die Envs steppen, Belohnung speichern. **GAE** wird direkt danach im Rückwärts-`no_grad`-Sweep aus §3 berechnet. Das **Policy-Update** feuert in der Epochen-/Minibatch-Schleife aus §4, wo `loss.backward()` und `optimizer.step()` laufen — mit den Defaults 16 Gradientenschritte pro Rollout.
-    2. `np.random.permutation` **dekorreliert die Minibatches**: der geflattete Buffer ist nach Zeit und Umgebung geordnet — ohne Reshuffling enthielte also jeder Minibatch aufeinanderfolgende, korrelierte Transitionen, und jede Epoche würde die identische Batch-Sequenz wiederholen. Die Gradientenschritte würden auf bestimmte Rollout-Ausschnitte verzerrt und das Training verrauschter.
+    2. `np.random.permutation` **dekorreliert die Minibatches**: der geflattete Buffer ist nach Zeit und Umgebung geordnet — ohne Reshuffling enthielte also jeder Minibatch aufeinanderfolgende, korrelierte Transitionen, und jede Epoche würde die identische Batch-Sequenz wiederholen. Die Gradientenschritte wären in Richtung bestimmter Rollout-Ausschnitte verzerrt, und das Training würde verrauschter.
     3. `clipfrac` ist der **Anteil der Transitionen, deren Ratio das Intervall `[1−ε, 1+ε]` verlassen hat** — also wo das Clipping tatsächlich feuerte. Ein konstantes `clipfrac = 0` ist schlecht, wenn es bedeutet, dass sich die Policy gar nicht bewegt: eine so niedrige Lernrate (oder so kleine Gradienten), dass die Trust Region nie greift und kein Lernen stattfindet.
     4. Die Zeile `rewards[step] = torch.tensor(reward)` in der Rollout-Schleife — berechne dort den **intrinsischen Bonus** und addiere ihn zur gespeicherten Belohnung, bevor GAE sie sieht, genau wie es das Curiosity-Stretch-Goal beschreibt.
     5. CleanRL verzichtet absichtlich auf **Abstraktion und Modularität** — keine Klassenhierarchien, Callbacks oder austauschbaren Policies wie in SB3s 15+-Datei-Struktur. Jeder Algorithmus ist eine einzelne, in sich geschlossene Datei, und genau das ist das Feature: du kannst das Ganze in 30 Minuten lesen, nachvollziehen und hacken.

@@ -22,7 +22,7 @@ All units listed in #68, plus two units added to the course after the issue was 
 
 ### Template A — Answer keys
 
-**Applies where** a `!!! info "Self-check before you move on"` admonition exists. Inventory (2026-06-11): **13 units** — Phase 3: policy-gradients, actor-critic, ppo-deep, 04, sac, cleanrl · Phase 4: 05, 06, 07, 08 · Phase 5: 09, 10, capstone. Units without a self-check do **not** get one invented — that is content authoring, not polish.
+**Applies where** a closing self-check admonition exists — usually titled `!!! info "Self-check before you move on"`, but match on `Self-check`, not the exact title (unit-capstone titles it "Self-check before you start the project"). Inventory (2026-06-11): **13 units** — Phase 3: policy-gradients, actor-critic, ppo-deep, 04, sac, cleanrl · Phase 4: 05, 06, 07, 08 · Phase 5: 09, 10, capstone. Units without a self-check do **not** get one invented — that is content authoring, not polish.
 
 **Edit:** a collapsed `??? success "Self-check answers"` block directly below the self-check, one concise answer per question, grounded in the unit's own content. German pages get the same block translated (`??? success "Antworten zum Selbsttest"` or the unit's existing DE self-check phrasing).
 
