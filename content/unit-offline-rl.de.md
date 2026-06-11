@@ -295,7 +295,10 @@ Für MultiLevelRobot mit kontinuierlicher Gelenksteuerung ist IQL typischerweise
 
 ---
 
-## 6 · Decision Transformer (konzeptionell)
+## 6 · Decision Transformer (konzeptionell, optional beim ersten Lesen)
+
+!!! note "Erster Durchgang? Überfliege oder überspringe diesen Abschnitt."
+    Der Hands-on-Pfad durch diese Unit sind die Abschnitte 1–5 (Warum Offline-RL, Distributional Shift, CQL, Datensammlung, IQL) plus die Abschnitte 8–9 (Entscheidungsleitfaden und Viz-Checkpoint). Decision Transformer bekommt als Nächstes eine eigene komplette Unit — diese Vorschau ordnet ihn nur unter den Offline-Methoden ein.
 
 CQL und IQL erben beide das Q-Learning-Paradigma — sie verwenden weiterhin Bellman-Backups, brauchen einen Critic, hängen davon ab, dass das Reward-Signal über den Datensatz hinweg konsistent ist. **Decision Transformer** (Chen et al., 2021) wirft die Bellman-Gleichung komplett weg.
 
@@ -340,7 +343,10 @@ Für die meisten Godot-Projekte mit 1000–5000 Demonstrationen sind CQL oder IQ
 
 ---
 
-## 7 · Online-Fine-Tuning nach Offline-Pre-Training
+## 7 · Online-Fine-Tuning nach Offline-Pre-Training (optional beim ersten Lesen)
+
+!!! note "Erster Durchgang? Überfliege oder überspringe diesen Abschnitt."
+    Wie Abschnitt 6 ist das hier eine Erweiterung — der Hands-on-Pfad sind die Abschnitte 1–5 plus die Abschnitte 8–9 (Entscheidungsleitfaden und Viz-Checkpoint). Das Weight-Transfer-Muster hier zahlt sich erst aus, wenn deine Offline-Policy den Checkpoint aus Abschnitt 9 bestanden hat; das dritte Stretch Goal führt dich hierher zurück.
 
 Das praktischste Deployment-Muster ist eine zweistufige Pipeline:
 
@@ -494,6 +500,9 @@ plt.savefig("dataset_coverage.png", dpi=150)
 ```
 
 Spärliche Regionen in diesem Plot sind die Bereiche, in denen CQL und IQL am wahrscheinlichsten scheitern. Siehst du große leere Flächen, die kritischen Aufgabenzuständen entsprechen, ziele bei der weiteren Datensammlung gezielt auf diese Zustände.
+
+!!! check "Fertig, wenn"
+    Der Vierfachvergleich oben reproduziert die erwartete Reihenfolge — deine CQL- und IQL-Policies schlagen die Zufalls-Baseline deutlich und erreichen über die 50 Evaluationsepisoden mindestens den mittleren Return der BC-Policy. Für MultiLevelRobot gibt es keinen publizierten Benchmark; die Reihenfolge *ist* das Erfolgskriterium, nicht irgendein absoluter Return-Wert. Landet CQL unter BC, ist das der Distributional-Shift-Fehlermodus aus Abschnitt 2 — mehr Trainingsschritte beheben das nicht; wende stattdessen die Abhilfen oben an (`alpha_learning_rate` senken oder gezielt Demonstrationen für die Lücken aufnehmen, die dein Coverage-Plot offenlegt).
 
 ---
 
