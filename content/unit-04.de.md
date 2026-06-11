@@ -253,7 +253,7 @@ gdrl --env_path=./JumperHard.x86_64 \
 
 ---
 
-## 9 · Belohnungsmodellierung für Fortbewegung (beim ersten Lesen optional)
+## 9 · Belohnungsmodellierung für Fortbewegung (optional beim ersten Lesen)
 
 !!! note "Erster Durchgang? Überfliege oder überspringe diesen Abschnitt."
 

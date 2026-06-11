@@ -275,7 +275,7 @@ Ein gängiger billiger Fix steht im Code oben: **Returns normalisieren** auf Mit
 
 Der Gradient `∇log π(a|s) · G_t` multipliziert eine Log-Wahrscheinlichkeit mit dem Return. Der Return G_t hat hohe Varianz, weil unterschiedliche Episoden wild verschiedene Pfade durch die Umgebung nehmen. Das Produkt verstärkt diese Varianz — jeder Gradienten-Schritt ist eine verrauschte Schätzung der wahren Gradientenrichtung. Eine Baseline b(s) entfernt das „wie gut ist dieser Zustand überhaupt"-Rauschen und isoliert „wie gut war diese spezifische Aktion" — Varianzreduktion ohne den Gradienten im Erwartungswert zu ändern (denn `E[∇log π · b(s)] = 0`).
 
-### Der Reparameterisierungs-Trick (SAC, varianzärmere Alternative) (optional beim ersten Durchgang)
+### Der Reparameterisierungs-Trick (SAC, varianzärmere Alternative) (optional beim ersten Lesen)
 
 !!! note "Erster Durchgang? Überfliege oder überspringe diesen Abschnitt."
     Der rote Faden von REINFORCE — Theorem (§3), Algorithmus (§4), Varianz (§5), Baseline (§6) — geht direkt in §6 weiter; dieser Unterabschnitt zeigt nur vorab, wie SAC das Varianzproblem umgeht, und wird erst in der SAC-Unit wirklich gebraucht.
