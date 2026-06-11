@@ -161,6 +161,9 @@ Continuous tasks typically need more timesteps than discrete ones — 1–5M is 
 | `rollout/ep_rew_mean` | Climbs by 1M steps | Still negative at 500k → check obs normalization |
 | `train/approx_kl` | < 0.02 | Spikes → reduce `--learning_rate` or `--clip_range` |
 
+!!! check "Done when"
+    FlyBy has no published benchmark, so judge the run by its own signals: `rollout/ep_rew_mean` has climbed clearly above its early random-warm-up level and is still trending up by ~1M steps, `train/std` is decreasing gradually rather than collapsing, and `train/approx_kl` stays below 0.02. Then confirm with the viz checkpoint (Section 6): smooth, deliberate flight toward checkpoints — not jerky oscillation or spinning in place.
+
 ---
 
 ## 6 · Viz checkpoint
@@ -272,7 +275,10 @@ Both examples ship with `godot_rl_agents_examples` and expose a continuous actio
 
 ---
 
-## 10 · RayCast3D sensor design for 3D environments
+## 10 · RayCast3D sensor design for 3D environments (optional on a first read)
+
+!!! note "First pass? Skim or skip this section."
+    The core path of this unit is Sections 1–7: continuous actions (1), normalization (2), opening FlyBy (3), raycast basics (4), training (5), the viz checkpoint (6), and building your own env (7). Section 4 covers enough raycast mechanics to train FlyBy — return here when you design sensors for your own environment.
 
 The brief raycast example in section 4 covers the mechanics. This section goes deeper on design choices.
 
@@ -367,5 +373,12 @@ How do you weight these three terms without one overwhelming the others? Log eac
     5. Pick one of the two envs (FlyBy vs HovercraftRacing) — what specifically about its reward shape makes it a different teaching example than the other?
 
     If you can answer all five — you're ready.
+
+??? success "Self-check answers"
+    1. DQN picks an action by taking the argmax over a finite set of Q-values, so it needs a **discrete** action space. FlyBy's actions are real numbers (thrust, steering) — PPO handles this by outputting a **Gaussian distribution** and sampling N floats from it, something DQN has no mechanism for.
+    2. The two values differ by a factor of ~4000 in **scale**, so the gradient update is dominated by the large distance value and the velocity dimension is effectively ignored. Fix it at the source: divide each observation by its expected maximum in `get_obs()` so everything lands in roughly [−1, 1].
+    3. `VecNormalize` tracks a **running mean and standard deviation** for every observation dimension (and optionally for rewards) across all parallel envs. The trained policy only ever saw normalized inputs, so at inference you must reload those exact stats — otherwise it receives raw observations and outputs nonsense actions.
+    4. `train/std` is the width of the Gaussian action distribution — how much the policy still **explores**. Starting near 1.0 and decreasing slowly means growing confidence; an immediate collapse to 0 means premature certainty (add `--ent_coef`).
+    5. Example — **FlyBy**: its dense checkpoint-proximity reward gives a single, clear learning signal, which makes it the cleaner teaching example for continuous 3D basics. HovercraftRacing's reward (race position + speed) mixes in opponents and track constraints, so a failing run has far more possible causes.
 
 [→ Visual Observations](unit-visual-observations.md)
