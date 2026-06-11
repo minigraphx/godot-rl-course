@@ -247,6 +247,9 @@ Episode 700: total reward = 200
 
 CartPole-v1s maximale Belohnung ist **500** (das Episodenlängen-Limit). REINFORCE erreicht das Limit typisch in **500–800 Episoden**. Aber die Kurve ist **verrauscht** — manche Episoden fallen zufällig zurück auf 30. Das führt uns zur zentralen Schwäche von REINFORCE.
 
+!!! check "Fertig, wenn"
+    CartPole-v1 gilt als **gelöst bei einem durchschnittlichen Return ≥ 475 über 100 aufeinanderfolgende Episoden** (Maximum 500). Mit diesem Skript erreichen einzelne Episoden das 500er-Limit typischerweise erstmals im Bereich von 500–800 Episoden — beurteile den Erfolg aber am gleitenden Durchschnitt, nicht an einer einzelnen Glücksepisode. Hängen die Belohnungen nach ein paar hundert Episoden noch um die anfänglichen ~20, prüfe das Vorzeichen des Loss und die `compute_returns`-Logik, bevor du länger trainierst.
+
 ---
 
 ## 5 · Das Varianzproblem
@@ -272,7 +275,10 @@ Ein gängiger billiger Fix steht im Code oben: **Returns normalisieren** auf Mit
 
 Der Gradient `∇log π(a|s) · G_t` multipliziert eine Log-Wahrscheinlichkeit mit dem Return. Der Return G_t hat hohe Varianz, weil unterschiedliche Episoden wild verschiedene Pfade durch die Umgebung nehmen. Das Produkt verstärkt diese Varianz — jeder Gradienten-Schritt ist eine verrauschte Schätzung der wahren Gradientenrichtung. Eine Baseline b(s) entfernt das „wie gut ist dieser Zustand überhaupt"-Rauschen und isoliert „wie gut war diese spezifische Aktion" — Varianzreduktion ohne den Gradienten im Erwartungswert zu ändern (denn `E[∇log π · b(s)] = 0`).
 
-### Der Reparameterisierungs-Trick (SAC, varianzärmere Alternative)
+### Der Reparameterisierungs-Trick (SAC, varianzärmere Alternative) (optional beim ersten Durchgang)
+
+!!! note "Erster Durchgang? Überfliege oder überspringe diesen Abschnitt."
+    Der rote Faden von REINFORCE — Theorem (§3), Algorithmus (§4), Varianz (§5), Baseline (§6) — geht direkt in §6 weiter; dieser Unterabschnitt zeigt nur vorab, wie SAC das Varianzproblem umgeht, und wird erst in der SAC-Unit wirklich gebraucht.
 
 Statt `a ~ π(a|s)` zu samplen und *durch* den Sampling-Schritt zu differenzieren (was der Score-Funktion-Schätzer tut), schreibe:
 
@@ -372,7 +378,10 @@ policy_loss.backward()
 optimizer.step()
 ```
 
-Lass das parallel zu Vanilla REINFORCE laufen. Die Baseline-Version erreicht 200 Belohnung schneller und schwingt deutlich weniger. Du hast gerade dein erstes **Actor-Critic** gebaut — die Policy ist der Actor, `V_φ` ist der Critic.
+!!! check "Fertig, wenn"
+    Lass das parallel zu Vanilla REINFORCE laufen. Die Baseline-Version erreicht eine durchschnittliche Belohnung von 200 in **deutlich weniger Episoden** als der Vanilla-Lauf, und ihre Belohnungskurve oszilliert sichtbar weniger zwischen Episoden. Sind die beiden Kurven nicht zu unterscheiden, prüfe, ob die Vorteile `.detach()` auf der Critic-Ausgabe nutzen und ob `value_loss` tatsächlich sinkt.
+
+Du hast gerade dein erstes **Actor-Critic** gebaut — die Policy ist der Actor, `V_φ` ist der Critic.
 
 ---
 
@@ -558,5 +567,12 @@ In der nächsten Unit bauen wir einen kompletten Actor-Critic — zwei Netze, di
     5. Wodurch ersetzt Actor-Critic den Monte-Carlo-Return — und warum ist das ein *Bias-Varianz-Trade*?
 
     Wenn du alle fünf beantworten kannst — du bist bereit für Actor-Critic.
+
+??? success "Antworten zum Selbstcheck"
+    1. **Kontinuierliche oder hochdimensionale Aktionsräume** handhaben (das Netz gibt einfach μ und σ aus — kein `argmax`-Optimierungsproblem pro Schritt) und **stochastische Policies** darstellen, etwa die gleichverteilt zufällige Nash-Strategie bei Schere-Stein-Papier — ein argmax über Q-Werte kann das nie ausdrücken.
+    2. `∇_θ J(θ) = E[ Σ_t ∇_θ log π_θ(a_t|s_t) · G_t ]`. Der **Log-Prob-Gradient** ist die Richtung in θ, die die Aktion `a_t` wahrscheinlicher macht; der Return **G_t** ist ein skalares Gewicht, das diesen Schubs skaliert — Aktionen mit hohem nachfolgendem Return werden wahrscheinlicher, solche mit niedrigem unwahrscheinlicher.
+    3. Er verwandelt den Gradienten eines Erwartungswerts in einen Erwartungswert über `∇ log π_θ` — einen schlichten **Forward-Pass eines neuronalen Netzes**, den Autograd berechnet. Durch das nicht-differenzierbare `env.step()` wird nie backpropagiert; der Return geht nur als konstantes Gewicht ein.
+    4. Der Gradient wird aus einer **einzelnen gesampelten Trajektorie** geschätzt, und Returns können sich zwischen Episoden rein zufällig um Faktor 10 unterscheiden — Updates sind also verrauscht und Trainingskurven oszillieren. Eine Baseline `b(s)` abzuziehen ist im Erwartungswert gratis (`E[∇log π · b(s)] = 0`), entfernt aber das „wie gut ist dieser Zustand überhaupt"-Rauschen und lässt den varianzärmeren **Vorteil** `G_t − V(s_t)` übrig.
+    5. Durch die **bootstrapped TD-Schätzung** `r_t + γ·V_φ(s_{t+1})`. Sie senkt die Varianz drastisch (kein Monte-Carlo-Rauschen über die volle Episode, Updates mitten in der Episode möglich) — um den Preis von **Bias**, weil `V_φ` selbst eine unvollkommene gelernte Schätzung ist.
 
 [→ Actor-Critic](unit-actor-critic.md)
