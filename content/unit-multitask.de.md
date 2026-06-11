@@ -699,9 +699,26 @@ model.learn(total_timesteps=3_000_000, callback=callback)
 model.save("models/multitask_ppo_final")
 ```
 
+!!! check "Fertig, wenn"
+    Wenn `train_multitask.py` durchgelaufen ist, führe die Pro-Aufgabe-Evaluation aus
+    Abschnitt 8 aus (100 Episoden pro Aufgabe): Eine gut trainierte Policy erreicht die
+    Marke von ≥ 80 % Erfolg auf **jeder** Aufgabe, wie im Balkendiagramm aus „Drei Wege,
+    deine KI zu beobachten". Während des Trainings sollten alle drei
+    `reward/task_*`-Kurven in TensorBoard gemeinsam steigen — verrauscht und nicht im
+    Gleichschritt. Fällt aber eine Kurve, während eine andere weiter steigt, ist das
+    negativer Transfer und kein Lauf, der nur mehr Schritte braucht: Arbeite Abschnitt 4
+    durch (zuerst die Belohnungsskalen prüfen), bevor du länger trainierst.
+
 ---
 
-## 7 · Multi-Task-SAC
+## 7 · Multi-Task-SAC (optional beim ersten Lesen)
+
+!!! note "Erster Durchgang? Überfliege oder überspringe diesen Abschnitt."
+    Der Kernpfad durch diese Unit sind die Abschnitte 1–6 (Task-Encodings,
+    Multi-Task-PPO, negativer Transfer, Aufgaben-Curricula, das Godot-Beispiel),
+    Abschnitt 8 (Pro-Aufgabe-Evaluation) und Abschnitt 10 (die Entscheidung Multi-Task
+    vs. separate Policies). SAC ist eine Off-Policy-Alternative, die Sample-Effizienz
+    bringt — komm darauf zurück, sobald dein PPO-Lauf funktioniert.
 
 PPO ist on-policy: es sammelt vor jedem Update frische Rollouts und verwirft sie dann.
 In Multitask-Settings ist das verschwenderisch — Erfahrung aus Aufgabe 0 wird verworfen,
@@ -863,7 +880,14 @@ semantisch ähnlichen, aber nie gesehenen Anweisungen.
 
 ---
 
-## 9 · Verbindung zu Foundation Models
+## 9 · Verbindung zu Foundation Models (optional beim ersten Lesen)
+
+!!! note "Erster Durchgang? Überfliege oder überspringe diesen Abschnitt."
+    Nichts hiervon wird für die Hands-on-Übung gebraucht. Der Kernpfad sind die
+    Abschnitte 1–6, Abschnitt 8 und Abschnitt 10; dieser Abschnitt ist ein
+    konzeptioneller Ausblick, der die aufgabenkonditionierte Policy dieser Unit mit
+    generalistischen Agenten wie Gato und RT-2 verbindet — lies ihn als Einordnung,
+    sobald dein eigener Multitask-Agent trainiert.
 
 Multi-Task-RL ist der konzeptionelle Vorläufer des ehrgeizigsten Ziels im Feld:
 **generalistische Agenten**, die Anweisungen folgen und Aufgaben lösen können, die sie
