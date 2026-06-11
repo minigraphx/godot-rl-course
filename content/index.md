@@ -20,8 +20,8 @@ Learn deep reinforcement learning by building and training agents inside real Go
 | **Phase 2 — Value-Based** | Q-Learning · DQN · curiosity | Bellman equation, Q-tables, DQN, sparse reward exploration |
 | **Phase 3 — Policy-Based** | REINFORCE · Actor-Critic · PPO · SAC · Apply It · PPO from scratch (CleanRL) | Policy gradient theorem, PPO internals, continuous control |
 | **Phase 4 — Scale & Complexity** | Parallel · 3D · Multi-agent · Memory | Real-world training at scale |
-| **Phase 5 — Beyond Reward** | Multi-task RL · Imitation learning · ONNX/WASM · Capstone project | Alternative learning signals, generalist policies, shipping |
-| **Phase 6 — Robotics** | Robot sensors · HER · sim-to-real · Safe RL | Robot observation/action design, goal-conditioned RL, deploying policies to hardware safely |
+| **Phase 5 — Beyond Reward** | Multi-task RL · Imitation learning · RLHF · Offline RL · Decision Transformer · ONNX/WASM · Capstone project | Alternative learning signals, generalist policies, shipping |
+| **Phase 6 — Robotics** | Robot sensors · Locomotion · Diffusion Policy · HER · sim-to-real · Safe RL | Robot observation/action design, goal-conditioned RL, deploying policies to hardware safely |
 | **Guides** | Debugging · Advanced Evaluation · PBT · World Models | Systematic diagnosis, evaluation, hyperparameter AutoML, model-based RL |
 
 ## Three ways to see your AI (every unit)
@@ -75,13 +75,17 @@ Learn deep reinforcement learning by building and training agents inside real Go
 
 - [Multi-Task RL](unit-multitask.md)
 - [Unit 9 — Imitation Learning](unit-09.md)
+- [RLHF & Preference Learning](unit-rlhf.md)
 - [Offline RL](unit-offline-rl.md)
+- [Decision Transformer](unit-decision-transformer.md)
 - [Unit 10 — Ship Your Brain](unit-10.md)
 - [Capstone Project](unit-capstone.md)
 
 **Phase 6 — Robotics**
 
 - [Robot Observations & Sensors](unit-robotics.md)
+- [Locomotion Agents (Walker / Crawler / Worm)](unit-locomotion.md)
+- [Diffusion Policy](unit-diffusion-policy.md)
 - [Goal-Conditioned RL & HER](unit-her.md)
 - [Sim-to-Real Transfer](unit-sim-to-real.md)
 - [Safe RL / Constrained MDPs](unit-safe-rl.md)
@@ -90,6 +94,8 @@ Learn deep reinforcement learning by building and training agents inside real Go
 
 - [Debugging RL Training](unit-debugging.md)
 - [Advanced Evaluation](unit-evaluation.md)
+- [Experiment Tracking (W&B / MLflow)](unit-experiment-tracking.md)
+- [GPU-Accelerated Environments](unit-gpu-envs.md)
 - [Population-Based Training](unit-pbt.md)
 - [World Models / DreamerV3](unit-world-models.md)
 - [Foundation Models for Control (VLA)](unit-foundation-models.md)

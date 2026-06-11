@@ -401,6 +401,9 @@ Ein eigenes großes Thema — siehe Stretch Goals und eine spätere Unit.
 
 ## 10 · Sicherheits-Constraints im Belohnungsdesign
 
+!!! info "Vorerst überspringen — in der Robotik-Phase zurückkommen"
+    Dieser Abschnitt betrifft den Einsatz auf echter Hardware. Komm zurück, wenn du [Sim-to-Real Transfer](unit-sim-to-real.md) oder [Safe RL](unit-safe-rl.md) in Phase 6 erreichst — nichts in den Phasen 1–5 hängt davon ab.
+
 Für die meisten Kursprojekte heißt „schlechte Episode": der Agent kippt oder verfehlt das Ziel. Auf echter Hardware kann eine schlechte Episode ein gebrochenes Servo, einen verbrannten Motor oder ein zerstörtes Getriebe bedeuten. Das Belohnungsdesign muss die Kostenstruktur des realen Systems abbilden.
 
 ### Harte Constraints vs. weiche Strafen
@@ -443,6 +446,9 @@ Praktischer Startpunkt: Hart-Termination bei 90 % des physikalischen Limits; Sof
 ---
 
 ## 11 · Energieeffizienz im Belohnungsdesign
+
+!!! info "Vorerst überspringen — in der Robotik-Phase zurückkommen"
+    Energiestrafen zählen für echte Hardware und natürlich wirkende Gangarten. Komm zurück, wenn du [Fortbewegungsagenten](unit-locomotion.md) oder [Sim-to-Real Transfer](unit-sim-to-real.md) in Phase 6 erreichst.
 
 Energieeffizienz zählt in zwei Kontexten:
 
