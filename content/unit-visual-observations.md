@@ -243,6 +243,9 @@ model.save("virtualcamera_cnn")
 env.close()
 ```
 
+!!! check "Done when"
+    The CNN agent learns the same task your raycast baseline already solved — even if it needs the 3–10× more steps this unit warns about. Concretely: `ep_rew_mean` in TensorBoard climbs clearly above its initial random-policy plateau, and the viz checkpoint (Section 10) shows the agent reacting to objects as they enter the SubViewport feed. Do not gate on matching the raycast run's final reward — that comparison is seed-noisy. If the curve is still flat at the end of your step budget, suspect a frozen SubViewport or broken normalization (Section 8) before reaching for more steps.
+
 Key changes compared to a raycast training script:
 
 | Parameter | Raycast typical | Visual obs typical |
@@ -287,7 +290,10 @@ The `features_dim` kwarg sets the size of the final linear layer (512 → 256 he
 
 ---
 
-## 6 · Custom CNN for your environment
+## 6 · Custom CNN for your environment (optional on a first read)
+
+!!! note "First pass? Skim or skip this section."
+    The default `CnnPolicy` from Section 4 is all you need for your first visual training run. The core path through this unit is Sections 1–4 (SubViewport pipeline and first CNN run), Section 7 (the VirtualCamera reference scene), and Section 10 (viz checkpoint). Come back here when the default CNN works but iteration feels too slow.
 
 `NatureCNN` is sized for Atari. If your task has simple visuals — flat colours, distinct shapes, not much fine detail — a much lighter CNN trains faster and generalises just as well:
 
@@ -398,7 +404,10 @@ Remove or hide the debug display before exporting the binary used for parallel t
 !!! tip "Grayscale first, colour second"
     Start every new visual task with grayscale at 32×32 or 64×64. Verify the agent learns something. Then scale up resolution or add colour only if you have evidence that colour information helps. Each increase in resolution multiplies training time.
 
-### BatchNorm vs LayerNorm vs VecNormalize
+### BatchNorm vs LayerNorm vs VecNormalize (optional on a first read)
+
+!!! note "First pass? Skim or skip this section."
+    None of this is needed for a first successful run — the core path is Sections 1–4 (SubViewport pipeline and first CNN run), Section 7 (the VirtualCamera reference scene), and Section 10 (viz checkpoint). Return here if your CNN training turns out unstable.
 
 Normalization layers are standard in supervised deep learning but their use in RL is nuanced — the non-stationarity of RL data creates specific problems.
 

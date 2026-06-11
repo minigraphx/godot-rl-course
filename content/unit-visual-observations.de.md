@@ -243,6 +243,9 @@ model.save("virtualcamera_cnn")
 env.close()
 ```
 
+!!! check "Fertig, wenn"
+    Der CNN-Agent lernt dieselbe Aufgabe, die deine Raycast-Baseline bereits gelöst hat — auch wenn er dafür die 3–10× mehr Schritte braucht, vor denen diese Unit warnt. Konkret: `ep_rew_mean` in TensorBoard steigt deutlich über das anfängliche Plateau der Zufalls-Policy, und der Viz-Checkpoint (Abschnitt 10) zeigt, dass der Agent auf Objekte reagiert, sobald sie im SubViewport-Feed auftauchen. Mache es nicht zur Bedingung, die finale Belohnung des Raycast-Laufs zu erreichen — dieser Vergleich ist seed-verrauscht. Ist die Kurve am Ende deines Schritt-Budgets noch flach, prüfe zuerst auf einen eingefrorenen SubViewport oder kaputte Normalisierung (Abschnitt 8), bevor du mehr Schritte ansetzt.
+
 Wichtige Änderungen gegenüber einem Raycast-Trainingsskript:
 
 | Parameter | Raycast typisch | Visuelle Obs typisch |
@@ -287,7 +290,10 @@ Das `features_dim`-kwarg setzt die Größe der finalen linearen Schicht (hier 51
 
 ---
 
-## 6 · Custom CNN für deine Umgebung
+## 6 · Custom CNN für deine Umgebung (optional beim ersten Lesen)
+
+!!! note "Erster Durchgang? Überfliege oder überspringe diesen Abschnitt."
+    Die Standard-`CnnPolicy` aus Abschnitt 4 reicht für deinen ersten visuellen Trainingslauf völlig aus. Der Kernpfad durch diese Unit sind die Abschnitte 1–4 (SubViewport-Pipeline und erster CNN-Lauf), Abschnitt 7 (die VirtualCamera-Referenzszene) und Abschnitt 10 (Viz-Checkpoint). Komm hierher zurück, wenn das Standard-CNN funktioniert, dir die Iteration aber zu langsam ist.
 
 `NatureCNN` ist für Atari dimensioniert. Wenn deine Aufgabe einfache Visualisierung hat — flache Farben, klare Formen, nicht viel Detail — trainiert ein viel leichteres CNN schneller und generalisiert genauso gut:
 
@@ -398,7 +404,10 @@ Entferne oder verstecke das Debug-Display, bevor du das für paralleles Training
 !!! tip "Graustufen zuerst, Farbe danach"
     Starte jede neue visuelle Aufgabe mit Graustufen bei 32×32 oder 64×64. Verifiziere, dass der Agent etwas lernt. Skaliere dann die Auflösung hoch oder füge Farbe hinzu, nur wenn du Beweise hast, dass Farbinformation hilft. Jede Erhöhung der Auflösung vervielfacht die Trainingszeit.
 
-### BatchNorm vs LayerNorm vs VecNormalize
+### BatchNorm vs LayerNorm vs VecNormalize (optional beim ersten Lesen)
+
+!!! note "Erster Durchgang? Überfliege oder überspringe diesen Abschnitt."
+    Nichts davon ist für einen ersten erfolgreichen Lauf nötig — der Kernpfad sind die Abschnitte 1–4 (SubViewport-Pipeline und erster CNN-Lauf), Abschnitt 7 (die VirtualCamera-Referenzszene) und Abschnitt 10 (Viz-Checkpoint). Komm hierher zurück, falls dein CNN-Training instabil wird.
 
 Normalisierungsschichten sind Standard im überwachten Deep Learning, aber ihre Nutzung in RL ist nuanciert — die Nichtstationarität von RL-Daten erzeugt spezifische Probleme.
 

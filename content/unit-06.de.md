@@ -161,6 +161,9 @@ Kontinuierliche Aufgaben benötigen typischerweise mehr Zeitschritte als diskret
 | `rollout/ep_rew_mean` | Steigt bis 1M Schritte | Noch negativ bei 500k → Beobachtungsnormalisierung überprüfen |
 | `train/approx_kl` | < 0,02 | Spitzen → `--learning_rate` oder `--clip_range` reduzieren |
 
+!!! check "Fertig, wenn"
+    FlyBy hat keinen veröffentlichten Benchmark — beurteile den Lauf also an seinen eigenen Signalen: `rollout/ep_rew_mean` liegt deutlich über dem Niveau der zufälligen Anfangsphase und steigt bei ~1M Schritten noch weiter, `train/std` sinkt allmählich statt zu kollabieren, und `train/approx_kl` bleibt unter 0,02. Bestätige dann mit dem Viz-Checkpoint (Abschnitt 6): flüssiger, zielgerichteter Flug zu den Checkpoints — kein ruckartiges Oszillieren und kein Drehen auf der Stelle.
+
 ---
 
 ## 6 · Viz-Checkpoint
@@ -272,7 +275,10 @@ Beide Beispiele werden mit `godot_rl_agents_examples` geliefert und exponieren e
 
 ---
 
-## 10 · RayCast3D-Sensordesign für 3D-Umgebungen
+## 10 · RayCast3D-Sensordesign für 3D-Umgebungen (optional beim ersten Lesen)
+
+!!! note "Erster Durchgang? Überfliege oder überspringe diesen Abschnitt."
+    Der Kernpfad dieser Unit sind die Abschnitte 1–7: kontinuierliche Aktionsräume (1), Normalisierung (2), FlyBy öffnen (3), Raycast-Grundlagen (4), Training (5), Viz-Checkpoint (6) und eine eigene Umgebung bauen (7). Abschnitt 4 deckt genug Raycast-Mechanik ab, um FlyBy zu trainieren — komm hierher zurück, wenn du Sensoren für deine eigene Umgebung entwirfst.
 
 Das kurze Strahlenwerfer-Beispiel in Abschnitt 4 behandelt die Mechanik. Dieser Abschnitt geht tiefer auf Designentscheidungen ein.
 
@@ -367,5 +373,12 @@ Wie gewichtest du diese drei Terme, ohne dass einer die anderen überwältigt? P
     5. Wähle eine der beiden Umgebungen (FlyBy vs. HovercraftRacing) — was genau an ihrer Belohnungsform macht sie zu einem anderen Lehrbeispiel als die andere?
 
     Wenn du alle fünf beantworten kannst — bist du bereit.
+
+??? success "Antworten zum Selbstcheck"
+    1. DQN wählt eine Aktion per Argmax über eine endliche Menge von Q-Werten und braucht daher einen **diskreten** Aktionsraum. FlyBys Aktionen sind reelle Zahlen (Schub, Lenkung) — PPO löst das, indem es eine **Gaußsche Verteilung** ausgibt und daraus N Floats zieht; dafür hat DQN keinen Mechanismus.
+    2. Die beiden Werte unterscheiden sich um den Faktor ~4000 in der **Skala** — die Gradientenaktualisierung wird vom großen Distanzwert dominiert, die Geschwindigkeitsdimension wird praktisch ignoriert. Behebe es an der Quelle: Teile jede Beobachtung in `get_obs()` durch ihr erwartetes Maximum, sodass alles ungefähr in [−1, 1] landet.
+    3. `VecNormalize` führt einen **laufenden Mittelwert und eine laufende Standardabweichung** für jede Beobachtungsdimension (und optional für Belohnungen) über alle parallelen Umgebungen hinweg. Die trainierte Policy hat nur normalisierte Eingaben gesehen — bei der Inferenz musst du genau diese Statistiken neu laden, sonst bekommt sie Rohwerte und gibt unsinnige Aktionen aus.
+    4. `train/std` ist die Breite der Gaußschen Aktionsverteilung — also wie stark die Policy noch **exploriert**. Ein Start nahe 1,0 mit langsamem Absinken bedeutet wachsende Sicherheit; ein sofortiger Kollaps auf 0 bedeutet verfrühte Gewissheit (füge `--ent_coef` hinzu).
+    5. Beispiel — **FlyBy**: Die dichte Belohnung für Checkpoint-Nähe liefert ein einziges, klares Lernsignal — das macht es zum saubereren Lehrbeispiel für die Grundlagen kontinuierlicher 3D-Steuerung. Die Belohnung von HovercraftRacing (Rennposition + Geschwindigkeit) mischt Gegner und Streckenzwänge hinein, ein fehlschlagender Lauf hat dort also weit mehr mögliche Ursachen.
 
 [→ Visuelle Beobachtungen](unit-visual-observations.md)

@@ -468,9 +468,28 @@ gdrl train --config config/high_level_ppo.yaml \
 
 Optional Feinabstimmung beider zusammen mit einer niedrigeren Lernrate für den Worker.
 
+!!! check "Fertig, wenn"
+    Für die Multi-Raum-Aufgabe gibt es keinen veröffentlichten Benchmark, also beurteile den
+    Erfolg an den Signalen dieser Unit: Nach Phase 2 sammelt der Agent den Stern in Raum C in
+    der Mehrheit der Episoden ein — etwas, das die flache Sparse-Reward-Baseline aus
+    Abschnitt 1 so gut wie nie schafft — und TensorBoard zeigt die Signatur aus Abschnitt 8:
+    `reward/low_level` konvergiert zuerst, `reward/high_level` steigt erst danach, und
+    `manager/steps_per_option` nimmt zu. Trainingsläufe sind verrauscht, rechne also damit,
+    dass die High-Level-Kurve der Low-Level-Kurve deutlich hinterherhinkt; bleibt
+    `reward/high_level` aber flach, während `reward/low_level` gelöst aussieht, liegt der
+    Verdacht auf dem eingefrorenen Worker-Checkpoint oder der Subziel-Verdrahtung (siehe die
+    Debugging-Fragen in Abschnitt 7) — nicht auf zu wenig Trainingszeit.
+
 ---
 
-## 5 · HIRO — Off-Policy HRL
+## 5 · HIRO — Off-Policy HRL (optional beim ersten Lesen)
+
+!!! note "Erster Durchgang? Überfliege oder überspringe diesen Abschnitt."
+    Der Kern dieser Unit sind die Abschnitte 1–4 — das Long-Horizon-Problem, das
+    Options-Framework, der goal-conditioned Worker und der Godot-Multi-Raum-Aufbau — plus die
+    Abschnitte 7–8 (wann HRL nicht zu verwenden ist und der Viz-Checkpoint). HIRO wird
+    relevant, sobald der zweiphasige Ansatz aus Abschnitt 4 an seine Grenzen stößt; die
+    Kursübung benötigt es nicht.
 
 Der zweiphasige Trainingsansatz oben ist praktisch, aber suboptimal, weil die High-Level-Policy
 auf einem eingefrorenen Worker trainiert, der nicht unter der tatsächlichen
@@ -527,7 +546,13 @@ Stable-Baselines3 enthält HIRO nicht. Optionen:
 
 ---
 
-## 6 · Feudale Netzwerke (Konzeptionell)
+## 6 · Feudale Netzwerke (Konzeptionell, optional beim ersten Lesen)
+
+!!! note "Erster Durchgang? Überfliege oder überspringe diesen Abschnitt."
+    Wie HIRO ist dies Hintergrundwissen für Neugierige — der praktische Pfad läuft über die
+    Abschnitte 1–4 (Problem, Options-Framework, goal-conditioned Worker,
+    Godot-Multi-Raum-Aufbau) und die Abschnitte 7–8 (wann HRL nicht zu verwenden ist,
+    Viz-Checkpoint). Weder die Übung noch die Stretch Goals hängen von Feudal Networks ab.
 
 Feudal Networks (Vezhnevets et al. 2017, „FeUdal Networks for Hierarchical Reinforcement
 Learning") gehen die Manager-Worker-Idee einen Schritt weiter: der Manager arbeitet in einem

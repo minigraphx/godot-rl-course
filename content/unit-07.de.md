@@ -221,6 +221,9 @@ gdrl --env_path=./MultiAgentSimple.x86_64 \
   --speedup=20
 ```
 
+!!! check "Fertig, wenn"
+    Weder Racer noch MultiAgentSimple hat einen veröffentlichten Benchmark, und Multi-Agent-Belohnungskurven sind verrauschter als die Single-Agent-Kurven, die du kennst — mach eine saubere Kurvenform also nicht zur harten Bedingung. Beurteile den Erfolg am **Viz-Checkpoint** (Abschnitt 8): in MultiAgentSimple bewegen sich *beide* Agenten zum Ball bzw. Ziel, statt dass einer untätig herumsteht, und in Racer fahren die Autos Runden, ohne in eine triviale Strategie wie Stillstehen zu verfallen. In TensorBoard sollte `ep_rew_mean` trotz des Rauschens über den Lauf hinweg klar aufwärts tendieren. Eine kooperative Kurve, die früh ein Plateau erreicht, deutet meist auf Free-Riding hin (Abschnitt 6) — nicht darauf, dass mehr Timesteps nötig wären.
+
 ---
 
 ## 6 · Reward Shaping in Multi-Agent-Szenarien
@@ -334,5 +337,12 @@ Schaue 3–5 Episoden im Godot-Editor an:
     5. Wenn zwei kooperierende Agenten dieselbe Belohnung sehen, aber einer die ganze Arbeit macht, wie würdest du das allein anhand von TensorBoard erkennen?
 
     Wenn du alle fünf beantworten kannst — bist du bereit.
+
+??? success "Antworten zum Selbstcheck"
+    1. In MARL sind die anderen Agenten Teil der Umgebung — und sie lernen mit. Sobald Agent B seine Policy aktualisiert, verschiebt sich die Übergangsverteilung, die Agent A erlebt: die Umgebung ist **nichtstationär**. In Single-Agent-RL ist die Dynamik $P(s'|s,a)$ fest, die Stationaritätsannahme gilt, und die üblichen Konvergenzgarantien greifen.
+    2. Zur **geteilten Policy** greifst du bei kooperativen, austauschbaren Agenten — identische `get_obs()` und `get_action_space()` — das senkt den Stichprobenbedarf und mildert die Nichtstationarität — "andere Agenten" und "ich selbst" sind dasselbe Netz, also verschiebt sich das Verhalten aller konsistent, auch wenn die geteilte Policy sich weiterhin mit jedem Update ändert. **Unabhängige Policies** brauchst du bei kompetitiven oder unterschiedlich starken Agenten. Unterschiedliche Beobachtungsformen schließen das Teilen ganz aus: dann musst du separate `StableBaselinesGodotEnv`-Wrapper instanziieren, jeden mit eigenem Modell.
+    3. **CTDE** zentralisiert den Critic beim Training (er sieht den globalen Zustand — Positionen, Geschwindigkeiten und Aktionen aller Agenten) und führt die Actors dezentral aus (jeder handelt nur auf seiner lokalen Beobachtung). Die Trennung hilft, weil der zentrale Critic auf alle Policies gleichzeitig konditioniert und so das Value-Target gegen die Nichtstationarität stabilisiert — während das Deployment so einfach bleibt wie bei einem Single-Agent-System, ohne Kommunikation zur Laufzeit.
+    4. Mit einem **eingefrorenen** Gegner ändert sich dessen Policy nur an expliziten Swap-Schritten; zwischen den Swaps ist die Trainings-MDP annähernd stationär. Trainierst du beide Kopien live, verschiebt sich das Ziel mit jedem Gradient-Update — strategische Oszillation, bei der jede Seite endlos Konter auf die andere neu lernt, statt klar voranzukommen.
+    5. Am Verlauf von `ep_rew_mean`: erreicht die kooperative Kurve früh ein Plateau, unterhalb dessen, was koordiniertes Spiel schaffen sollte, ist das die TensorBoard-Signatur von **Free-Riding** — ein Agent arbeitet, der andere kassiert die geteilte Belohnung fürs Nichtstun. Abhilfe schafft eine individuelle Aktionsstrafe für untätige Agenten.
 
 [→ Unit 8: Memory & POMDPs](unit-08.md)

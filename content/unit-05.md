@@ -94,6 +94,9 @@ gdrl --env_path=./BallChase.x86_64 \
 
 In TensorBoard, switch the x-axis to **wall time** (not steps) to see the real speedup.
 
+!!! check "Done when"
+    All three runs launch cleanly, train to 500k steps, and show up as separate experiments in TensorBoard. With the x-axis on **wall time**, the 8-env run reaches any given `ep_rew_mean` level clearly faster than the 1-env run. Expect a large speedup, but the exact ratio depends on your CPU core count and seed — treat the *ordering* (8 ≥ 4 > 1 in throughput) as the check, not any specific multiplier. On a machine with few cores, 8 envs can tie 4 once the cores saturate — that's your hardware ceiling (extra processes add contention, not throughput), not a broken setup.
+
 !!! tip "n_parallel vs in-scene instances"
     `--n_parallel` launches **separate Godot processes**. In-scene instances run inside **one process**. Both increase parallelism; combining them gives maximum throughput. In-scene instances are easier to set up; `--n_parallel` scales better on multi-core machines.
 
@@ -225,6 +228,13 @@ In TensorBoard, use the shaded area view (IQM or mean ± std) to visualise multi
     5. Why does doubling `n_parallel` often need a matching bump to `batch_size`?
 
     If you can answer all five — you're ready.
+
+??? success "Self-check answers"
+    1. A single env emits **correlated transitions** — consecutive frames from one episode. N parallel envs sample N independent trajectories at the same time, so each batch covers more of the state space; it's that diversity, not just the extra volume, that sharpens the gradient estimate.
+    2. In-scene instances are duplicated env roots inside **one Godot process** — quick to set up, all sharing the same `Sync` node. `--n_parallel` launches **separate Godot processes**, which scales better on multi-core machines. Use in-scene instances for convenience, `--n_parallel` (or both combined) for maximum throughput.
+    3. A shared hardware resource — most likely **saturated CPU cores** (16 envs now contend for fewer physical cores), with RAM per instance and the single trainer process as the next suspects. Past that point, extra envs add contention, not throughput.
+    4. **Seed variance** in RL is huge — identical hyperparameters can land 50% apart in `ep_rew_mean` at convergence, so a single "improved" curve may just be a lucky seed. Only mean ± std across 3–5 paired seeds separates a real effect from randomness.
+    5. Doubling `n_parallel` doubles the rollout buffer; with `batch_size` fixed, PPO compensates by running **twice as many small updates** per epoch — each gradient still averages over only a thin slice of the now-more-diverse buffer, and the longer chain of small updates lets the policy drift further per rollout. Bumping `batch_size` in step keeps the update count stable and lets each gradient actually average over the extra diversity.
 
 [→ Unit 6: Continuous 3D](unit-06.md)
 

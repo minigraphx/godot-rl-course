@@ -461,9 +461,26 @@ gdrl train --config config/high_level_ppo.yaml \
 
 Optionally fine-tune both together at a lower learning rate for the worker.
 
+!!! check "Done when"
+    The multi-room task has no published benchmark, so judge success against the unit's own
+    signals: after Phase 2 the agent collects the star in Room C in the majority of episodes —
+    something the flat sparse-reward baseline from Section 1 rarely manages at all — and
+    TensorBoard shows the Section 8 signature: `reward/low_level` converged first,
+    `reward/high_level` climbing only afterwards, and `manager/steps_per_option` trending up.
+    Runs are noisy, so expect the high-level curve to lag well behind the low-level one; but if
+    `reward/high_level` is still flat while `reward/low_level` looks solved, suspect the frozen
+    worker checkpoint or the subgoal wiring (see the debugging questions in Section 7), not
+    insufficient training time.
+
 ---
 
-## 5 · HIRO — Off-Policy HRL
+## 5 · HIRO — Off-Policy HRL (optional on a first read)
+
+!!! note "First pass? Skim or skip this section."
+    The core of this unit is Sections 1–4 — the long-horizon problem, the Options framework,
+    the goal-conditioned worker, and the Godot multi-room build — plus Sections 7–8 (when not
+    to use HRL, and the viz checkpoint). HIRO becomes relevant once the two-phase approach
+    from Section 4 hits its limits; the course exercise does not require it.
 
 The two-phase training approach above is practical but suboptimal because the high-level
 policy trains on a frozen worker that was not trained under the manager's actual subgoal
@@ -519,7 +536,13 @@ Stable-Baselines3 does not include HIRO. Options:
 
 ---
 
-## 6 · Feudal Networks (Conceptual)
+## 6 · Feudal Networks (Conceptual, optional on a first read)
+
+!!! note "First pass? Skim or skip this section."
+    Like HIRO, this is background for the curious — the hands-on path runs through
+    Sections 1–4 (problem, Options framework, goal-conditioned worker, Godot multi-room
+    build) and Sections 7–8 (when not to use HRL, viz checkpoint). Nothing in the exercise
+    or the Stretch Goals depends on Feudal Networks.
 
 Feudal Networks (Vezhnevets et al. 2017, "FeUdal Networks for Hierarchical Reinforcement
 Learning") take the manager–worker idea one step further: the manager operates in a
