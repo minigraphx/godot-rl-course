@@ -401,6 +401,9 @@ This is a full topic on its own — see the stretch goals and a later unit.
 
 ## 10 · Safety Constraints in Reward Design
 
+!!! info "Skip for now — return with the Robotics phase"
+    This section applies when deploying to real hardware. Come back when you reach [Sim-to-Real Transfer](unit-sim-to-real.md) or [Safe RL](unit-safe-rl.md) in Phase 6 — nothing in Phases 1–5 depends on it.
+
 For most course projects, a "bad episode" means the agent falls over or misses the goal. On real hardware, a bad episode can mean a broken servo, a burned-out motor, or a damaged gearbox. Reward design must reflect the cost structure of the actual system being controlled.
 
 ### Hard constraints vs soft penalties
@@ -443,6 +446,9 @@ A practical starting point: set hard termination at 90% of the physical limit; b
 ---
 
 ## 11 · Energy Efficiency in Reward Design
+
+!!! info "Skip for now — return with the Robotics phase"
+    Energy penalties matter for real hardware and natural-looking gaits. Come back when you reach [Locomotion Agents](unit-locomotion.md) or [Sim-to-Real Transfer](unit-sim-to-real.md) in Phase 6.
 
 Energy efficiency matters in two different contexts:
 

@@ -20,8 +20,8 @@ Lerne Deep Reinforcement Learning durch das Bauen und Trainieren von Agenten in 
 | **Phase 2 — Wertbasiert** | Q-Learning · DQN · Neugier | Bellman-Gleichung, Q-Tabellen, DQN, Erkundung bei spärlichen Belohnungen |
 | **Phase 3 — Richtlinienbasiert** | REINFORCE · Actor-Critic · PPO · SAC · Anwenden · PPO von Grund auf (CleanRL) | Policy-Gradient-Theorem, PPO-Interna, kontinuierliche Steuerung |
 | **Phase 4 — Skalierung** | Parallel · 3D · Multi-Agent · Gedächtnis | Realwelttraining in großem Maßstab |
-| **Phase 5 — Jenseits der Belohnung** | Multi-Task RL · Imitationslernen · ONNX/WASM · Abschlussprojekt | Alternative Lernsignale, generalistische Policies, Deployment |
-| **Phase 6 — Robotik** | Robotersensoren · HER · Sim-to-Real · Safe RL | Roboter-Beobachtungs-/Aktionsdesign, zielkonditioniertes RL |
+| **Phase 5 — Jenseits der Belohnung** | Multi-Task RL · Imitationslernen · RLHF · Offline RL · Decision Transformer · ONNX/WASM · Abschlussprojekt | Alternative Lernsignale, generalistische Policies, Deployment |
+| **Phase 6 — Robotik** | Robotersensoren · Lokomotion · Diffusion Policy · HER · Sim-to-Real · Safe RL | Roboter-Beobachtungs-/Aktionsdesign, zielkonditioniertes RL |
 | **Anleitungen** | Debugging · Fortgeschrittene Evaluation · PBT · World Models | Systematische Diagnose, Evaluation, Hyperparameter-AutoML |
 
 ## Drei Wege, deine KI zu sehen (jede Einheit)
@@ -75,7 +75,9 @@ Lerne Deep Reinforcement Learning durch das Bauen und Trainieren von Agenten in 
 
 - [Multi-Task RL](unit-multitask.md)
 - [Imitationslernen](unit-09.md)
+- [RLHF & Präferenzlernen](unit-rlhf.md)
 - [Offline RL](unit-offline-rl.md)
+- [Decision Transformer](unit-decision-transformer.md)
 - [KI deployen](unit-10.md)
 - [Abschlussprojekt](unit-capstone.md)
 
@@ -83,9 +85,20 @@ Lerne Deep Reinforcement Learning durch das Bauen und Trainieren von Agenten in 
 
 - [Roboterbeobachtungen & Sensoren](unit-robotics.md)
 - [Fortbewegungsagenten](unit-locomotion.md)
+- [Diffusion Policy](unit-diffusion-policy.md)
 - [Zielkonditioniertes RL & HER](unit-her.md)
 - [Sim-to-Real Transfer](unit-sim-to-real.md)
 - [Safe RL / Constrained MDPs](unit-safe-rl.md)
+
+**Anleitungen**
+
+- [Debugging im RL-Training](unit-debugging.md)
+- [Fortgeschrittene Evaluation](unit-evaluation.md)
+- [Experiment-Tracking (W&B / MLflow)](unit-experiment-tracking.md)
+- [GPU-beschleunigte Umgebungen](unit-gpu-envs.md)
+- [Population-Based Training](unit-pbt.md)
+- [World Models / DreamerV3](unit-world-models.md)
+- [Foundation Models für die Steuerung (VLA)](unit-foundation-models.md)
 
 ## Nach diesem Kurs
 
