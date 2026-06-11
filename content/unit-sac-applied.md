@@ -107,6 +107,9 @@ tensorboard --logdir_spec ppo:./tb_logs_ppo,sac:./tb_logs_sac
 
 Now open `localhost:6006` and watch `rollout/ep_rew_mean` for both runs simultaneously.
 
+!!! check "Done when"
+    JumperHard has no published benchmark, so judge the comparison, not a score: (1) both runs show up as separate `rollout/ep_rew_mean` curves under the `ppo` and `sac` tags in one TensorBoard window, and (2) after both finish you can pick any reward level both curves reached and say which algorithm got there in fewer env steps — and explain why, using the replay-buffer reuse argument from Section 1. If either run dies before producing a curve, fix that before comparing anything.
+
 ---
 
 ## 4 · What you'll see
