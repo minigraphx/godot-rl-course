@@ -131,6 +131,9 @@ Sync node properties:
 
 Der Agent läuft mit Spielgeschwindigkeit. Du kannst menschlich gesteuerte Charaktere, Hindernisse oder UI rund um den KI-Agenten ergänzen — er ist jetzt einfach ein weiterer Godot-Node.
 
+!!! check "Fertig, wenn"
+    Die Szene läuft im `ONNX_INFERENCE`-Modus und der Agent spielt kompetent — **ohne einen einzigen laufenden Python-Prozess**: kein `gdrl` in deiner Prozessliste, keine aktivierte conda-Umgebung, nichts zum Abbrechen mit Strg-C. Am Viz-Checkpoint in Abschnitt 9 entspricht das Verhalten dem, was du am Ende des Trainings gesehen hast (ONNX ist deterministisch, es sollte also identisch aussehen). Ein Agent, der zufällig zittert oder einfriert, deutet auf einen falschen Modellpfad oder einen Shape-Mismatch der Beobachtungen hin (Abschnitt 4), nicht auf eine kaputte Runtime.
+
 ---
 
 ## 6 · Export für Desktop
@@ -242,5 +245,12 @@ Du hast den Kurs abgeschlossen. Hier ist, was du gebaut hast:
     5. Wie würdest du nach dem Export plausibilisieren, dass die Godot-seitige Inferenz zu den Python-seitigen Trainings-Rollouts passt?
 
     Wenn du alle fünf beantworten kannst — bist du bereit für das Capstone.
+
+??? success "Antworten zum Selbstcheck"
+    1. Das SB3-`.zip` ist ein PyTorch-Artefakt — um es zu laden, braucht es einen laufenden Python-Prozess. **ONNX** ist ein Standard-Austauschformat, und Godot RL Agents bringt eine GDScript-ONNX-Runtime mit, sodass das ausgelieferte Spiel die Policy ganz ohne Python ausführt (Abschnitt 1).
+    2. Die **Beobachtungs-Shape**, der Aktionsraum und die Bedeutung/Reihenfolge der Werte, die deine Godot-Umgebung dem Modell liefert. Driftet eines davon zwischen Training und ausgelieferter Szene auseinander, läuft der Graph trotzdem — er macht nur aus Müll-Eingaben Müll-Ausgaben. Netron (Abschnitt 4) fängt den Shape-Teil ab.
+    3. Ein *Resume-Training*-Checkpoint (`--resume_model_path`) enthält **Gewichte, Optimizer-State und Schrittzähler**, sodass das Training genau dort weiterläuft, wo es aufgehört hat (Abschnitt 2). Das exportierte ONNX enthält nur den Forward-Pass der Policy — genug zum Handeln, aber nicht zum Weiterlernen.
+    4. Wähle **HTML5/WASM**, wenn jeder ohne Installation per URL spielen können soll (itch.io, GitHub Pages). Der Preis sind Hosting-Auflagen (`SharedArrayBuffer`-Header) und weniger Performance-Spielraum — deshalb rät der Viz-Checkpoint, auf Mobilgerät und Low-End-Laptop zu testen.
+    5. Führe den **Viz-Checkpoint** aus Abschnitt 9 aus: Lass den exportierten Build einige Minuten laufen und vergleiche mit deinen Trainings-Rollouts. ONNX-Inferenz ist deterministisch, das Verhalten sollte also identisch sein — sichtbare Abweichungen deuten auf ein Export-Problem hin, nicht auf Zufall.
 
 [→ Capstone-Projekt](unit-capstone.md) · [← Zurück zur Kursstartseite](index.md)

@@ -131,6 +131,9 @@ Sync node properties:
 
 The agent runs at game speed. You can add human-controlled characters, obstacles, or UI around the AI agent — it's now just another Godot node.
 
+!!! check "Done when"
+    The scene runs in `ONNX_INFERENCE` mode and the agent plays competently with **no Python process alive** — no `gdrl` in your process list, no conda environment activated, nothing to Ctrl-C. At the Section 9 viz checkpoint the behavior matches what you saw at the end of training (ONNX is deterministic, so it should look identical). An agent that jitters randomly or freezes points to a wrong model path or an observation-shape mismatch (Section 4), not a broken runtime.
+
 ---
 
 ## 6 · Export for desktop
@@ -242,5 +245,12 @@ You've completed the course. Here's what you've built:
     5. After export, how would you sanity-check that the Godot-side inference matches the Python-side training rollouts?
 
     If you can answer all five — you're ready for the capstone.
+
+??? success "Self-check answers"
+    1. The SB3 `.zip` is a PyTorch artifact — loading it requires a live Python process. **ONNX** is a standard interchange format, and Godot RL Agents ships a GDScript ONNX runtime, so the shipped game runs the policy with no Python at all (Section 1).
+    2. The **observation shape**, the action space, and the meaning/order of the values your Godot env feeds the model. If any of these drift between training and the shipped scene, the graph still runs — it just maps garbage in to garbage out. Netron (Section 4) catches the shape part.
+    3. A *resume-training* checkpoint (`--resume_model_path`) contains **weights, optimizer state, and step count**, so training continues exactly where it stopped (Section 2). The exported ONNX contains only the policy's forward pass — enough to act, not enough to keep learning.
+    4. Choose **HTML5/WASM** when you want anyone to play via a URL (itch.io, GitHub Pages) without installing anything. It costs hosting constraints (`SharedArrayBuffer` headers) and performance headroom — which is why the viz checkpoint tells you to test on mobile and a low-end laptop.
+    5. Run the Section 9 **viz checkpoint**: play the exported build for several minutes and compare against your training rollouts. ONNX inference is deterministic, so the behavior should be identical — visible drift signals an export problem, not randomness.
 
 [→ Capstone Project](unit-capstone.md) · [← Back to course home](index.md)

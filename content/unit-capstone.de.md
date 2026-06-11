@@ -636,6 +636,13 @@ Kommentiere jeden Abschnitt. „Der Agent hat gelernt, Wänden auszuweichen, wei
 
     Wenn du alle fünf beantworten kannst — leg los. Wenn nicht, liegt die Antwort in den Abschnitten 1–4 oben.
 
+??? success "Antworten zum Selbstcheck"
+    1. Durchgerechnetes Beispiel (Platformer NPC) — „Der Agent ist erfolgreich, wenn er den Level-Ausgang erreicht." Sein **MDP**: Beobachtungen = normalisierter Relativvektor zum Ausgang plus normalisierte Geschwindigkeit (Abschnitt 2); Aktionen = `Discrete(4)`-Bewegung; Reward = `+1.0` terminal beim Erreichen des Ausgangs, `-0.1` bei Timeout, Shaping nur, falls das Training stagniert (Abschnitt 3); terminale Bedingung = Ausgang erreicht oder Schrittlimit. Egal welche Aufgabe: Deine Antwort muss alle vier Teile explizit benennen — ist einer unscharf, geh zurück zu den Abschnitten 2–3, bevor du eine Zeile GDScript schreibst.
+    2. Eine echte Begründung nennt eine konkrete **Aufgaben-Eigenschaft** aus dem Flowchart in Abschnitt 4: z. B. „diskrete Aktionen, dichter Reward → PPO", „kontinuierliche Box-Aktionen, bei denen Sample-Effizienz zählt → SAC", „partielle Beobachtbarkeit → RecurrentPPO". „PPO, weil ich es kenne" ist ebenfalls akzeptabel — die Algorithmuswahl zählt weit weniger als das Reward-Design, und PPO ist der robuste Standard des Kurses.
+    3. Das **Minimum Viable Result** ist die kleinste Version mit einer Umgebung, einem Agenten und einem Erfolgskriterium, deren trainierte Policy die Random-Baseline klar schlägt — ein einzelnes kleines Level, nicht das ganze Spiel. Die Regel aus Abschnitt 1 gilt: Scope Creep ist der Capstone-Killer Nr. 1, und Komplexität kannst du nach der ersten funktionierenden Policy jederzeit ergänzen.
+    4. Das Standard-Protokoll des Kurses: mindestens **3 Seeds** (Abschnitt 5), etwa 50 Eval-Episoden pro Seed gegen eine Random-Policy-Baseline, berichtet als Mittelwert ± Std plus **IQM** (Abschnitt 6). Deterministisch oder stochastisch ist deine Entscheidung — nenne sie nur im Report und halte sie über alle Seeds konsistent.
+    5. Die drei klassischen Muster aus den Abschnitten 3 und 9: (a) **Shaped-Reward-Harvesting** — der Agent erntet Shaping, statt fertig zu werden → halte die Shaping-Summe pro Episode ≤ 0,5 × terminaler Reward; (b) Hin- und Herpendeln zum Ziel, um Distanz-Delta-Reward erneut einzusammeln → nutze potenzialbasiertes Shaping und setze `_prev_dist_to_goal` in `_reset()` zurück; (c) Vermeiden des Episodenendes, weil Überleben sich mehr lohnt → lass den terminalen Reward dominieren und bestrafe Timeouts. Eine Gegenmaßnahme deckt alle drei ab: Schau dir den Agenten nach jedem Run in Godot an — eine hohe Kurve bei bizarrem Verhalten heißt, der Reward wurde ausgetrickst.
+
 ---
 
 [← Ship Your Brain](unit-10.md) · [Kursstartseite](index.md)
