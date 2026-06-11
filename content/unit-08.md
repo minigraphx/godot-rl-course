@@ -166,6 +166,46 @@ model_ppo.learn(total_timesteps=3_000_000)
 | Convergence speed | Faster early | Slower early, higher ceiling |
 | RAM use | Low | Higher (LSTM states per env) |
 
+!!! check "Done when"
+    With both 3M-step runs in TensorBoard, `ep_rew_mean` for RecurrentPPO sits clearly above the PPO baseline, the gap opening somewhere around the 1–2M steps this section predicts. Expect noise — judge the trend over the last million steps, not single spikes. If the two curves are indistinguishable, suspect your observations before your hyperparameters: a leaked global position (§4–§5) makes the env fully observable and erases RecurrentPPO's advantage.
+
+### Build it · Frame stacking on a masked CartPole
+
+Frame stacking is the cheaper memory mechanism from the table above: instead of an LSTM, standard PPO simply receives the last N observations as input. This experiment runs entirely on the pinned course stack — no `sb3-contrib`, no Godot build needed. We hide CartPole's velocities (turning the MDP into a POMDP), then show that four stacked frames bring the missing information back: velocity is just a difference of consecutive positions.
+
+```python
+import gymnasium as gym
+import numpy as np
+from stable_baselines3 import PPO
+from stable_baselines3.common.vec_env import DummyVecEnv, VecFrameStack
+
+class MaskVelocity(gym.ObservationWrapper):
+    """CartPole as a POMDP: keep cart position + pole angle, hide both velocities."""
+    def __init__(self, env):
+        super().__init__(env)
+        high = self.observation_space.high[[0, 2]]
+        self.observation_space = gym.spaces.Box(-high, high, dtype=np.float32)
+
+    def observation(self, obs):
+        return obs[[0, 2]].astype(np.float32)
+
+def make_env():
+    return MaskVelocity(gym.make("CartPole-v1"))
+
+# Baseline: one masked frame per step — velocity is unrecoverable
+blind = DummyVecEnv([make_env] * 8)
+model_blind = PPO("MlpPolicy", blind, verbose=1, tensorboard_log="logs/")
+model_blind.learn(total_timesteps=200_000, tb_log_name="ppo_blind")
+
+# Frame stacking: 4 masked frames — velocity becomes a finite difference
+stacked = VecFrameStack(DummyVecEnv([make_env] * 8), n_stack=4)
+model_stacked = PPO("MlpPolicy", stacked, verbose=1, tensorboard_log="logs/")
+model_stacked.learn(total_timesteps=200_000, tb_log_name="ppo_stacked")
+```
+
+!!! check "Done when"
+    In TensorBoard, `ppo_stacked` climbs decisively while `ppo_blind` plateaus well below it — the same gap pattern the table above predicts for memory vs no memory, reproduced with the cheapest form of memory. Runs are noisy, so expect the ordering, not exact curves. If the two runs look identical, verify `MaskVelocity` is applied in both: the base env's `observation_space` should have shape `(2,)`, not `(4,)`.
+
 ---
 
 ## 8 · Viz checkpoint
@@ -182,7 +222,6 @@ A working LSTM agent will hesitate briefly when losing sight, then move in the l
 
 ## 9 · Stretch goals
 
-- **Stack frames** instead of LSTM: use a `VecFrameStack` wrapper to give the agent the last N observations as input to standard PPO
 - **Longer memory** — increase `lstm_hidden_size` to 512; measure if it helps on a maze-style task
 - **Build a memory task** — design an env where the agent must remember which of two doors it opened last episode
 
@@ -202,5 +241,12 @@ A working LSTM agent will hesitate briefly when losing sight, then move in the l
     5. Name one Godot environment in this course where you would *not* use memory, and one where you would.
 
     If you can answer all five — you're ready.
+
+??? success "Self-check answers"
+    1. A POMDP breaks the **Markov property** — the current observation no longer equals the full state. Concretely, a feed-forward network mapping one observation to one action faces ambiguity: the same observation can demand different actions depending on history, so the network needs a mechanism that carries past observations forward.
+    2. The **hidden state** carries a learned, fixed-size summary of everything relevant seen so far — e.g. "target was last seen to the left" — written and read across timesteps. A feed-forward policy starts from scratch every step and can only react to the current observation.
+    3. **Frame stacking** is enough when the missing information lives in a short, fixed window — like recovering a velocity from the last few positions. You need **RecurrentPPO** when the relevant event can lie arbitrarily far back: a target that left view many steps ago, or which corridor you entered a maze from.
+    4. Unrolling the full episode would mean storing activations and backpropagating through potentially thousands of steps — memory blows up and gradients vanish or explode. **Truncated BPTT** backpropagates only through fixed-length chunks (the `n_steps=512` rollouts), keeping updates cheap and stable while the hidden state still flows forward across chunk boundaries.
+    5. **No memory:** a fully observable env like JumperHard (Unit 4) — its observation already contains everything needed for the optimal action. **Memory:** FPS/RobotFPS from this unit — the target leaves view and the agent has no global position.
 
 [→ Self-Play](unit-self-play.md)
