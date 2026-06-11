@@ -94,6 +94,9 @@ gdrl --env_path=./BallChase.x86_64 \
 
 Schalte in TensorBoard die x-Achse auf **Wanduhrzeit** (nicht Schritte), um den tatsächlichen Speedup zu sehen.
 
+!!! check "Fertig, wenn"
+    Alle drei Läufe starten sauber, trainieren bis 500k Schritte und erscheinen als separate Experimente in TensorBoard. Mit der x-Achse auf **Wanduhrzeit** erreicht der 8-env-Lauf jedes gegebene `ep_rew_mean`-Niveau deutlich schneller als der 1-env-Lauf. Erwarte einen großen Speedup — das genaue Verhältnis hängt aber von CPU-Kernzahl und Seed ab. Prüfkriterium ist die *Reihenfolge* (8 > 4 > 1 beim Durchsatz), nicht ein bestimmter Faktor.
+
 !!! tip "n_parallel vs. Instanzen in der Szene"
     `--n_parallel` startet **separate Godot-Prozesse**. Instanzen in der Szene laufen innerhalb **eines Prozesses**. Beide erhöhen die Parallelität; ihre Kombination ergibt maximalen Durchsatz. Instanzen in der Szene sind einfacher einzurichten; `--n_parallel` skaliert besser auf Mehrkern-Maschinen.
 
@@ -225,6 +228,13 @@ Verwende in TensorBoard die Schattierungsansicht (IQM oder Mittelwert ± Standar
     5. Warum braucht eine Verdopplung von `n_parallel` oft eine entsprechende Erhöhung von `batch_size`?
 
     Wenn du alle fünf beantworten kannst — bist du bereit.
+
+??? success "Antworten zum Selbstcheck"
+    1. Eine einzelne Umgebung erzeugt **korrelierte Übergänge** — aufeinanderfolgende Frames aus derselben Episode. N parallele Umgebungen liefern gleichzeitig N unabhängige Trajektorien, sodass jeder Batch mehr vom Zustandsraum abdeckt; genau diese Vielfalt — nicht bloß die größere Menge — verbessert die Gradientenschätzung.
+    2. Instanzen in der Szene sind duplizierte Umgebungswurzeln innerhalb **eines Godot-Prozesses** — schnell eingerichtet, alle teilen denselben `Sync`-Knoten. `--n_parallel` startet **separate Godot-Prozesse** und skaliert besser auf Mehrkern-Maschinen. Nimm Instanzen in der Szene für den bequemen Einstieg, `--n_parallel` (oder beides kombiniert) für maximalen Durchsatz.
+    3. Eine geteilte Hardware-Ressource — am wahrscheinlichsten **ausgelastete CPU-Kerne** (16 Umgebungen konkurrieren um weniger physische Kerne); danach kommen RAM pro Instanz und der einzelne Trainer-Prozess in Frage. Ab diesem Punkt erzeugen zusätzliche Umgebungen nur noch Konkurrenz, keinen Durchsatz.
+    4. Die **Seed-Varianz** im RL ist enorm — identische Hyperparameter können bei der Konvergenz um 50 % oder mehr in `ep_rew_mean` auseinanderliegen, eine einzelne „verbesserte" Kurve kann also schlicht ein glücklicher Seed sein. Erst Mittelwert ± Standardabweichung über 3–5 gepaarte Seeds trennt einen echten Effekt von Zufall.
+    5. Eine Verdopplung von `n_parallel` verdoppelt die pro Rollout gesammelten Daten; bleibt `batch_size` fix, verschiebt sich das **Verhältnis von Updates zu Daten**, und jedes Gradienten-Update sieht nur einen kleinen Ausschnitt des nun vielfältigeren Buffers. Wer `batch_size` mitwachsen lässt, nutzt die zusätzliche Vielfalt in jedem Update tatsächlich aus.
 
 [→ Unit 6: Kontinuierliche 3D-Steuerung](unit-06.md)
 
