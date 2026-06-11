@@ -703,21 +703,22 @@ model.save("models/multitask_ppo_final")
     Wenn `train_multitask.py` durchgelaufen ist, führe die Pro-Aufgabe-Evaluation aus
     Abschnitt 8 aus (100 Episoden pro Aufgabe): Eine gut trainierte Policy erreicht die
     Marke von ≥ 80 % Erfolg auf **jeder** Aufgabe, wie im Balkendiagramm aus „Drei Wege,
-    deine KI zu beobachten". Während des Trainings sollten alle drei
-    `reward/task_*`-Kurven in TensorBoard gemeinsam steigen — verrauscht und nicht im
-    Gleichschritt. Fällt aber eine Kurve, während eine andere weiter steigt, ist das
-    negativer Transfer und kein Lauf, der nur mehr Schritte braucht: Arbeite Abschnitt 4
-    durch (zuerst die Belohnungsskalen prüfen), bevor du länger trainierst.
+    deine KI zu beobachten". Die Marke ist das Ziel der Unit, keine Seed-feste
+    Garantie — bleibt eine Aufgabe knapp darunter, während alle Kurven weiter gemeinsam
+    steigen, ist das eine Tuning-Frage (die Gewichtungs-Stellschrauben aus Abschnitt 4),
+    kein gescheiterter Lauf. Fällt aber eine Kurve, während eine andere weiter steigt,
+    ist das negativer Transfer und kein Lauf, der nur mehr Schritte braucht: Arbeite
+    Abschnitt 4 durch (zuerst die Belohnungsskalen prüfen), bevor du länger trainierst.
 
 ---
 
 ## 7 · Multi-Task-SAC (optional beim ersten Lesen)
 
 !!! note "Erster Durchgang? Überfliege oder überspringe diesen Abschnitt."
-    Der Kernpfad durch diese Unit sind die Abschnitte 1–6 (Task-Encodings,
-    Multi-Task-PPO, negativer Transfer, Aufgaben-Curricula, das Godot-Beispiel),
-    Abschnitt 8 (Pro-Aufgabe-Evaluation) und Abschnitt 10 (die Entscheidung Multi-Task
-    vs. separate Policies). SAC ist eine Off-Policy-Alternative, die Sample-Effizienz
+    Der Kernpfad durch diese Unit sind die Abschnitte 1–6 (warum Goal Conditioning
+    nicht reicht, Task-Encodings, Multi-Task-PPO, negativer Transfer,
+    Aufgaben-Curricula, das Godot-Beispiel), Abschnitt 8 (Pro-Aufgabe-Evaluation) und
+    Abschnitt 10 (die Entscheidung Multi-Task vs. separate Policies). SAC ist eine Off-Policy-Alternative, die Sample-Effizienz
     bringt — komm darauf zurück, sobald dein PPO-Lauf funktioniert.
 
 PPO ist on-policy: es sammelt vor jedem Update frische Rollouts und verwirft sie dann.

@@ -599,7 +599,7 @@ Baue `chosen_obs`- und `rejected_obs`-Arrays aus `preferences.json`, übergib si
 Die RLHF-Policy behält die *Kompetenz* der handgebauten Baseline (weil die KL-Strafe sie dort verankert) und gewinnt gleichzeitig die *Natürlichkeit* der vom Menschen bevorzugten Trajektorien.
 
 !!! check "Fertig, wenn"
-    Der in Schritt 5 feingetunte Wächter spiegelt die gesammelten Präferenzen am Viz-Checkpoint *sichtbar* wider — im Side-by-Side-Vergleich mit `guard_baseline.zip` sollte ein Designer zuverlässig die neue Policy wählen — während `policy/kl_to_ref` in TensorBoard begrenzt bleibt und die Patrouillen-Abschlussrate nahe an der der Baseline liegt. Betrachte die Tabelle oben als das Muster, nach dem du suchst (Kompetenz behalten, Natürlichkeit gewonnen), nicht als Zahlen, die du treffen musst: Präferenzdaten sind verrauscht, und deine Bewertungen werden abweichen.
+    Der in Schritt 5 fine-getunte Wächter spiegelt die gesammelten Präferenzen am Viz-Checkpoint *sichtbar* wider — im Side-by-Side-Vergleich mit `guard_baseline.zip` sollte ein Designer zuverlässig die neue Policy wählen — während `policy/kl_to_ref` in TensorBoard begrenzt bleibt und die Patrouillen-Abschlussrate nahe an der der Baseline liegt. Betrachte die Tabelle oben als das Muster, nach dem du suchst (Kompetenz behalten, Natürlichkeit gewonnen), nicht als Zahlen, die du treffen musst: Präferenzdaten sind verrauscht, und deine Bewertungen werden abweichen.
 
 ---
 

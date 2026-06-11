@@ -689,9 +689,10 @@ model.save("models/multitask_ppo_final")
 !!! check "Done when"
     After `train_multitask.py` finishes, run the per-task evaluation from Section 8
     (100 episodes per task): a well-trained policy hits the ≥ 80 % success bar on
-    **every** task, as in the bar chart from "Three ways to see your AI". During
-    training, expect all three `reward/task_*` TensorBoard curves to climb together —
-    noisily, and not in lockstep. But if one curve drops while another keeps climbing,
+    **every** task, as in the bar chart from "Three ways to see your AI". The bar is
+    the unit's target, not a seed-proof guarantee — one task plateauing just short
+    while all curves still climb together is a tuning matter (Section 4's weighting
+    knobs), not a failed run. But if one curve drops while another keeps climbing,
     that is negative transfer, not a run that needs more steps: work through Section 4
     (check reward scales first) before training longer.
 
@@ -700,9 +701,10 @@ model.save("models/multitask_ppo_final")
 ## 7 · Multi-Task SAC (optional on a first read)
 
 !!! note "First pass? Skim or skip this section."
-    The core path through this unit is Sections 1–6 (task encodings, multi-task PPO,
-    negative transfer, task curricula, the Godot example), Section 8 (per-task
-    evaluation) and Section 10 (the multi-task vs. separate-policies decision). SAC is
+    The core path through this unit is Sections 1–6 (why goal conditioning isn't
+    enough, task encodings, multi-task PPO, negative transfer, task curricula, the
+    Godot example), Section 8 (per-task evaluation) and Section 10 (the multi-task
+    vs. separate-policies decision). SAC is
     an off-policy alternative that buys sample efficiency — come back to it once your
     PPO run works.
 

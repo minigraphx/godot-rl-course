@@ -502,7 +502,7 @@ plt.savefig("dataset_coverage.png", dpi=150)
 Spärliche Regionen in diesem Plot sind die Bereiche, in denen CQL und IQL am wahrscheinlichsten scheitern. Siehst du große leere Flächen, die kritischen Aufgabenzuständen entsprechen, ziele bei der weiteren Datensammlung gezielt auf diese Zustände.
 
 !!! check "Fertig, wenn"
-    Der Vierfachvergleich oben reproduziert die erwartete Reihenfolge — deine CQL- und IQL-Policies schlagen die Zufalls-Baseline deutlich und erreichen über die 50 Evaluationsepisoden mindestens den mittleren Return der BC-Policy. Für MultiLevelRobot gibt es keinen publizierten Benchmark; die Reihenfolge *ist* das Erfolgskriterium, nicht irgendein absoluter Return-Wert. Landet CQL unter BC, ist das der Distributional-Shift-Fehlermodus aus Abschnitt 2 — mehr Trainingsschritte beheben das nicht; wende stattdessen die Abhilfen oben an (`alpha_learning_rate` senken oder gezielt Demonstrationen für die Lücken aufnehmen, die dein Coverage-Plot offenlegt).
+    Der Vierfachvergleich oben reproduziert die erwartete Reihenfolge — deine CQL- und IQL-Policies schlagen die Zufalls-Baseline deutlich und erreichen über die 50 Evaluationsepisoden mindestens den mittleren Return der BC-Policy. Für MultiLevelRobot gibt es keinen publizierten Benchmark; die Reihenfolge *ist* das Erfolgskriterium, nicht irgendein absoluter Return-Wert. Landet CQL unter BC, ist die konservative Strafe für deinen Datensatz zu aggressiv (oder der Datensatz zu dünn) — mehr Trainingsschritte beheben das nicht; wende stattdessen die Abhilfen oben an (`alpha_learning_rate` senken oder gezielt Demonstrationen für die Lücken aufnehmen, die dein Coverage-Plot offenlegt).
 
 ---
 
