@@ -279,6 +279,9 @@ Beachte die Obergrenze: der **menschliche Bayes-Fehler** liegt selten über 90�
 !!! warning "Train/Val-Splits müssen nach *Trajektorie* erfolgen, nicht nach *Paar*"
     Erscheint Trajektorie `τ_42` sowohl in Trainings- als auch in Validierungspaaren, merkt sich das Modell trivial ihren Score. Splitte zuerst nach Trajektorien-ID, bilde dann Paare innerhalb jedes Splits.
 
+!!! check "Fertig, wenn"
+    `train_reward_model()` meldet eine Held-out-Präferenzgenauigkeit klar über der 50-%-Münzwurflinie — das gesunde Band aus der Tabelle oben ist 70–85 % — ohne verdächtig hoch zu sein (>95 % bedeutet fast immer, dass der Train/Val-Split Trajektorien geleakt hat). Klebt die Genauigkeit nahe am Zufall, prüfe zuerst verrauschte Labels oder zu wenige Paare, bevor du den Loss-Code verdächtigst. Und jage nicht den letzten Prozentpunkten hinterher: Annotatoren sind bei 5–15 % der knappen Fälle uneins, also erreicht kein ehrliches Reward-Modell annähernd 100 %.
+
 ---
 
 ## 4 · PPO mit gelernter Belohnung (die klassische RLHF-Pipeline)
@@ -360,7 +363,10 @@ Ein praktisches adaptives Schema (Stiennon et al., 2020): ziele auf ein festes K
 
 ---
 
-## 5 · DPO — Direct Preference Optimization
+## 5 · DPO — Direct Preference Optimization (optional beim ersten Lesen)
+
+!!! note "Erster Durchgang? Überfliege oder überspringe diesen Abschnitt."
+    Die Abschnitte 0–4 bauen die klassische RLHF-Pipeline auf (Präferenzdaten → Reward-Modell → PPO mit KL-Strafe), und die Abschnitte 6–7 behandeln Reward Hacking und den Godot-Walkthrough — das ist alles, was du brauchst, um RLHF Ende-zu-Ende auszuführen. DPO ist ein eigenständiger alternativer Algorithmus; komm darauf zurück, wenn dein Präferenzdatensatz feststeht und du das Reward-Modell ganz überspringen willst.
 
 2023 veröffentlichten Rafailov et al. ein verblüffendes Ergebnis: **du kannst das Reward-Modell komplett überspringen**. Ihr Algorithmus, DPO (Direct Preference Optimization), formuliert RLHF als einen einzigen überwachten Loss direkt auf Präferenzdaten neu.
 
@@ -591,6 +597,9 @@ Baue `chosen_obs`- und `rejected_obs`-Arrays aus `preferences.json`, übergib si
 | RLHF auf Bootstrap | 93 % | 8,2 | „Ja" |
 
 Die RLHF-Policy behält die *Kompetenz* der handgebauten Baseline (weil die KL-Strafe sie dort verankert) und gewinnt gleichzeitig die *Natürlichkeit* der vom Menschen bevorzugten Trajektorien.
+
+!!! check "Fertig, wenn"
+    Der in Schritt 5 feingetunte Wächter spiegelt die gesammelten Präferenzen am Viz-Checkpoint *sichtbar* wider — im Side-by-Side-Vergleich mit `guard_baseline.zip` sollte ein Designer zuverlässig die neue Policy wählen — während `policy/kl_to_ref` in TensorBoard begrenzt bleibt und die Patrouillen-Abschlussrate nahe an der der Baseline liegt. Betrachte die Tabelle oben als das Muster, nach dem du suchst (Kompetenz behalten, Natürlichkeit gewonnen), nicht als Zahlen, die du treffen musst: Präferenzdaten sind verrauscht, und deine Bewertungen werden abweichen.
 
 ---
 

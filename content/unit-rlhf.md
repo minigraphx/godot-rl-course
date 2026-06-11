@@ -279,6 +279,9 @@ Note the cap: the **human Bayes error** is rarely above 90–95%. Two designers 
 !!! warning "Train/val splits must be by *trajectory*, not by *pair*"
     If trajectory `τ_42` appears in both training pairs and validation pairs, the model trivially memorises its score. Split by trajectory ID first, then form pairs within each split.
 
+!!! check "Done when"
+    `train_reward_model()` reports a held-out preference accuracy clearly above the 50% coin-flip line — the healthy band from the table above is 70–85% — without being suspiciously high (>95% almost always means the train/val split leaked trajectories). If accuracy is stuck near chance, suspect noisy labels or too few pairs before suspecting the loss code. And don't chase the last few points: annotators disagree on 5–15% of close calls, so no honest reward model scores near 100%.
+
 ---
 
 ## 4 · PPO with a learned reward (the classic RLHF pipeline)
@@ -360,7 +363,10 @@ A practical adaptive scheme (Stiennon et al., 2020): target a fixed KL budget (s
 
 ---
 
-## 5 · DPO — Direct Preference Optimization
+## 5 · DPO — Direct Preference Optimization (optional on a first read)
+
+!!! note "First pass? Skim or skip this section."
+    Sections 0–4 build the classic RLHF pipeline (preference data → reward model → PPO with a KL penalty), and Sections 6–7 cover reward hacking and the Godot walkthrough — that is everything you need to run RLHF end to end. DPO is a self-contained alternative algorithm; come back to it when your preference dataset is fixed and you want to skip the reward model entirely.
 
 In 2023, Rafailov et al. published a startling result: **you can skip the reward model entirely**. Their algorithm, DPO (Direct Preference Optimization), reformulates RLHF as a single supervised loss directly on preference data.
 
@@ -591,6 +597,9 @@ Build `chosen_obs` and `rejected_obs` arrays from `preferences.json`, hand them 
 | RLHF on top of bootstrap | 93% | 8.2 | "Yes" |
 
 The RLHF policy keeps the *competence* of the hand-engineered baseline (because the KL penalty anchors it there) while gaining the *naturalness* of the human-preferred trajectories.
+
+!!! check "Done when"
+    The fine-tuned guard from Step 5 *visibly* reflects the collected preferences at the viz checkpoint — watched side-by-side against `guard_baseline.zip`, a designer should reliably pick the new policy — while `policy/kl_to_ref` stays bounded in TensorBoard and the patrol completion rate stays close to the baseline's. Treat the table above as the pattern to look for (competence kept, naturalness gained), not as numbers to hit: preference data is noisy, and your ratings will differ.
 
 ---
 
