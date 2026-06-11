@@ -329,7 +329,7 @@ If ELO is **flat**, training is not working — even though loss may look fine a
 ## 7 · League training implementation sketch (optional on a first read)
 
 !!! note "First pass? Skim or skip this section."
-    The core path through this unit is Sections 1–6 (what self-play is, the AirHockey environment, the two training approaches, ELO) plus Section 8 (the viz checkpoint). League training is the production-grade upgrade; Stretch 1 brings you back here when you are ready to build it in full.
+    The core path through this unit is Sections 1–6 (what self-play is, the AirHockey environment, the three training modes and their two implementation patterns, ELO) plus Section 8 (the viz checkpoint). League training is the production-grade upgrade; Stretch 1 brings you back here when you are ready to build it in full.
 
 League training is the gold standard. Below is a minimal `League` class — fewer than 50 lines — that gets you most of the way to AlphaStar-style training.
 
@@ -442,7 +442,7 @@ If checkpoint 5 plays identically to checkpoint 10 plays identically to checkpoi
 This is the visual analog of ELO rising. If you only have time for one diagnostic, run a round-robin tournament between checkpoints and tabulate win rates.
 
 !!! check "Done when"
-    Do **not** wait for `ep_rew_mean` to climb — in a zero-sum self-play run it hovers near zero by design, even when training is going well, because both sides improve together. You are done when the unit's own diagnostics agree: `self_play/agent_elo` trends upward in TensorBoard while the ELO of a fixed early checkpoint does not, and in a head-to-head viz match a late checkpoint beats an early one more often than it loses (win rate above 50% across several games). Identical-looking play across generations means stalled training, not a finished run.
+    Do **not** wait for `ep_rew_mean` to climb — in a zero-sum self-play run it hovers near zero by design, even when training is going well, because both sides improve together. You are done when the unit's own diagnostics agree: `self_play/agent_elo` trends upward in TensorBoard while a fixed early checkpoint's ELO stays flat or falls (zero-sum updates actively push a losing baseline down), and a late checkpoint beats an early one clearly more often than it loses — single games are coin flips, so use Section 8's round-robin tally over enough games for the win rate to be meaningful, not a best-of-three. Identical-looking play across generations means stalled training, not a finished run.
 
 ---
 

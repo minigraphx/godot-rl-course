@@ -171,12 +171,13 @@ model_ppo.learn(total_timesteps=3_000_000)
 
 ### Bau es · Frame Stacking auf maskiertem CartPole
 
-Frame Stacking ist der günstigere Gedächtnismechanismus aus der Tabelle oben: Statt eines LSTM bekommt Standard-PPO einfach die letzten N Beobachtungen als Eingabe. Dieses Experiment läuft komplett auf dem gepinnten Kurs-Stack — kein `sb3-contrib`, kein Godot-Build nötig. Wir verstecken die Geschwindigkeiten von CartPole (aus dem MDP wird ein POMDP) und zeigen dann, dass vier gestapelte Frames die fehlende Information zurückbringen: Geschwindigkeit ist nur eine Differenz aufeinanderfolgender Positionen.
+Frame Stacking ist der günstigere Gedächtnismechanismus: Statt eines LSTM bekommt Standard-PPO einfach die letzten N Beobachtungen als Eingabe. Dieses Experiment läuft komplett auf dem gepinnten Kurs-Stack — kein `sb3-contrib`, kein Godot-Build nötig. Wir verstecken die Geschwindigkeiten von CartPole (aus dem MDP wird ein POMDP) und zeigen dann, dass vier gestapelte Frames die fehlende Information zurückbringen: Geschwindigkeit ist nur eine Differenz aufeinanderfolgender Positionen.
 
 ```python
 import gymnasium as gym
 import numpy as np
 from stable_baselines3 import PPO
+from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.vec_env import DummyVecEnv, VecFrameStack
 
 class MaskVelocity(gym.ObservationWrapper):
@@ -190,7 +191,8 @@ class MaskVelocity(gym.ObservationWrapper):
         return obs[[0, 2]].astype(np.float32)
 
 def make_env():
-    return MaskVelocity(gym.make("CartPole-v1"))
+    # Monitor records episode returns — without it, ep_rew_mean never reaches TensorBoard
+    return Monitor(MaskVelocity(gym.make("CartPole-v1")))
 
 # Baseline: one masked frame per step — velocity is unrecoverable
 blind = DummyVecEnv([make_env] * 8)
@@ -204,7 +206,7 @@ model_stacked.learn(total_timesteps=200_000, tb_log_name="ppo_stacked")
 ```
 
 !!! check "Fertig, wenn"
-    In TensorBoard steigt `ppo_stacked` deutlich an, während `ppo_blind` weit darunter plateauiert — dasselbe Lückenmuster, das die Tabelle oben für Gedächtnis vs kein Gedächtnis vorhersagt, reproduziert mit der billigsten Form von Gedächtnis. Die Läufe sind verrauscht: Erwarte die Reihenfolge, nicht exakte Kurven. Sehen beide Läufe identisch aus, prüfe, ob `MaskVelocity` in beiden angewendet wird: der `observation_space` der Basis-Env sollte Shape `(2,)` haben, nicht `(4,)`.
+    In TensorBoard steigt `ppo_stacked` deutlich an, während `ppo_blind` weit darunter plateauiert — dieselbe Gedächtnis-vs-kein-Gedächtnis-Lücke wie im Vergleich aus §7, reproduziert mit der billigsten Form von Gedächtnis. Die Läufe sind verrauscht: Erwarte die Reihenfolge, nicht exakte Kurven. Sehen beide Läufe identisch aus, prüfe, ob `MaskVelocity` in beiden angewendet wird: der `observation_space` der Basis-Env sollte Shape `(2,)` haben, nicht `(4,)`.
 
 ---
 
@@ -246,7 +248,7 @@ Ein funktionierender LSTM-Agent wird kurz zögern, wenn er die Sicht verliert, d
     1. Ein POMDP bricht die **Markov-Eigenschaft** — die aktuelle Beobachtung ist nicht mehr der vollständige Zustand. Konkret steht ein Feed-Forward-Netz, das eine Beobachtung auf eine Aktion abbildet, vor Mehrdeutigkeit: Dieselbe Beobachtung kann je nach Vorgeschichte verschiedene Aktionen verlangen, also braucht das Netz einen Mechanismus, der vergangene Beobachtungen mitführt.
     2. Der **verborgene Zustand** trägt eine gelernte Zusammenfassung fester Größe von allem bisher gesehenen Relevanten — z. B. „Ziel wurde zuletzt links gesehen" —, die über Zeitschritte hinweg geschrieben und gelesen wird. Eine Feed-Forward-Policy fängt jeden Schritt bei null an und kann nur auf die aktuelle Beobachtung reagieren.
     3. **Frame Stacking** reicht, wenn die fehlende Information in einem kurzen, festen Fenster steckt — etwa eine Geschwindigkeit aus den letzten Positionen rekonstruieren. **RecurrentPPO** brauchst du, wenn das relevante Ereignis beliebig weit zurückliegen kann: ein Ziel, das vor vielen Schritten aus dem Blickfeld verschwand, oder die Frage, durch welchen Korridor du ein Labyrinth betreten hast.
-    4. Die volle Episode auszurollen hieße, Aktivierungen über potenziell Tausende Schritte zu speichern und durch sie zurückzupropagieren — der Speicher explodiert, und Gradienten verschwinden oder explodieren. **Truncated BPTT** propagiert nur durch Stücke fester Länge zurück (die `n_steps=512`-Rollouts); die Updates bleiben billig und stabil, während der verborgene Zustand weiterhin über Stückgrenzen hinweg fließt.
+    4. Die volle Episode auszurollen hieße, Aktivierungen über potenziell Tausende Schritte zu speichern und durch sie zurückzupropagieren — der Speicher explodiert, und Gradienten verschwinden oder explodieren. **Truncated BPTT** propagiert nur durch Stücke fester Länge zurück (höchstens das `n_steps=512`-Rollout; Minibatching teilt weiter auf); die Updates bleiben billig und stabil, während der verborgene Zustand weiterhin über Stückgrenzen hinweg fließt.
     5. **Kein Gedächtnis:** eine vollständig beobachtbare Umgebung wie JumperHard (Unit 4) — ihre Beobachtung enthält bereits alles, was für die optimale Aktion nötig ist. **Gedächtnis:** FPS/RobotFPS aus dieser Unit — das Ziel verlässt das Blickfeld, und der Agent hat keine globale Position.
 
 [→ Self-Play](unit-self-play.md)
