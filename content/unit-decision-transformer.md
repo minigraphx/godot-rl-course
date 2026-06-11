@@ -340,6 +340,9 @@ target=250   achieved=241.6 ± 22.7
 
 One model produces five qualitatively different policies. This is impossible with standard policy gradient methods — you would have to retrain SAC/PPO from scratch for each target.
 
+!!! check "Done when"
+    There is no fixed score to hit — judge the run by this unit's own signature result: (1) the training loss from Section 3 decreases smoothly over the epochs, and (2) the steering grid above shows achieved return rising with `target_return` — asking for more visibly produces more, roughly tracking the target across the grid. A flat steering curve (every target mapped to the same achieved return) is the failure signature: check the `scale` constant and context length first, then whether your dataset actually contains varied returns (Section 7) — it does not mean you need more epochs.
+
 !!! info "Adaptive difficulty"
     The steering experiment is a direct demonstration of how to build adaptive game difficulty into a single trained model. A NPC controlled by a Decision Transformer can be set to "easy" (low target return), "medium," or "expert" without any retraining or per-difficulty checkpoints.
 
@@ -384,7 +387,10 @@ If your offline dataset contains a diverse mix of returns — including some nea
 
 ---
 
-## 6 · Trajectory Transformer (brief)
+## 6 · Trajectory Transformer (brief, optional on a first read)
+
+!!! note "First pass? Skim or skip this section."
+    The hands-on path runs through Sections 0–5 (the big idea, return-to-go conditioning, architecture, training, steering, and when to prefer DT) plus Section 7 (the Godot dataset and comparison). Trajectory Transformer is a sibling algorithm worth knowing by name — nothing later in the unit depends on it.
 
 **Trajectory Transformer** (Janner et al., 2021) is the closely-related sibling of DT and worth knowing by name.
 
@@ -480,7 +486,10 @@ The DT at `target_return = max` should approach the PPO expert. The DT at `targe
 
 ---
 
-## 8 · Connection to LLMs
+## 8 · Connection to LLMs (optional on a first read)
+
+!!! note "First pass? Skim or skip this section."
+    Like Section 6, this is background for the curious — the hands-on path runs through Sections 0–5 (the big idea, return-to-go conditioning, architecture, training, steering, and when to prefer DT) plus Section 7 (the Godot dataset and comparison). Come back when you want the LLM-ecosystem context behind the "RL as sequence modeling" framing.
 
 A trained Decision Transformer and a trained GPT-style language model are the same algorithm running on different tokens. Both are causal transformers trained with next-token prediction on offline corpora. The only differences are token type (action vs word piece) and modality of input embeddings (linear projections of `(R, s, a)` vs a learned vocabulary embedding).
 
@@ -502,10 +511,10 @@ For the game-AI angle: a single Decision Transformer can play many games at many
 ## 9 · Stretch goals
 
 **Skill-ladder verification on CartPole.**
-Collect three CartPole datasets at distinct skill levels: a random policy (return ~20), a partially trained DQN (return ~100), and a fully trained DQN (return ~500). Train one DT on the union. Run the steering experiment from section 4 with `target_return in {25, 50, 100, 200, 400, 500}`. Plot `achieved_return` vs `target_return`. A near-diagonal line means return conditioning is working; a flat line means the model has collapsed and you need to investigate (likely the scale constant or context length).
+Collect three CartPole datasets at distinct skill levels: a random policy (return ~20), a partially trained DQN (return ~100), and a fully trained DQN (return ~500). Train one DT on the union. Run the steering experiment from Section 4 with `target_return in {25, 50, 100, 200, 400, 500}`. Plot `achieved_return` vs `target_return`. A near-diagonal line means return conditioning is working; a flat line means the model has collapsed and you need to investigate (likely the scale constant or context length).
 
 **Head-to-head with CQL and IQL on a Godot env.**
-Take the four-PPO-checkpoint dataset from section 7. Train three policies on it: CQL (with d3rlpy), IQL (with d3rlpy), and DT (this unit). Evaluate all three on the MultiLevelRobot task for 50 episodes each. Report mean episode return and success rate. Expected outcome: DT competitive with or slightly behind IQL on this task; well ahead of CQL if dataset coverage is rich.
+Take the four-PPO-checkpoint dataset from Section 7. Train three policies on it: CQL (with d3rlpy), IQL (with d3rlpy), and DT (this unit). Evaluate all three on the MultiLevelRobot task for 50 episodes each. Report mean episode return and success rate. Expected outcome: DT competitive with or slightly behind IQL on this task; well ahead of CQL if dataset coverage is rich.
 
 **Attention visualization.**
 Modify the `DecisionTransformer.forward` method to also return the attention weights from the final layer (use `torch.nn.functional.scaled_dot_product_attention` with `return_attention=True`, or swap in a custom attention module). For one rollout episode, plot the attention map (`3K x 3K`) at each step. Annotate which past tokens the model attends to at branch points in the environment (door openings, platform transitions). You should see attention spikes lining up with semantically important past states.

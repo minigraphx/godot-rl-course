@@ -340,6 +340,9 @@ target=250   achieved=241.6 ± 22.7
 
 Ein Modell produziert fünf qualitativ unterschiedliche Policies. Das ist mit Standard-Policy-Gradient-Methoden unmöglich — du müsstest SAC/PPO für jedes Ziel neu trainieren.
 
+!!! check "Fertig, wenn"
+    Es gibt keinen festen Score zu erreichen — beurteile den Lauf am Signaturergebnis dieser Unit: (1) der Trainings-Loss aus Abschnitt 3 fällt glatt über die Epochen, und (2) das Lenkraster oben zeigt, dass der erreichte Return mit `target_return` steigt — mehr zu verlangen produziert sichtbar mehr und folgt dem Ziel grob über das ganze Raster hinweg. Eine flache Lenkkurve (jedes Ziel wird auf denselben erreichten Return abgebildet) ist die Fehlersignatur: prüfe zuerst die `scale`-Konstante und die Kontextlänge, dann ob dein Datensatz tatsächlich variierte Returns enthält (Abschnitt 7) — mehr Epochen sind nicht die Lösung.
+
 !!! info "Adaptive Schwierigkeit"
     Das Lenkexperiment ist eine direkte Demonstration, wie man adaptive Spielschwierigkeit in ein einziges trainiertes Modell baut. Ein von einem Decision Transformer gesteuerter NPC kann auf „einfach" (niedriger Target-Return), „mittel" oder „Experte" gesetzt werden, ohne irgendein Retraining oder Per-Schwierigkeits-Checkpoints.
 
@@ -384,7 +387,10 @@ Enthält dein Offline-Datensatz einen vielfältigen Mix an Returns — einschlie
 
 ---
 
-## 6 · Trajectory Transformer (kurz)
+## 6 · Trajectory Transformer (kurz, optional beim ersten Lesen)
+
+!!! note "Erster Durchgang? Überfliege oder überspringe diesen Abschnitt."
+    Der Hands-on-Pfad läuft durch die Abschnitte 0–5 (die große Idee, Return-to-Go-Konditionierung, Architektur, Training, Lenken und wann DT die richtige Wahl ist) plus Abschnitt 7 (Godot-Datensatz und Vergleich). Trajectory Transformer ist ein Geschwister-Algorithmus, den man beim Namen kennen sollte — nichts Späteres in dieser Unit hängt davon ab.
 
 **Trajectory Transformer** (Janner et al., 2021) ist das eng verwandte Geschwister des DT und es lohnt sich, ihn beim Namen zu kennen.
 
@@ -480,7 +486,10 @@ Das DT bei `target_return = max` sollte sich dem PPO-Experten annähern. Das DT 
 
 ---
 
-## 8 · Verbindung zu LLMs
+## 8 · Verbindung zu LLMs (optional beim ersten Lesen)
+
+!!! note "Erster Durchgang? Überfliege oder überspringe diesen Abschnitt."
+    Wie Abschnitt 6 ist das Hintergrund für Neugierige — der Hands-on-Pfad läuft durch die Abschnitte 0–5 (die große Idee, Return-to-Go-Konditionierung, Architektur, Training, Lenken und wann DT die richtige Wahl ist) plus Abschnitt 7 (Godot-Datensatz und Vergleich). Komm hierher zurück, wenn du den LLM-Ökosystem-Kontext hinter dem „RL als Sequence Modeling"-Framing willst.
 
 Ein trainierter Decision Transformer und ein trainiertes GPT-Sprachmodell sind derselbe Algorithmus, der auf verschiedenen Tokens läuft. Beide sind kausale Transformer, trainiert mit Next-Token-Prediction auf Offline-Korpora. Die einzigen Unterschiede sind Token-Typ (Aktion vs. Wortteil) und Modalität der Input-Embeddings (lineare Projektionen von `(R, s, a)` vs. ein gelerntes Vokabular-Embedding).
 
