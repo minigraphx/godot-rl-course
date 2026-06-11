@@ -326,7 +326,10 @@ If ELO is **flat**, training is not working — even though loss may look fine a
 
 ---
 
-## 7 · League training implementation sketch
+## 7 · League training implementation sketch (optional on a first read)
+
+!!! note "First pass? Skim or skip this section."
+    The core path through this unit is Sections 1–6 (what self-play is, the AirHockey environment, the two training approaches, ELO) plus Section 8 (the viz checkpoint). League training is the production-grade upgrade; Stretch 1 brings you back here when you are ready to build it in full.
 
 League training is the gold standard. Below is a minimal `League` class — fewer than 50 lines — that gets you most of the way to AlphaStar-style training.
 
@@ -437,6 +440,9 @@ The single most diagnostic test: **load checkpoints from different generations a
 If checkpoint 5 plays identically to checkpoint 10 plays identically to checkpoint 20 — training stalled. If each generation **plays noticeably differently and beats the previous generation more often than it loses** — self-play is working.
 
 This is the visual analog of ELO rising. If you only have time for one diagnostic, run a round-robin tournament between checkpoints and tabulate win rates.
+
+!!! check "Done when"
+    Do **not** wait for `ep_rew_mean` to climb — in a zero-sum self-play run it hovers near zero by design, even when training is going well, because both sides improve together. You are done when the unit's own diagnostics agree: `self_play/agent_elo` trends upward in TensorBoard while the ELO of a fixed early checkpoint does not, and in a head-to-head viz match a late checkpoint beats an early one more often than it loses (win rate above 50% across several games). Identical-looking play across generations means stalled training, not a finished run.
 
 ---
 

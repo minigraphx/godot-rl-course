@@ -221,6 +221,9 @@ gdrl --env_path=./MultiAgentSimple.x86_64 \
   --speedup=20
 ```
 
+!!! check "Done when"
+    Neither Racer nor MultiAgentSimple has a published benchmark, and multi-agent reward curves are noisier than the single-agent ones you know — don't make a clean curve shape a hard gate. Judge success at the **viz checkpoint** (section 8): in MultiAgentSimple *both* agents move toward the ball/goal instead of one standing idle, and in Racer the cars complete laps without converging on a trivial strategy like standing still. On TensorBoard, `ep_rew_mean` should trend clearly upward over the run despite the noise. A cooperative curve that plateaus early usually points to free-riding (section 6), not to needing more timesteps.
+
 ---
 
 ## 6 · Reward shaping in multi-agent settings
@@ -334,5 +337,12 @@ Watch 3–5 episodes in the Godot editor:
     5. If two cooperating agents see the same reward but one is doing all the work, how would you detect that from TensorBoard alone?
 
     If you can answer all five — you're ready.
+
+??? success "Self-check answers"
+    1. In MARL, other agents are part of the environment — and they are learning too, so the transition distribution agent A experiences shifts every time agent B updates its policy: the environment is **non-stationary**. In single-agent RL the dynamics $P(s'|s,a)$ are fixed, so the stationarity assumption holds and the usual convergence guarantees apply.
+    2. Reach for a **shared policy** when agents are cooperative and interchangeable — identical `get_obs()` and `get_action_space()` — it cuts sample requirements and sidesteps non-stationarity, since "other agents" and "self" are the same network. Use **independent policies** for competitive or differently-skilled agents. Different observation shapes rule out sharing entirely: you must instantiate separate `StableBaselinesGodotEnv` wrappers, each with its own model.
+    3. **CTDE** centralises the critic during training (it sees the global state — all agents' positions, velocities, and actions) and decentralises execution (each actor acts on its own local observation only). The split helps because the centralised critic conditions on all policies at once, stabilising the value target against non-stationarity, while deployment stays as simple as single-agent — no runtime communication.
+    4. **Snapshotting** the opponent means its policy only changes at explicit swap steps, so between swaps the training MDP is approximately stationary. Training both copies live shifts the target with every gradient update and invites strategic oscillation — each side endlessly re-learning counters with no clear progress.
+    5. Look at `ep_rew_mean`: a cooperative curve that plateaus early, below what coordinated play should reach, is the TensorBoard signature of **free-riding** — one agent works while the other collects the shared reward for doing nothing. The fix is an individual action penalty for idle agents.
 
 [→ Unit 8: Memory & POMDPs](unit-08.md)
