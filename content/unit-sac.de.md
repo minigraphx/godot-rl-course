@@ -267,6 +267,9 @@ Ein paar Notizen zu den Hyperparametern:
 | `train/ent_coef_loss` | Der Loss für das Temperatur-Update. Sollte im Gleichgewicht nahe null schweben |
 | `rollout/ep_rew_mean` | Die Haupt-Performance-Metrik — wie bei PPO |
 
+!!! check "Fertig, wenn"
+    FlyBy hat keinen veröffentlichten Benchmark, also beurteile den Lauf an seinen Signalen: (1) `rollout/ep_rew_mean` ist klar über das Niveau gestiegen, auf dem es während der Zufalls-Policy-Aufwärmphase (`learning_starts`) lag, und steigt weiter, und (2) `train/ent_coef` hat sich bei einem kleinen positiven Wert eingependelt — weder auf 0 kollabiert noch beim Anfangswert hängen geblieben. Eine Belohnungskurve, die weit nach `learning_starts` noch flach auf der Zufalls-Baseline liegt, deutet auf ein Setup-Problem (ist der Aktionsraum rein kontinuierlich?), nicht auf zu wenige Schritte.
+
 !!! warning "Erwarte keine Parallel-Speedups"
     SACs Update ist pro Umgebungsschritt. Mehr parallele Envs erhöhen Datensammlung, aber **nicht** proportional die Gradientenschritte. Setze `n_parallel=1` (oder 2–4, wenn deine Sim sehr schnell ist) und lass den Algorithmus arbeiten.
 
@@ -299,7 +302,9 @@ Das ist die Tabelle, zu der du zurückkehren solltest, wann immer du ein neues P
 
 ---
 
-## 6 · Der Reparameterisierungs-Trick — warum SACs Actor-Update funktioniert
+## 6 · Der Reparameterisierungs-Trick — warum SACs Actor-Update funktioniert (optional beim ersten Lesen)
+
+!!! note "Erster Durchgang? Überfliege oder überspringe diesen Abschnitt."
 
 Das Actor-Update in §3.2 enthält diesen Erwartungswert:
 
@@ -469,5 +474,12 @@ Alternativ kannst du auf **Unit 5: Paralleles Training** vorgreifen (`n_parallel
     5. Was würde dich auf einer kontinuierlichen Godot-Env (z. B. FlyBy) zu SAC statt PPO drücken, und was zurück zu PPO?
 
     Wenn du alle fünf beantworten kannst — du kannst auf einer neuen Aufgabe zwischen PPO und SAC wählen, ohne zu raten.
+
+??? success "Antworten zum Selbstcheck"
+    1. PPO ist on-policy: sein geclipptes Objektiv stützt sich auf ein Importance-Sampling-Verhältnis, das nur für Daten der aktuellen Policy gültig ist, also werden Transitionen nach `n_epochs` Durchläufen verworfen. SACs Bellman-Update hängt nicht von der datenerzeugenden Policy ab, also lässt ein **Replay-Buffer** jede Transition über viele Gradientenschritte wiederverwenden — dasselbe Belohnungslevel wird mit deutlich weniger Umgebungsschritten erreicht.
+    2. Er fügt `α · H(π(·|s))` — eine Belohnung dafür, **stochastisch zu bleiben** — direkt ins Objektiv ein, nicht als angeschraubten Bonus. Das gibt natürliche Erkundung, vermeidet vorzeitiges Festlegen auf früh auszahlende Strategien und hält mehrere gleich gute Aktionsmodi am Leben.
+    3. Ein einzelnes Q-Netz **überschätzt** Werte systematisch wegen der max-artigen Operation im Bellman-Backup. `min(Q_θ1, Q_θ2)` über zwei unabhängig trainierte Critics zu nehmen — der von TD3 geerbte **Twin-Critic-Trick** — ist eine billige, effektive Methode, diesen Bias zu neutralisieren.
+    4. Es macht die **Temperatur α** zu einem lernbaren Parameter, der in jedem Gradientenschritt so justiert wird, dass die Policy-Entropie **`H_target`** folgt (Default `-dim(action_space)`): Entropie unter dem Ziel drückt α nach oben (mehr Erkundungsdruck), Entropie über dem Ziel nach unten.
+    5. Richtung SAC: ein rein **kontinuierlicher Aktionsraum**, teure Simulation und Datensammlung als Flaschenhals — Stichprobeneffizienz gewinnt. Zurück zu PPO: irgendwelche diskreten Aktionen im Mix, oder eine billige Env, die problemlos 8+ parallele Kopien fährt, wo PPOs Wall-Clock-Skalierung SACs Datenwiederverwendung schlägt.
 
 [→ Anwenden — SAC vs PPO auf JumperHard](unit-sac-applied.md) · [→ Paralleles Training](unit-05.md)
