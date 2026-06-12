@@ -144,7 +144,10 @@ A fixed penalty of `-100` is equivalent to setting `λ = 100` and never updating
 
 ---
 
-## 4 · CPO — Constrained Policy Optimization
+## 4 · CPO — Constrained Policy Optimization (optional on a first read)
+
+!!! note "First pass? Skim or skip this section."
+    Sections 1–3 build the theory (the penalty trap, the CMDP formulation, Lagrangian relaxation), and Sections 5–9 take PPO-Lagrangian from working code through the Godot implementation to the viz checkpoint — that is everything you need to train a constrained agent. CPO is the heavier second-order alternative; come back to it when a constraint violation *during training* is itself unacceptable, e.g. on real hardware.
 
 **CPO (Achiam et al. 2017)** is the trust-region method for CMDPs. It extends TRPO to the constrained setting by solving a constrained policy update at each step:
 
@@ -350,6 +353,9 @@ class LagrangianPPO(PPO):
 ```
 
 For a production-quality implementation, see [safety-baselines3](https://github.com/PKU-Alignment/safety-gymnasium) or [FSRL (Tianshou-based)](https://github.com/liuzuxin/FSRL), which implement PPO-Lagrangian with the rollout buffer integration already done correctly.
+
+!!! check "Done when"
+    On `SafetyPointGoal1-v0`, `rollout/ep_rew_mean` climbs *while* `constraint/ep_cost_mean` settles at or below the `d = 25.0` budget the callback sets, and `constraint/lambda` peaks then levels off instead of rising without end — the healthy shape from Section 9. A λ that keeps climbing or curves that oscillate with no trend are tuning signals, not bugs: work through the failure patterns in Section 9 (check that `d` is achievable, halve `lr_lambda`) before suspecting the wrapper code.
 
 ---
 

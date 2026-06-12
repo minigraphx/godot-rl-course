@@ -589,6 +589,9 @@ Reference score : 500 (maximum achievable reward)
     - [ ] Training-Timesteps pro Seed angegeben
     - [ ] Evaluations-Fenster (letzte N Episoden) spezifiziert
 
+!!! check "Fertig, wenn"
+    Du hast TensorBoard-Logs für mindestens 5 Seeds pro Algorithmus (im `train_seeds.sh`-Layout aus Abschnitt 2), und `evaluate.py` druckt die Ergebnistabelle — IQM und 95 % Bootstrap-CI pro Algorithmus — über **deine eigenen Läufe**, nicht die synthetischen Daten. Du kannst sagen, welche Aussage die Tabelle stützt: Entweder überlappen die CIs nicht („keine Überlappung = signifikant", wie in der Zusammenfassung), oder sie überlappen — dann entscheidet diese Tabelle allein die Frage nicht: Ergänze Seeds oder nutze den Probability-of-Improvement-Test aus Abschnitt 5, bevor du einen Unterschied *oder* dessen Fehlen behauptest. Hast du zusätzlich das Profil-Skript aus Abschnitt 4 auf deinen Scores laufen lassen, existiert `performance_profile_flyby.png` und erzählt dieselbe Geschichte wie die Tabelle.
+
 ---
 
 ## 7 · Angewendetes Beispiel — PPO vs SAC auf FlyBy

@@ -374,6 +374,9 @@ Run with `--viz` at 3M, 6M, and 10M steps. Look for:
 
 **Terrain test:** Add a slight slope or a low obstacle. A 10M policy will adapt without retraining. If it falls immediately, the domain is too far outside what it trained on — add terrain variation to the training environment.
 
+!!! check "Done when"
+    Locomotion has no published benchmark in these Godot environments, so the gate is gait emergence, not a reward number: at the 6M viz checkpoint above, the Walker travels forward consistently with an alternating gait instead of falling or twitching in place, and TensorBoard tracks the Section 6 table — `ep_len_mean` no longer pinned at 20–50 steps, `ep_rew_mean` still climbing through 5–10M. If you see a Section 7 failure mode instead (statue, spinner, hopper, instant collapse), apply that fix — usually a reward coefficient, per the Section 5 warning — rather than just training longer. And per Section 6: do not judge the run at 1M steps.
+
 ---
 
 ## 10 · Stretch goals

@@ -326,6 +326,9 @@ model.save("ppo_pong_envpool")
 !!! warning "EnvPool-Spieleliste"
     EnvPool unterstützt Atari (via ALE), klassisches MuJoCo (v4 und früher), DMControl und eine Handvoll anderer Umgebungen. Es unterstützt **keine** Custom-Umgebungen oder Godot. Für Custom-Tasks bleib bei `SubprocVecEnv` oder schau auf Isaac Lab / Brax.
 
+!!! check "Fertig, wenn"
+    Das ist eine Lese-Unit, das Kriterium ist also eine Entscheidung, kein trainiertes Modell: Zu jedem beliebigen Task — einem aus diesem Kurs, einer Paper-Baseline oder deiner eigenen Idee — kannst du auf die passende Zeile der Entscheidungstabelle in Abschnitt 1 zeigen und benennen, in welchem der vier Frameworks du ihn trainieren würdest und warum. Optional: Wenn du den EnvPool-Schnellstart aus Abschnitt 6 ausgeführt hast, liegt `time/fps` in TensorBoard **deutlich über** dem, was dieselbe Maschine mit `SubprocVecEnv` erreicht — dieser Abstand ist der Punkt des Sanity-Checks oben; deine absoluten Zahlen hängen von der Hardware ab und davon, wie viel Zeit die Forward-/Backward-Pässe der Policy gegenüber den Umgebungen verbrauchen.
+
 ---
 
 ## 7 · Stretch Goals

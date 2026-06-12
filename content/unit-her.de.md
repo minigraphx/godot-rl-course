@@ -279,6 +279,9 @@ Die Metriken, die zählen:
 
 FetchReach (3-DOF Reach) wird in ~200 k Steps mit HER gelöst. Ohne HER (setze `replay_buffer_class=None`) braucht SAC typisch 2–5× mehr Steps, und bei den härteren Aufgaben unten scheitert es komplett.
 
+!!! check "Fertig, wenn"
+    `rollout/success_rate` auf FetchReach löst sich vom Boden und nähert sich um die ~200 k-Steps-Marke dem in der Unit genannten Niveau von ≈ 0,9–0,95, während `rollout/ep_rew_mean` von `-50` Richtung `0` steigt — ein Lauf in dieser Gegend ist gelöst; lass ihn nicht an den letzten Hundertsteln scheitern. Lässt du zusätzlich die No-HER-Baseline (`replay_buffer_class=None`) mit demselben Budget laufen, sollte ihre Kurve sichtbar darunter liegen — ohne HER braucht SAC 2–5× mehr Steps. Eine `success_rate`, die nach dem vollen Budget immer noch flach bei null liegt, ist kein „länger trainieren"-Problem: prüfe zuerst, dass `train/critic_loss` nicht flach auf null ist (falls doch, erzeugt das Relabeling keine positiven Belohnungen), und arbeite dann die Checkliste in Abschnitt 11 durch, beginnend mit dem Bit-für-Bit-Konsistenzcheck von `compute_reward`.
+
 ### Eine härtere Aufgabe: FetchPush
 
 ```python

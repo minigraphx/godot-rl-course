@@ -48,7 +48,10 @@ Der Preis, den du zahlst, ist Rechenleistung: statt eines einzigen Forward Passe
 
 ---
 
-## 1 · Diffusionsmodelle — von Bildern zu Aktionen
+## 1 · Diffusionsmodelle — von Bildern zu Aktionen (optional beim ersten Lesen)
+
+!!! note "Erster Durchgang? Überfliege oder überspringe diesen Abschnitt."
+    Der Hands-on-Pfad läuft durch Abschnitt 0 (das Multimodalitätsproblem) und die Abschnitte 2–7 (Architektur und Code, Action Chunking, DDIM-Inferenzkosten, der Vergleich mit SAC und PPO, der Godot-Trainings-Workflow und wann Diffusion die richtige Wahl ist). Dieser Abschnitt ist das *Warum* hinter dem Code: die `loss()`- und `sample()`-Methoden in Abschnitt 2 implementieren genau diese Formeln — du kannst also erst bauen und später für die Herleitung zurückkommen.
 
 Diffusionsmodelle wurden für die Bildgenerierung erfunden (Sohl-Dickstein 2015; Ho et al. 2020, DDPM). Dieselbe Mechanik überträgt sich ohne konzeptionelle Änderung auf die Aktionsgenerierung — wir tauschen nur die Datendimension von `H×W×3` auf `act_dim` und fügen eine Observation als Konditionierungs-Input hinzu.
 
@@ -406,6 +409,9 @@ torch.jit.save(scripted, "diffusion_policy_scripted.pt")
 
 !!! warning "Achte beim Deploy auf die Aktionsnormalisierung"
     Das Diffusionsmodell wurde auf Aktionen in `[-1, 1]` trainiert. Deine Godot-Env erwartet fast sicher Aktionen in einem anderen Bereich (Gelenkwinkel in Radiant, Schubkräfte in Newton usw.). Der Inferenzserver ist für die inverse Normalisierung verantwortlich: `env_action = unnormalise(sampled_action)`. Das zu vergessen ist der mit Abstand häufigste Deployment-Bug.
+
+!!! check "Fertig, wenn"
+    Es gibt keinen festen Loss-Wert zu erreichen — beurteile den Lauf an den eigenen Signalen dieser Unit: (1) der noise-MSE, den die Trainingsschleife aus Schritt 2 druckt, fällt glatt über die Epochen, und (2) die deployte Policy reproduziert sichtbar das demonstrierte Verhalten im Godot-Viewer — bei dem `n_ddim_steps`, mit dem du deployt hast (das Snippet aus Schritt 3 nutzt 10; die Faustregel aus Abschnitt 4 startet bei 20). Ein noise-MSE, der sich kaum vom Startwert wegbewegt, ist die Fehlersignatur für unnormalisierte Daten — prüfe zuerst, dass Aktionen und Observations in einen vergleichbaren Bereich skaliert sind (die Warnung in Abschnitt 2), statt länger zu trainieren. Ein Modell, dessen Loss sauber fällt, das sich in Godot aber erratisch verhält, deutet auf die inverse Normalisierung im Inferenzserver (die Warnung oben), nicht auf das Modell.
 
 ---
 

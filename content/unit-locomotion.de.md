@@ -374,6 +374,9 @@ Mit `--viz` bei 3M, 6M und 10M Steps laufen lassen. Achte auf:
 
 **Terrain-Test:** Eine leichte Steigung oder ein niedriges Hindernis hinzufügen. Eine 10M-Policy passt sich ohne Nachtraining an. Fällt sie sofort, ist die Domäne zu weit außerhalb des Trainierten — füge Terrainvariation zur Trainingsumgebung hinzu.
 
+!!! check "Fertig, wenn"
+    Für Lokomotion gibt es in diesen Godot-Umgebungen keinen veröffentlichten Benchmark, also ist das Kriterium das Entstehen eines Gangs, keine Reward-Zahl: Am 6M-Viz-Checkpoint oben bewegt sich der Walker konsistent mit alternierendem Gang vorwärts, statt zu fallen oder auf der Stelle zu zucken, und TensorBoard folgt der Tabelle in Abschnitt 6 — `ep_len_mean` hängt nicht mehr bei 20–50 Steps, `ep_rew_mean` steigt über 5–10M weiter. Siehst du stattdessen einen Fehlermodus aus Abschnitt 7 (Statue, Spinner, Hopper, sofortiger Zusammenbruch), wende dessen Fix an — meist ein Reward-Koeffizient, gemäß der Warnung in Abschnitt 5 — statt einfach länger zu trainieren. Und wie in Abschnitt 6 gesagt: Beurteile den Lauf nicht bei 1M Steps.
+
 ---
 
 ## 10 · Stretch Goals

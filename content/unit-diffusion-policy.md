@@ -48,7 +48,10 @@ The price you pay is computational: instead of a single forward pass, you run `T
 
 ---
 
-## 1 · Diffusion models — from images to actions
+## 1 · Diffusion models — from images to actions (optional on a first read)
+
+!!! note "First pass? Skim or skip this section."
+    The hands-on path runs through Section 0 (the multimodality problem) and Sections 2–7 (the architecture and code, action chunking, DDIM inference cost, the comparison with SAC and PPO, the Godot training workflow, and when to choose diffusion). This section is the *why* behind the code: the `loss()` and `sample()` methods in Section 2 implement exactly these formulas, so you can build first and come back for the derivation.
 
 Diffusion models were invented for image generation (Sohl-Dickstein 2015; Ho et al. 2020, DDPM). The same machinery transfers to action generation with no conceptual change — we just swap the data dimension from `H×W×3` to `act_dim` and add an observation as conditioning input.
 
@@ -406,6 +409,9 @@ torch.jit.save(scripted, "diffusion_policy_scripted.pt")
 
 !!! warning "Watch the action normalisation at deploy time"
     The diffusion model was trained on actions in `[-1, 1]`. Your Godot env almost certainly expects actions in some other range (joint angles in radians, thruster forces in newtons, etc.). The inference server is responsible for the inverse normalisation: `env_action = unnormalise(sampled_action)`. Forgetting this is the single most common deployment bug.
+
+!!! check "Done when"
+    There is no fixed loss value to hit — judge the run by this unit's own stated signals: (1) the noise-MSE printed by the Step 2 training loop decreases smoothly over the epochs, and (2) the deployed policy visibly reproduces the demonstrated behaviour in the Godot viewer at the `n_ddim_steps` you deployed with (the Step 3 snippet uses 10; Section 4's rule of thumb starts at 20). A noise-MSE that barely moves from its starting value is the failure signature for unnormalised data — re-check that actions and observations are scaled into a comparable range (the Section 2 warning) before training longer. A model whose loss drops cleanly but acts erratically in Godot points at the inverse normalisation on the inference server (the warning above), not at the model.
 
 ---
 

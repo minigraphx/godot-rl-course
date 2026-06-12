@@ -442,6 +442,9 @@ Train the 3-DOF arm from § 8 with PPO for 100 episodes (`--n_parallel 4 --speed
 
 - **TensorBoard check.** Plot `episode_length` and any custom `joint_limit_violations` counter. The violation count should trend down — if it stays flat, your hard penalty isn't strong enough.
 
+!!! check "Done when"
+    The 3-DOF arm has no published benchmark, so judge success against the unit's own signals: by the end of the 100-episode run above, the arm shows clearly intentional motion toward the goal instead of random flailing (expect this to emerge around episode 70–100), your debug print shows joint velocities staying within `MAX_JOINT_VEL`, and the `joint_limit_violations` count in TensorBoard is trending down. If the motion still looks random at the end of the run, don't just add episodes — work back through the checklist above: verify the obs values first, then the action scaling, then the strength of the hard joint-limit penalty from Section 6.
+
 ---
 
 ## 11 · Stretch goals
