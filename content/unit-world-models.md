@@ -430,7 +430,10 @@ def visualize_latent_pca(latents, labels, label_name="reward"):
 
 ---
 
-## 9 · Dreamer vs Dyna — a brief history
+## 9 · Dreamer vs Dyna — a brief history (optional on a first read)
+
+!!! note "First pass? Skim or skip this section."
+    The hands-on path runs through Sections 1–8 (the model-free vs model-based trade-off, what a world model learns, the RSSM architecture, DreamerV3, Godot integration, when world models win and lose, and latent space visualization). This section is historical context — nothing later in the unit depends on it.
 
 Dreamer did not invent the idea of learning a world model and using it for policy updates. Understanding the lineage helps calibrate what is genuinely new.
 
