@@ -295,7 +295,10 @@ For MultiLevelRobot with its continuous joint control, IQL is typically the stro
 
 ---
 
-## 6 · Decision Transformer (conceptual)
+## 6 · Decision Transformer (conceptual, optional on a first read)
+
+!!! note "First pass? Skim or skip this section."
+    The hands-on path through this unit is Sections 1–5 (why offline RL, distributional shift, CQL, dataset collection, IQL) plus Sections 8–9 (decision guide and viz checkpoint). Decision Transformer gets its own full unit next — this preview only situates it among the offline methods.
 
 CQL and IQL both inherit the Q-learning paradigm — they still use Bellman backups, still require a critic, still depend on the reward signal being consistent across the dataset. **Decision Transformer** (Chen et al., 2021) throws the Bellman equation away entirely.
 
@@ -340,7 +343,10 @@ For most Godot projects with 1000–5000 demonstrations, CQL or IQL is simpler a
 
 ---
 
-## 7 · Online fine-tuning after offline pre-training
+## 7 · Online fine-tuning after offline pre-training (optional on a first read)
+
+!!! note "First pass? Skim or skip this section."
+    Like Section 6, this is an extension — the hands-on path is Sections 1–5 plus Sections 8–9 (decision guide and viz checkpoint). The weight-transfer pattern here only pays off once your offline policy has passed the Section 9 checkpoint; the third Stretch Goal brings you back to it.
 
 The most practical deployment pattern is a two-stage pipeline:
 
@@ -495,6 +501,9 @@ plt.savefig("dataset_coverage.png", dpi=150)
 
 Sparse regions in this plot are where CQL and IQL are most likely to fail. If you see large empty areas that correspond to critical task states, target those states during additional data collection.
 
+!!! check "Done when"
+    The four-way comparison above reproduces the expected ordering — your CQL and IQL policies clearly beat the random baseline and at least match the BC policy's mean return over the 50-episode evaluation. MultiLevelRobot has no published benchmark, so the ordering *is* the success criterion, not any absolute return number. If CQL lands below BC, the conservative penalty is too aggressive for your dataset (or the dataset is too sparse) — more training steps will not fix it; apply the remedies above instead (lower `alpha_learning_rate`, or record demonstrations that target the gaps your coverage plot exposes).
+
 ---
 
 ## 10 · Stretch goals
@@ -512,7 +521,7 @@ pip install d4rl
 Train IQL on `hopper-medium-v2` or `halfcheetah-medium-v2` — standard offline RL benchmarks with published results. Compare your IQM (interquartile mean) score to the numbers in the IQL paper (Kostrikov et al., 2021). If your numbers are within 5%, your implementation is correct.
 
 **Offline → online improvement measurement.**
-Take your best CQL policy. Fine-tune it online with SAC for 500k steps (section 7). Measure the episode return before and after online fine-tuning. Report the percentage improvement. For MultiLevelRobot with sparse rewards, expect 15–40% improvement from online fine-tuning on top of the offline baseline.
+Take your best CQL policy. Fine-tune it online with SAC for 500k steps (Section 7). Measure the episode return before and after online fine-tuning. Report the percentage improvement. For MultiLevelRobot with sparse rewards, expect 15–40% improvement from online fine-tuning on top of the offline baseline.
 
 **Offline HER.**
 Combine offline RL with hindsight experience replay from [unit-her.md](unit-her.md). After collecting your demonstration dataset, relabel each transition with the achieved goal as if it were the intended goal. This multiplies the effective dataset size by the number of goals in each trajectory. Train CQL on the relabeled dataset and compare against CQL on the original labels.

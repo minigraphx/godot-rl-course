@@ -636,6 +636,13 @@ Narrate each section. "The agent has learned to avoid walls but still does not k
 
     If you can answer all five — start building. If you can't, the answer is in Sections 1–4 above.
 
+??? success "Self-check answers"
+    1. Worked example (Platformer NPC) — "The agent succeeds when it reaches the level exit." Its **MDP**: observations = normalised relative vector to the exit plus normalised velocity (Section 2); actions = `Discrete(4)` movement; reward = `+1.0` terminal on reaching the exit, `-0.1` on timeout, shaping only if training stalls (Section 3); terminal condition = exit reached or step limit. Whatever your task, your answer must name all four parts explicitly — if one is fuzzy, revisit Sections 2–3 before writing any GDScript.
+    2. A real justification cites one concrete **task property** from the Section 4 flowchart: e.g. "discrete actions, dense reward → PPO", "continuous Box actions where sample efficiency matters → SAC", "partial observability → RecurrentPPO". "PPO because it's familiar" is acceptable too — algorithm choice matters far less than reward design, and PPO is the course's robust default.
+    3. The **minimum viable result** is the smallest version with one environment, one agent, and one success criterion whose trained policy clearly beats the random baseline — a single small level, not the full game. Section 1's rule applies: scope creep is the #1 capstone killer, and you can always add complexity after the first working policy.
+    4. The course-default protocol: at least **3 seeds** (Section 5), reported as mean ± std plus the **IQM** (Section 6), with per-seed returns taken from the final training episodes (the TensorBoard export from Section 6) and the **50-episode random-policy baseline** to anchor the scale. Deterministic or stochastic evaluation is your call — just state which one in your report and keep it consistent across seeds.
+    5. The three classic patterns from Sections 3 and 9: (a) **shaped-reward harvesting** — the agent farms shaping instead of finishing → keep the shaped total per episode ≤ 0.5 × the terminal reward; (b) oscillating toward and away from the goal to re-collect distance-delta reward → use potential-based shaping and reset `_prev_dist_to_goal` in `_reset()`; (c) avoiding episode termination because staying alive pays better → make the terminal reward dominate and penalise timeouts. One mitigation covers all three: watch the agent in Godot after every run — a high curve with bizarre behaviour means the reward was gamed.
+
 ---
 
 [← Ship Your Brain](unit-10.md) · [Course home](index.md)

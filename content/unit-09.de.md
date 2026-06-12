@@ -171,6 +171,12 @@ env.close()
 
 In TensorBoard sollte `ep_rew_mean` deutlich höher starten als bei einem zufällig initialisierten PPO-Lauf — die BC-Policy gibt dem Agenten einen Vorsprung in den nützlichen Teil des Zustandsraums.
 
+!!! check "Fertig, wenn"
+    - `demonstrations.json` existiert und `train_bc.py` lädt die Datei ohne Key- oder Shape-Fehler — der Smoke-Test für das Aufnahme-Setup aus Abschnitt 3.
+    - Der BC-Loss fällt in den ersten ~10 Epochen deutlich und sinkt weiter, wie in Abschnitt 5 beschrieben. Eine Kurve, die ab Epoche 1 flach bleibt, bedeutet meist falsch geparste obs/action-Arrays — nicht, dass du mehr Demonstrationen brauchst.
+    - Am Viz-Checkpoint (Abschnitt 8) folgt der fine-getunte Agent sichtbar der Route, die du demonstriert hast. In TensorBoard startet `ep_rew_mean` des Fine-Tuning-Laufs klar über einer PPO-from-scratch-Baseline.
+    - Ein reiner BC-Klon, der einfriert, sobald er leicht vom Pfad abkommt, ist *zu erwarten* — das ist Distribution Shift, und genau dafür ist das Fine-Tuning in diesem Abschnitt da. Schafft selbst der fine-getunte Agent die Route nie, nimm zuerst sauberere Demonstrationen auf, bevor du an Hyperparametern drehst.
+
 ---
 
 ## 7 · GAIL (optional)
@@ -240,5 +246,12 @@ Ein guter BC-Agent wirkt „menschlich" — er zögert an denselben Stellen, an 
     5. Wähle eine Godot-Umgebung aus früheren Units — würden Experten-Demos im Vergleich zu PPO-from-scratch *helfen* oder *schaden*, und warum?
 
     Wenn du alle fünf beantworten kannst — bist du bereit.
+
+??? success "Antworten zum Selbstcheck"
+    1. Imitation Learning erspart das **Design einer Reward-Funktion** — statt dem Agenten zu sagen, was er maximieren soll, zeigst du ihm, was er tun soll. Der Preis: Du brauchst einen Experten, der die Aufgabe demonstrieren kann, und ein reiner Klon kann das Verhalten in den Demonstrationen nie übertreffen.
+    2. **Distribution Shift**: BC sieht nur Zustände, die der Experte besucht hat — ein kleiner Fehler lässt den Klon in Zustände ohne Trainingsdaten driften, in denen er nicht weiß, wie er handeln soll. Die Lösung braucht Daten aus genau diesen Zuständen abseits des Pfads — PPO-Fine-Tuning (der Agent sammelt dort eigene Erfahrung) oder DAgger (der Experte labelt die neuen Zustände).
+    3. BC minimiert einen **überwachten Loss** über feste (Beobachtung, Aktion)-Paare — ohne Interaktion mit der Umgebung während des Trainings. GAIL muss in der Umgebung Rollouts sammeln und mit PPO einen intrinsischen, **vom Diskriminator erzeugten Reward** maximieren — das macht es zu Reinforcement Learning.
+    4. PPO sammelt **eigene Erfahrung** — auch in den Zuständen abseits des Pfads, die BC nie gesehen hat — und verbessert die Policy dort. Das behebt Distribution Shift und erlaubt dem Agenten sogar, den Demonstrator zu übertreffen. Reine Imitation kann nie besser werden als ihre Daten.
+    5. Offene Antwort — Beispiel: Bei einer Umgebung mit sparsamem Reward aus einer früheren Unit wie **CrossTheRoad** (Unit 3) *helfen* Demos, weil zufällige Exploration kaum von allein eine komplette Überquerung findet. Bei einer einfachen Umgebung mit dichtem Reward wie BallChase oder JumperHard könnten mittelmäßige Demos *schaden*, weil sie die Policy an suboptimales Verhalten binden, das Training from scratch von selbst hinter sich lassen würde.
 
 [→ RLHF & Preference Learning](unit-rlhf.md)

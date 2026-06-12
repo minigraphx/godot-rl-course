@@ -171,6 +171,12 @@ env.close()
 
 In TensorBoard, `ep_rew_mean` should start significantly higher than a random-init PPO run — the BC policy gives the agent a head start into the useful part of the state space.
 
+!!! check "Done when"
+    - `demonstrations.json` exists and `train_bc.py` loads it without a key or shape error — the smoke test for the recording setup in Section 3.
+    - BC loss drops sharply within the first ~10 epochs and keeps falling, as Section 5 describes. A curve that is flat from epoch 1 usually means the obs/action arrays were mis-parsed, not that you need more demonstrations.
+    - At the viz checkpoint (Section 8), the fine-tuned agent visibly follows the route you demonstrated. In TensorBoard, the fine-tune run's `ep_rew_mean` starts clearly above a from-scratch PPO baseline.
+    - A pure-BC clone that freezes once nudged off-path is *expected* — that is distribution shift, and exactly what the fine-tuning in this section is for. If even the fine-tuned agent never completes the route, re-record cleaner demonstrations before touching hyperparameters.
+
 ---
 
 ## 7 · GAIL (optional)
@@ -240,5 +246,12 @@ A good BC agent looks "human-like" — it hesitates at the same spots you hesita
     5. Pick one Godot environment from earlier units — would expert demos *help* or *hurt* compared to from-scratch PPO, and why?
 
     If you can answer all five — you're ready.
+
+??? success "Self-check answers"
+    1. Imitation learning removes the need to **design a reward function** — instead of telling the agent what to maximize, you show it what to do. The cost: you need an expert who can demonstrate the task, and a pure clone can never exceed the behaviour contained in those demonstrations.
+    2. **Distribution shift**: BC only sees states the expert visited, so one small mistake drifts the clone into states with no training data, where it has no idea how to act. Fixing it requires data from those off-path states — PPO fine-tuning (the agent collects its own experience there) or DAgger (the expert labels the new states).
+    3. BC minimises a **supervised loss** over fixed (observation, action) pairs — no environment interaction during training. GAIL must roll out in the environment and maximise an intrinsic, **discriminator-based reward** with PPO, which makes it reinforcement learning.
+    4. PPO collects its **own experience** — including the off-path states BC never saw — and improves the policy there, fixing distribution shift and even letting the agent surpass the demonstrator. Pure imitation can never get better than its data.
+    5. Open answer — example: for a sparse-reward environment from an earlier unit like **CrossTheRoad** (Unit 3), demos *help*, because random exploration rarely stumbles onto a full crossing on its own. For a simple dense-reward environment like BallChase or JumperHard, mediocre demos could *hurt* by anchoring the policy to suboptimal behaviour that from-scratch training would outgrow on its own.
 
 [→ RLHF & Preference Learning](unit-rlhf.md)

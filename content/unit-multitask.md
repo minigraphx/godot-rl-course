@@ -15,7 +15,7 @@ Rather than training N separate specialists, you train one generalist. Done well
 shared representation is more data-efficient than any individual specialist, and the policy
 generalises to task combinations neither specialist has seen.
 
-Done badly, multi-task training can leave every task worse than a dedicted single-task
+Done badly, multi-task training can leave every task worse than a dedicated single-task
 policy. That failure has a name — **negative transfer** — and avoiding it is the central
 skill this unit teaches.
 
@@ -686,9 +686,27 @@ model.learn(total_timesteps=3_000_000, callback=callback)
 model.save("models/multitask_ppo_final")
 ```
 
+!!! check "Done when"
+    After `train_multitask.py` finishes, run the per-task evaluation from Section 8
+    (100 episodes per task): a well-trained policy hits the ≥ 80 % success bar on
+    **every** task, as in the bar chart from "Three ways to see your AI". The bar is
+    the unit's target, not a seed-proof guarantee — one task plateauing just short
+    while all curves still climb together is a tuning matter (Section 4's weighting
+    knobs), not a failed run. But if one curve drops while another keeps climbing,
+    that is negative transfer, not a run that needs more steps: work through Section 4
+    (check reward scales first) before training longer.
+
 ---
 
-## 7 · Multi-Task SAC
+## 7 · Multi-Task SAC (optional on a first read)
+
+!!! note "First pass? Skim or skip this section."
+    The core path through this unit is Sections 1–6 (why goal conditioning isn't
+    enough, task encodings, multi-task PPO, negative transfer, task curricula, the
+    Godot example), Section 8 (per-task evaluation) and Section 10 (the multi-task
+    vs. separate-policies decision). SAC is
+    an off-policy alternative that buys sample efficiency — come back to it once your
+    PPO run works.
 
 PPO is on-policy: it collects fresh rollouts before each update and then discards them.
 In multi-task settings, this is wasteful — experience from task 0 is discarded before
@@ -845,7 +863,13 @@ embedding generalises furthest, to semantically similar but never-seen instructi
 
 ---
 
-## 9 · Connection to Foundation Models
+## 9 · Connection to Foundation Models (optional on a first read)
+
+!!! note "First pass? Skim or skip this section."
+    Nothing here is needed for the hands-on exercise. The core path is Sections 1–6,
+    Section 8 and Section 10; this section is a conceptual outlook linking the unit's
+    task-conditioned policy to generalist agents such as Gato and RT-2 — read it for
+    context once your own multi-task agent trains.
 
 Multi-task RL is the conceptual precursor to the most ambitious goal in the field:
 **generalist agents** that can follow instructions and solve tasks they have never
