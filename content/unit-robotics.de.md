@@ -442,6 +442,9 @@ Trainiere den 3-DOF-Arm aus § 8 mit PPO für 100 Episoden (`--n_parallel 4 --sp
 
 - **TensorBoard-Check.** Plotte `episode_length` und jeden eigenen `joint_limit_violations`-Zähler. Die Verletzungszahl sollte fallen — bleibt sie flach, ist deine harte Strafe nicht stark genug.
 
+!!! check "Fertig, wenn"
+    Für den 3-DOF-Arm gibt es keinen veröffentlichten Benchmark, also miss den Erfolg an den eigenen Signalen der Unit: Am Ende des 100-Episoden-Laufs oben zeigt der Arm klar intentionale Bewegung Richtung Ziel statt zufälligen Ruderns (erwarte das etwa ab Episode 70–100), dein Debug-Print zeigt Gelenkgeschwindigkeiten innerhalb von `MAX_JOINT_VEL`, und der `joint_limit_violations`-Zähler in TensorBoard fällt. Sieht die Bewegung am Ende des Laufs immer noch zufällig aus, häng nicht einfach Episoden an — arbeite die Checkliste oben noch einmal durch: zuerst die Obs-Werte prüfen, dann die Action-Skalierung, dann die Stärke der harten Gelenklimit-Strafe aus Abschnitt 6.
+
 ---
 
 ## 11 · Stretch Goals
