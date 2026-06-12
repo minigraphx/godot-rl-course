@@ -259,6 +259,9 @@ print("Best config:", best.config)
 print("Best reward:", best.metrics["mean_reward"])
 ```
 
+!!! check "Fertig, wenn"
+    `tuner.fit()` führt alle acht Trials bis zum 500k-Schritte-Stop aus — beobachte im Ray-Tune-Dashboard auf `http://localhost:8265`, wie sie erscheinen und `mean_reward` melden — und gibt am Ende eine beste Config samt Belohnung aus. Das eigentliche Erfolgssignal ist der Trajektorien-Plot aus Abschnitt 7: die Hyperparameter-Linien zeigen vertikale Stufen an den Perturbations-Events, und die überlebenden Trials driften im Laufe des Trainings zu einer niedrigeren `learning_rate`. Ist jede Trajektorie eine flache Linie ohne Sprünge, hat der Exploit-Schritt nie gefeuert — prüfe `perturbation_interval` relativ zu deinem gesamten Schritt-Budget sowie die `metric`/`mode`-Einstellungen, wie in Abschnitt 7 beschrieben.
+
 ### Suchraum für PPO und SAC
 
 | Hyperparameter | PPO-Range | SAC-Range | Notizen |

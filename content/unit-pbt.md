@@ -259,6 +259,9 @@ print("Best config:", best.config)
 print("Best reward:", best.metrics["mean_reward"])
 ```
 
+!!! check "Done when"
+    `tuner.fit()` runs all eight trials to the 500k-step stop — watch them appear and report `mean_reward` in the Ray Tune dashboard at `http://localhost:8265` — and prints a best config and reward at the end. The real success signal is the trajectory plot from Section 7: the hyperparameter lines show vertical steps at perturbation events, and the surviving trials drift toward lower `learning_rate` as training progresses. If every trajectory is a flat line with no jumps, the exploit step never fired — check `perturbation_interval` against your total step budget and the `metric`/`mode` settings, as described in Section 7.
+
 ### Search space for PPO and SAC
 
 | Hyperparameter | PPO range | SAC range | Notes |
