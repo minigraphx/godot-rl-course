@@ -279,6 +279,9 @@ The metrics that matter:
 
 FetchReach (3-DOF reach) is solved in ~200 k steps with HER. Without HER (set `replay_buffer_class=None`), SAC typically needs 2–5× more steps, and on harder tasks below it fails entirely.
 
+!!! check "Done when"
+    `rollout/success_rate` on FetchReach climbs off the floor and reaches ≈ 0.95 within ~200 k steps, with `rollout/ep_rew_mean` rising from `-50` toward `0`. If you also run the no-HER baseline (`replay_buffer_class=None`) on the same budget, its curve should sit visibly below — without HER, SAC needs 2–5× more steps. A `success_rate` still flat at zero after the full budget is not a "train longer" problem: first confirm `train/critic_loss` is not flat at zero (if it is, relabeling is producing no positive rewards), then work the checklist in Section 11, starting with the bit-for-bit `compute_reward` consistency check.
+
 ### A harder task: FetchPush
 
 ```python
