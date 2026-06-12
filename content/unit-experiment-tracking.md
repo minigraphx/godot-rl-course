@@ -329,6 +329,11 @@ Logging `n_parallel` and `speedup` lets you compare wall-clock efficiency across
 !!! warning "Parallel Godot subprocesses and logging"
     When `n_parallel > 1`, godot-rl-agents returns batched `infos`. Index correctly when extracting episode reward: `infos[0].get("episode", {}).get("r", 0)` only captures the first subprocess. Use `np.mean([i.get("episode", {}).get("r", 0) for i in infos if "episode" in i])` for a more representative mean across all parallel envs.
 
+!!! check "Done when"
+    The training run from Section 2 appears in your `godot-rl-course` project on the W&B dashboard, with the config keys (`learning_rate`, `n_steps`, `env`) visible on the run page and the familiar TensorBoard curves (`rollout/ep_rew_mean` and friends) mirrored into the charts via `sync_tensorboard=True`. If you also launched the sweep from Section 3, `wandb agent` has completed at least one trial, and it shows up as its own run under the sweep with its sampled hyperparameters logged. No internet access, or a privacy constraint? The MLflow route from Section 5 counts the same — the run, its params, and the checkpoint artifact visible at `http://localhost:5000`.
+
+---
+
 ## 9 · Stretch Goals
 
 **Run a 3-axis sweep.** Use the W&B sweep config in Section 3 as a starting point, then add a third axis — e.g. `n_steps ∈ {1024, 2048, 4096}`. That gives you a 3-D parallel-coordinates view in the W&B UI. Train for at least 5 runs per cell and write down which axis dominates the others. The point is to feel how quickly cost grows once a sweep is more than 1-D.

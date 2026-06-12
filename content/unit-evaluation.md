@@ -589,6 +589,9 @@ Reference score : 500 (maximum achievable reward)
     - [ ] Training timesteps per seed stated
     - [ ] Evaluation window (last N episodes) specified
 
+!!! check "Done when"
+    You have TensorBoard logs for at least 5 seeds per algorithm (the `train_seeds.sh` layout from Section 2), and `evaluate.py` prints the results table — IQM and 95% bootstrap CI per algorithm — over **your own runs**, not the synthetic data. You can state which claim the table supports: either the CIs do not overlap ("no overlap = significant", as in the Summary), or they do and your honest conclusion is "no detectable difference — more seeds needed". If you also ran the Section 4 profile script on your scores, `performance_profile_flyby.png` exists and tells the same story as the table.
+
 ---
 
 ## 7 · Applied Example — PPO vs SAC on FlyBy

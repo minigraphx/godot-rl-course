@@ -329,6 +329,11 @@ wandb.init(
 !!! warning "Parallele Godot-Subprozesse und Logging"
     Wenn `n_parallel > 1`, gibt godot-rl-agents gebatchte `infos` zurück. Indexiere korrekt beim Extrahieren der Episodenbelohnung: `infos[0].get("episode", {}).get("r", 0)` fängt nur den ersten Subprozess. Nutze `np.mean([i.get("episode", {}).get("r", 0) for i in infos if "episode" in i])` für einen repräsentativeren Mittelwert über alle parallelen Envs.
 
+!!! check "Fertig, wenn"
+    Der Trainingslauf aus Abschnitt 2 erscheint in deinem `godot-rl-course`-Projekt im W&B-Dashboard — mit den Config-Schlüsseln (`learning_rate`, `n_steps`, `env`) auf der Run-Seite und den vertrauten TensorBoard-Kurven (`rollout/ep_rew_mean` und Co.), die via `sync_tensorboard=True` in die Charts gespiegelt wurden. Hast du auch den Sweep aus Abschnitt 3 gestartet, hat `wandb agent` mindestens einen Trial abgeschlossen, der als eigener Run unter dem Sweep auftaucht — samt der gesampelten Hyperparameter. Kein Internetzugang oder eine Datenschutz-Vorgabe? Der MLflow-Weg aus Abschnitt 5 zählt genauso — Run, Params und das Checkpoint-Artifact sichtbar unter `http://localhost:5000`.
+
+---
+
 ## 9 · Stretch Goals
 
 **Einen 3-Achsen-Sweep laufen lassen.** Nutze die W&B-Sweep-Config aus Abschnitt 3 als Startpunkt und füge dann eine dritte Achse hinzu — z. B. `n_steps ∈ {1024, 2048, 4096}`. Das gibt dir eine 3D-Parallel-Coordinates-Ansicht in der W&B-UI. Trainiere mindestens 5 Läufe pro Zelle und schreib auf, welche Achse die anderen dominiert. Es geht darum zu fühlen, wie schnell die Kosten wachsen, sobald ein Sweep mehr als 1D ist.
