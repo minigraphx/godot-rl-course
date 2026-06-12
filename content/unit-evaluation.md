@@ -590,7 +590,7 @@ Reference score : 500 (maximum achievable reward)
     - [ ] Evaluation window (last N episodes) specified
 
 !!! check "Done when"
-    You have TensorBoard logs for at least 5 seeds per algorithm (the `train_seeds.sh` layout from Section 2), and `evaluate.py` prints the results table — IQM and 95% bootstrap CI per algorithm — over **your own runs**, not the synthetic data. You can state which claim the table supports: either the CIs do not overlap ("no overlap = significant", as in the Summary), or they do and your honest conclusion is "no detectable difference — more seeds needed". If you also ran the Section 4 profile script on your scores, `performance_profile_flyby.png` exists and tells the same story as the table.
+    You have TensorBoard logs for at least 5 seeds per algorithm (the `train_seeds.sh` layout from Section 2), and `evaluate.py` prints the results table — IQM and 95% bootstrap CI per algorithm — over **your own runs**, not the synthetic data. You can state which claim the table supports: either the CIs do not overlap ("no overlap = significant", as in the Summary), or they do overlap — in which case this table alone doesn't settle it: add seeds or run the Section 5 probability-of-improvement test before claiming a difference *or* its absence. If you also ran the Section 4 profile script on your scores, `performance_profile_flyby.png` exists and tells the same story as the table.
 
 ---
 

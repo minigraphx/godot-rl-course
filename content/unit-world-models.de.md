@@ -433,7 +433,7 @@ def visualize_latent_pca(latents, labels, label_name="reward"):
 ## 9 · Dreamer vs Dyna — eine kurze Geschichte (optional beim ersten Lesen)
 
 !!! note "Erster Durchgang? Überfliege oder überspringe diesen Abschnitt."
-    Der Hands-on-Pfad läuft durch die Abschnitte 1–8 (der Model-free-vs-Model-based-Trade-off, was ein World Model lernt, die RSSM-Architektur, DreamerV3, die Godot-Integration, wann World Models gewinnen und verlieren, und die Latent-Space-Visualisierung). Dieser Abschnitt ist historischer Kontext — nichts Späteres in der Unit hängt davon ab.
+    Der Hands-on-Pfad läuft durch die Abschnitte 1–8 (der Model-free-vs-Model-based-Trade-off, was ein World Model lernt, die RSSM-Architektur, DreamerV3, die Godot-Integration, wann World Models gewinnen und verlieren, und die Latent-Space-Visualisierung). Dieser Abschnitt ist historischer Kontext — nur das Stretch Goal „Dyna from scratch" baut darauf auf; komm also hierher zurück, bevor du dich an dieses Goal machst.
 
 Dreamer hat die Idee, ein World Model zu lernen und es für Policy-Updates zu nutzen, nicht erfunden. Die Abstammung zu verstehen hilft zu kalibrieren, was wirklich neu ist.
 

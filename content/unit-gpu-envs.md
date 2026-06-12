@@ -327,7 +327,7 @@ model.save("ppo_pong_envpool")
     EnvPool supports Atari (via ALE), classic MuJoCo (v4 and earlier), DMControl, and a handful of other environments. It does **not** support custom environments or Godot. For custom tasks, stick with `SubprocVecEnv` or look at Isaac Lab / Brax.
 
 !!! check "Done when"
-    This is a reading unit, so the gate is a decision, not a trained model: given any task — one of this course's, a paper baseline, or your own idea — you can point to the row of Section 1's decision table it falls into and name which of the four frameworks you would train it in, and why. Optionally, if you ran the Section 6 EnvPool quick start (CPU-only — no CUDA GPU required), `time/fps` in TensorBoard sits in the 400 k – 600 k steps/sec range from the sanity check above, not at `SubprocVecEnv` levels.
+    This is a reading unit, so the gate is a decision, not a trained model: given any task — one of this course's, a paper baseline, or your own idea — you can point to the row of Section 1's decision table it falls into and name which of the four frameworks you would train it in, and why. Optionally, if you ran the Section 6 EnvPool quick start, `time/fps` in TensorBoard sits **clearly above** what the same machine reaches with `SubprocVecEnv` — that gap is the point of the sanity check above; your absolute numbers depend on hardware and on how much time the policy's forward/backward passes consume relative to the environments.
 
 ---
 
