@@ -210,6 +210,9 @@ Add noise to the observation *as the agent sees it*, not to the underlying state
 !!! warning "Never deploy without testing DR extremes"
     Before you flash a policy onto hardware, run it in sim with **every randomized parameter pushed to its extreme value**. Max friction *and* min motor strength *and* max noise *and* max latency, all at once. If episode reward collapses there, you do not have a deployable policy — you have a policy that lives inside the comfortable middle of your distribution. Real hardware will *not* hand you the middle.
 
+!!! check "Done when"
+    You have retrained one of your earlier Godot environments (`JumperHard` is a good subject) with `randomize_domain()` from Section 3 active plus the observation noise above, and two things hold: (1) the policy still solves the *nominal* environment — every parameter at its base value — when you watch it in Godot, with `ep_rew_mean` recovering to roughly the level of your non-randomized run (expect this to take noticeably more steps; the agent is learning a family of physics, not one); and (2) reward degrades gracefully rather than collapsing when you evaluate at the extremes of your ranges, as in the warning above. No real robot required — these are pure sim checks. If a wide-range run stays flat long after the non-randomized run had converged, more steps are rarely the fix: narrow the ranges and widen them back gradually (Section 9).
+
 ---
 
 ## 5 · Action delay / latency simulation
@@ -258,7 +261,10 @@ This is one of the highest-leverage DR techniques and one of the least frequentl
 
 ---
 
-## 6 · Asymmetric actor-critic
+## 6 · Asymmetric actor-critic (optional on a first read)
+
+!!! note "First pass? Skim or skip this section."
+    The core sim-to-real path runs through Sections 1–5 (the reality gap, domain randomization, the Godot implementation, observation noise, and latency) plus Section 7 (the deployment checklist) and Section 8 (the case studies). Asymmetric actor-critic is a training-side upgrade — nothing in the checklist depends on it. Come back once your DR training works and you want faster, more stable runs.
 
 A technique pioneered by OpenAI's Dactyl team and used heavily by ETH Zurich's ANYmal group:
 
@@ -377,7 +383,10 @@ When you finally put a policy on real hardware:
 
 ---
 
-## 9 · Progressive domain randomization (curriculum)
+## 9 · Progressive domain randomization (curriculum, optional on a first read)
+
+!!! note "First pass? Skim or skip this section."
+    The core sim-to-real path runs through Sections 1–5 (the reality gap, domain randomization, the Godot implementation, observation noise, and latency) plus Section 7 (the deployment checklist) and Section 8 (the case studies). Progressive DR is the fix for one specific failure — wide randomization that will not train from cold. Come back the first time a wide-range run stays flat.
 
 Wide DR is hard to learn from cold. A policy that has never walked at all cannot simultaneously learn locomotion *and* generalize across friction in `[0.3, 1.5]`.
 

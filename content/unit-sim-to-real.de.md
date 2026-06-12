@@ -210,6 +210,9 @@ Rausche die Observation, *wie der Agent sie sieht*, nicht den zugrundeliegenden 
 !!! warning "Niemals deployen ohne DR-Extreme zu testen"
     Bevor du eine Policy auf Hardware flashst, lasse sie in Sim mit **jedem randomisierten Parameter auf seinem Extremwert** laufen. Max Reibung *und* min Motorstärke *und* max Rauschen *und* max Latenz, alles gleichzeitig. Kollabiert dort die Episodenbelohnung, hast du keine deploybare Policy — du hast eine Policy, die im bequemen Mittelfeld deiner Verteilung lebt. Echte Hardware wird dir das Mittelfeld *nicht* schenken.
 
+!!! check "Fertig, wenn"
+    Du hast eine deiner früheren Godot-Umgebungen (`JumperHard` eignet sich gut) mit aktivem `randomize_domain()` aus Abschnitt 3 plus dem Observation-Rauschen von oben neu trainiert, und zwei Dinge gelten: (1) die Policy löst weiterhin die *nominale* Umgebung — jeder Parameter auf seinem Basiswert — wenn du sie in Godot beobachtest, und `ep_rew_mean` erholt sich ungefähr auf das Niveau deines nicht-randomisierten Laufs (rechne mit deutlich mehr Steps; der Agent lernt eine Familie von Physiken, nicht eine); und (2) der Reward fällt an den Extremen deiner Bereiche sanft ab, statt zu kollabieren, wenn du dort evaluierst wie in der Warnung oben. Kein echter Roboter nötig — das sind reine Sim-Checks. Bleibt ein Lauf mit breiten Bereichen flach, lange nachdem der nicht-randomisierte Lauf konvergiert war, sind mehr Steps selten die Lösung: verenge die Bereiche und weite sie schrittweise wieder auf (Abschnitt 9).
+
 ---
 
 ## 5 · Action-Delay / Latenzsimulation
@@ -258,7 +261,10 @@ Das ist eine der wirkungsvollsten DR-Techniken und eine der am seltensten implem
 
 ---
 
-## 6 · Asymmetrischer Actor-Critic
+## 6 · Asymmetrischer Actor-Critic (optional beim ersten Lesen)
+
+!!! note "Erster Durchgang? Überfliege oder überspringe diesen Abschnitt."
+    Der Kern-Sim-to-Real-Pfad läuft durch die Abschnitte 1–5 (Realitätslücke, Domain Randomization, Godot-Implementierung, Observation-Rauschen und Latenz) plus Abschnitt 7 (Deployment-Checkliste) und Abschnitt 8 (Fallstudien). Asymmetrischer Actor-Critic ist ein Upgrade auf der Trainingsseite — nichts in der Checkliste hängt davon ab. Komm zurück, sobald dein DR-Training funktioniert und du schnellere, stabilere Läufe willst.
 
 Eine Technik, von OpenAIs Dactyl-Team Pionier-eingesetzt und intensiv von ETH Zürichs ANYmal-Gruppe genutzt:
 
@@ -377,7 +383,10 @@ Wenn du endlich eine Policy auf echter Hardware platzierst:
 
 ---
 
-## 9 · Progressive Domain Randomization (Curriculum)
+## 9 · Progressive Domain Randomization (Curriculum, optional beim ersten Lesen)
+
+!!! note "Erster Durchgang? Überfliege oder überspringe diesen Abschnitt."
+    Der Kern-Sim-to-Real-Pfad läuft durch die Abschnitte 1–5 (Realitätslücke, Domain Randomization, Godot-Implementierung, Observation-Rauschen und Latenz) plus Abschnitt 7 (Deployment-Checkliste) und Abschnitt 8 (Fallstudien). Progressive DR ist die Lösung für einen spezifischen Fehlschlag — breite Randomisierung, die aus dem Kalten nicht trainiert. Komm zurück, sobald ein Lauf mit breiten Bereichen zum ersten Mal flach bleibt.
 
 Breite DR ist aus dem Kalten schwer zu lernen. Eine Policy, die nie gegangen ist, kann nicht gleichzeitig Lokomotion lernen *und* über Reibung in `[0,3, 1,5]` generalisieren.
 
