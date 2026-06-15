@@ -1,8 +1,8 @@
 # Native-RL Migration — Design & Scope (#81 / #71)
 
 **Date:** 2026-06-15
-**Status:** Design / scoping. No student-facing page changes yet.
-**Decision recorded (#81):** full replacement of **godot-rl-agents** with **godot-native-rl**, dropping the Godot .NET edition. Distribution: install the addon from the Godot **AssetLib** (no vendored binaries in this repo).
+**Status:** Design / scoping. Phase 1 (Setup) in progress.
+**Strategy (#81, revised 2026-06-15):** add **godot-native-rl** as the primary path while **keeping godot-rl-agents (.NET) as a documented fallback** — a dual stack, not a hard replacement. The fallback covers macOS Intel (no native arm64-only runner there) and anyone on the validated 3.10 stack, so existing units keep working as each is migrated.
 
 ## Readiness (confirmed against plugin v0.3.1, 2026-06-14)
 
@@ -48,9 +48,13 @@ Training is driven by the native repo's scripts (e.g. `scripts/train_ball_chase.
 - **Phase 3 — Training units (1–10)** one at a time, re-verifying each code example against gymnasium 1.2 / SB3 2.8 / numpy 2.
 - **Phase 4 — Sweep + cleanup.** Retire `.NET`/MSBuild/`Sync`/`AIController` references and the Troubleshooting FAQ entries; replace the compatibility table; update `docs/curriculum.md`/`example-progression.md`.
 
-## Open decisions
+## Decisions (locked 2026-06-15)
 
-1. Course Python-env model: adopt the native 3-venv layout, or wrap it in a single conda env? (The native pins were chosen to coexist; conda is a documented alternative.)
-2. Vendor the native training scripts/requirements into the course, or reference the godot-native-rl repo?
-3. macOS Intel: accept dropping native support, or keep godot-rl-agents as an Intel-only fallback?
-4. Timing of the gymnasium 1.2 / numpy 2 / SB3 2.8 bump vs. the just-completed didactic sweep, which was verified against the 0.29.1 stack.
+1. **Python-env model: conda.** Use conda env(s) with the native pins, not the native repo's `.venv` layout (the native `training.md` documents the conda alternative: create the env(s) and `pip install -r` the same requirements files).
+2. **Distribution: students clone the `minigraphx/godot-native-rl` repo.** Do not vendor the addon, binaries, or training scripts into the course; do not rely on AssetLib (**not live** as of 2026-06-15). The native repo is the source of truth for the addon, the example envs, and the `setup_training.sh` / `train_*.sh` / `requirements-*.txt` training harness. Students obtain the per-platform `NcnnRunner` binary from the v0.3.1 **Release** addon zip (prebuilt) or build from source per the repo's `docs/dev/building.md`.
+3. **Keep godot-rl-agents (.NET) as a fallback** — retained for macOS Intel and the existing validated stack; not deleted.
+4. **Stage the gymnasium 1.2 / numpy 2 / SB3 2.8 bump per unit**, after the native path is validated end-to-end, so the just-verified 0.29.1 code keeps working under the fallback until each unit is migrated.
+
+## Validation still required (cannot be done from this container)
+
+Every student-facing native instruction below must be confirmed on a machine with **Godot 4.5+** and **Python 3.13/3.14**: that the cloned repo + Release binary load the `NcnnRunner` extension, that a conda env resolves the native pins, and that `train_ball_chase.sh` (or the course's conda equivalent) trains and deploys. Draft PRs stay in draft until you confirm.
