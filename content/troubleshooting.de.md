@@ -2,42 +2,49 @@
 
 [Kursstartseite](index.md)
 
-Diese Seite sammelt häufige Fehler, Warnungen und Fragen rund ums Setup und Training von RL-Agenten mit godot-rl-agents, stable-baselines3 und Python. Jeder Eintrag erklärt Ursache und Fix. **Hier zuerst nachsehen, bevor du ein GitHub-Issue öffnest.**
+Diese Seite sammelt häufige Fehler, Warnungen und Fragen rund ums Setup und Training von RL-Agenten mit godot-native-rl, stable-baselines3 und Python — plus die Legacy-Beispiele von godot-rl-agents, die noch nicht migrierte Einheiten nutzen. Jeder Eintrag erklärt Ursache und Fix. **Hier zuerst nachsehen, bevor du ein GitHub-Issue öffnest.**
 
 ---
 
 ## Setup & Installation
 
-### Plugin nicht gefunden / „godot-rl-agents plugin failed to load"
+### `NcnnSync` / `NcnnAIController3D` nicht unter „Node hinzufügen" zu finden
 
-**Ursache:** Das C#-Projekt des Plugins wurde nicht gebaut oder das .NET-SDK ist nicht installiert.
+**Ursache:** Du hast ein Projekt geöffnet, das das godot-native-rl-Addon nicht enthält, oder der erste Projekt-Import ist noch nicht abgeschlossen.
 
 **Fix:**
 ```bash
-# Ensure you have the .NET SDK installed (dotnet --version should work)
-# Then rebuild the plugin in Godot
-# Project → Tools → C# → Build Project
-# Wait for MSBuild to complete; watch the bottom-right notification panel
+# Öffne das gebündelte Spielprojekt des Kurs-Repos — das Addon ist darin enthalten:
+# Godot → Import → godot-rl-course/examples/neural_foundations/game/project.godot
+# Lass den ersten Import durchlaufen, dann erneut: Node hinzufügen → „NcnnSync" suchen
 ```
 
-Nach dem Build Godot neu starten.
+Das Addon ist reines GDScript — es gibt keinen Build-Schritt. Wenn du das Addon in deinem eigenen Projekt nutzt, prüfe, ob `addons/godot_native_rl/` in den `addons/`-Ordner deines Projekts kopiert wurde.
 
 **Siehe auch:** [Unit 0](unit-00.md) § 3
 
 ---
 
-### Godot 4.0 / 4.1 / 4.2 / 4.3 Kompatibilitätsfehler
+### „NcnnRunner"-Klasse fehlt / native Inferenz lädt nicht
 
-**Ursache:** godot-rl-agents wurde gegen bestimmte Godot-.NET-Versionen gebaut und getestet; abweichende Versionen können C#- oder NuGet-Mismatches verursachen.
+**Ursache:** Die native ncnn-Inferenz benötigt eine Plattform-Binärdatei (GDExtension). Der Kurs liefert derzeit nur Binärdateien für **macOS Apple Silicon** mit — unter Windows und Linux registriert sich die `NcnnRunner`-Klasse nicht.
+
+**Fix:** Das Training ist davon nicht betroffen — die Trainings-Bridge ist reines GDScript und funktioniert auf jeder Plattform. Überspringe die (in den Einheiten als macOS-only markierten) nativen Inferenz-Schritte, bis Multi-Plattform-Runner verfügbar sind. Das Aktivieren des Plugins unter Projekt → Projekteinstellungen → Plugins zeigt eine klare Fehlermeldung, wenn die Binärdatei für deine Plattform fehlt.
+
+---
+
+### Godot-Versionskompatibilitätsfehler
+
+**Ursache:** Die gebündelte ncnn-GDExtension deklariert `compatibility_minimum = 4.5`; ältere Godot-Versionen laden das Projekt nicht sauber.
 
 **Fix:**
 ```bash
-# Check the plugin's README or pyproject.toml for the recommended Godot version
-# Download and use that exact version from godotengine.org
-# (e.g., Godot 4.3 .NET is recommended; 4.0 is no longer supported)
+# Lade Godot 4.5 oder neuer (Standard-Version) von godotengine.org herunter
+# Auf der Kommandozeile prüfen:
+godot --version
 ```
 
-Wenn du eine andere Version nutzen *musst*, prüfe das [godot-rl-agents](https://github.com/edbeeching/godot-rl-agents)-Repo auf bekannte Probleme.
+Die Legacy-Beispiele von godot-rl-agents, die ab RL Essentials genutzt werden, haben eigene Versionsanforderungen — prüfe das [godot-rl-agents](https://github.com/edbeeching/godot-rl-agents)-Repo, wenn ein Beispielprojekt Probleme macht.
 
 ---
 
