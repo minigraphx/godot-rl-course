@@ -2,6 +2,21 @@
 
 [← Einheit 0](unit-00.md) · [Kursstartseite](index.md)
 
+!!! info "Zeit"
+    Lesen: ~30 Min · Handrechnung: ~15 Min · Experimente in einem Pfad: ~45 Min
+
+!!! success "Was du nach dieser Einheit kannst"
+    - Die Ausgabe eines Neurons von Hand aus Eingaben, Gewichten und Bias berechnen
+    - Sagen, was die Aktivierungsfunktion beiträgt und warum die Schwelle bei `0.5` liegt
+    - Die Kurzschreibweise \(z = w_1x_1 + w_2x_2 + b\) lesen und jeden Buchstaben benennen
+    - Vorhersagen, wie eine Änderung an einem Gewicht oder am Bias die Entscheidung verschiebt
+    - Eine nicht normalisierte Eingabe allein an ihrem Beitrag erkennen
+
+!!! note "Voraussetzungen"
+    - **Einheit 0 abgeschlossen** — Conda, Godot und ein erfolgreicher BallChase-Lauf
+    - Rechnen mit Dezimalzahlen. Keine Analysis, kein Vorwissen im Maschinellen Lernen
+    - Grundlegende Sicherheit im Terminal
+
 !!! info "Drei Wege, die Berechnung zu sehen"
     Laufende Visualisierung · aktuelle Zahlen · Code, den du geschrieben hast
 
@@ -18,90 +33,218 @@ einen Hauptpfad ab und verbringe dann zehn Minuten mit dem anderen Pfad.
 
 ---
 
-## 1 · Vorhersagen, bevor du startest
+## 1 · Was ein Neuron berechnet
 
-Beginne mit diesem **Neuron mit festen Zahlen**. Die Namen erklären zuerst, was
-die Zahlen bedeuten; die mathematischen Kürzel kommen danach:
+Ein Neuron tut drei Dinge in dieser Reihenfolge — und sonst nichts.
 
-| Benannte Eingabe | Wert | Gewicht | Beitrag |
-|---|---:|---:|---:|
-| Geschwindigkeit | 0.50 | +0.80 | +0.40 |
-| Nähe zur Kante | 0.25 | +1.20 | +0.30 |
-| Bias | — | — | -0.50 |
+**Schritt 1 — jede Eingabe gewichten.** Jede Eingabe wird mit ihrer eigenen Zahl
+multipliziert, dem **Gewicht**. Das Ergebnis ist der **Beitrag** dieser Eingabe
+zur Entscheidung. Ein großes Gewicht macht die Eingabe sehr wichtig; ein Gewicht
+nahe null macht sie fast bedeutungslos; ein negatives Gewicht lässt die Eingabe
+*gegen* die Entscheidung argumentieren.
 
-Bevor du Python oder Godot nutzt, notiere:
+**Schritt 2 — die Beiträge addieren, plus Bias.** Alle Beiträge werden summiert,
+und eine zusätzliche Zahl kommt hinzu, die zu keiner Eingabe gehört: der
+**Bias**. Der Bias ist die Grundtendenz des Neurons, bevor es überhaupt etwas
+gesehen hat. Die Zwischensumme heißt **gewichtete Summe**.
 
-1. die gewichtete Summe;
-2. ob `sigmoid` einen Wert über `0.5` liefert;
-3. welche Eingabe am meisten zur Entscheidung beiträgt.
+**Schritt 3 — die Summe in eine Entscheidung übersetzen.** Dieser Schritt braucht
+eine Erklärung, denn die gewichtete Summe ist eine unhandliche Zahl.
 
-Addiere zuerst die benannten Beiträge und den Bias:
+### Warum Schritt 3 nötig ist
 
-$$
-\text{Summe} =
-(\text{Geschwindigkeit}\times\text{Geschwindigkeitsgewicht}) +
-(\text{Nähe}\times\text{Nähegewicht}) +
-\text{Bias}
-$$
+Die gewichtete Summe kann überall landen: `-37.2`, `0.02`, `+415.0`. Die Frage
+lautet aber nicht „welche Zahl ist das?" — sie lautet „soll die Figur springen?"
+Gesucht ist eine Sicherheit zwischen *auf keinen Fall* und *auf jeden Fall*.
 
-$$
-\text{Summe} = (0.5)(0.8) + (0.25)(1.2) - 0.5 = 0.2
-$$
-
-Die Aktivierung liefert
-\(\operatorname{sigmoid}(0.2) \approx 0.550\). Weil `0.550 > 0.5`, **feuert**
-das Neuron und die Spielaktion lautet `SPRINGEN`.
-
-Die ganze Rechnung als ein Bild:
+Genau diese Umrechnung leistet eine **Aktivierungsfunktion**. Diese Einheit
+benutzt die Funktion **Sigmoid**: Sie quetscht jede Zahl, wie groß oder klein
+auch immer, in den Bereich zwischen `0` und `1`.
 
 <div class="diagram-scroll">
 
-<svg class="course-diagram" viewBox="0 0 800 300" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, sans-serif" role="img" aria-label="Ein Neuron: Geschwindigkeit 0.50 mal Gewicht 0.80 ergibt plus 0.40, Nähe 0.25 mal Gewicht 1.20 ergibt plus 0.30, summiert mit Bias minus 0.50 ergibt 0.20; Sigmoid liefert 0.550, das über 0.5 liegt, also feuert das Neuron SPRINGEN">
+<svg class="course-diagram" viewBox="0 0 640 300" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, sans-serif" role="img" aria-label="Die Sigmoid-Kurve: Sie nähert sich 0 bei stark negativen Summen, verläuft bei Summe null durch genau 0.5 und nähert sich 1 bei stark positiven Summen">
   <defs>
-    <marker id="arN" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <marker id="arS" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
       <path d="M0 1 L10 5 L0 9 z" fill="#8892b0"/>
     </marker>
   </defs>
-  <rect x="20" y="40" width="180" height="60" rx="10" fill="#1a1d27" stroke="#6c8ef7" stroke-width="1.5"/>
-  <text x="110" y="65" text-anchor="middle" fill="#e2e8f0" font-size="14" font-weight="700">Geschwindigkeit</text>
-  <text x="110" y="86" text-anchor="middle" fill="#8892b0" font-size="13">0.50</text>
-  <rect x="20" y="180" width="180" height="60" rx="10" fill="#1a1d27" stroke="#6c8ef7" stroke-width="1.5"/>
-  <text x="110" y="205" text-anchor="middle" fill="#e2e8f0" font-size="14" font-weight="700">Nähe zur Kante</text>
-  <text x="110" y="226" text-anchor="middle" fill="#8892b0" font-size="13">0.25</text>
-  <path d="M200 70 C280 70, 290 115, 350 122" fill="none" stroke="#8892b0" stroke-width="1.6" marker-end="url(#arN)"/>
-  <text x="272" y="58" text-anchor="middle" fill="#6c8ef7" font-size="12" font-weight="700">× 0.80 → +0.40</text>
-  <path d="M200 210 C280 210, 290 165, 350 158" fill="none" stroke="#8892b0" stroke-width="1.6" marker-end="url(#arN)"/>
-  <text x="272" y="232" text-anchor="middle" fill="#6c8ef7" font-size="12" font-weight="700">× 1.20 → +0.30</text>
-  <rect x="350" y="100" width="140" height="80" rx="10" fill="#1a1d27" stroke="#8892b0" stroke-width="1.5"/>
-  <text x="420" y="132" text-anchor="middle" fill="#e2e8f0" font-size="15" font-weight="700">Σ + Bias</text>
-  <text x="420" y="158" text-anchor="middle" fill="#8892b0" font-size="13">= 0.20</text>
-  <path d="M420 242 L420 184" fill="none" stroke="#8892b0" stroke-width="1.6" marker-end="url(#arN)"/>
-  <text x="420" y="264" text-anchor="middle" fill="#8892b0" font-size="13">Bias −0.50</text>
-  <path d="M490 140 L540 140" fill="none" stroke="#8892b0" stroke-width="1.6" marker-end="url(#arN)"/>
-  <rect x="540" y="100" width="140" height="80" rx="10" fill="#1a1d27" stroke="#4ecca3" stroke-width="1.5"/>
-  <text x="610" y="132" text-anchor="middle" fill="#e2e8f0" font-size="15" font-weight="700">Sigmoid</text>
-  <text x="610" y="158" text-anchor="middle" fill="#8892b0" font-size="13">≈ 0.550</text>
-  <path d="M680 140 L710 140" fill="none" stroke="#8892b0" stroke-width="1.6" marker-end="url(#arN)"/>
-  <text x="757" y="136" text-anchor="middle" fill="#4ecca3" font-size="14" font-weight="700">SPRINGEN</text>
-  <text x="755" y="160" text-anchor="middle" fill="#8892b0" font-size="11">0.550 &gt; 0.5</text>
+  <line x1="70" y1="50" x2="610" y2="50" stroke="#2e3350" stroke-width="1.1" stroke-dasharray="4 4"/>
+  <line x1="70" y1="150" x2="610" y2="150" stroke="#ef8354" stroke-width="1.2" stroke-dasharray="5 5"/>
+  <path d="M70 250 L616 250" fill="none" stroke="#8892b0" stroke-width="1.4" marker-end="url(#arS)"/>
+  <path d="M340 268 L340 26" fill="none" stroke="#8892b0" stroke-width="1.4" marker-end="url(#arS)"/>
+  <text x="606" y="270" text-anchor="end" fill="#8892b0" font-size="13">gewichtete Summe</text>
+  <text x="330" y="34" text-anchor="end" fill="#8892b0" font-size="13">Ausgabe</text>
+  <text x="62" y="55" text-anchor="end" fill="#8892b0" font-size="13">1.0</text>
+  <text x="62" y="155" text-anchor="end" fill="#8892b0" font-size="13">0.5</text>
+  <text x="62" y="255" text-anchor="end" fill="#8892b0" font-size="13">0.0</text>
+  <text x="78" y="142" fill="#ef8354" font-size="13" font-weight="700">0.5 — die Entscheidungsschwelle</text>
+  <path d="M70.0 249.5 L81.2 249.4 L92.5 249.2 L103.8 249.0 L115.0 248.7 L126.2 248.3 L137.5 247.8 L148.8 247.2 L160.0 246.4 L171.2 245.4 L182.5 244.1 L193.8 242.5 L205.0 240.5 L216.2 238.0 L227.5 234.8 L238.8 230.9 L250.0 226.2 L261.2 220.4 L272.5 213.5 L283.8 205.5 L295.0 196.2 L306.2 185.8 L317.5 174.5 L328.8 162.4 L340.0 150.0 L351.2 137.6 L362.5 125.5 L373.8 114.2 L385.0 103.8 L396.2 94.5 L407.5 86.5 L418.8 79.6 L430.0 73.8 L441.2 69.1 L452.5 65.2 L463.8 62.0 L475.0 59.5 L486.2 57.5 L497.5 55.9 L508.8 54.6 L520.0 53.6 L531.2 52.8 L542.5 52.2 L553.8 51.7 L565.0 51.3 L576.2 51.0 L587.5 50.8 L598.8 50.6 L610.0 50.5" fill="none" stroke="#4ecca3" stroke-width="2.6" stroke-linejoin="round"/>
+  <circle cx="340" cy="150" r="6" fill="#4ecca3"/>
+  <text x="352" y="186" fill="#8892b0" font-size="13">Summe 0 → genau 0.5</text>
+  <text x="160" y="228" text-anchor="middle" fill="#8892b0" font-size="13">stark negativ → nahe 0</text>
+  <text x="520" y="82" text-anchor="middle" fill="#8892b0" font-size="13">stark positiv → nahe 1</text>
 </svg>
 
 </div>
 
-In der Mathematik wird Eingabe oft zu \(x\), Gewicht zu \(w\), Bias zu \(b\)
-und die Summe zu \(z\) verkürzt. Dieselbe Rechnung kann später also als
-\(z=w_1x_1+w_2x_2+b\) erscheinen. Das sind nur Abkürzungen, keine anderen
-Werte. Gewicht wird in diesem Kurs immer mit einem kleinen \(w\) abgekürzt.
+Drei Orientierungspunkte lohnen sich zu merken, denn jedes spätere Ablesen dieser
+Kurve hängt an ihnen:
 
-??? success "Antwortschlüssel"
-    Die Summe ist `0.2`, daher beträgt die Sigmoid-Ausgabe ungefähr `0.550` und
-    das Neuron feuert. Geschwindigkeit trägt `+0.40` bei, Nähe `+0.30`, und der
-    Bias zieht `0.50` ab.
+| Gewichtete Summe | Sigmoid-Ausgabe | Wie man sie liest |
+|---:|---:|---|
+| -3.00 | 0.047 | mit ziemlicher Sicherheit nein |
+| -0.50 | 0.378 | tendenziell nein |
+| 0.00 | **0.500** | vollkommen unentschieden |
+| +0.20 | 0.550 | tendenziell ja |
+| +3.00 | 0.953 | mit ziemlicher Sicherheit ja |
 
-**Sichtbare Prüfung:** Die automatisierten Beispiele verwenden dieselben Zahlen:
+Daher kommt die Schwelle `0.5`. Sie ist keine willkürliche Grenze: Sigmoid
+liefert genau `0.5`, wenn die gewichtete Summe genau `0` ist. Damit sind
+**„Ausgabe über 0.5" und „gewichtete Summe über 0" dieselbe Aussage**. Das Neuron
+feuert, wenn Beiträge und Bias zusammen etwas Positives ergeben.
 
-!!! note "Im Repo-Stammverzeichnis ausführen"
-    Diese Befehle setzen voraus, dass dein Terminal im [Stammverzeichnis des Kurs-Repos](setup.md#course-repo) liegt und `godot` auf deinem PATH ist — siehe [Godot auf der Kommandozeile](setup.md#godot-cli).
+!!! note "Die Formel, nur zum Nachschlagen"
+    $$
+    \operatorname{sigmoid}(z) = \frac{1}{1 + e^{-z}}
+    $$
+
+    Du musst sie in diesem Kurs nie von Hand ausrechnen. Lies den Wert an der
+    Kurve ab oder lass ihn vom Code berechnen. Wichtig ist die Form: Sie verlässt
+    den Bereich `0` bis `1` nie und kreuzt `0.5` bei null.
+
+### Die Kurzschreibweise, der du überall begegnest
+
+Ausgeschriebene Namen werden lang, also kürzt die Mathematik sie ab. Die Kürzel
+werden einmal hier eingeführt und im ganzen Kurs weiterverwendet:
+
+| Bedeutung in Worten | Kürzel | Ausgesprochen | Warum dieser Buchstabe |
+|---|---|---|---|
+| erste Eingabe, zweite Eingabe | \(x_1\), \(x_2\) | „iks eins", „iks zwei" | \(x\) ist der traditionelle Buchstabe für eine unbekannte Größe |
+| das Gewicht der jeweiligen Eingabe | \(w_1\), \(w_2\) | „we eins", „we zwei" | \(w\) für englisch **w**eight (Gewicht) — lateinisches \(w\), nicht griechisches \(\omega\) |
+| Bias | \(b\) | „be" | \(b\) für **B**ias |
+| gewichtete Summe (Ergebnis von Schritt 1 und 2) | \(z\) | „zett" | üblicher Buchstabe für die Summe vor der Aktivierung |
+| „addiere das alles zusammen", in Diagrammen als Kasten gezeichnet | \(\Sigma\) | „Sigma" | griechisches großes S, für **S**umme |
+| Ausgabe nach der Aktivierungsfunktion | — | „Ausgabe" | behält in diesem Kurs ihren einfachen Namen |
+
+Die Schritte 1 und 2 zusammen schreiben sich also:
+
+$$
+z = w_1x_1 + w_2x_2 + b
+$$
+
+Vier Lesehinweise, über die viele stolpern:
+
+- \(w_1\) und `w₁` sind **dasselbe**. Fließtext und Slider-Beschriftungen in
+  diesem Kurs verwenden `w₁`, Formeln verwenden \(w_1\). Gewicht ist immer ein
+  kleines \(w\).
+- Das lateinische \(w\) und das griechische \(\omega\) („Omega") sehen sich
+  zum Verwechseln ähnlich, besonders handschriftlich und in kursiver
+  Mathe-Schrift. In diesem Kurs ist \(w\) immer ein Gewicht. \(\omega\)
+  taucht erst sehr viel später auf, in
+  [Hierarchisches RL](unit-hierarchical.md), wo es eine *Option* bezeichnet —
+  ein völlig anderer Begriff.
+- Die kleine tiefgestellte Zahl ist eine Nummerierung, keine Potenz. \(x_1\)
+  heißt „die erste Eingabe", nicht „x hoch eins".
+- Ein griechischer Buchstabe wird mit seinem Namen gelesen, nie nach seiner
+  Form. \(\Sigma\) spricht man „Sigma". Spätere Einheiten bringen
+  \(\gamma\) („Gamma"), \(\alpha\) („Alpha") und \(\varepsilon\)
+  („Epsilon"); das [Glossar](glossary.md) nennt zu jedem den Namen.
+
+---
+
+## 2 · Vorhersagen, bevor du startest
+
+Wende die drei Schritte jetzt auf ein **Neuron mit festen Zahlen** an. Das ist
+eine Vorhersage-Übung: Rechne auf Papier, *bevor* du die Lösung aufklappst oder
+etwas startest.
+
+| Benannte Eingabe | Wert | Gewicht |
+|---|---:|---:|
+| Geschwindigkeit | 0.50 | +0.80 |
+| Nähe zur Kante | 0.25 | +1.20 |
+| Bias | — | -0.50 |
+
+Notiere in dieser Reihenfolge:
+
+1. den Beitrag jeder Eingabe — Wert × Gewicht;
+2. die gewichtete Summe, also Beiträge plus Bias;
+3. ob die Sigmoid-Ausgabe über `0.5` liegt — an der Kurve aus Abschnitt 1
+   ablesen, kein Taschenrechner nötig;
+4. welche Eingabe am stärksten Richtung Sprung drückt.
+
+??? success "Musterlösung — erst aufklappen, wenn du deine Antwort notiert hast"
+    **1. Beiträge**
+
+    | Benannte Eingabe | Wert | Gewicht | Beitrag |
+    |---|---:|---:|---:|
+    | Geschwindigkeit | 0.50 | +0.80 | +0.40 |
+    | Nähe zur Kante | 0.25 | +1.20 | +0.30 |
+    | Bias | — | — | -0.50 |
+
+    **2. Gewichtete Summe**
+
+    $$
+    z =
+    (\text{Geschwindigkeit}\times\text{Geschwindigkeitsgewicht}) +
+    (\text{Nähe}\times\text{Nähegewicht}) +
+    \text{Bias}
+    $$
+
+    $$
+    z = (0.5)(0.8) + (0.25)(1.2) - 0.5 = 0.2
+    $$
+
+    **3. Entscheidung.** Die Summe ist positiv, also muss die Ausgabe über `0.5`
+    liegen, noch bevor du irgendetwas ausrechnest:
+    \(\operatorname{sigmoid}(0.2) \approx 0.550\). Das Neuron **feuert**, die
+    Spielaktion lautet `SPRINGEN`.
+
+    **4. Stärkster Schub.** Geschwindigkeit trägt `+0.40` bei, Nähe `+0.30`, und
+    der Bias zieht `0.50` ab. Geschwindigkeit drückt am stärksten Richtung
+    Sprung — beachte aber, dass der Bias allein größer ist als jeder einzelne
+    Beitrag. Genau deshalb liegt die Entscheidung so dicht an der Schwelle.
+
+    Die ganze Rechnung als ein Bild:
+
+    <div class="diagram-scroll">
+
+    <svg class="course-diagram" viewBox="0 0 800 300" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, sans-serif" role="img" aria-label="Ein Neuron: Geschwindigkeit 0.50 mal Gewicht 0.80 ergibt plus 0.40, Nähe 0.25 mal Gewicht 1.20 ergibt plus 0.30, summiert mit Bias minus 0.50 ergibt 0.20; Sigmoid liefert 0.550, das über 0.5 liegt, also feuert das Neuron SPRINGEN">
+      <defs>
+        <marker id="arN" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0 1 L10 5 L0 9 z" fill="#8892b0"/>
+        </marker>
+      </defs>
+      <rect x="20" y="40" width="180" height="60" rx="10" fill="#1a1d27" stroke="#6c8ef7" stroke-width="1.5"/>
+      <text x="110" y="65" text-anchor="middle" fill="#e2e8f0" font-size="14" font-weight="700">Geschwindigkeit</text>
+      <text x="110" y="86" text-anchor="middle" fill="#8892b0" font-size="13">0.50</text>
+      <rect x="20" y="180" width="180" height="60" rx="10" fill="#1a1d27" stroke="#6c8ef7" stroke-width="1.5"/>
+      <text x="110" y="205" text-anchor="middle" fill="#e2e8f0" font-size="14" font-weight="700">Nähe zur Kante</text>
+      <text x="110" y="226" text-anchor="middle" fill="#8892b0" font-size="13">0.25</text>
+      <path d="M200 70 C280 70, 290 115, 350 122" fill="none" stroke="#8892b0" stroke-width="1.6" marker-end="url(#arN)"/>
+      <text x="272" y="58" text-anchor="middle" fill="#6c8ef7" font-size="12" font-weight="700">× 0.80 → +0.40</text>
+      <path d="M200 210 C280 210, 290 165, 350 158" fill="none" stroke="#8892b0" stroke-width="1.6" marker-end="url(#arN)"/>
+      <text x="272" y="232" text-anchor="middle" fill="#6c8ef7" font-size="12" font-weight="700">× 1.20 → +0.30</text>
+      <rect x="350" y="100" width="140" height="80" rx="10" fill="#1a1d27" stroke="#8892b0" stroke-width="1.5"/>
+      <text x="420" y="132" text-anchor="middle" fill="#e2e8f0" font-size="15" font-weight="700">Summe + Bias</text>
+      <text x="420" y="158" text-anchor="middle" fill="#8892b0" font-size="13">= 0.20</text>
+      <path d="M420 242 L420 184" fill="none" stroke="#8892b0" stroke-width="1.6" marker-end="url(#arN)"/>
+      <text x="420" y="264" text-anchor="middle" fill="#8892b0" font-size="13">Bias −0.50</text>
+      <path d="M490 140 L540 140" fill="none" stroke="#8892b0" stroke-width="1.6" marker-end="url(#arN)"/>
+      <rect x="540" y="100" width="140" height="80" rx="10" fill="#1a1d27" stroke="#4ecca3" stroke-width="1.5"/>
+      <text x="610" y="132" text-anchor="middle" fill="#e2e8f0" font-size="15" font-weight="700">sigmoid</text>
+      <text x="610" y="158" text-anchor="middle" fill="#8892b0" font-size="13">≈ 0.550</text>
+      <path d="M680 140 L716 140" fill="none" stroke="#8892b0" stroke-width="1.6" marker-end="url(#arN)"/>
+      <text x="755" y="136" text-anchor="middle" fill="#4ecca3" font-size="16" font-weight="700">SPRINGEN</text>
+      <text x="755" y="160" text-anchor="middle" fill="#8892b0" font-size="11">0.550 &gt; 0.5</text>
+    </svg>
+
+    </div>
+
+**Sichtbare Prüfung:** Die automatisierten Beispiele nutzen dieselben Zahlen.
+
+!!! note "Aus dem Kurs-Repo-Root ausführen"
+    Diese Befehle setzen voraus, dass dein Terminal im [Kurs-Repo-Root](setup.md#course-repo) steht und `godot` in deinem PATH liegt — siehe [Godot auf der Kommandozeile](setup.md#godot-cli).
 
 ```bash
 conda activate godot_env
@@ -112,16 +255,16 @@ godot --headless \
   --script res://test/test_tiny_neuron.gd
 ```
 
-Beide Befehle geben den Abschnitt-1-Walkthrough aus (`Summe = 0.2`,
-`sigmoid(Summe) ≈ 0.550`) und enden mit `OK`. Der Godot-Lauf zeigt zusätzlich
-die Live-Labels der Jumper-Demo (Geschwindigkeit, Nähe, Summe, Ausgabe und
+Beide Befehle geben dieselbe Rechnung aus (`sum (z) = +0.200`,
+`sigmoid(sum) = 0.550`) und enden mit `OK`. Der Godot-Lauf zeigt zusätzlich die
+Live-Beschriftungen der Jumper-Demo (Geschwindigkeit, Nähe, Summe, Ausgabe und
 `WARTEN`/`SPRINGEN`).
 
-Beide Tests rufen den Forward Pass auf, den du als Nächstes untersuchst.
+Beide Tests rufen den Forward Pass auf, den du dir als Nächstes ansiehst.
 
 ---
 
-## 2 · Gewichtete Eingaben und Bias
+## 3 · Gewichtete Eingaben und Bias
 
 Ein Neuron gibt jeder normalisierten Eingabe ein **Gewicht**:
 
@@ -171,10 +314,12 @@ sie das Neuron erreichen.
 
 ---
 
-## 3 · Aktivierungsfunktionen
+## 4 · Aktivierungsfunktionen
 
-Die Summe \(z\) kann jede Zahl sein. Eine **Aktivierungsfunktion**
-wandelt sie in die für die Entscheidung benötigte Form.
+Sigmoid ist nicht der einzige Weg, die Summe \(z\) in eine Entscheidung zu
+übersetzen. Für den Sprung-Trigger wird sie benutzt, weil dort eine Sicherheit
+zwischen `0` und `1` gebraucht wird — andere Entscheidungen brauchen andere
+Ausgabeformen.
 
 | Activation | Ausgabe | Nützliche sichtbare Interpretation |
 |---|---|---|
@@ -205,7 +350,7 @@ Stern-Sonde ändert. In Godot löst `sigmoid(z) > 0.5` das Ereignis `SPRINGEN` a
 
 ---
 
-## 4 · Wähle deinen Pfad
+## 5 · Wähle deinen Pfad
 
 Die Gleichung ist gemeinsam; die Evidenz unterscheidet sich.
 
@@ -219,15 +364,15 @@ Die Gleichung ist gemeinsam; die Evidenz unterscheidet sich.
 
 Wähle einen Hauptpfad:
 
-- **Research:** Schließe Abschnitt 5 ab und sieh dir den Godot-Vergleich einmal an.
-- **Game development:** Schließe Abschnitt 6 ab und sieh dir den Plot-Vergleich einmal an.
+- **Research:** Schließe Abschnitt 6 ab und sieh dir den Godot-Vergleich einmal an.
+- **Game development:** Schließe Abschnitt 7 ab und sieh dir den Plot-Vergleich einmal an.
 
 In dieser Einheit brauchst du keine native Extension, C#, kein Trainingsframework
 und keine vorherige Machine-Learning-Bibliothek.
 
 ---
 
-## 5 · Research-Pfad — sichtbare Entscheidungsgrenze
+## 6 · Research-Pfad — sichtbare Entscheidungsgrenze
 
 **Forschungsfrage:** Kann ein Neuron sichere und unsichere experimentelle
 Bedingungen trennen?
@@ -319,7 +464,7 @@ Speichere diese kleine Tabelle in deinen Notizen:
 
 ---
 
-## 6 · Game-Pfad — Sprung-Timing an der Klippe
+## 7 · Game-Pfad — Sprung-Timing an der Klippe
 
 **Game-AI-Frage:** Kann ein Neuron Geschwindigkeit und Distanz kombinieren, um
 einen Sprung im richtigen Moment auszulösen?
@@ -398,7 +543,7 @@ erneut testen.
 
 ---
 
-## 7 · Absichtlich kaputtmachen
+## 8 · Absichtlich kaputtmachen
 
 Wähle einen Fehler aus deinem Hauptpfad und mache ihn offensichtlich:
 
@@ -432,7 +577,7 @@ Nutze diese Diagnosereihenfolge:
 
 ---
 
-## 8 · Die beiden Pfade vergleichen
+## 9 · Die beiden Pfade vergleichen
 
 Die Research-Grenze und das Jumper-Verhalten sind zwei Ansichten derselben Forward-
 Berechnung.
@@ -460,7 +605,7 @@ Geschwindigkeits-Distanz-Kombinationen den Sprung auslösen.
 
 ---
 
-## 9 · Stretch Goals
+## 10 · Stretch Goals
 
 **Research — Evidenz exportieren.** Führe aus:
 
@@ -491,5 +636,31 @@ Weglassen eines Merkmals die sichtbare Evidenz irreführend machen würde.
 Ein Neuron kann nur eine gerade Grenze durch seine Eingaben ziehen. In **Neuronale
 Grundlagen 2** verbindest du ein paar Neuronen, erzeugst eine nichtlineare
 Entscheidungsregion, misst Fehler und aktualisierst Gewichte aus Beispielen.
+
+!!! info "Selbsttest, bevor du weitergehst"
+    1. Welche drei Schritte führt ein Neuron aus, in welcher Reihenfolge?
+    2. Was leistet der Bias, was ein Gewicht nicht leisten kann?
+    3. Warum liegt die Entscheidungsschwelle bei `0.5` und nicht bei einer
+       anderen Zahl?
+    4. Wofür steht in \(z = w_1x_1 + w_2x_2 + b\) jeder einzelne Buchstabe?
+    5. Ein Beitrag kommt mit `-4.00` heraus, während alle anderen unter `1`
+       liegen. Was ist die wahrscheinlichste Ursache?
+    6. Was macht eine Gewichtsänderung mit der Entscheidungsgrenze? Was macht
+       eine Bias-Änderung?
+
+??? success "Antworten zum Selbsttest"
+    1. Jede Eingabe gewichten, die Beiträge plus Bias addieren, die gewichtete
+       Summe durch eine Aktivierungsfunktion schicken.
+    2. Der Bias verschiebt alle Entscheidungen zugleich, unabhängig von den
+       Eingaben. Er ist die Grundtendenz des Neurons; ein Gewicht wirkt nur,
+       wenn seine Eingabe ungleich null ist.
+    3. Weil Sigmoid genau `0.5` liefert, wenn die gewichtete Summe `0` ist.
+       „Ausgabe über `0.5`" ist nur eine andere Formulierung für „gewichtete
+       Summe über `0`".
+    4. \(x_1, x_2\) sind die Eingaben, \(w_1, w_2\) ihre Gewichte, \(b\)
+       der Bias und \(z\) die gewichtete Summe vor der Aktivierungsfunktion.
+    5. Eine fehlende Normalisierung — diese Eingabe steht noch in ihrer
+       Roh-Einheit, also überdeckt ihr Beitrag alle anderen.
+    6. Ein Gewicht dreht die Grenze; der Bias verschiebt sie, ohne sie zu drehen.
 
 [← Einheit 0](unit-00.md) · [Kursstartseite](index.md) · [→ Neuronale Grundlagen 2](unit-neural-02.md)

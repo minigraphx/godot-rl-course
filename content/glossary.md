@@ -10,6 +10,8 @@ Quick reference for all acronyms, equations, and algorithm parameters used in th
 
 **A2C (Advantage Actor-Critic)** — Synchronous variant of A3C that runs multiple parallel environments and updates a shared actor and critic after each rollout. *See:* [unit-actor-critic](unit-actor-critic.md) §3
 
+**Activation function** — The function applied to a neuron's weighted sum to turn it into a usable decision. `sigmoid` squashes any number into `0`–`1`, `tanh` into `-1`–`+1`, and `step` into a hard `0` or `1`. *See:* [unit-neural-01](unit-neural-01.md) §1
+
 **Actor** — The neural network that outputs a probability distribution (or deterministic action) over the action space; the "policy" half of Actor-Critic methods. *See:* [unit-actor-critic](unit-actor-critic.md) §1
 
 **Advantage (A)** — How much better an action is compared to the average: `A(s,a) = Q(s,a) − V(s)`. Positive advantage → action is better than expected; negative → worse. *See:* [unit-actor-critic](unit-actor-critic.md) §2
@@ -29,6 +31,8 @@ Quick reference for all acronyms, equations, and algorithm parameters used in th
 **Bellman equation** — Recursive definition of the value function: `V(s) = E[r + γ V(s')]`. The backbone of all value-based RL algorithms. *See:* [unit-q-learning](unit-q-learning.md) §2
 
 **Beta (β in PBT/PER)** — In PER, controls how much importance-sampling corrects the bias introduced by non-uniform sampling (annealed 0→1 during training). In PBT, sometimes used as a schedule parameter. *See:* [unit-pbt](unit-pbt.md) §2
+
+**Bias (b, in a neuron)** — The extra number added to the weighted sum that belongs to no input. It shifts every decision at once, setting the neuron's default leaning before any input is considered. *See:* [unit-neural-01](unit-neural-01.md) §1
 
 **Buffer (replay)** — A fixed-size FIFO memory that stores `(s, a, r, s', done)` transitions; off-policy algorithms sample mini-batches from it to break temporal correlation. *See:* [unit-q-learning](unit-q-learning.md) §5
 
@@ -58,7 +62,7 @@ Quick reference for all acronyms, equations, and algorithm parameters used in th
 
 **DQN (Deep Q-Network)** — Combines Q-learning with a deep neural network, experience replay, and a target network to stabilize training on high-dimensional inputs. *See:* [unit-03](unit-03.md) §1
 
-**Discount factor (γ)** — A scalar in [0, 1) that down-weights future rewards in the return `G_t = Σ γ^k r_{t+k}`. γ=0 makes the agent myopic (only cares about immediate reward); γ→1 makes it far-sighted. Typical values: 0.99 for episodic tasks, 0.999 for long-horizon continuous tasks. *See:* [unit-00](unit-00.md) §2
+**Discount factor (γ, "gamma")** — A scalar in [0, 1) that down-weights future rewards in the return `G_t = Σ γ^k r_{t+k}`. γ=0 makes the agent myopic (only cares about immediate reward); γ→1 makes it far-sighted. Typical values: 0.99 for episodic tasks, 0.999 for long-horizon continuous tasks. *See:* [unit-00](unit-00.md) §2
 
 **Distributional RL** — Family of RL algorithms that model the full distribution of returns Z(s,a) rather than just its expectation Q(s,a). C51 (the original) represents Z as a categorical distribution over 51 atoms. Improves stability because the agent learns *how variable* an outcome is, not just its mean. Used in Rainbow DQN. *See:* [unit-03](unit-03.md) §7
 
@@ -70,7 +74,7 @@ Quick reference for all acronyms, equations, and algorithm parameters used in th
 
 **Episode** — A complete sequence of transitions from environment reset to termination (done=True). Episodic return G is the sum of rewards over one episode. *See:* [unit-00](unit-00.md) §2
 
-**ε-greedy** — Exploration strategy that takes a random action with probability ε and the greedy action otherwise; ε is typically annealed from 1.0 to 0.05 during training. *See:* [unit-q-learning](unit-q-learning.md) §3
+**ε-greedy ("epsilon-greedy")** — Exploration strategy that takes a random action with probability ε and the greedy action otherwise; ε is typically annealed from 1.0 to 0.05 during training. *See:* [unit-q-learning](unit-q-learning.md) §3
 
 **Experience replay** — Storing past transitions in a buffer and sampling random mini-batches to train on, breaking temporal correlations and enabling data reuse for off-policy algorithms. *See:* [unit-q-learning](unit-q-learning.md) §5
 
@@ -166,6 +170,8 @@ Quick reference for all acronyms, equations, and algorithm parameters used in th
 
 **Self-play** — Training paradigm where agents play against copies of themselves (or a pool of past versions), generating an automatic curriculum of increasingly skilled opponents. *See:* [unit-self-play](unit-self-play.md) §1
 
+**Sigmoid** — Activation function `sigmoid(z) = 1 / (1 + e^(−z))`. It maps any number into the range `0`–`1` and returns exactly `0.5` when the weighted sum is `0`, which is why `0.5` is the natural decision threshold. *See:* [unit-neural-01](unit-neural-01.md) §1
+
 **Sim-to-real transfer** — The challenge of transferring a policy trained in simulation to a real physical robot without performance collapse; addressed via domain randomization, adaptive policies, and careful sensor matching. *See:* [unit-sim-to-real](unit-sim-to-real.md) §1
 
 **Sparse reward** — Reward structure where non-zero rewards are extremely rare (e.g., +1 only at task completion), making standard gradient-based RL methods ineffective without exploration bonuses or shaping. *See:* [unit-curiosity](unit-curiosity.md) §1
@@ -174,11 +180,11 @@ Quick reference for all acronyms, equations, and algorithm parameters used in th
 
 **Target network** — A periodically-updated copy of the Q-network (or critic) whose weights are held fixed while the online network trains against it, preventing feedback loops that destabilize DQN. *See:* [unit-03](unit-03.md) §2
 
-**TD error (δ)** — Temporal-difference error: `δ = r + γ V(s') − V(s)`; the mismatch between a bootstrapped target and the current value estimate; drives both value learning and policy gradients. *See:* [unit-q-learning](unit-q-learning.md) §2
+**TD error (δ, "delta")** — Temporal-difference error: `δ = r + γ V(s') − V(s)`; the mismatch between a bootstrapped target and the current value estimate; drives both value learning and policy gradients. *See:* [unit-q-learning](unit-q-learning.md) §2
 
 **TD3 (Twin Delayed Deep Deterministic)** — Off-policy continuous-action algorithm that fixes DDPG instability with twin critics (takes the minimum Q), delayed policy updates, and target policy smoothing. *See:* [unit-sac](unit-sac.md) §2
 
-**Temperature (α)** — See *Alpha (α in SAC)*. *See:* [unit-sac](unit-sac.md) §3
+**Temperature (α, "alpha")** — See *Alpha (α in SAC)*. *See:* [unit-sac](unit-sac.md) §3
 
 **Timestep** — A single environment step: the agent receives observation o_t, produces action a_t, the environment transitions to o_{t+1} and emits reward r_t. Training budgets are measured in total timesteps. *See:* [unit-00](unit-00.md) §2
 
@@ -191,6 +197,8 @@ Quick reference for all acronyms, equations, and algorithm parameters used in th
 **VecEnv** — SB3's vectorized environment abstraction that runs N parallel environment copies in a single process or across subprocesses, providing batched steps for faster data collection. *See:* [unit-02](unit-02.md) §3
 
 **VecNormalize** — SB3 wrapper around VecEnv that maintains running statistics to normalize observations and rewards online during training; essential for stable continuous-control training. *See:* [unit-sac](unit-sac.md) §6
+
+**Weight (w)** — The number each input is multiplied by. Its magnitude sets how much that input matters; its sign decides whether the input argues for or against the decision. Training is the process of changing weights. *See:* [unit-neural-01](unit-neural-01.md) §1
 
 **World model** — A learned neural model of environment dynamics: given (s_t, a_t), predicts (s_{t+1}, r_t). Enables planning, imagination, and data-efficient learning. *See:* [unit-world-models](unit-world-models.md) §1
 

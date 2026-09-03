@@ -124,7 +124,7 @@ Es ersetzt primitive Aktionen durch **Makro-Aktionen** namens *Optionen*.
 
 ### Formale Definition
 
-Eine Option `ω` ist ein Tripel `(I, π, β)`:
+Eine Option `ω` („Omega") ist ein Tripel `(I, π, β)`:
 
 | Komponente | Symbol | Bedeutung |
 |---|---|---|
