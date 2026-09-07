@@ -26,22 +26,24 @@ Track** immediately after Unit 0, split around a compact RL Essentials bridge.
 Learners choose one practical path and view short comparison demonstrations
 from the other:
 
-1. one neuron — Python decision boundary or Godot enemy decision;
+1. one neuron — Python decision boundary or Godot cliff-jumper decision;
 2. a tiny network — Python nonlinear classifier or Godot arena collector;
 3. reward learning — Python REINFORCE point robot or a PPO-trained Godot racer.
 
 Intended sequence:
 
 1. Unit 0 — first successful training;
-2. Neural Foundations 1–2;
-3. RL Essentials — agent, environment, observations, actions, reward, policy,
+2. Math Foundations 1–2 — optional refreshers on vectors, dot products,
+   probability, and expected value; skippable, and linked past from Unit 0;
+3. Neural Foundations 1–2;
+4. RL Essentials — agent, environment, observations, actions, reward, policy,
    episodes, return, and intuitive exploration;
-4. Neural Foundations 3;
-5. RL Foundations Deep Dive — MC versus TD, bootstrapping, exploration
+5. Neural Foundations 3;
+6. RL Foundations Deep Dive — MC versus TD, bootstrapping, exploration
    mechanisms, and algorithm taxonomy;
-6. Reward Engineering and current Unit 2 onward.
+7. Reward Engineering and current Unit 2 onward.
 
-Current Unit 1 will be split across steps 3 and 5. This prevents Foundations 3
+Current Unit 1 will be split across steps 4 and 6. This prevents Foundations 3
 from introducing RL and neural networks simultaneously while avoiding a long
 theory block before learners have a concrete policy to analyze.
 
