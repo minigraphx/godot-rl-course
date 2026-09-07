@@ -198,7 +198,9 @@ Notiere in dieser Reihenfolge:
     **3. Entscheidung.** Die Summe ist positiv, also muss die Ausgabe über `0.5`
     liegen, noch bevor du irgendetwas ausrechnest:
     \(\operatorname{sigmoid}(0.2) \approx 0.550\). Das Neuron **feuert**, die
-    Spielaktion lautet `SPRINGEN`.
+    Spielaktion lautet `JUMP`. Die Beschriftungen in der Godot-Szene sind
+    englisch, deshalb stehen sie hier unübersetzt: du sollst auf dem Bildschirm
+    genau das wiederfinden, was im Text steht.
 
     **4. Stärkster Schub.** Geschwindigkeit trägt `+0.40` bei, Nähe `+0.30`, und
     der Bias zieht `0.50` ab. Geschwindigkeit drückt am stärksten Richtung
@@ -209,7 +211,7 @@ Notiere in dieser Reihenfolge:
 
     <div class="diagram-scroll">
 
-    <svg class="course-diagram" viewBox="0 0 800 300" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, sans-serif" role="img" aria-label="Ein Neuron: Geschwindigkeit 0.50 mal Gewicht 0.80 ergibt plus 0.40, Nähe 0.25 mal Gewicht 1.20 ergibt plus 0.30, summiert mit Bias minus 0.50 ergibt 0.20; Sigmoid liefert 0.550, das über 0.5 liegt, also feuert das Neuron SPRINGEN">
+    <svg class="course-diagram" viewBox="0 0 800 300" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, sans-serif" role="img" aria-label="Ein Neuron: Geschwindigkeit 0.50 mal Gewicht 0.80 ergibt plus 0.40, Nähe 0.25 mal Gewicht 1.20 ergibt plus 0.30, summiert mit Bias minus 0.50 ergibt 0.20; Sigmoid liefert 0.550, das über 0.5 liegt, also feuert das Neuron JUMP">
       <defs>
         <marker id="arN" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
           <path d="M0 1 L10 5 L0 9 z" fill="#8892b0"/>
@@ -235,7 +237,7 @@ Notiere in dieser Reihenfolge:
       <text x="610" y="132" text-anchor="middle" fill="#e2e8f0" font-size="15" font-weight="700">sigmoid</text>
       <text x="610" y="158" text-anchor="middle" fill="#8892b0" font-size="13">≈ 0.550</text>
       <path d="M680 140 L716 140" fill="none" stroke="#8892b0" stroke-width="1.6" marker-end="url(#arN)"/>
-      <text x="755" y="136" text-anchor="middle" fill="#4ecca3" font-size="16" font-weight="700">SPRINGEN</text>
+      <text x="755" y="136" text-anchor="middle" fill="#4ecca3" font-size="16" font-weight="700">JUMP</text>
       <text x="755" y="160" text-anchor="middle" fill="#8892b0" font-size="11">0.550 &gt; 0.5</text>
     </svg>
 
@@ -258,7 +260,7 @@ godot --headless \
 Beide Befehle geben dieselbe Rechnung aus (`sum (z) = +0.200`,
 `sigmoid(sum) = 0.550`) und enden mit `OK`. Der Godot-Lauf zeigt zusätzlich die
 Live-Beschriftungen der Jumper-Demo (Geschwindigkeit, Nähe, Summe, Ausgabe und
-`WARTEN`/`SPRINGEN`).
+`WAIT`/`JUMP`).
 
 Beide Tests rufen den Forward Pass auf, den du dir als Nächstes ansiehst.
 
@@ -346,7 +348,7 @@ zu drehen.
 
 **Sichtbare Prüfung:** Wähle `step`, `sigmoid` und `tanh` im Research-Plot. Die
 schwarze Grenze bleibt bei \(z=0\), während sich die angezeigte Ausgabe für die
-Stern-Sonde ändert. In Godot löst `sigmoid(z) > 0.5` das Ereignis `SPRINGEN` aus.
+Stern-Sonde ändert. In Godot löst `sigmoid(z) > 0.5` das Ereignis `JUMP` aus.
 
 ---
 
