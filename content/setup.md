@@ -2,6 +2,13 @@
 
 One-time installation for every unit in this course. Do this before Unit 0.
 
+!!! tip "You can read the course online"
+    The course is published at
+    [godot-rl.onlinekurs.training](https://godot-rl.onlinekurs.training/) and needs
+    no installation to read. Everything below is for *running* the code: the units
+    execute Python and Godot scenes from the repository, so you still clone it and
+    still create the `godot_env` environment.
+
 ---
 
 ## Course repo — clone first { #course-repo }
