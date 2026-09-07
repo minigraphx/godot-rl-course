@@ -4,11 +4,13 @@ Learn deep RL with **Godot 4** and **godot-rl-agents**. Train locally with Pytho
 
 The course is published as a static MkDocs site. Markdown sources live in [`content/`](content/); the rendered HTML is built into `site/` (gitignored).
 
-**Read the course:** open `mkdocs serve` locally, or visit the published site.
+**Read the course:** **[godot-rl.onlinekurs.training](https://godot-rl.onlinekurs.training/)** — also available in [German](https://godot-rl.onlinekurs.training/de/). Nothing needs to be installed to read it.
 
 ---
 
 ## Contributor quick start
+
+The steps below are for *contributing* to the course — editing pages and building the site. To simply read it, use the [published site](https://godot-rl.onlinekurs.training/); to run the course code, see [Setup](content/setup.md), which uses a separate `godot_env` environment.
 
 This project uses **conda** for its Python environment. If you don't already use conda, install [Miniconda](https://docs.conda.io/en/latest/miniconda.html) first; `python -m venv` will also work if you prefer, but the maintainer's environment is conda-based.
 

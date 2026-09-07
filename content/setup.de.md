@@ -2,6 +2,14 @@
 
 Einmalige Installation für alle Einheiten dieses Kurses. Führe dies vor Unit 0 durch.
 
+!!! tip "Du kannst den Kurs online lesen"
+    Der Kurs ist unter
+    [godot-rl.onlinekurs.training](https://godot-rl.onlinekurs.training/de/)
+    veröffentlicht und braucht zum Lesen keine Installation. Alles Folgende dient
+    dem *Ausführen* des Codes: die Einheiten starten Python- und Godot-Szenen aus
+    dem Repository, du klonst es also weiterhin und legst weiterhin die Umgebung
+    `godot_env` an.
+
 ---
 
 ## Kurs-Repository — zuerst klonen { #course-repo }
