@@ -37,6 +37,8 @@ Learn deep reinforcement learning by building and training agents inside real Go
 **Phase 1 — Foundations**
 
 - [Unit 0 — Setup & First Run](unit-00.md)
+- [Math Foundations 1 — Vectors and Matrices](unit-math-01.md) *(optional refresher)*
+- [Math Foundations 2 — Probability and Expectation](unit-math-02.md) *(optional refresher)*
 - [Neural Foundations 1 — One Neuron](unit-neural-01.md)
 - [Neural Foundations 2 — Tiny Networks](unit-neural-02.md)
 - [RL Essentials](unit-01.md)
