@@ -1,5 +1,10 @@
 site_name: Godot RL Course
 site_description: Learn deep reinforcement learning through Godot game environments
+# Absolute base URL of the published site. Without it MkDocs emits a broken
+# sitemap (every <loc> becomes "None...") and no canonical link.
+site_url: https://godot-rl.onlinekurs.training/
+repo_url: https://github.com/minigraphx/godot-rl-course
+edit_uri: edit/main/content/
 docs_dir: content
 
 theme:
@@ -13,6 +18,7 @@ theme:
     - navigation.sections
     - navigation.top
     - content.code.copy
+    - content.action.edit
     - toc.integrate
 
 plugins:
