@@ -39,6 +39,8 @@ plugins:
             Guides: Anleitungen
             "Phase 1 — Foundations": "Phase 1 — Grundlagen"
             "Unit 0 — Setup & First Run": "Einheit 0 — Einrichtung & Erster Start"
+            "Math Foundations 1 — Vectors and Matrices": "Mathe-Grundlagen 1 — Vektoren und Matrizen"
+            "Math Foundations 2 — Probability and Expectation": "Mathe-Grundlagen 2 — Wahrscheinlichkeit und Erwartungswert"
             "Neural Foundations 1 — One Neuron": "Neuronale Grundlagen 1 — Ein Neuron"
             "Neural Foundations 2 — Tiny Networks": "Neuronale Grundlagen 2 — Kleine Netze"
             "RL Essentials": "RL Essentials"
@@ -71,6 +73,8 @@ nav:
   - Setup: setup.md
   - "Phase 1 — Foundations":
     - "Unit 0 — Setup & First Run": unit-00.md
+    - "Math Foundations 1 — Vectors and Matrices": unit-math-01.md
+    - "Math Foundations 2 — Probability and Expectation": unit-math-02.md
     - "Neural Foundations 1 — One Neuron": unit-neural-01.md
     - "Neural Foundations 2 — Tiny Networks": unit-neural-02.md
     - "RL Essentials": unit-01.md

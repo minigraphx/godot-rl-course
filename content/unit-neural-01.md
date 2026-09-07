@@ -1,6 +1,6 @@
 # Neural Foundations 1 — One Neuron, One Decision
 
-[← Unit 0](unit-00.md) · [Course home](index.md)
+[← Math Foundations 2](unit-math-02.md) · [Course home](index.md)
 
 !!! info "Time"
     Reading: ~30 min · Hand calculation: ~15 min · Experiments in one path: ~45 min
@@ -651,4 +651,4 @@ region, measure error, and update weights from examples.
        contribution drowns out the others.
     6. A weight rotates the boundary; the bias shifts it without rotating it.
 
-[← Unit 0](unit-00.md) · [Course home](index.md) · [→ Neural Foundations 2](unit-neural-02.md)
+[← Math Foundations 2](unit-math-02.md) · [Course home](index.md) · [→ Neural Foundations 2](unit-neural-02.md)

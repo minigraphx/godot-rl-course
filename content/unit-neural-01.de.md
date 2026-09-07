@@ -1,6 +1,6 @@
 # Neuronale Grundlagen 1 — Ein Neuron, eine Entscheidung
 
-[← Einheit 0](unit-00.md) · [Kursstartseite](index.md)
+[← Mathe-Grundlagen 2](unit-math-02.md) · [Kursstartseite](index.md)
 
 !!! info "Zeit"
     Lesen: ~30 Min · Handrechnung: ~15 Min · Experimente in einem Pfad: ~45 Min
@@ -663,4 +663,4 @@ Entscheidungsregion, misst Fehler und aktualisierst Gewichte aus Beispielen.
        Roh-Einheit, also überdeckt ihr Beitrag alle anderen.
     6. Ein Gewicht dreht die Grenze; der Bias verschiebt sie, ohne sie zu drehen.
 
-[← Einheit 0](unit-00.md) · [Kursstartseite](index.md) · [→ Neuronale Grundlagen 2](unit-neural-02.md)
+[← Mathe-Grundlagen 2](unit-math-02.md) · [Kursstartseite](index.md) · [→ Neuronale Grundlagen 2](unit-neural-02.md)

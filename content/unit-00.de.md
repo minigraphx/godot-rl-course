@@ -186,4 +186,6 @@ Morgen: Grundlagen 1–2 abschließen, dann [RL Essentials](unit-01.md) (BallCha
 
 Das Tooling funktioniert. In **Neuronale Grundlagen 1** baust du ein sichtbares Neuron und verbindest Netze später mit der RL-Schleife.
 
-[→ Neuronale Grundlagen 1](unit-neural-01.md)
+Dazwischen liegen zwei optionale Auffrischungen: **Mathe-Grundlagen 1** behandelt Vektoren und Skalarprodukt, **Mathe-Grundlagen 2** Wahrscheinlichkeit und Erwartungswert. Überspringe sie, wenn dir das Rechnen in Neuronale Grundlagen 1 leichtfällt, und komm zurück, sobald die Notation einer späteren Einheit nicht mehr aufgeht.
+
+[→ Mathe-Grundlagen 1](unit-math-01.md) · [direkt zu Neuronale Grundlagen 1](unit-neural-01.md)

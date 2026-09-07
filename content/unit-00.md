@@ -186,4 +186,6 @@ Tomorrow: finish Foundations 1–2, then [RL Essentials](unit-01.md) (BallChase 
 
 Tooling works. In **Neural Foundations 1** you'll build one visible neuron, then connect networks to the RL loop in later units.
 
-[→ Neural Foundations 1](unit-neural-01.md)
+Two optional refreshers sit between here and there: **Math Foundations 1** covers vectors and dot products, **Math Foundations 2** probability and expected value. Skip them if the arithmetic in Neural Foundations 1 feels comfortable, and come back when a later unit's notation stops making sense.
+
+[→ Math Foundations 1](unit-math-01.md) · [skip to Neural Foundations 1](unit-neural-01.md)

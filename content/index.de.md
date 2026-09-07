@@ -37,6 +37,8 @@ Lerne Deep Reinforcement Learning durch das Bauen und Trainieren von Agenten in 
 **Phase 1 — Grundlagen**
 
 - [Einheit 0 — Einrichtung & Erster Start](unit-00.md)
+- [Mathe-Grundlagen 1 — Vektoren und Matrizen](unit-math-01.md) *(optionale Auffrischung)*
+- [Mathe-Grundlagen 2 — Wahrscheinlichkeit und Erwartungswert](unit-math-02.md) *(optionale Auffrischung)*
 - [Neuronale Grundlagen 1 — Ein Neuron](unit-neural-01.md)
 - [Neuronale Grundlagen 2 — Kleine Netze](unit-neural-02.md)
 - [RL Essentials](unit-01.md)
