@@ -20,7 +20,37 @@ No git? Use **Code → Download ZIP** on [github.com/minigraphx/godot-rl-course]
 
 ---
 
-## Godot 4 — .NET edition
+## Native runtime — godot-native-rl { #native-runtime }
+
+!!! info "Primary path, rolling out unit by unit"
+    The course is migrating onto **godot-native-rl** — standard Godot, native **ncnn** inference, **no .NET**. Units move over one at a time; until a unit says otherwise, use the **[.NET fallback](#godot-net-fallback)** below. macOS **Intel** has no native runner yet, so use the fallback there too.
+
+**Clone the plugin repo** — it holds the addon, the example environments, and the training scripts:
+
+```bash
+git clone https://github.com/minigraphx/godot-native-rl.git
+```
+
+**Standard Godot 4.5+** — download the **standard** build (not the .NET/Mono build) from [godotengine.org](https://godotengine.org).
+
+**Get the `NcnnRunner` binary for your platform.** The Godot AssetLib package is not published yet, so download `godot-native-rl-addon-v0.3.1.zip` from the repo's [Releases](https://github.com/minigraphx/godot-native-rl/releases) and copy its `addons/godot_native_rl/bin/` into your clone — the binaries are not committed to the repo tree. Prebuilt binaries are verified for **Linux x86_64, macOS arm64, Windows x86_64, and Web/WASM**; for any other target, build from source per the repo's `docs/dev/building.md`.
+
+!!! warning "macOS — clear the download quarantine first"
+    Prebuilt `.dylib`s are not Apple-notarized, so Gatekeeper blocks them and inference silently fails. After unzipping, run once from your clone:
+    ```bash
+    xattr -dr com.apple.quarantine addons/godot_native_rl/bin
+    ```
+
+**Enable the plugin** — open the project in Godot 4.5+, then Project → Project Settings → Plugins → **Godot Native RL** → Enabled. (Headless training doesn't need this; it only affects editor tooling.)
+
+**Training stack (conda).** Native training uses a newer Python stack than the [fallback](#compatibility-table) — Python 3.13 (training) + 3.14 (conversion), Stable-Baselines3 2.8, gymnasium 1.2, godot-rl 0.8.2. The authoritative setup and `train_*.sh` scripts live in your clone's `docs/guide/training.md` (run `setup_training.sh`, or the documented conda alternative: create the env and `pip install -r requirements-train.txt` / `requirements-convert.txt`). Each unit pins the exact train and deploy commands as it migrates.
+
+---
+
+## Godot 4 — .NET edition (fallback) { #godot-net-fallback }
+
+!!! note "Fallback path"
+    Use this if your unit hasn't moved to the [native runtime](#native-runtime) yet, or on macOS Intel (the native runner ships for arm64 only).
 
 Download the **.NET / Mono** build of Godot 4 from [godotengine.org](https://godotengine.org) (not the standard build). Tested with Godot 4.3+.
 
@@ -112,6 +142,8 @@ The table below shows the package versions that ship in `requirements-course.txt
 |---|---|---|---|---|---|
 | 2026-05 | 4.3.x | 0.5.0 | 2.3.2 | 2.6.0 | 3.10 |
 
+The [native runtime](#native-runtime) uses a separate, newer stack — Godot 4.5+ (standard), godot-rl 0.8.2, Stable-Baselines3 2.8.0, PyTorch 2.12.0, gymnasium 1.2.2, Python 3.13/3.14 — installed from the cloned godot-native-rl repo, not from `requirements-course.txt`.
+
 !!! warning "Do not upgrade packages mid-course"
     godot-rl, SB3, and PyTorch have broken APIs across releases. Stick to the pinned versions in `requirements-course.txt` for the duration of the course. After the course, feel free to experiment with newer releases — just create a fresh conda environment.
 
@@ -169,7 +201,10 @@ The macOS/Linux commands `chmod +x godot_binary` do not apply on Windows. Godot 
 
 ---
 
-## Godot plugin — godot-rl-agents
+## Godot plugin — godot-rl-agents (fallback)
+
+!!! note "Fallback path"
+    For units still on the .NET stack. The [native runtime](#native-runtime) above installs its plugin by cloning the godot-native-rl repo instead.
 
 The Godot-side plugin is separate from the Python package.
 

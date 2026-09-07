@@ -20,7 +20,37 @@ Kein git? Nutze stattdessen **Code → Download ZIP** auf [github.com/minigraphx
 
 ---
 
-## Godot 4 — .NET-Edition
+## Native Runtime — godot-native-rl { #native-runtime }
+
+!!! info "Primärer Pfad, wird Einheit für Einheit ausgerollt"
+    Der Kurs wechselt auf **godot-native-rl** — Standard-Godot, native **ncnn**-Inferenz, **kein .NET**. Die Einheiten werden nach und nach umgestellt; solange eine Einheit nichts anderes sagt, nutze den **[.NET-Fallback](#godot-net-fallback)** unten. macOS **Intel** hat noch keinen nativen Runner — nutze dort ebenfalls den Fallback.
+
+**Klone das Plugin-Repo** — es enthält das Addon, die Beispielumgebungen und die Trainingsskripte:
+
+```bash
+git clone https://github.com/minigraphx/godot-native-rl.git
+```
+
+**Standard-Godot 4.5+** — lade die **Standard**-Version (nicht die .NET/Mono-Version) von [godotengine.org](https://godotengine.org) herunter.
+
+**Hol dir die `NcnnRunner`-Binärdatei für deine Plattform.** Das Godot-AssetLib-Paket ist noch nicht veröffentlicht, lade also `godot-native-rl-addon-v0.3.1.zip` aus den [Releases](https://github.com/minigraphx/godot-native-rl/releases) des Repos herunter und kopiere dessen `addons/godot_native_rl/bin/` in deinen Klon — die Binärdateien liegen nicht im Repo-Baum. Vorgefertigte Binärdateien sind verifiziert für **Linux x86_64, macOS arm64, Windows x86_64 und Web/WASM**; für andere Ziele baue aus dem Quellcode gemäß `docs/dev/building.md` im Repo.
+
+!!! warning "macOS — zuerst die Download-Quarantäne entfernen"
+    Vorgefertigte `.dylib`s sind nicht von Apple notarisiert, daher blockiert Gatekeeper sie und die Inferenz schlägt still fehl. Führe nach dem Entpacken einmalig aus deinem Klon aus:
+    ```bash
+    xattr -dr com.apple.quarantine addons/godot_native_rl/bin
+    ```
+
+**Plugin aktivieren** — öffne das Projekt in Godot 4.5+, dann Projekt → Projekteinstellungen → Plugins → **Godot Native RL** → Aktiviert. (Headless-Training braucht das nicht; es betrifft nur die Editor-Tools.)
+
+**Trainings-Stack (conda).** Das native Training nutzt einen neueren Python-Stack als der [Fallback](#kompatibilitatstabelle) — Python 3.13 (Training) + 3.14 (Konvertierung), Stable-Baselines3 2.8, gymnasium 1.2, godot-rl 0.8.2. Das maßgebliche Setup und die `train_*.sh`-Skripte liegen in `docs/guide/training.md` deines Klons (führe `setup_training.sh` aus oder nutze die dokumentierte conda-Alternative: erstelle die Umgebung und `pip install -r requirements-train.txt` / `requirements-convert.txt`). Jede Einheit nennt die genauen Trainings- und Deploy-Befehle, sobald sie umgestellt ist.
+
+---
+
+## Godot 4 — .NET-Edition (Fallback) { #godot-net-fallback }
+
+!!! note "Fallback-Pfad"
+    Nutze dies, wenn deine Einheit noch nicht auf die [Native Runtime](#native-runtime) umgestellt ist, oder auf macOS Intel (der native Runner wird nur für arm64 ausgeliefert).
 
 Lade die **.NET / Mono**-Version von Godot 4 von [godotengine.org](https://godotengine.org) herunter (nicht die Standard-Version). Getestet mit Godot 4.3+.
 
@@ -112,6 +142,8 @@ Die folgende Tabelle zeigt die Paketversionen aus `requirements-course.txt` und 
 |---|---|---|---|---|---|
 | 2026-05 | 4.3.x | 0.5.0 | 2.3.2 | 2.6.0 | 3.10 |
 
+Die [Native Runtime](#native-runtime) nutzt einen separaten, neueren Stack — Godot 4.5+ (Standard), godot-rl 0.8.2, Stable-Baselines3 2.8.0, PyTorch 2.12.0, gymnasium 1.2.2, Python 3.13/3.14 — installiert aus dem geklonten godot-native-rl-Repo, nicht aus `requirements-course.txt`.
+
 !!! warning "Pakete während des Kurses nicht aktualisieren"
     godot-rl, SB3 und PyTorch haben inkompatible API-Änderungen zwischen Releases. Bleibe für die Dauer des Kurses bei den fixierten Versionen in `requirements-course.txt`. Nach dem Kurs kannst du gerne neuere Versionen ausprobieren — erstelle dafür einfach eine neue Conda-Umgebung.
 
@@ -169,7 +201,10 @@ Die macOS/Linux-Befehle `chmod +x godot_binary` gelten nicht für Windows. Godot
 
 ---
 
-## Godot-Plugin — godot-rl-agents
+## Godot-Plugin — godot-rl-agents (Fallback)
+
+!!! note "Fallback-Pfad"
+    Für Einheiten, die noch auf dem .NET-Stack sind. Die [Native Runtime](#native-runtime) oben installiert ihr Plugin stattdessen durch Klonen des godot-native-rl-Repos.
 
 Das Godot-seitige Plugin ist vom Python-Paket getrennt.
 
