@@ -147,7 +147,7 @@ One sitting: tooling works, agent learns, you change a reward. Times are guides 
 |-------|------|---------|-----------|
 | **1 · Install** | 45–75 min | [Section 2](#2-conda-environment) — install Miniconda → create `godot_env` → `pip install`<br>[Section 3](#3-godot-project-plugin) — clone examples repo, open BallChase in Godot | `import godot_rl` prints ok; BallChase project opens with plugin enabled |
 | **2 · First train** | 30–45 min | [Section 4](#4-first-training-run) — `gdrl --viz` + Godot F6<br>Second terminal: `tensorboard --logdir=logs` | Agent moves; `ep_rew_mean` rises; no socket errors |
-| **3 · Start Foundations 1** | 45–60 min | Open [Neural Foundations 1](unit-neural-01.md)<br>Predict the hand calculation (~15 min) → run the research plot or Godot enemy scene<br>While exploring: read Sections 2–3 | You can name each contribution, weighted sum, and activation output |
+| **3 · Start Foundations 1** | 45–60 min | Open [Neural Foundations 1](unit-neural-01.md)<br>Read Section 1 (what a neuron computes), then predict the hand calculation in Section 2 (~15 min) → run the research plot or the Godot jumper scene<br>While exploring: read Sections 3–4 | You can name each contribution, weighted sum, and activation output |
 
 **Minimal command cheat sheet (Block 2)**
 

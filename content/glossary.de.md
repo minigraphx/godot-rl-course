@@ -12,6 +12,8 @@ Schnellnachschlag für alle Abkürzungen, Gleichungen und Algorithmus-Parameter 
 
 **Actor (Akteur)** — Das neuronale Netz, das eine Wahrscheinlichkeitsverteilung (oder eine deterministische Aktion) über den Aktionsraum ausgibt; die „Policy"-Hälfte der Actor-Critic-Methoden. *Siehe:* [unit-actor-critic](unit-actor-critic.md) §1
 
+**Aktivierungsfunktion** — Die Funktion, die auf die gewichtete Summe eines Neurons angewendet wird, um daraus eine brauchbare Entscheidung zu machen. `sigmoid` quetscht jede Zahl auf `0`–`1`, `tanh` auf `-1`–`+1`, `step` auf ein hartes `0` oder `1`. *Siehe:* [unit-neural-01](unit-neural-01.md) §1
+
 **Advantage (A, Vorteil)** — Wie viel besser eine Aktion gegenüber dem Durchschnitt ist: `A(s,a) = Q(s,a) − V(s)`. Positiver Advantage → Aktion ist besser als erwartet; negativer → schlechter. *Siehe:* [unit-actor-critic](unit-actor-critic.md) §2
 
 **Agent** — Die Entität, die die Umgebung beobachtet, Aktionen wählt und Belohnungen erhält. In diesem Kurs ein Godot-Node, der an einen `AIController` angebunden ist. *Siehe:* [unit-00](unit-00.md) §1
@@ -29,6 +31,8 @@ Schnellnachschlag für alle Abkürzungen, Gleichungen und Algorithmus-Parameter 
 **Bellman-Gleichung** — Rekursive Definition der Wertfunktion: `V(s) = E[r + γ V(s')]`. Das Rückgrat aller wertbasierten RL-Algorithmen. *Siehe:* [unit-q-learning](unit-q-learning.md) §2
 
 **Beta (β in PBT/PER)** — In PER steuert es, wie stark Importance Sampling den Bias durch nicht-uniformes Sampling korrigiert (während des Trainings 0→1 angekühlt). In PBT manchmal als Schedule-Parameter genutzt. *Siehe:* [unit-pbt](unit-pbt.md) §2
+
+**Bias (b, im Neuron)** — Die Zusatzzahl, die zur gewichteten Summe addiert wird und zu keiner Eingabe gehört. Sie verschiebt alle Entscheidungen zugleich und legt die Grundtendenz des Neurons fest, bevor eine Eingabe betrachtet wird. *Siehe:* [unit-neural-01](unit-neural-01.md) §1
 
 **Buffer (Replay)** — Ein FIFO-Speicher fester Größe, der `(s, a, r, s', done)`-Transitionen ablegt; Off-Policy-Algorithmen ziehen daraus Mini-Batches, um zeitliche Korrelation zu brechen. *Siehe:* [unit-q-learning](unit-q-learning.md) §5
 
@@ -58,7 +62,7 @@ Schnellnachschlag für alle Abkürzungen, Gleichungen und Algorithmus-Parameter 
 
 **DQN (Deep Q-Network)** — Kombiniert Q-Learning mit einem tiefen neuronalen Netz, Experience Replay und einem Target-Netz, um das Training auf hochdimensionalen Eingaben zu stabilisieren. *Siehe:* [unit-03](unit-03.md) §1
 
-**Discount Factor (γ, Diskontierungsfaktor)** — Skalar in [0, 1), der zukünftige Belohnungen im Return `G_t = Σ γ^k r_{t+k}` herunterwichtet. γ=0 macht den Agenten kurzsichtig (nur direkte Belohnung); γ→1 weitsichtig. Typische Werte: 0,99 für episodische Aufgaben, 0,999 für kontinuierliche Aufgaben mit langem Horizont. *Siehe:* [unit-00](unit-00.md) §2
+**Discount Factor (γ „Gamma", Diskontierungsfaktor)** — Skalar in [0, 1), der zukünftige Belohnungen im Return `G_t = Σ γ^k r_{t+k}` herunterwichtet. γ=0 macht den Agenten kurzsichtig (nur direkte Belohnung); γ→1 weitsichtig. Typische Werte: 0,99 für episodische Aufgaben, 0,999 für kontinuierliche Aufgaben mit langem Horizont. *Siehe:* [unit-00](unit-00.md) §2
 
 **Distributional RL** — Familie von RL-Algorithmen, die die volle Verteilung der Returns Z(s,a) modellieren statt nur ihren Erwartungswert Q(s,a). C51 (das Original) repräsentiert Z als kategoriale Verteilung über 51 Atome. Verbessert Stabilität, weil der Agent lernt, *wie variabel* ein Ergebnis ist, nicht nur dessen Mittel. Wird in Rainbow DQN genutzt. *Siehe:* [unit-03](unit-03.md) §7
 
@@ -70,7 +74,7 @@ Schnellnachschlag für alle Abkürzungen, Gleichungen und Algorithmus-Parameter 
 
 **Episode** — Eine vollständige Folge von Transitionen vom Umgebungsreset bis zur Terminierung (done=True). Der episodische Return G ist die Summe der Belohnungen einer Episode. *Siehe:* [unit-00](unit-00.md) §2
 
-**ε-greedy** — Erkundungsstrategie, die mit Wahrscheinlichkeit ε eine zufällige Aktion und sonst die gierige (greedy) Aktion wählt; ε wird typisch von 1,0 auf 0,05 während des Trainings angekühlt. *Siehe:* [unit-q-learning](unit-q-learning.md) §3
+**ε-greedy („Epsilon-greedy")** — Erkundungsstrategie, die mit Wahrscheinlichkeit ε eine zufällige Aktion und sonst die gierige (greedy) Aktion wählt; ε wird typisch von 1,0 auf 0,05 während des Trainings angekühlt. *Siehe:* [unit-q-learning](unit-q-learning.md) §3
 
 **Experience Replay** — Speichern vergangener Transitionen in einem Buffer und Ziehen zufälliger Mini-Batches zum Training; bricht zeitliche Korrelationen und erlaubt Datennutzung in Off-Policy-Algorithmen. *Siehe:* [unit-q-learning](unit-q-learning.md) §5
 
@@ -81,6 +85,8 @@ Schnellnachschlag für alle Abkürzungen, Gleichungen und Algorithmus-Parameter 
 **FlyBy** — Eine der eingebauten godot-rl-agents-Beispielumgebungen; eine Drohne navigiert einen 3-D-Hindernisparcours, häufig genutzt für visuelle Beobachtungen und 3-D-Lokomotion. *Siehe:* [unit-locomotion](unit-locomotion.md) §2
 
 **GAE (Generalized Advantage Estimation)** — Exponentiell gewichtete Summe von TD-Fehlern zur Schätzung des Advantage, gesteuert über λ ∈ [0,1]: λ=0 gibt 1-Step-TD; λ=1 ergibt vollständige Monte-Carlo-Returns. *Siehe:* [unit-ppo-deep](unit-ppo-deep.md) §3
+
+**Gewicht (w)** — Die Zahl, mit der jede Eingabe multipliziert wird. Ihr Betrag bestimmt, wie stark diese Eingabe zählt; ihr Vorzeichen entscheidet, ob die Eingabe für oder gegen die Entscheidung spricht. Training heißt: Gewichte verändern. *Siehe:* [unit-neural-01](unit-neural-01.md) §1
 
 **GDScript** — Pythonähnliche Skriptsprache, in Godot eingebaut; im Kurs für `AIController`, Beobachtungssammlung, Belohnungsfunktion und Szenenlogik genutzt. *Siehe:* [unit-00](unit-00.md) §1
 
@@ -166,6 +172,8 @@ Schnellnachschlag für alle Abkürzungen, Gleichungen und Algorithmus-Parameter 
 
 **Self-Play** — Trainingsparadigma, bei dem Agenten gegen Kopien ihrer selbst (oder gegen einen Pool vergangener Versionen) spielen — automatisches Curriculum zunehmend stärkerer Gegner. *Siehe:* [unit-self-play](unit-self-play.md) §1
 
+**Sigmoid** — Aktivierungsfunktion `sigmoid(z) = 1 / (1 + e^(−z))`. Sie bildet jede Zahl auf den Bereich `0`–`1` ab und liefert genau `0.5`, wenn die gewichtete Summe `0` ist — deshalb ist `0.5` die natürliche Entscheidungsschwelle. *Siehe:* [unit-neural-01](unit-neural-01.md) §1
+
 **Sim-to-Real-Transfer** — Die Herausforderung, eine in Simulation trainierte Policy auf einen echten Roboter zu übertragen, ohne die Leistung zu verlieren; angegangen über Domain Randomization, adaptive Policies und sorgfältige Sensorabstimmung. *Siehe:* [unit-sim-to-real](unit-sim-to-real.md) §1
 
 **Spärliche Belohnung (Sparse Reward)** — Belohnungsstruktur, in der Belohnungen ungleich null extrem selten sind (z. B. +1 nur beim Aufgabenabschluss); macht Standard-RL ohne Exploration-Bonus oder Shaping ineffektiv. *Siehe:* [unit-curiosity](unit-curiosity.md) §1
@@ -174,11 +182,11 @@ Schnellnachschlag für alle Abkürzungen, Gleichungen und Algorithmus-Parameter 
 
 **Target-Netz** — Periodisch aktualisierte Kopie des Q-Netzes (oder Critic), deren Gewichte fest gehalten werden, während das Online-Netz dagegen trainiert; verhindert Rückkopplungen, die DQN destabilisieren. *Siehe:* [unit-03](unit-03.md) §2
 
-**TD-Fehler (δ)** — Temporal-Difference-Fehler: `δ = r + γ V(s') − V(s)`; Differenz zwischen Bootstrap-Target und aktueller Wertschätzung; treibt Wertlernen *und* Policy-Gradienten. *Siehe:* [unit-q-learning](unit-q-learning.md) §2
+**TD-Fehler (δ „Delta")** — Temporal-Difference-Fehler: `δ = r + γ V(s') − V(s)`; Differenz zwischen Bootstrap-Target und aktueller Wertschätzung; treibt Wertlernen *und* Policy-Gradienten. *Siehe:* [unit-q-learning](unit-q-learning.md) §2
 
 **TD3 (Twin Delayed Deep Deterministic)** — Off-Policy-Algorithmus für kontinuierliche Aktionen, der DDPG mit Zwillings-Critic (Minimum-Q), verzögerten Policy-Updates und Ziel-Policy-Glättung stabilisiert. *Siehe:* [unit-sac](unit-sac.md) §2
 
-**Temperatur (α)** — Siehe *Alpha (α in SAC)*. *Siehe:* [unit-sac](unit-sac.md) §3
+**Temperatur (α „Alpha")** — Siehe *Alpha (α in SAC)*. *Siehe:* [unit-sac](unit-sac.md) §3
 
 **Timestep (Zeitschritt)** — Ein einzelner Umgebungsschritt: Agent erhält o_t, gibt a_t aus, Umgebung wechselt zu o_{t+1} und liefert r_t. Trainingsbudgets werden in Gesamt-Timesteps gemessen. *Siehe:* [unit-00](unit-00.md) §2
 

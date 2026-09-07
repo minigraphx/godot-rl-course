@@ -78,7 +78,7 @@ func _print_fixed_number_neuron(
 ) -> void:
 	var weighted_sum := bias
 	var names := ["speed", "closeness"]
-	print("Fixed-number neuron (same numbers as section 1):")
+	print("Fixed-number neuron (same numbers as section 2):")
 	for index in range(inputs.size()):
 		var contribution := inputs[index] * weights[index]
 		weighted_sum += contribution

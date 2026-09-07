@@ -119,7 +119,7 @@ It replaces primitive actions with **macro-actions** called *options*.
 
 ### Formal definition
 
-An option `ω` is a triple `(I, π, β)`:
+An option `ω` ("omega") is a triple `(I, π, β)`:
 
 | Component | Symbol | Meaning |
 |---|---|---|

@@ -147,7 +147,7 @@ Eine Sitzung: Tooling funktioniert, Akteur lernt, du änderst eine Belohnung. Di
 |-------|------|---------|-----------|
 | **1 · Installieren** | 45–75 Min | [Abschnitt 2](#2-conda-umgebung) — Miniconda installieren → `godot_env` erstellen → `pip install`<br>[Abschnitt 3](#3-godot-projekt-plugin) — Examples-Repo klonen, BallChase in Godot öffnen | `import godot_rl` gibt ok aus; BallChase-Projekt öffnet sich mit aktiviertem Plugin |
 | **2 · Erster Trainingslauf** | 30–45 Min | [Abschnitt 4](#4-erster-trainingslauf) — `gdrl --viz` + Godot F6<br>Zweites Terminal: `tensorboard --logdir=logs` | Akteur bewegt sich; `ep_rew_mean` steigt; keine Socket-Fehler |
-| **3 · Grundlagen 1 beginnen** | 45–60 Min | Öffne [Neuronale Grundlagen 1](unit-neural-01.md)<br>Handrechnung vorhersagen (~15 Min) → Research-Plot oder Godot-Enemy-Szene starten<br>Während des Erkundens: Abschnitte 2–3 lesen | Du kannst jeden Beitrag, die gewichtete Summe und den Aktivierungswert benennen |
+| **3 · Grundlagen 1 beginnen** | 45–60 Min | Öffne [Neuronale Grundlagen 1](unit-neural-01.md)<br>Abschnitt 1 lesen (was ein Neuron berechnet), dann die Handrechnung in Abschnitt 2 vorhersagen (~15 Min) → Research-Plot oder Godot-Jumper-Szene starten<br>Während des Erkundens: Abschnitte 3–4 lesen | Du kannst jeden Beitrag, die gewichtete Summe und den Aktivierungswert benennen |
 
 **Minimales Befehls-Spickzettel (Block 2)**
 

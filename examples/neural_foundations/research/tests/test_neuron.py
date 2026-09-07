@@ -21,7 +21,7 @@ def print_walkthrough() -> None:
     def show(line: str = "") -> None:
         print(line, flush=True)
 
-    show("Fixed-number neuron (same numbers as section 1):")
+    show("Fixed-number neuron (same numbers as section 2):")
     for name, value, weight, contribution in zip(
         ("speed", "closeness"),
         SECTION_INPUTS,
