@@ -24,3 +24,7 @@ logs/
 # Stray default Godot project icon (this is a docs repo, not a Godot project)
 icon.svg
 icon.svg.import
+
+# godot-native-rl addon — a pinned dependency, not course source.
+# Install it with scripts/fetch-native-runner.sh (see GODOT_NATIVE_RL_VERSION).
+examples/neural_foundations/game/addons/godot_native_rl/
