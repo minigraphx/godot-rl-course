@@ -27,9 +27,16 @@ Das Addon ist reines GDScript — es gibt keinen Build-Schritt. Wenn du das Addo
 
 ### „NcnnRunner"-Klasse fehlt / native Inferenz lädt nicht
 
-**Ursache:** Die native ncnn-Inferenz benötigt eine Plattform-Binärdatei (GDExtension). Der Kurs liefert derzeit nur Binärdateien für **macOS Apple Silicon** mit — unter Windows und Linux registriert sich die `NcnnRunner`-Klasse nicht.
+**Ursache:** Die native ncnn-Inferenz benötigt eine Plattform-Bibliothek (GDExtension). Diese Bibliotheken liegen nicht im Kurs-Repo — sie sind größer als alles andere darin — ein frischer Klon hat sie also nicht, bis du sie installierst.
 
-**Fix:** Das Training ist davon nicht betroffen — die Trainings-Bridge ist reines GDScript und funktioniert auf jeder Plattform. Überspringe die (in den Einheiten als macOS-only markierten) nativen Inferenz-Schritte, bis Multi-Plattform-Runner verfügbar sind. Das Aktivieren des Plugins unter Projekt → Projekteinstellungen → Plugins zeigt eine klare Fehlermeldung, wenn die Binärdatei für deine Plattform fehlt.
+**Fix:** Führe den Installer aus dem Repo-Stammverzeichnis aus:
+
+```bash
+scripts/fetch-native-runner.sh
+scripts/fetch-native-runner.sh --check    # zeigt gepinnt vs. installiert
+```
+
+Er liefert macOS Apple Silicon, Windows x86_64 und Linux x86_64 mit, alle Desktop-Plattformen sind also abgedeckt. Schlägt es danach weiterhin fehl, prüfe deine Godot-Version: die Extension verlangt **4.5 oder neuer** und registriert sich auf älteren Versionen stillschweigend nicht. Das Training ist in jedem Fall nicht betroffen — die Trainings-Bridge ist GDScript und braucht keine native Bibliothek.
 
 ---
 

@@ -32,7 +32,7 @@ No git? Use **Code → Download ZIP** on [github.com/minigraphx/godot-rl-course]
 Download the **Standard** build of Godot 4 from [godotengine.org](https://godotengine.org). The course's native runner requires **Godot 4.5 or newer**.
 
 !!! info "No .NET SDK, no C# — the Standard build is all you need"
-    Earlier revisions of this course used a C# plugin that required the .NET/Mono edition of Godot plus the .NET SDK. The course now uses **godot-native-rl** — a pure-GDScript addon bundled with the course repo — so the Standard build suffices. If you already installed the .NET edition, it works fine too; there is just no longer any reason to install it.
+    Earlier revisions of this course used a C# plugin that required the .NET/Mono edition of Godot plus the .NET SDK. The course now uses **godot-native-rl**, an addon you install into the course repo with one command (below), so the Standard build suffices. If you already installed the .NET edition, it works fine too; there is just no longer any reason to install it.
 
 ---
 
@@ -100,8 +100,8 @@ pip install -r requirements-course.txt
 
 Verify: `python -c "import godot_rl; print('ok')"`
 
-!!! note "Native inference binaries — macOS Apple Silicon only (for now)"
-    *Training* with the bundled **godot-native-rl** addon works on every platform in the compatibility table — the training bridge is pure GDScript. *Native ncnn inference* (running a trained brain inside Godot without Python, used in [Neural Foundations 3](unit-neural-03.md) and the Ship phase) currently ships binaries for **macOS Apple Silicon** only; Windows and Linux runners are on the roadmap.
+!!! note "Native inference runs on every desktop platform"
+    *Training* speaks a local socket and is pure GDScript. *Native ncnn inference* — running a trained brain inside Godot without Python, used in [Neural Foundations 3](unit-neural-03.md) and the Ship phase — ships prebuilt libraries for **macOS Apple Silicon, Windows x86_64 and Linux x86_64** (plus iOS, Android and Web). All three desktop platforms in the compatibility table are covered.
 
 !!! tip "macOS / Linux first run"
     The installer may ask you to run `conda init` — follow the prompt, then open a new terminal.
@@ -117,7 +117,7 @@ The table below shows the package versions that ship in `requirements-course.txt
 
 | Course tag | Godot | godot-native-rl | godot-rl (Python bridge) | stable-baselines3 | PyTorch | Python |
 |---|---|---|---|---|---|---|
-| 2026-05 | 4.5.x (Standard) | commit `4013370` (bundled) | 0.5.0 | 2.3.2 | 2.6.0 | 3.10 |
+| 2026-05 | 4.5+ (Standard) | `v0.4.0` (fetched) | 0.5.0 | 2.3.2 | 2.6.0 | 3.10 |
 
 !!! warning "Do not upgrade packages mid-course"
     godot-rl, SB3, and PyTorch have broken APIs across releases. Stick to the pinned versions in `requirements-course.txt` for the duration of the course. After the course, feel free to experiment with newer releases — just create a fresh conda environment.
@@ -178,15 +178,21 @@ The macOS/Linux commands `chmod +x godot_binary` do not apply on Windows. Godot 
 
 ## Godot addon — godot-native-rl
 
-The Godot-side bridge is **godot-native-rl**, a pure-GDScript addon. It ships **inside the course repo** at `examples/neural_foundations/game/addons/godot_native_rl/` — nothing to download, nothing to build.
+The Godot-side bridge is **godot-native-rl**. Its native libraries are larger than the whole course repository, so they are not committed — one command installs the pinned release:
+
+```bash
+scripts/fetch-native-runner.sh
+```
+
+It downloads the version pinned in `examples/neural_foundations/game/GODOT_NATIVE_RL_VERSION`, verifies its checksum, and unpacks it into the game project. Run `scripts/fetch-native-runner.sh --check` any time to see what is installed. There is nothing to build.
 
 - **Training:** the `NcnnSync` node speaks the same local-socket protocol as the `gdrl` Python side. Pure GDScript — works on every platform.
-- **Inference:** a bundled ncnn GDExtension runs trained brains natively in Godot. Binaries currently ship for macOS Apple Silicon only (see the note above); training does not need them.
+- **Inference:** an ncnn GDExtension runs trained brains natively in Godot, with prebuilt libraries for macOS, Windows and Linux. Training does not need them.
 
 The addon's node classes (`NcnnSync`, `NcnnAIController2D`, `NcnnAIController3D`, sensor nodes) auto-register when the project opens. Enabling the plugin under Project → Project Settings → Plugins is **optional** — doing so only adds a clear error message if the native inference binary is missing for your platform.
 
 !!! warning "Two different things"
-    `godot-rl` is the *Python* package (installed by `requirements-course.txt`) that runs the training server. **godot-native-rl** is the *Godot* addon bundled with the course repo. They talk to each other over a local socket.
+    `godot-rl` is the *Python* package (installed by `requirements-course.txt`) that runs the training server. **godot-native-rl** is the *Godot* addon installed by `scripts/fetch-native-runner.sh`. They talk to each other over a local socket.
 
 !!! tip "Verify"
     Open `examples/neural_foundations/game/project.godot` in Godot, then Add Node → search `NcnnSync` and `NcnnAIController3D`. If they appear, the addon is working.

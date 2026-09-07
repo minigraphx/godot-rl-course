@@ -14,10 +14,11 @@ The course runs on **godot-native-rl** — a pure-GDScript Godot addon bundled w
 **Inference phase (native):**
 
 - Trained model exported to ONNX (mandatory inspection/parity artifact), converted to **ncnn**
-- `NcnnSync` in inference mode runs the ncnn `.param`/`.bin` files through a bundled GDExtension — zero Python at runtime
-- Platform scope: ncnn runner binaries currently ship for **macOS arm64 only**; Windows/Linux runners are a prerequisite for retiring the legacy path entirely (tracked in #71/#81)
+- `NcnnSync` in inference mode runs the ncnn `.param`/`.bin` files through the addon's GDExtension — zero Python at runtime
+- Platform scope: prebuilt runner libraries ship for **macOS arm64, Windows x86_64 and Linux x86_64** (plus iOS, Android, Web), which clears the multi-platform prerequisite #81 named for retiring the legacy path
+- The libraries are not committed — they outweigh the rest of the repository. `scripts/fetch-native-runner.sh` installs the release pinned in `examples/neural_foundations/game/GODOT_NATIVE_RL_VERSION` and verifies its checksum
 
-Key technologies: Godot 4.5+ (GDScript), godot-native-rl addon (pinned commit — see `examples/neural_foundations/game/GODOT_NATIVE_RL_VERSION`), Python, `godot-rl` (socket bridge), `stable-baselines3`, PyTorch, ONNX, ncnn, TensorBoard.
+Key technologies: Godot 4.5+ (GDScript), godot-native-rl addon (pinned release — see `examples/neural_foundations/game/GODOT_NATIVE_RL_VERSION`), Python, `godot-rl` (socket bridge), `stable-baselines3`, PyTorch, ONNX, ncnn, TensorBoard.
 
 **Migration status:** Setup and Unit 0 run fully on the native stack. Units from RL Essentials onward still use the legacy `godot_rl_agents_examples` (C# plugin) until migrated unit-by-unit — tracked in issue #71.
 

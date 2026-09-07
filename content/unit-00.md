@@ -133,9 +133,9 @@ When the run finishes, the trainer saves a checkpoint and an ONNX export under `
 | Scale | 3–8 | Exported binary + `--headless` — faster rollouts |
 | Ship | 9–10 | Native ncnn inference in NcnnSync — no Python at runtime |
 
-**Native inference preview (optional, macOS Apple Silicon only for now)**
+**Native inference preview (optional)**
 
-After training, the exported ONNX can be converted to ncnn and run natively: the evaluation scene `unit_03_racer/racer_eval.tscn` uses `NcnnSync` in inference mode — the agent runs without Python. [Neural Foundations 3](unit-neural-03.md) walks through the full export → verify → deploy pipeline. On Windows/Linux, skip this preview — the native inference binaries ship for macOS Apple Silicon only right now.
+After training, the exported ONNX can be converted to ncnn and run natively: the evaluation scene `unit_03_racer/racer_eval.tscn` uses `NcnnSync` in inference mode — the agent runs without Python. [Neural Foundations 3](unit-neural-03.md) walks through the full export → verify → deploy pipeline. This works on macOS, Windows and Linux; it needs the native libraries installed by `scripts/fetch-native-runner.sh` (see [Setup](setup.md)).
 
 ---
 

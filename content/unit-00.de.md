@@ -133,9 +133,9 @@ Nach dem Lauf speichert der Trainer einen Checkpoint und einen ONNX-Export unter
 | Skalieren | 3–8 | Exportiertes Binary + `--headless` — schnellere Rollouts |
 | Veröffentlichen | 9–10 | Native ncnn-Inferenz im NcnnSync — kein Python zur Laufzeit |
 
-**Native Inferenz-Vorschau (optional, vorerst nur macOS Apple Silicon)**
+**Native Inferenz-Vorschau (optional)**
 
-Nach dem Training kann das exportierte ONNX zu ncnn konvertiert und nativ ausgeführt werden: Die Evaluationsszene `unit_03_racer/racer_eval.tscn` nutzt `NcnnSync` im Inferenzmodus — der Racer läuft ohne Python. [Neuronale Grundlagen 3](unit-neural-03.md) führt durch die komplette Export → Verifizieren → Deployen Pipeline. Unter Windows/Linux überspringe diese Vorschau — die nativen Inferenz-Binärdateien gibt es derzeit nur für macOS Apple Silicon.
+Nach dem Training kann das exportierte ONNX zu ncnn konvertiert und nativ ausgeführt werden: Die Evaluationsszene `unit_03_racer/racer_eval.tscn` nutzt `NcnnSync` im Inferenzmodus — der Racer läuft ohne Python. [Neuronale Grundlagen 3](unit-neural-03.md) führt durch die komplette Export → Verifizieren → Deployen Pipeline. Das funktioniert unter macOS, Windows und Linux; nötig sind die nativen Bibliotheken, die `scripts/fetch-native-runner.sh` installiert (siehe [Setup](setup.md)).
 
 ---
 
