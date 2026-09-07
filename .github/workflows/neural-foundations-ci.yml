@@ -6,6 +6,7 @@ on:
       - 'examples/neural_foundations/**'
       - 'examples/__init__.py'
       - 'scripts/test-neural-foundations.sh'
+      - 'scripts/fetch-native-runner.sh'
       - 'scripts/train_foundations_racer.py'
       - 'scripts/train-foundations-racer.sh'
       - 'scripts/verify_racer_policy.py'
@@ -18,6 +19,7 @@ on:
       - 'examples/neural_foundations/**'
       - 'examples/__init__.py'
       - 'scripts/test-neural-foundations.sh'
+      - 'scripts/fetch-native-runner.sh'
       - 'scripts/train_foundations_racer.py'
       - 'scripts/train-foundations-racer.sh'
       - 'scripts/verify_racer_policy.py'
@@ -41,11 +43,34 @@ jobs:
 
       - name: Install Godot
         run: |
-          GODOT_VERSION=4.3
+          GODOT_VERSION=4.6.2
           wget -q "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip"
           unzip -q "Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip"
           sudo mv "Godot_v${GODOT_VERSION}-stable_linux.x86_64" /usr/local/bin/godot
           godot --version
+
+      - name: Fetch pinned godot-native-rl addon
+        run: ./scripts/fetch-native-runner.sh
+
+      - name: Verify the GDExtension actually loads
+        # The Godot suites are GDScript-only and stay green even when the
+        # extension fails to load, so assert on it explicitly.
+        run: |
+          cat > examples/neural_foundations/game/test/_ci_extension_check.gd <<'GD'
+          extends SceneTree
+          func _init() -> void:
+          	var ok := ClassDB.class_exists("NcnnRunner")
+          	if ok:
+          		print("NcnnRunner available - GDExtension loaded")
+          	else:
+          		push_error("NcnnRunner missing - the GDExtension did not load")
+          	quit(0 if ok else 1)
+          GD
+          # Clean up via trap, so godot's exit code survives instead of being
+          # overwritten by the cleanup command's own status.
+          trap 'rm -f examples/neural_foundations/game/test/_ci_extension_check.gd' EXIT
+          godot --headless --path examples/neural_foundations/game \
+            --script res://test/_ci_extension_check.gd
 
       - name: Run neural foundations tests
         env:
