@@ -623,6 +623,35 @@ Füge deine Hypothese und Parametertabelle neben dem gespeicherten Bild hinzu.
 einige Frames nach dem Überqueren der Kante. Vergleiche, wie sich späte Fehler
 verändern, ohne die Neuron-Rechnung zu ändern.
 
+**Game development — dasselbe Neuron, eine andere Aktivierung.** Öffne
+`unit_01_enemy/unit_01_enemy.tscn` und drücke **F6**. Wieder ein Neuron, aber
+dieses entscheidet `CHASE` oder `RETREAT` für einen Gegner, aus zwei anderen
+Eingaben:
+
+| | Jumper | Enemy |
+|---|---|---|
+| Eingaben | Geschwindigkeit, Nähe zur Kante | Gesundheit, Distanz zum Spieler |
+| Aktivierung | `sigmoid` | **`tanh`** |
+| Schwelle | Ausgabe `> 0.5` | Ausgabe `>= 0.0` |
+
+Es läuft *dasselbe* `shared/tiny_neuron.gd`. Nur die Aktivierung unterscheidet
+sich — das ist die Tabelle aus Abschnitt 4, zum Anfassen: Sigmoid liefert eine
+Sicherheit zwischen `0` und `1`, der unentschiedene Punkt liegt also bei `0.5`;
+Tanh ist um null zentriert, der unentschiedene Punkt liegt bei `0.0`. Das Neuron
+hat sich nicht geändert. Nur die Art, wie seine Ausgabe gelesen wird.
+
+Bewege den Spieler mit den Pfeiltasten, zieh den Gesundheitsregler und beobachte
+die Beiträge. Drei Dinge zum Herausfinden:
+
+1. `distance_weight` ist **negativ**. Sage vorher, was das bewirkt, bevor du es
+   ausprobierst, und prüfe es dann an der laufenden Szene.
+2. Finde den Gesundheitswert, bei dem der Gegner bei fester Distanz von `CHASE`
+   auf `RETREAT` kippt. Erkläre die Zahl über die gewichtete Summe, nicht über
+   das Verhalten.
+3. Mach den Gegner mutiger — er soll bei niedrigerer Gesundheit angreifen —
+   indem du genau einen Parameter änderst. Es gibt mehrere Antworten; sag,
+   welche du gewählt hast und warum.
+
 **Beide Pfade — dritte normalisierte Eingabe hinzufügen.** Wähle ein sinnvolles
 Merkmal, sage sein Vorzeichen voraus, aktualisiere zuerst den Forward-Pass-Test und
 dann die Visualisierung. Halte den aktuellen Beitrag sichtbar.

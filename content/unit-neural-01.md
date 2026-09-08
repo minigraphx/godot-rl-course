@@ -612,6 +612,31 @@ Add your hypothesis and parameter table beside the saved image.
 after the runner crosses the edge. Compare how this changes late failures
 without changing the neuron's calculation.
 
+**Game development — the same neuron, a different activation.** Open
+`unit_01_enemy/unit_01_enemy.tscn` and press **F6**. One neuron again, but this
+one decides `CHASE` or `RETREAT` for an enemy, from two different inputs:
+
+| | Jumper | Enemy |
+|---|---|---|
+| Inputs | speed, closeness to edge | health, distance to player |
+| Activation | `sigmoid` | **`tanh`** |
+| Threshold | output `> 0.5` | output `>= 0.0` |
+
+It runs the *same* `shared/tiny_neuron.gd`. Only the activation differs — which
+is section 4's table made concrete: sigmoid gives a confidence between `0` and
+`1`, so its undecided point is `0.5`; tanh is centred on zero, so its undecided
+point is `0.0`. The neuron did not change. The way its output is read did.
+
+Move the player with the arrow keys, drag the health slider, and watch the
+contributions. Three things to work out:
+
+1. `distance_weight` is **negative**. Predict what that does before you test it,
+   then check against the running scene.
+2. Find the health value where the enemy flips from `CHASE` to `RETREAT` at a
+   fixed distance. Explain the number using the weighted sum, not the behavior.
+3. Make the enemy braver — commit at lower health — by changing exactly one
+   parameter. There is more than one answer; say which one you chose and why.
+
 **Both paths — add a third normalized input.** Choose a meaningful feature,
 predict its sign, update the forward-pass test first, then update the visual.
 Keep the current contribution visible.
