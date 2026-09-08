@@ -9,6 +9,7 @@ Dieselbe **BallChase**-Umgebung, die du bereits kennst — aber diesmal öffnest
     - **[Unit 2](unit-02.md)** — BallChase-Quellcode mindestens einmal im Editor geöffnet
     - Sicherer Umgang mit dem Export eines headless Godot-Binarys (Unit 3 §9)
     - Kein neues Python — diese Unit ändert nur die *Trainingsszene* und CLI-Flags
+    - **Legacy-Stack** — diese Unit baut auf den offiziellen `godot_rl_agents`-Beispielen auf, die noch nicht migriert sind, und benötigt deshalb die **.NET-Edition** von Godot samt C#-Plugin ([Setup → Legacy-Plugin](setup.md#godot-plugin-godot-rl-agents)). Unit 0 und die Neuronalen Grundlagen brauchen das nicht.
 
 !!! info "Zeit"
     Lesen: ~25 min · Training: ~20 min GPU / ~1 Std CPU

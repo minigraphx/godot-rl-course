@@ -9,6 +9,7 @@ Reward Engineering komplett überspringen. Nimm einen Experten beim Spielen auf,
     - **[Unit 6](unit-06.md)** — kontinuierliche Aktionen und Beobachtungsnormalisierung
     - Grundlegende Intuition für überwachtes Lernen (Loss-Minimierung, Train/Val-Split)
     - Kein GAN-/Adversarial-Training-Hintergrund nötig — §7 hält GAIL praktisch
+    - **Legacy-Stack** — diese Unit baut auf den offiziellen `godot_rl_agents`-Beispielen auf, die noch nicht migriert sind, und benötigt deshalb die **.NET-Edition** von Godot samt C#-Plugin ([Setup → Legacy-Plugin](setup.md#godot-plugin-godot-rl-agents)). Unit 0 und die Neuronalen Grundlagen brauchen das nicht.
 
 !!! info "Zeit"
     Lesen: ~30 min · Training: ~20 min GPU / ~1,5 Std CPU

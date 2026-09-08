@@ -13,9 +13,10 @@
     - Eine Belohnung ändern und vorhersagen, wie die Lernkurve reagieren sollte
 
 !!! note "Voraussetzungen"
-    - **Unit 0 abgeschlossen** — Conda, Godot und ein erfolgreicher BallChase-Lauf
+    - **Unit 0 abgeschlossen** — Conda, Godot und ein erfolgreicher erster Trainingslauf
     - **Neuronale Grundlagen 1–2 abgeschlossen** — du hast Inputs, Gewichte, Loss, Gradienten und Inference gesehen
     - Sicherer Umgang mit einem Terminal
+    - **Legacy-Stack** — diese Unit baut auf den offiziellen `godot_rl_agents`-Beispielen auf, die noch nicht migriert sind, und benötigt deshalb die **.NET-Edition** von Godot samt C#-Plugin ([Setup → Legacy-Plugin](setup.md#godot-plugin-godot-rl-agents)). Unit 0 und die Neuronalen Grundlagen brauchen das nicht.
 
 !!! info "Drei Wege, deine KI zu beobachten"
     Godot-Editor (der Agent bewegt sich live) · TensorBoard (`rollout/ep_rew_mean` ändert sich) · Code (die Belohnungszeile, die du bearbeitest)
@@ -231,7 +232,7 @@ Godot RL Agents führt zwei Programme nebeneinander aus:
 ## 7 · Quick win — eine Belohnung ändern
 
 !!! tip "Dein erster Eigentümermoment"
-    In Unit 0 hast du BallChase ausgeführt. Hier änderst du das Belohnungssignal und beobachtest,
+    In Unit 0 hast du deine erste Trainingsschleife ausgeführt. Hier änderst du das Belohnungssignal und beobachtest,
     wie sich das Trainingsverhalten anpasst.
 
 1. Klone oder öffne [BallChase](https://github.com/edbeeching/godot_rl_agents_examples/tree/main/examples/BallChase) in Godot.

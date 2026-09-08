@@ -9,6 +9,7 @@ Wechsle von diskreten Tastendrücken zu **kontinuierlichen Kräften und Lenkung*
     - **[Unit 5](unit-05.md)** — parallele Umgebungen und das Evaluierungsprotokoll
     - GDScript-Sicherheit: Vektoren, Raycasts, `_physics_process`
     - **[Policy-Gradients-Einheit](unit-policy-gradients.md)** (empfohlen) — Gaußsche Policies lassen Abschnitt 1 verständlich werden
+    - **Legacy-Stack** — diese Unit baut auf den offiziellen `godot_rl_agents`-Beispielen auf, die noch nicht migriert sind, und benötigt deshalb die **.NET-Edition** von Godot samt C#-Plugin ([Setup → Legacy-Plugin](setup.md#godot-plugin-godot-rl-agents)). Unit 0 und die Neuronalen Grundlagen brauchen das nicht.
 
 !!! info "Zeit"
     Lesen: ~30 min · Training: ~30 min GPU / ~2 Std CPU

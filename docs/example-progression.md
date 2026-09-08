@@ -28,7 +28,7 @@ Source: [godot_rl_agents_examples](https://github.com/edbeeching/godot_rl_agents
 ## Per-unit rhythm
 
 1. Run hub binary or exported build (headless from Unit 3+)
-2. Open source in Godot .NET
+2. Open source in Godot (the **.NET edition** for the units still on the legacy `godot-rl-agents` stack)
 3. Read `AIController` → Sync → training scene
 4. Tweak one reward or sensor
 5. Retrain and compare in **three views**: Godot behavior · TensorBoard · what changed in code

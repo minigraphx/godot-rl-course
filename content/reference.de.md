@@ -2,6 +2,12 @@
 
 Schnelles Nachschlagen für die Flags des SB3-Trainingsskripts, die `AIController`-API und den ONNX-Export.
 
+!!! info "Diese Seite dokumentiert den Legacy-Stack `godot-rl-agents`"
+    Die Units ab [RL Essentials](unit-01.md) nutzen ihn weiterhin. Unit 0 und die
+    Neuronalen Grundlagen verwenden stattdessen **godot-native-rl**, dessen Node-Namen
+    abweichen (`NcnnSync`, `NcnnAIController2D` / `3D`) — siehe
+    [Setup → Godot-Addon](setup.md#godot-addon-godot-native-rl).
+
 !!! note "Vollständige Referenz"
     Siehe `godot_rl_course_reference.html` für die vollständige Plugin-API-Referenz.
 

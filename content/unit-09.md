@@ -9,6 +9,7 @@ Skip the reward engineering entirely. Record an expert playing the game, then tr
     - **[Unit 6](unit-06.md)** — continuous actions and observation normalisation
     - Basic supervised learning intuition (loss minimisation, train/val split)
     - No GAN / adversarial-training background needed — §7 keeps GAIL practical
+    - **Legacy stack** — this unit builds on the official `godot_rl_agents` examples, which have not been migrated yet, so it needs the Godot **.NET edition** plus the C# plugin ([Setup → Legacy plugin](setup.md#godot-plugin-godot-rl-agents)). Unit 0 and the Neural Foundations units do not.
 
 !!! info "Time"
     Reading: ~30 min · Training: ~20 min GPU / ~1.5 h CPU

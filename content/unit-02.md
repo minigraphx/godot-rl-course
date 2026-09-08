@@ -5,11 +5,12 @@ Two wins in one unit: **Phase A** — run and tweak **SimpleReachGoal** (raycast
 [← Reward Engineering](unit-reward-engineering.md) · [Course home](index.md)
 
 !!! note "Prerequisites"
-    - **[Unit 0](unit-00.md) complete** — Conda env, Godot .NET, working BallChase run
+    - **[Unit 0](unit-00.md) complete** — Conda env, Godot, a working first training run
     - **[RL Essentials](unit-01.md) read** — MDP loop, reward, policy, PPO at a high level
     - **[Reward Engineering](unit-reward-engineering.md) read** — potential-based shaping; you'll write the shaped reward in §5
     - Comfortable editing GDScript (variables, functions, signals — no advanced features)
     - No PyTorch, no SB3 internals, no game-engine experience required
+    - **Legacy stack** — this unit builds on the official `godot_rl_agents` examples, which have not been migrated yet, so it needs the Godot **.NET edition** plus the C# plugin ([Setup → Legacy plugin](setup.md#godot-plugin-godot-rl-agents)). Unit 0 and the Neural Foundations units do not.
 
 !!! info "Time"
     Reading: ~35 min · Training: ~30 min GPU / ~2 h CPU
@@ -61,15 +62,20 @@ Then continue to Phase B — you are copying these patterns, not discovering the
     If you completed [Phase A](#phase-a), you already traced SimpleReachGoal. This map shows how those Gymnasium concepts become Godot nodes for the Lunar Lander you create next.
 
 !!! info "Setup already done?"
-    If you completed Unit 0, skip Sections 1–3 and start at [Section 4 — Build the lander scene](#4-build-the-lander-scene-landertscn).
+    If you completed Unit 0 you have Conda and `godot_env` already. Sections 1–3 still
+    matter for one thing: Unit 0 installs the **Standard** Godot build, and this unit
+    needs the **.NET edition** plus the legacy C# plugin.
 
 ---
 
 ## 1 · Install the required tools
 
-If you completed Unit 0 your tools are already installed — skip to [Section 4](#4-build-the-lander-scene-landertscn).
+Unit 0 already gave you Miniconda and the `godot_env` environment — those carry over unchanged.
 
-Otherwise follow [Setup](setup.md) for Godot .NET, Miniconda, `godot_env`, and the plugin, then come back here.
+What it did **not** give you is the toolchain this unit needs. Unit 0 runs on the Standard Godot
+build with the native addon; the official `godot_rl_agents` example projects used here are C#
+projects, so they need the Godot **.NET edition** and the legacy plugin. Install both from
+[Setup → Legacy plugin](setup.md#godot-plugin-godot-rl-agents), then come back here.
 
 ---
 
@@ -82,9 +88,9 @@ Otherwise follow [Setup](setup.md) for Godot .NET, Miniconda, `godot_env`, and t
 
 ---
 
-## 3 · Install the godot-rl Godot plugin
+## 3 · Install the legacy godot-rl-agents plugin
 
-See [Setup → Godot plugin](setup.md#godot-plugin-godot-rl-agents) for installation and enabling steps. Verify that Add Node shows `Sync` and `AIController2D` before continuing.
+See [Setup → Legacy plugin](setup.md#godot-plugin-godot-rl-agents) for installation and enabling steps. Verify that Add Node shows `Sync` and `AIController2D` before continuing.
 
 ---
 
