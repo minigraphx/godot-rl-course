@@ -9,6 +9,7 @@ Train **FPS / RobotFPS** — environments where the agent can't see everything a
     - **[Unit 6](unit-06.md)** — continuous action design (FPS uses continuous look + discrete fire)
     - **[Visual Observations](unit-visual-observations.md)** (optional) — only if you train from pixels
     - High-level familiarity with RNN / LSTM ideas (we re-explain in §2)
+    - **Legacy stack** — this unit builds on the official `godot_rl_agents` examples, which have not been migrated yet, so it needs the Godot **.NET edition** plus the C# plugin ([Setup → Legacy plugin](setup.md#godot-plugin-godot-rl-agents)). Unit 0 and the Neural Foundations units do not.
 
 !!! info "Time"
     Reading: ~35 min · Training: ~30 min GPU / ~2 h CPU

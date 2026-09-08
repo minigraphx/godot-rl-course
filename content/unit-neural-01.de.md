@@ -13,7 +13,7 @@
     - Eine nicht normalisierte Eingabe allein an ihrem Beitrag erkennen
 
 !!! note "Voraussetzungen"
-    - **Einheit 0 abgeschlossen** — Conda, Godot und ein erfolgreicher BallChase-Lauf
+    - **Einheit 0 abgeschlossen** — Conda, Godot und ein erfolgreicher erster Trainingslauf
     - Rechnen mit Dezimalzahlen. Keine Analysis, kein Vorwissen im Maschinellen Lernen
     - Grundlegende Sicherheit im Terminal
 
