@@ -10,6 +10,7 @@ Studiere das offizielle **CrossTheRoad**-Beispiel — diskrete 2D-Navigation mit
     - **[Unit 2](unit-02.md)** — die `AIController`-Schnittstelle, `get_obs()` / `set_action()`, einen PPO-Agenten end-to-end trainieren
     - **[Q-Learning-Einheit](unit-q-learning.md)** — tabellarisches Q-Learning. **Mach das zuerst, wenn du durchgehend liest:** DQN ist „Q-Learning mit einem neuronalen Netz", und die Tabellenversion lässt jeden Trick unten verständlich werden.
     - Sicherer Umgang mit dem Export eines Godot-Projekts in ein Binary ohne Fenster (headless)
+    - **Legacy-Stack** — diese Unit baut auf den offiziellen `godot_rl_agents`-Beispielen auf, die noch nicht migriert sind, und benötigt deshalb die **.NET-Edition** von Godot samt C#-Plugin ([Setup → Legacy-Plugin](setup.md#godot-plugin-godot-rl-agents)). Unit 0 und die Neuronalen Grundlagen brauchen das nicht.
 
 !!! info "Zeit"
     Lesen: ~45 min · Training: ~45 min GPU / ~3 Std CPU

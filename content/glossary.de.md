@@ -90,6 +90,10 @@ Schnellnachschlag für alle Abkürzungen, Gleichungen und Algorithmus-Parameter 
 
 **GDScript** — Pythonähnliche Skriptsprache, in Godot eingebaut; im Kurs für `AIController`, Beobachtungssammlung, Belohnungsfunktion und Szenenlogik genutzt. *Siehe:* [unit-00](unit-00.md) §1
 
+**godot-native-rl** — Das GDScript- und GDExtension-Addon, das dieser Kurs auf der Godot-Seite nutzt: ein `NcnnSync`-Node, der das Trainings-Socket bedient, und eine ncnn-Laufzeit, die ein trainiertes Gehirn nativ in Godot ausführt. Es braucht kein C#, deshalb genügt die Standard-Version von Godot. *Siehe:* [setup](setup.md#godot-addon-godot-native-rl)
+
+**godot-rl-agents** — Das ältere Godot-seitige Plugin, in C# geschrieben und deshalb auf die .NET-Edition von Godot angewiesen. Der Kurs hat es in den eigenen Projekten durch godot-native-rl ersetzt; die offiziellen Beispielumgebungen ab [RL Essentials](unit-01.md) benötigen es weiterhin. Nicht zu verwechseln mit `godot-rl`, dem *Python*-Paket, das den Trainingsserver betreibt — dieses wird durchgehend genutzt. *Siehe:* [setup](setup.md#godot-plugin-godot-rl-agents)
+
 **Goal-conditioned RL** — RL-Formulierung, bei der das Ziel g Teil der Beobachtung ist; der Agent lernt eine einzelne Policy `π(a | s, g)`, die über viele Ziele generalisiert. *Siehe:* [unit-her](unit-her.md) §1
 
 **HER (Hindsight Experience Replay)** — Off-Policy-Trick, der fehlgeschlagene Episoden mit Ersatz-Zielen wiedergibt, die dem entsprechen, was der Agent tatsächlich erreichte — verwandelt Fehlschläge in Lernsignal für sparsame-Belohnungs-Manipulationsaufgaben. *Siehe:* [unit-her](unit-her.md) §2

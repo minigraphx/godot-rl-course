@@ -5,11 +5,12 @@ Zwei Erfolge in einer Einheit: **Phase A** — Ausführen und Anpassen von **Sim
 [← Belohnungsdesign](unit-reward-engineering.md) · [Kursübersicht](index.md)
 
 !!! note "Voraussetzungen"
-    - **[Unit 0](unit-00.md) abgeschlossen** — Conda env, Godot .NET, erfolgreicher BallChase-Lauf
+    - **[Unit 0](unit-00.md) abgeschlossen** — Conda env, Godot, ein erfolgreicher erster Trainingslauf
     - **[RL Essentials](unit-01.md) gelesen** — RL-Schleife, Belohnung, Policy, PPO auf hoher Ebene
     - **[Belohnungsdesign](unit-reward-engineering.md) gelesen** — potential-basiertes Shaping; du schreibst die geformte Belohnung in §5
     - Sicherer Umgang mit GDScript (Variablen, Funktionen, Signale — keine erweiterten Features)
     - Keine PyTorch-, keine SB3-Interna-, keine Game-Engine-Erfahrung erforderlich
+    - **Legacy-Stack** — diese Unit baut auf den offiziellen `godot_rl_agents`-Beispielen auf, die noch nicht migriert sind, und benötigt deshalb die **.NET-Edition** von Godot samt C#-Plugin ([Setup → Legacy-Plugin](setup.md#godot-plugin-godot-rl-agents)). Unit 0 und die Neuronalen Grundlagen brauchen das nicht.
 
 !!! info "Zeit"
     Lesen: ~35 min · Training: ~30 min GPU / ~2 Std CPU
@@ -61,15 +62,21 @@ Dann geht es weiter zu Phase B — du kopierst diese Muster, du entdeckst sie ni
     Wenn du [Phase A](#phase-a) abgeschlossen hast, hast du SimpleReachGoal bereits untersucht. Diese Tabelle zeigt, wie die Gymnasium-Konzepte zu Godot-Knoten für den Lunar Lander werden, den du als Nächstes erstellst.
 
 !!! info "Setup bereits erledigt?"
-    Wenn du Unit 0 abgeschlossen hast, überspringe Abschnitte 1–3 und beginne bei [Abschnitt 4 — Lander-Szene bauen](#4-lander-szene-bauen-landertscn).
+    Wenn du Unit 0 abgeschlossen hast, hast du Conda und `godot_env` bereits. Die Abschnitte 1–3
+    bleiben trotzdem wichtig, und zwar aus einem Grund: Unit 0 installiert die **Standard**-Version
+    von Godot, diese Unit braucht die **.NET-Edition** samt Legacy-C#-Plugin.
 
 ---
 
 ## 1 · Benötigte Werkzeuge installieren
 
-Wenn du Unit 0 abgeschlossen hast, sind deine Werkzeuge bereits installiert — springe zu [Abschnitt 4](#4-lander-szene-bauen-landertscn).
+Miniconda und die Umgebung `godot_env` hast du aus Unit 0 bereits — die bleiben unverändert.
 
-Andernfalls folge [Setup](setup.md) für Godot .NET, Miniconda, `godot_env` und das Plugin, und kehre dann hierher zurück.
+Was Unit 0 dir **nicht** gegeben hat, ist die Toolchain dieser Unit. Unit 0 läuft mit der
+Standard-Version von Godot und dem nativen Addon; die hier genutzten offiziellen
+`godot_rl_agents`-Beispielprojekte sind C#-Projekte und brauchen deshalb die **.NET-Edition**
+von Godot und das Legacy-Plugin. Installiere beides über
+[Setup → Legacy-Plugin](setup.md#godot-plugin-godot-rl-agents) und komm dann hierher zurück.
 
 ---
 
@@ -82,9 +89,9 @@ Andernfalls folge [Setup](setup.md) für Godot .NET, Miniconda, `godot_env` und 
 
 ---
 
-## 3 · Das godot-rl-Godot-Plugin installieren
+## 3 · Das Legacy-Plugin godot-rl-agents installieren
 
-Siehe [Setup → Godot-Plugin](setup.md#godot-plugin-godot-rl-agents) für Installations- und Aktivierungsschritte. Überprüfe, ob unter „Add Node" `Sync` und `AIController2D` angezeigt werden, bevor du weitermachst.
+Siehe [Setup → Legacy-Plugin](setup.md#godot-plugin-godot-rl-agents) für Installations- und Aktivierungsschritte. Überprüfe, ob unter „Add Node" `Sync` und `AIController2D` angezeigt werden, bevor du weitermachst.
 
 ---
 

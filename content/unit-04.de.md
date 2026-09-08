@@ -9,6 +9,7 @@ Trainiere das **JumperHard**-Beispiel — einen 3D-Springer-Roboter, der als Sta
     - **[Unit 3](unit-03.md)** — DQN auf CrossTheRoad trainiert; Unterscheidung on-policy vs. off-policy
     - Sicherheit im Lesen von TensorBoard-Skalaren (`ep_rew_mean`, `approx_kl`, `entropy_loss`)
     - **[Actor-Critic-Einheit](unit-actor-critic.md)** — **mach das zuerst, wenn du durchgehend liest:** PPO ist ein Actor-Critic-Verfahren, und Abschnitt 0 setzt die Actor-/Critic-Aufteilung voraus.
+    - **Legacy-Stack** — diese Unit baut auf den offiziellen `godot_rl_agents`-Beispielen auf, die noch nicht migriert sind, und benötigt deshalb die **.NET-Edition** von Godot samt C#-Plugin ([Setup → Legacy-Plugin](setup.md#godot-plugin-godot-rl-agents)). Unit 0 und die Neuronalen Grundlagen brauchen das nicht.
 
 !!! info "Zeit"
     Lesen: ~40 min · Training: ~45 min GPU / ~3 Std CPU

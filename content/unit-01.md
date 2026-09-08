@@ -13,9 +13,10 @@
     - Change one reward and predict how the learning curve should respond
 
 !!! note "Prerequisites"
-    - **Unit 0 complete** — Conda, Godot, and a successful BallChase run
+    - **Unit 0 complete** — Conda, Godot, and a successful first training run
     - **Neural Foundations 1–2 complete** — you have seen inputs, weights, loss, gradients, and inference
     - Basic terminal comfort
+    - **Legacy stack** — this unit builds on the official `godot_rl_agents` examples, which have not been migrated yet, so it needs the Godot **.NET edition** plus the C# plugin ([Setup → Legacy plugin](setup.md#godot-plugin-godot-rl-agents)). Unit 0 and the Neural Foundations units do not.
 
 !!! info "Three ways to see your AI"
     Godot editor (the agent moving live) · TensorBoard (`rollout/ep_rew_mean` changing) · Code (the reward line you edit)
@@ -232,7 +233,7 @@ Godot RL Agents runs two programs side by side:
 ## 7 · Quick win — change one reward
 
 !!! tip "Your first ownership moment"
-    In Unit 0 you ran BallChase. Here you change the reward signal and watch the
+    In Unit 0 you ran your first training loop. Here you change the reward signal and watch the
     training behavior respond.
 
 1. Clone or open [BallChase](https://github.com/edbeeching/godot_rl_agents_examples/tree/main/examples/BallChase) in Godot.
