@@ -8,6 +8,10 @@ const TinyNeuronScript = preload("res://shared/tiny_neuron.gd")
 @export_range(20.0, 300.0, 5.0) var enemy_speed := 90.0
 @export_range(100.0, 800.0, 10.0) var normalization_distance := 500.0
 
+const PLAY_MARGIN := Vector2(30.0, 50.0)
+const UI_CLEARANCE := 360.0
+
+@onready var background: ColorRect = $Background
 @onready var player: Polygon2D = $Player
 @onready var enemy: Polygon2D = $Enemy
 @onready var health_bar: ProgressBar = $Interface/Panel/Margin/Rows/HealthBar
@@ -29,16 +33,33 @@ var displayed_normalized_distance := 0.0
 
 
 func _ready() -> void:
+	get_viewport().size_changed.connect(_fit_to_viewport)
+	_fit_to_viewport()
 	health_slider.value_changed.connect(_on_health_changed)
 	pause_button.pressed.connect(_on_pause_pressed)
 	$Interface/Buttons/Reset.pressed.connect(_reset_demo)
 	_reset_demo()
 
 
-func _physics_process(delta: float) -> void:
-	_move_player(delta)
+## tanh output of the neuron for one situation. Public so the scene can be
+## checked without running the game loop.
+func neuron_output(health: float, normalized_distance: float) -> float:
+	# Push the exported parameters in on every call, so this stays correct when
+	# they are edited in the inspector while the scene runs — and so it does not
+	# depend on _physics_process having run first.
 	neuron.weights = PackedFloat32Array([health_weight, distance_weight])
 	neuron.bias = bias
+	return neuron.forward(PackedFloat32Array([health, normalized_distance]))
+
+
+## The decision itself. tanh is centred on zero, so the threshold is 0.0 —
+## unlike the jumper, whose sigmoid output is compared against 0.5.
+func should_chase(health: float, normalized_distance: float) -> bool:
+	return neuron_output(health, normalized_distance) >= 0.0
+
+
+func _physics_process(delta: float) -> void:
+	_move_player(delta)
 
 	var health := health_slider.value / health_slider.max_value
 	var distance := player.position.distance_to(enemy.position)
@@ -47,20 +68,18 @@ func _physics_process(delta: float) -> void:
 	displayed_enemy_position = enemy.position
 	displayed_distance = distance
 	displayed_normalized_distance = normalized_distance
-	var inputs := PackedFloat32Array([health, normalized_distance])
 	var health_contribution := health * health_weight
 	var distance_contribution := normalized_distance * distance_weight
 	var weighted_sum := health_contribution + distance_contribution + bias
-	var output: float = neuron.forward(inputs)
-	var chasing: bool = output >= 0.0
+	var output := neuron_output(health, normalized_distance)
+	var chasing := should_chase(health, normalized_distance)
 
 	if not paused:
 		var direction := enemy.position.direction_to(player.position)
 		if not chasing:
 			direction *= -1.0
 		enemy.position += direction * enemy_speed * delta
-		enemy.position.x = clampf(enemy.position.x, 30.0, 930.0)
-		enemy.position.y = clampf(enemy.position.y, 50.0, 510.0)
+		enemy.position = _clamp_to_play_area(enemy.position)
 
 	health_bar.value = health_slider.value
 	enemy.color = Color("#ef8354") if chasing else Color("#4f83cc")
@@ -108,8 +127,31 @@ func _draw() -> void:
 func _move_player(delta: float) -> void:
 	var input := Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
 	player.position += input * 170.0 * delta
-	player.position.x = clampf(player.position.x, 30.0, 930.0)
-	player.position.y = clampf(player.position.y, 50.0, 510.0)
+	player.position = _clamp_to_play_area(player.position)
+
+
+func _fit_to_viewport() -> void:
+	var size := get_viewport_rect().size
+	background.size = size
+
+
+func _play_bounds() -> Rect2:
+	var size := get_viewport_rect().size
+	return Rect2(
+		Vector2(UI_CLEARANCE, PLAY_MARGIN.y),
+		Vector2(
+			maxf(size.x - UI_CLEARANCE - PLAY_MARGIN.x, 100.0),
+			maxf(size.y - PLAY_MARGIN.y - PLAY_MARGIN.x, 100.0),
+		),
+	)
+
+
+func _clamp_to_play_area(position: Vector2) -> Vector2:
+	var bounds := _play_bounds()
+	return Vector2(
+		clampf(position.x, bounds.position.x, bounds.end.x),
+		clampf(position.y, bounds.position.y, bounds.end.y),
+	)
 
 
 func _on_health_changed(value: float) -> void:
@@ -122,8 +164,15 @@ func _on_pause_pressed() -> void:
 
 
 func _reset_demo() -> void:
-	player.position = Vector2(720.0, 300.0)
-	enemy.position = Vector2(380.0, 300.0)
+	var bounds := _play_bounds()
+	player.position = Vector2(
+		bounds.position.x + bounds.size.x * 0.65,
+		bounds.position.y + bounds.size.y * 0.5,
+	)
+	enemy.position = Vector2(
+		bounds.position.x + bounds.size.x * 0.25,
+		bounds.position.y + bounds.size.y * 0.5,
+	)
 	displayed_player_position = player.position
 	displayed_enemy_position = enemy.position
 	displayed_distance = player.position.distance_to(enemy.position)
