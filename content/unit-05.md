@@ -9,6 +9,7 @@ Same **BallChase** environment you already know — but now you open the source,
     - **[Unit 2](unit-02.md)** — BallChase source open in the editor at least once
     - Comfort exporting a headless Godot binary (Unit 3 §9)
     - No new Python — this unit only changes the *training scene* and CLI flags
+    - **Legacy stack** — this unit builds on the official `godot_rl_agents` examples, which have not been migrated yet, so it needs the Godot **.NET edition** plus the C# plugin ([Setup → Legacy plugin](setup.md#godot-plugin-godot-rl-agents)). Unit 0 and the Neural Foundations units do not.
 
 !!! info "Time"
     Reading: ~25 min · Training: ~20 min GPU / ~1 h CPU

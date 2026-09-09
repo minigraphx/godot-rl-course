@@ -88,6 +88,10 @@ Quick reference for all acronyms, equations, and algorithm parameters used in th
 
 **GDScript** — Python-like scripting language built into Godot; used to implement `AIController`, observation collection, reward functions, and scene logic in this course. *See:* [unit-00](unit-00.md) §1
 
+**godot-native-rl** — The GDScript + GDExtension addon this course uses on the Godot side: an `NcnnSync` node that speaks the training socket, and an ncnn runtime that runs a trained brain natively inside Godot. Needs no C#, so the Standard Godot build is enough. *See:* [setup](setup.md#godot-addon-godot-native-rl)
+
+**godot-rl-agents** — The older Godot-side plugin, written in C# and therefore requiring the Godot .NET edition. The course has replaced it with godot-native-rl in its own projects; the official example environments used from [RL Essentials](unit-01.md) onward still need it. Not to be confused with `godot-rl`, the *Python* package that runs the training server — that one is still used throughout. *See:* [setup](setup.md#godot-plugin-godot-rl-agents)
+
 **Goal-conditioned RL** — RL formulation where the goal g is part of the observation; the agent learns a single policy `π(a | s, g)` that generalizes across many goals. *See:* [unit-her](unit-her.md) §1
 
 **HER (Hindsight Experience Replay)** — Off-policy trick that replays failed episodes with substitute goals equal to what the agent actually achieved, turning failures into learning signal for sparse-reward manipulation tasks. *See:* [unit-her](unit-her.md) §2

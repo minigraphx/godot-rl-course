@@ -13,7 +13,7 @@
     - Recognize an unnormalized input from its contribution alone
 
 !!! note "Prerequisites"
-    - **Unit 0 complete** — Conda, Godot, and a successful BallChase run
+    - **Unit 0 complete** — Conda, Godot, and a successful first training run
     - Arithmetic with decimals. No calculus, no prior machine learning
     - Basic terminal comfort
 

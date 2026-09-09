@@ -10,6 +10,7 @@ Study the official **CrossTheRoad** example — discrete 2D navigation with spar
     - **[Unit 2](unit-02.md)** — `AIController` interface, `get_obs()` / `set_action()`, training a PPO agent end-to-end
     - **[Q-Learning unit](unit-q-learning.md)** — tabular Q-Learning. **Do this first if reading straight through:** DQN is "Q-Learning with a neural network," and the table version makes every trick below click.
     - Comfort exporting a Godot project to a headless binary
+    - **Legacy stack** — this unit builds on the official `godot_rl_agents` examples, which have not been migrated yet, so it needs the Godot **.NET edition** plus the C# plugin ([Setup → Legacy plugin](setup.md#godot-plugin-godot-rl-agents)). Unit 0 and the Neural Foundations units do not.
 
 !!! info "Time"
     Reading: ~45 min · Training: ~45 min GPU / ~3 h CPU
