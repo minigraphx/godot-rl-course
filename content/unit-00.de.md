@@ -62,7 +62,7 @@ Zwei Laufzeitumgebungen kommunizieren über einen lokalen Socket — Godot sende
 | Komponente | Rolle | Laufzeit |
 |-----------|------|---------|
 | **Godot** | Physik, Beobachtungen, Belohnungen | Godot 4 Standard, GDScript |
-| **Addon (GDScript)** | NcnnSync-Node, native ncnn-Bridge | godot-native-rl (im Kurs-Repo gebündelt) |
+| **Addon (GDScript)** | NcnnSync-Node, native ncnn-Bridge | godot-native-rl (gepinntes Release, per Skript installiert) |
 | **Python** | PPO-Training (SB3) | Conda, Python 3.10 |
 
 !!! tip "Die Standard-Godot-Version genügt"
@@ -85,11 +85,25 @@ conda activate godot_env
 
 ## 3 · Godot-Projekt & Addon
 
-Unit 0 und die Einheiten der Neuronalen Grundlagen trainieren im eigenen Godot-Projekt des Kurs-Repos — das **godot-native-rl**-Addon ist darin bereits gebündelt, es gibt also nichts zu installieren oder zu aktivieren:
+Unit 0 und die Einheiten der Neuronalen Grundlagen trainieren im eigenen Godot-Projekt des Kurs-Repos. Das **godot-native-rl**-Addon liegt nicht im Repo — seine nativen Bibliotheken wiegen mehr als alles andere darin — installiere deshalb zuerst das gepinnte Release:
+
+```bash
+scripts/fetch-native-runner.sh            # aus dem Wurzelverzeichnis des Kurs-Repos
+scripts/fetch-native-runner.sh --check    # zeigt gepinnt vs. installiert
+```
+
+Danach:
 
 1. Godot → Import → navigiere zu `godot-rl-course/examples/neural_foundations/game/project.godot`
-2. Lass den ersten Import durchlaufen (kein Build-Schritt — das Addon ist reines GDScript)
-3. Überprüfen: Node hinzufügen → suche nach `NcnnSync`. Erscheint er, ist das Addon geladen.
+2. Lass den ersten Import durchlaufen — es wird nichts kompiliert, das geht schnell
+3. Projekt → Projekteinstellungen → Plugins → **Godot Native RL** aktivieren
+4. Überprüfen: Node hinzufügen → suche nach `NcnnSync`. Erscheint er, ist das Addon geladen.
+
+!!! tip "Warum Schritt 3, wenn die Nodes auch ohne ihn funktionieren?"
+    Die Node-Klassen registrieren sich von allein. Das Aktivieren des Plugins ergänzt das,
+    was später zählt: Es packt deine ncnn-Modelldateien in **exportierte** Builds. Ohne das
+    startet ein exportiertes Spiel und scheitert dann mit *„cannot read model files"* — weit
+    weg von hier, ohne Hinweis zurück auf dieses Häkchen. Ein Klick jetzt.
 
 !!! info "Examples-Repo für spätere Einheiten"
     Die Einheiten ab [RL Essentials](unit-01.md) nutzen derzeit noch Umgebungen aus dem separaten Repo **godot_rl_agents_examples** (der Legacy-Stack — die Migration wird in den Issues des Kurs-Repos verfolgt). Klone es neben das Kurs-Repo, wenn du diese Einheiten erreichst:
@@ -120,8 +134,13 @@ Godot — öffne `unit_03_racer/racer_train.tscn`, drücke **F6** (Szene abspiel
 
 Nach dem Lauf speichert der Trainer einen Checkpoint und einen ONNX-Export unter `examples/neural_foundations/game/unit_03_racer/models/`.
 
+!!! note "Eine Warnung ist zu erwarten — du hast nichts kaputtgemacht"
+    Godot gibt `NcnnSync: minor version mismatch (got 3, expected 7)` samt GDScript-Backtrace
+    aus. Das Addon folgt einer neueren Fassung des godot-rl-Socket-Protokolls als die
+    Version, die dieser Kurs pinnt. Der Handshake läuft weiter, das Training ebenso.
+
 !!! success "Erfolgskriterien"
-    Racer in Godot sichtbar; Rollout-Tabellen mit `ep_rew_mean` erscheinen; keine Socket-Fehler; TensorBoard-Kurve optional, aber empfohlen.
+    Racer in Godot sichtbar; Rollout-Tabellen mit `ep_rew_mean` erscheinen; keine Socket-*Fehler* (die *Warnung* zur Versionsabweichung oben ist erwartet); TensorBoard-Kurve optional, aber empfohlen.
 
 ---
 

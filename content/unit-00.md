@@ -62,7 +62,7 @@ Two runtimes talk over a local socket — Godot sends observations and receives 
 | Component | Role | Runtime |
 |-----------|------|---------|
 | **Godot** | Physics, observations, rewards | Godot 4 Standard, GDScript |
-| **Addon (GDScript)** | NcnnSync node, native ncnn bridge | godot-native-rl (bundled with course repo) |
+| **Addon (GDScript)** | NcnnSync node, native ncnn bridge | godot-native-rl (pinned release, installed by script) |
 | **Python** | PPO training (SB3) | Conda, Python 3.10 |
 
 !!! tip "The Standard Godot build is enough"
@@ -85,11 +85,25 @@ conda activate godot_env
 
 ## 3 · Godot project & addon
 
-Unit 0 and the Neural Foundations units train inside the course repo's own Godot project — the **godot-native-rl** addon is already bundled in it, so there is nothing to install or enable:
+Unit 0 and the Neural Foundations units train inside the course repo's own Godot project. The **godot-native-rl** addon is not committed to the repo — its native libraries outweigh everything else in it — so install the pinned release first:
+
+```bash
+scripts/fetch-native-runner.sh            # from the course repo root
+scripts/fetch-native-runner.sh --check    # shows pinned vs. installed
+```
+
+Then:
 
 1. Godot → Import → browse to `godot-rl-course/examples/neural_foundations/game/project.godot`
-2. Let the first import finish (no build step — the addon is pure GDScript)
-3. Verify: Add Node → search `NcnnSync`. If it appears, the addon is loaded.
+2. Let the first import finish — nothing is compiled, so this is quick
+3. Project → Project Settings → Plugins → enable **Godot Native RL**
+4. Verify: Add Node → search `NcnnSync`. If it appears, the addon is loaded.
+
+!!! tip "Why step 3, when the nodes already work without it?"
+    The node classes register on their own. Enabling the plugin adds the piece that
+    matters later: it packs your ncnn model files into **exported** builds. Without it,
+    an exported game starts and then fails with *"cannot read model files"* — a long
+    way from here, with nothing pointing back to this checkbox. One click now.
 
 !!! info "Examples repo for later units"
     Units from [RL Essentials](unit-01.md) onward currently use environments from the separate **godot_rl_agents_examples** repo (the legacy stack — migration is tracked in the course repo's issues). Clone it as a sibling of the course repo when you reach those units:
@@ -120,8 +134,13 @@ Godot — open `unit_03_racer/racer_train.tscn`, press **F6** (Play Scene). The 
 
 When the run finishes, the trainer saves a checkpoint and an ONNX export under `examples/neural_foundations/game/unit_03_racer/models/`.
 
+!!! note "One warning is expected — you did not break anything"
+    Godot prints `NcnnSync: minor version mismatch (got 3, expected 7)` with a GDScript
+    backtrace. The addon tracks a newer version of godot-rl's socket protocol than the
+    version this course pins. The handshake continues and training runs normally.
+
 !!! success "Success criteria"
-    Racer visible in Godot; rollout tables print with `ep_rew_mean`; no socket errors; TensorBoard curve optional but recommended.
+    Racer visible in Godot; rollout tables print with `ep_rew_mean`; no socket *errors* (the version-mismatch *warning* above is expected); TensorBoard curve optional but recommended.
 
 ---
 

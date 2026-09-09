@@ -190,7 +190,13 @@ Er lädt die in `examples/neural_foundations/game/GODOT_NATIVE_RL_VERSION` gepin
 - **Training:** Der `NcnnSync`-Node spricht dasselbe lokale Socket-Protokoll wie die `gdrl`-Python-Seite. Reines GDScript — funktioniert auf jeder Plattform.
 - **Inferenz:** Eine ncnn-GDExtension führt trainierte Gehirne nativ in Godot aus, mit vorgebauten Bibliotheken für macOS, Windows und Linux. Das Training benötigt sie nicht.
 
-Die Node-Klassen des Addons (`NcnnSync`, `NcnnAIController2D`, `NcnnAIController3D`, Sensor-Nodes) registrieren sich automatisch, wenn das Projekt geöffnet wird. Das Aktivieren des Plugins unter Projekt → Projekteinstellungen → Plugins ist **optional** — es ergänzt lediglich eine klare Fehlermeldung, falls die native Inferenz-Binärdatei für deine Plattform fehlt.
+Die Node-Klassen des Addons (`NcnnSync`, `NcnnAIController2D`, `NcnnAIController3D`, Sensor-Nodes) registrieren sich automatisch, wenn das Projekt geöffnet wird — Szenen funktionieren also, bevor du irgendetwas anfasst. Trotzdem: **aktiviere das Plugin einmal** unter Projekt → Projekteinstellungen → Plugins → **Godot Native RL**. Es ergänzt drei Dinge, die die Klassen allein nicht leisten:
+
+- Es packt deine ncnn-Modelldateien in **exportierte** Builds — ohne das startet ein exportiertes Spiel und scheitert dann mit *„cannot read model files"*
+- Es meldet klar, wenn die native Inferenz-Bibliothek für deine Plattform fehlt, statt still zu scheitern
+- Es installiert die `NcnnAIController`-Skriptvorlagen ins Projekt
+
+Nur das Erste tut wirklich weh — und zwar spät, in der Ship-Phase, weit weg von dieser Seite.
 
 !!! warning "Zwei verschiedene Dinge"
     `godot-rl` ist das *Python*-Paket (installiert über `requirements-course.txt`), das den Trainingsserver betreibt. **godot-native-rl** ist das *Godot*-Addon, das `scripts/fetch-native-runner.sh` installiert. Beide kommunizieren über einen lokalen Socket.

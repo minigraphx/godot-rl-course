@@ -10,16 +10,17 @@ This page collects common errors, warnings, and questions you may encounter whil
 
 ### `NcnnSync` / `NcnnAIController3D` not found in Add Node
 
-**Cause:** You opened a project that does not contain the godot-native-rl addon, or the first project import has not finished.
+**Cause:** The addon is not installed. It is not committed to the course repo, so a fresh clone has no `addons/godot_native_rl/` at all — or you opened a different project, or the first import has not finished.
 
 **Fix:**
 ```bash
-# Open the course repo's bundled game project — the addon ships inside it:
-# Godot → Import → godot-rl-course/examples/neural_foundations/game/project.godot
-# Let the first import finish, then retry Add Node → search "NcnnSync"
+scripts/fetch-native-runner.sh            # installs the pinned addon release
+scripts/fetch-native-runner.sh --check    # shows pinned vs. installed
 ```
 
-The addon is pure GDScript — there is no build step. If you are using the addon in your own project, confirm `addons/godot_native_rl/` was copied into your project's `addons/` folder.
+Then in Godot: Import → `godot-rl-course/examples/neural_foundations/game/project.godot`, let the first import finish, and retry Add Node → search `NcnnSync`. Nothing is compiled, so the import is quick.
+
+If you are using the addon in your own project, confirm `addons/godot_native_rl/` was copied into that project's `addons/` folder.
 
 **See also:** [Unit 0](unit-00.md) § 3
 
@@ -139,6 +140,18 @@ pip install onnxruntime-gpu
 ---
 
 ## Training fails to start
+
+### `NcnnSync: minor version mismatch (got 3, expected 7)`
+
+**Cause:** Not a failure. `NcnnSync` declares godot-rl wire protocol `0.7` (tracking godot-rl 0.8.x), while this course pins godot-rl `0.5.0`, which declares `0.3`. The handshake notices, warns, and continues.
+
+**Fix:** None needed — the messages the two sides exchange are compatible. A full training run completes and exports its checkpoint and ONNX file with this warning present. Godot prints it with a GDScript backtrace, which makes it look worse than it is.
+
+Treat an actual *stall* (no rollout tables after a minute) as a different problem — see the next entry.
+
+**See also:** [Unit 0](unit-00.md) § 4
+
+---
 
 ### WebSocket connection refused / `ConnectionRefusedError: [Errno 111]`
 

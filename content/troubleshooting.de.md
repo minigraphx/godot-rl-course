@@ -10,16 +10,17 @@ Diese Seite sammelt häufige Fehler, Warnungen und Fragen rund ums Setup und Tra
 
 ### `NcnnSync` / `NcnnAIController3D` nicht unter „Node hinzufügen" zu finden
 
-**Ursache:** Du hast ein Projekt geöffnet, das das godot-native-rl-Addon nicht enthält, oder der erste Projekt-Import ist noch nicht abgeschlossen.
+**Ursache:** Das Addon ist nicht installiert. Es liegt nicht im Kurs-Repo, ein frischer Klon hat also gar kein `addons/godot_native_rl/` — oder du hast ein anderes Projekt geöffnet, oder der erste Projekt-Import ist noch nicht abgeschlossen.
 
 **Fix:**
 ```bash
-# Öffne das gebündelte Spielprojekt des Kurs-Repos — das Addon ist darin enthalten:
-# Godot → Import → godot-rl-course/examples/neural_foundations/game/project.godot
-# Lass den ersten Import durchlaufen, dann erneut: Node hinzufügen → „NcnnSync" suchen
+scripts/fetch-native-runner.sh            # installiert das gepinnte Addon-Release
+scripts/fetch-native-runner.sh --check    # zeigt gepinnt vs. installiert
 ```
 
-Das Addon ist reines GDScript — es gibt keinen Build-Schritt. Wenn du das Addon in deinem eigenen Projekt nutzt, prüfe, ob `addons/godot_native_rl/` in den `addons/`-Ordner deines Projekts kopiert wurde.
+Danach in Godot: Import → `godot-rl-course/examples/neural_foundations/game/project.godot`, den ersten Import durchlaufen lassen und erneut Node hinzufügen → `NcnnSync` suchen. Es wird nichts kompiliert, der Import geht also schnell.
+
+Wenn du das Addon in deinem eigenen Projekt nutzt, prüfe, ob `addons/godot_native_rl/` in den `addons/`-Ordner dieses Projekts kopiert wurde.
 
 **Siehe auch:** [Unit 0](unit-00.md) § 3
 
@@ -139,6 +140,18 @@ pip install onnxruntime-gpu
 ---
 
 ## Training startet nicht
+
+### `NcnnSync: minor version mismatch (got 3, expected 7)`
+
+**Ursache:** Kein Fehler. `NcnnSync` deklariert das godot-rl-Wire-Protokoll `0.7` (passend zu godot-rl 0.8.x), während dieser Kurs godot-rl `0.5.0` pinnt, das `0.3` deklariert. Der Handshake bemerkt das, warnt und läuft weiter.
+
+**Fix:** Keiner nötig — die Nachrichten, die beide Seiten austauschen, sind kompatibel. Ein vollständiger Trainingslauf kommt mit dieser Warnung durch und exportiert Checkpoint und ONNX-Datei. Godot gibt sie mit GDScript-Backtrace aus, was schlimmer aussieht, als es ist.
+
+Ein echtes *Hängenbleiben* (nach einer Minute keine Rollout-Tabellen) ist ein anderes Problem — siehe den nächsten Eintrag.
+
+**Siehe auch:** [Unit 0](unit-00.md) § 4
+
+---
 
 ### WebSocket-Verbindung verweigert / `ConnectionRefusedError: [Errno 111]`
 
