@@ -9,7 +9,9 @@
 # See content/setup.md for the full setup guide and compatibility table.
 
 # Core training stack
-godot-rl==0.5.0
+# 0.8.2 speaks socket wire protocol 0.7 -- the version both godot-native-rl and the
+# godot_rl_agents examples expect. 0.5.0 spoke 0.3 and made every run warn.
+godot-rl==0.8.2
 stable-baselines3==2.3.2
 torch==2.6.0
 

@@ -1,21 +1,50 @@
 # Referenz
 
-Schnelles Nachschlagen für `gdrl`-CLI-Flags, die `AIController`-API und den ONNX-Export.
+Schnelles Nachschlagen für die Flags des SB3-Trainingsskripts, die `AIController`-API und den ONNX-Export.
 
 !!! note "Vollständige Referenz"
     Siehe `godot_rl_course_reference.html` für die vollständige Plugin-API-Referenz.
 
-## Häufige `gdrl`-Flags
+## Das Trainingsskript — nicht `gdrl`
+
+Die Flags unten gehören zu **`stable_baselines3_example.py`**, das im *Repository* von godot-rl
+liegt und **nicht** Teil der `pip`-Installation ist. Der installierte Befehl `gdrl` kennt keines
+davon: Er trainiert feste 200 000 Schritte und speichert nichts. Upstream hat ihn abgekündigt —
+beim Aufruf erscheint *„This use of gdrl is deprecated and will be removed in version 1.0,
+please refer to the examples in the github repo."*
+
+Hole das Skript einmalig in den Ordner, aus dem du trainierst:
+
+```bash
+curl -O https://raw.githubusercontent.com/edbeeching/godot_rl_agents/main/examples/stable_baselines3_example.py
+```
+
+Danach lautet jedes Trainingskommando in diesem Kurs:
+
+```bash
+python stable_baselines3_example.py --experiment_name=mein-lauf --viz
+```
+
+## Häufige Trainings-Flags
 
 | Flag | Standard | Beschreibung |
 |------|----------|--------------|
-| `--experiment_name` | — | Name für Logs und gespeichertes Modell |
+| `--env_path` | — | Exportiertes Godot-Binary. Weglassen, um gegen den Editor zu trainieren (F6) |
+| `--experiment_name` | `experiment` | Name, der in TensorBoard erscheint |
+| `--experiment_dir` | `logs/sb3` | Zielordner für die TensorBoard-Logs |
 | `--viz` | aus | Godot-Fenster während des Trainings anzeigen |
-| `--timesteps` | 1 000 000 | Gesamtanzahl der Umgebungsschritte (environment steps) |
-| `--speedup` | 1 | Zeitskalenfaktor (nur headless) |
-| `--n_parallel` | 1 | Anzahl paralleler Godot-Instanzen |
+| `--timesteps` | 1 000 000 | Gesamtanzahl der Umgebungsschritte |
+| `--speedup` | 1 | Zeitskalenfaktor der Physik |
+| `--n_parallel` | 1 | Anzahl paralleler Godot-Instanzen (benötigt `--env_path`) |
 | `--save_model_path` | — | Pfad zum Speichern des trainierten `.zip`-Modells |
 | `--onnx_export_path` | — | Pfad zum Export von `.onnx` für Godot-Inferenz |
+| `--resume_model_path` | — | Von einem gespeicherten Modell aus weitertrainieren |
+| `--inference` | aus | Geladenes Modell ausführen statt trainieren |
+| `--n_steps` | 64 | Schritte pro Umgebung und Update |
+| `--batch_size` | 64 | Minibatch-Größe |
+| `--learning_rate` | 0.0003 | Lernrate |
+| `--ent_coef` | 0.0001 | Entropie-Koeffizient |
+| `--clip_range` | 0.2 | PPO-Clipping-Bereich |
 
 ## AIController-Lebenszyklus
 

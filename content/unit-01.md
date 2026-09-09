@@ -246,10 +246,18 @@ Run a short visual training session:
 
 ```bash
 conda activate godot_env
-gdrl --experiment_name=unit1-reward-tweak --viz \
+# once, into the folder you train from — the script is not part of the pip package
+curl -O https://raw.githubusercontent.com/edbeeching/godot_rl_agents/main/examples/stable_baselines3_example.py
+
+python stable_baselines3_example.py --experiment_name=unit1-reward-tweak --viz \
   --save_model_path=ballchase_brain \
   --onnx_export_path=ballchase_brain.onnx
 ```
+
+!!! note "Why a script and not the `gdrl` command?"
+    `pip install godot-rl` also gives you a `gdrl` command, and older material uses it.
+    It accepts none of the flags above — it trains a fixed 200 000 steps and saves nothing —
+    and upstream has deprecated it. [Reference](reference.md) explains the split.
 
 Godot — open the BallChase training scene, press **F6** (Play Scene).
 

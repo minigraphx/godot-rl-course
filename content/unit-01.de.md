@@ -245,10 +245,18 @@ Führe eine kurze visuelle Trainingssitzung aus:
 
 ```bash
 conda activate godot_env
-gdrl --experiment_name=unit1-reward-tweak --viz \
+# einmalig, in den Ordner, aus dem du trainierst — das Skript steckt nicht im pip-Paket
+curl -O https://raw.githubusercontent.com/edbeeching/godot_rl_agents/main/examples/stable_baselines3_example.py
+
+python stable_baselines3_example.py --experiment_name=unit1-reward-tweak --viz \
   --save_model_path=ballchase_brain \
   --onnx_export_path=ballchase_brain.onnx
 ```
+
+!!! note "Warum ein Skript und nicht der Befehl `gdrl`?"
+    `pip install godot-rl` liefert zusätzlich einen Befehl `gdrl`, den ältere Materialien nutzen.
+    Er kennt keines der Flags oben — er trainiert feste 200 000 Schritte und speichert nichts —
+    und upstream hat ihn abgekündigt. Die [Referenz](reference.md) erklärt die Trennung.
 
 Godot — öffne die BallChase-Trainingsszene, drücke **F6** (Szene abspielen).
 

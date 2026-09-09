@@ -27,12 +27,12 @@ No git? Use **Code → Download ZIP** on [github.com/minigraphx/godot-rl-course]
 
 ---
 
-## Godot 4 — .NET edition
+## Godot 4 — Standard build
 
-Download the **.NET / Mono** build of Godot 4 from [godotengine.org](https://godotengine.org) (not the standard build). Tested with Godot 4.3+.
+Download the **Standard** build of Godot 4 from [godotengine.org](https://godotengine.org). The course's native runner requires **Godot 4.5 or newer**.
 
-!!! warning "Use the .NET edition — not the standard build"
-    The godot-rl plugin compiles native C# tasks (NuGet references) that bridge Godot to the ONNX runtime. The standard build cannot load these. You must also install the [.NET SDK](https://dotnet.microsoft.com/download).
+!!! info "No .NET SDK, no C# — the Standard build is all you need"
+    Earlier revisions of this course used a C# plugin that required the .NET/Mono edition of Godot plus the .NET SDK. The course now uses **godot-native-rl**, an addon you install into the course repo with one command (below), so the Standard build suffices. If you already installed the .NET edition, it works fine too; there is just no longer any reason to install it.
 
 ---
 
@@ -43,20 +43,20 @@ Several units run Godot from the terminal (`godot --headless …`). Downloading 
 **macOS** — the binary lives inside the app bundle. Add an alias to your shell profile (`~/.zshrc`):
 
 ```bash
-alias godot="/Applications/Godot_mono.app/Contents/MacOS/Godot"
+alias godot="/Applications/Godot.app/Contents/MacOS/Godot"
 ```
 
 **Windows** — add the folder containing `Godot_*.exe` to your PATH (Settings → System → About → Advanced system settings → Environment Variables), or call the executable by its full path. Forward slashes work in every shell:
 
 ```bash
-C:/Tools/Godot/Godot_v4.3-stable_mono_win64.exe --version
+C:/Tools/Godot/Godot_v4.5-stable_win64.exe --version
 ```
 
 **Linux** — make the downloaded binary executable and link it onto your PATH:
 
 ```bash
-chmod +x Godot_v4.3-stable_mono_linux.x86_64
-sudo ln -s "$PWD/Godot_v4.3-stable_mono_linux.x86_64" /usr/local/bin/godot
+chmod +x Godot_v4.5-stable_linux.x86_64
+sudo ln -s "$PWD/Godot_v4.5-stable_linux.x86_64" /usr/local/bin/godot
 ```
 
 !!! tip "Verify"
@@ -92,7 +92,7 @@ pip install -r requirements-course.txt
 `requirements-course.txt` is at the root of the course repo you [cloned above](#course-repo) — run the command from there. It pins every package to a known-good version — see the [compatibility table](#compatibility-table) below.
 
 !!! info "What gets installed"
-    - `godot-rl` — Python ↔ Godot socket bridge, Stable-Baselines3 wrappers, and the `gdrl` CLI
+    - `godot-rl` — Python ↔ Godot socket bridge and Stable-Baselines3 wrappers. It also installs a `gdrl` command, which upstream has deprecated and which this course does not use — see [Reference](reference.md#the-training-script-not-gdrl)
     - `stable-baselines3` — PPO, SAC, and other algorithms
     - `torch` — PyTorch backend for training
     - `tensorboard` — training-curve visualisation
@@ -100,8 +100,8 @@ pip install -r requirements-course.txt
 
 Verify: `python -c "import godot_rl; print('ok')"`
 
-!!! note "Neural Foundations 3 — Game path (macOS arm64 only)"
-    The PPO racer in [Neural Foundations 3](unit-neural-03.md) uses a bundled **godot-native-rl** ncnn runner shipped for **macOS Apple Silicon** only. The Research path (Python REINFORCE point robot) works on every platform in the compatibility table below.
+!!! note "Native inference runs on every desktop platform"
+    *Training* speaks a local socket and is pure GDScript. *Native ncnn inference* — running a trained brain inside Godot without Python, used in [Neural Foundations 3](unit-neural-03.md) and the Ship phase — ships prebuilt libraries for **macOS Apple Silicon, Windows x86_64 and Linux x86_64** (plus iOS, Android and Web). All three desktop platforms in the compatibility table are covered.
 
 !!! tip "macOS / Linux first run"
     The installer may ask you to run `conda init` — follow the prompt, then open a new terminal.
@@ -115,9 +115,9 @@ Verify: `python -c "import godot_rl; print('ok')"`
 
 The table below shows the package versions that ship in `requirements-course.txt` and the Godot version they were tested with.
 
-| Course tag | Godot | godot-rl | stable-baselines3 | PyTorch | Python |
-|---|---|---|---|---|---|
-| 2026-05 | 4.3.x | 0.5.0 | 2.3.2 | 2.6.0 | 3.10 |
+| Course tag | Godot | godot-native-rl | godot-rl (Python bridge) | stable-baselines3 | PyTorch | Python |
+|---|---|---|---|---|---|---|
+| 2026-05 | 4.5+ (Standard) | `v0.4.0` (fetched) | 0.8.2 | 2.3.2 | 2.6.0 | 3.10 |
 
 !!! warning "Do not upgrade packages mid-course"
     godot-rl, SB3, and PyTorch have broken APIs across releases. Stick to the pinned versions in `requirements-course.txt` for the duration of the course. After the course, feel free to experiment with newer releases — just create a fresh conda environment.
@@ -157,7 +157,7 @@ Fix:
 
 1. Open **Windows Security → Firewall & network protection → Allow an app through firewall**.
 2. Add an exception for `python.exe` (your conda env's Python) and for the Godot executable.
-3. Alternatively, try a different port: `gdrl --port=12000` (and set the same port in Godot's AIController).
+3. Alternatively, try a different port: `gdrl --port=12000` (and set the same port on the Godot-side sync node).
 
 If you use a third-party antivirus, add the conda environment folder (e.g. `C:\Users\YourName\miniconda3\envs\godot_env\`) and your Godot project folder to the exclusion list.
 
@@ -176,25 +176,47 @@ The macOS/Linux commands `chmod +x godot_binary` do not apply on Windows. Godot 
 
 ---
 
-## Godot plugin — godot-rl-agents
+## Godot addon — godot-native-rl
 
-The Godot-side plugin is separate from the Python package.
+The Godot-side bridge is **godot-native-rl**. Its native libraries are larger than the whole course repository, so they are not committed — one command installs the pinned release:
 
-!!! info "Not in the Asset Library"
-    The plugin is not available in Godot's AssetLib — you must install it manually from GitHub.
+```bash
+scripts/fetch-native-runner.sh
+```
 
-- Clone or download [github.com/edbeeching/godot_rl_agents_plugin](https://github.com/edbeeching/godot_rl_agents_plugin)
-- Copy the `addons/godot_rl_agents` folder into your project's `addons/` folder
+It downloads the version pinned in `examples/neural_foundations/game/GODOT_NATIVE_RL_VERSION`, verifies its checksum, and unpacks it into the game project. Run `scripts/fetch-native-runner.sh --check` any time to see what is installed. There is nothing to build.
 
-!!! warning "Two different repos"
-    `godot_rl_agents` is the *Python* package (`pip install`). The Godot plugin lives in the separate `godot_rl_agents_plugin` repo.
+- **Training:** the `NcnnSync` node speaks the same local-socket protocol as the `gdrl` Python side. Pure GDScript — works on every platform.
+- **Inference:** an ncnn GDExtension runs trained brains natively in Godot, with prebuilt libraries for macOS, Windows and Linux. Training does not need them.
 
-**Enable the plugin**
+The addon's node classes (`NcnnSync`, `NcnnAIController2D`, `NcnnAIController3D`, sensor nodes) auto-register when the project opens, so scenes work before you touch anything. Still, **enable the plugin once** under Project → Project Settings → Plugins → **Godot Native RL**. It adds three things the classes alone do not:
 
-Project → Project Settings → Plugins → **Godot RL Agents** → Enabled. Wait for MSBuild to finish.
+- it packs your ncnn model files into **exported** builds — without it an exported game starts and then fails with *"cannot read model files"*
+- it reports a clear error when the native inference library is missing for your platform, instead of failing silently
+- it installs the `NcnnAIController` script templates into the project
 
-!!! warning "First-import C# error"
-    If Godot reports a build error on first open, close and reopen the project — the C# assemblies build correctly on the second open.
+Only the first one bites, and it bites late — in the Ship phase, far from this page.
+
+!!! warning "Two different things"
+    `godot-rl` is the *Python* package (installed by `requirements-course.txt`) that runs the training server. **godot-native-rl** is the *Godot* addon installed by `scripts/fetch-native-runner.sh`. They talk to each other over a local socket.
 
 !!! tip "Verify"
-    Add Node → search `Sync` and `AIController2D`. If they appear, the plugin is working.
+    Open `examples/neural_foundations/game/project.godot` in Godot, then Add Node → search `NcnnSync` and `NcnnAIController3D`. If they appear, the addon is working.
+
+**Using the addon in your own project:** copy `addons/godot_native_rl/` into your project's `addons/` folder. For native inference, also copy `ncnn_runner.gdextension` and the `bin/` folder.
+
+---
+
+## Legacy plugin — godot-rl-agents (units awaiting migration) { #godot-plugin-godot-rl-agents }
+
+Units from [RL Essentials](unit-01.md) onward still use example environments built on the older C# plugin. **Skip this section until you reach those units** — Unit 0 and Neural Foundations need none of it.
+
+The legacy stack additionally requires the .NET/Mono edition of Godot and the [.NET SDK](https://dotnet.microsoft.com/download). Then:
+
+- Clone or download [github.com/edbeeching/godot_rl_agents_plugin](https://github.com/edbeeching/godot_rl_agents_plugin)
+- Copy the `addons/godot_rl_agents` folder into the example project's `addons/` folder (the official example projects ship with it already)
+- Project → Project Settings → Plugins → **Godot RL Agents** → Enabled; wait for MSBuild to finish
+- If Godot reports a C# build error on first open, close and reopen the project — the assemblies build correctly on the second open
+- Verify: Add Node → search `Sync` and `AIController2D`
+
+These units are being migrated to the native stack one by one; this section disappears when the migration completes.

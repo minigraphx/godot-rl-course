@@ -2,42 +2,57 @@
 
 [Course home](index.md)
 
-This page collects common errors, warnings, and questions you may encounter while setting up and training RL agents with godot-rl-agents, stable-baselines3, and Python. Each entry explains the root cause and the fix. **Check here first before opening a GitHub issue.**
+This page collects common errors, warnings, and questions you may encounter while setting up and training RL agents with godot-native-rl, stable-baselines3, and Python — plus the legacy godot-rl-agents examples used by not-yet-migrated units. Each entry explains the root cause and the fix. **Check here first before opening a GitHub issue.**
 
 ---
 
 ## Setup & Installation
 
-### Plugin not found / "godot-rl-agents plugin failed to load"
+### `NcnnSync` / `NcnnAIController3D` not found in Add Node
 
-**Cause:** The plugin C# project has not been built, or the .NET SDK is not installed.
+**Cause:** The addon is not installed. It is not committed to the course repo, so a fresh clone has no `addons/godot_native_rl/` at all — or you opened a different project, or the first import has not finished.
 
 **Fix:**
 ```bash
-# Ensure you have the .NET SDK installed (dotnet --version should work)
-# Then rebuild the plugin in Godot
-# Project → Tools → C# → Build Project
-# Wait for MSBuild to complete; watch the bottom-right notification panel
+scripts/fetch-native-runner.sh            # installs the pinned addon release
+scripts/fetch-native-runner.sh --check    # shows pinned vs. installed
 ```
 
-Restart Godot after the build completes.
+Then in Godot: Import → `godot-rl-course/examples/neural_foundations/game/project.godot`, let the first import finish, and retry Add Node → search `NcnnSync`. Nothing is compiled, so the import is quick.
+
+If you are using the addon in your own project, confirm `addons/godot_native_rl/` was copied into that project's `addons/` folder.
 
 **See also:** [Unit 0](unit-00.md) § 3
 
 ---
 
-### Godot 4.0 / 4.1 / 4.2 / 4.3 compatibility error
+### "NcnnRunner" class missing / native inference fails to load
 
-**Cause:** godot-rl-agents has been built and tested against specific Godot .NET versions; using a version from outside the supported range may cause C# or NuGet package mismatches.
+**Cause:** Native ncnn inference needs a platform library (GDExtension). Those libraries are not committed to the course repo — they are larger than everything else in it — so a fresh clone has none until you install them.
+
+**Fix:** Run the installer from the repo root:
+
+```bash
+scripts/fetch-native-runner.sh
+scripts/fetch-native-runner.sh --check    # shows pinned vs. installed
+```
+
+It ships macOS Apple Silicon, Windows x86_64 and Linux x86_64, so every desktop platform is covered. If it still fails afterwards, check your Godot version: the extension requires **4.5 or newer** and silently does not register on older builds. Training is unaffected either way — the training bridge is GDScript and needs no native library.
+
+---
+
+### Godot version compatibility error
+
+**Cause:** The bundled ncnn GDExtension declares `compatibility_minimum = 4.5`; older Godot versions refuse to load the project cleanly.
 
 **Fix:**
 ```bash
-# Check the plugin's README or pyproject.toml for the recommended Godot version
-# Download and use that exact version from godotengine.org
-# (e.g., Godot 4.3 .NET is recommended; 4.0 is no longer supported)
+# Download Godot 4.5 or newer (Standard build) from godotengine.org
+# Verify on the command line:
+godot --version
 ```
 
-If you must use a different version, check the [godot-rl-agents](https://github.com/edbeeching/godot-rl-agents) repository for known issues.
+The legacy godot-rl-agents examples used from RL Essentials onward have their own version constraints — check the [godot-rl-agents](https://github.com/edbeeching/godot-rl-agents) repository if an example project misbehaves.
 
 ---
 
@@ -125,6 +140,24 @@ pip install onnxruntime-gpu
 ---
 
 ## Training fails to start
+
+### `NcnnSync: minor version mismatch (got 3, expected 7)`
+
+**Cause:** Your `godot_env` still has an old `godot-rl`. Protocol `0.7` is what `NcnnSync` and the `godot_rl_agents` examples both speak; `godot-rl` releases before 0.8 speak `0.3`. The handshake warns and continues, so training still works — but the environment no longer matches the course.
+
+**Fix:** Reinstall the pinned versions:
+
+```bash
+conda activate godot_env
+pip install -r requirements-course.txt
+python -c "import godot_rl.core.godot_env as g; print(g.GodotEnv.MINOR_VERSION)"   # expect 7
+```
+
+Treat an actual *stall* (no rollout tables after a minute) as a different problem — see the next entry.
+
+**See also:** [Unit 0](unit-00.md) § 4
+
+---
 
 ### WebSocket connection refused / `ConnectionRefusedError: [Errno 111]`
 
