@@ -143,9 +143,15 @@ pip install onnxruntime-gpu
 
 ### `NcnnSync: minor version mismatch (got 3, expected 7)`
 
-**Cause:** Not a failure. `NcnnSync` declares godot-rl wire protocol `0.7` (tracking godot-rl 0.8.x), while this course pins godot-rl `0.5.0`, which declares `0.3`. The handshake notices, warns, and continues.
+**Cause:** Your `godot_env` still has an old `godot-rl`. Protocol `0.7` is what `NcnnSync` and the `godot_rl_agents` examples both speak; `godot-rl` releases before 0.8 speak `0.3`. The handshake warns and continues, so training still works — but the environment no longer matches the course.
 
-**Fix:** None needed — the messages the two sides exchange are compatible. A full training run completes and exports its checkpoint and ONNX file with this warning present. Godot prints it with a GDScript backtrace, which makes it look worse than it is.
+**Fix:** Reinstall the pinned versions:
+
+```bash
+conda activate godot_env
+pip install -r requirements-course.txt
+python -c "import godot_rl.core.godot_env as g; print(g.GodotEnv.MINOR_VERSION)"   # expect 7
+```
 
 Treat an actual *stall* (no rollout tables after a minute) as a different problem — see the next entry.
 

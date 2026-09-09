@@ -117,7 +117,7 @@ The table below shows the package versions that ship in `requirements-course.txt
 
 | Course tag | Godot | godot-native-rl | godot-rl (Python bridge) | stable-baselines3 | PyTorch | Python |
 |---|---|---|---|---|---|---|
-| 2026-05 | 4.5+ (Standard) | `v0.4.0` (fetched) | 0.5.0 | 2.3.2 | 2.6.0 | 3.10 |
+| 2026-05 | 4.5+ (Standard) | `v0.4.0` (fetched) | 0.8.2 | 2.3.2 | 2.6.0 | 3.10 |
 
 !!! warning "Do not upgrade packages mid-course"
     godot-rl, SB3, and PyTorch have broken APIs across releases. Stick to the pinned versions in `requirements-course.txt` for the duration of the course. After the course, feel free to experiment with newer releases — just create a fresh conda environment.

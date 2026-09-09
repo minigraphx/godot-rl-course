@@ -10,12 +10,13 @@ The course runs on **godot-native-rl**, a Godot addon whose training bridge is p
 - GDScript side: `NcnnAIController2D/3D` nodes + the `NcnnSync` node (training mode) — speaks godot-rl's socket wire protocol
 - Python side: `godot-rl`'s `StableBaselinesGodotEnv` wraps the socket as a Gymnasium-compatible env (the Python bridge package is unchanged)
 
-> **Known protocol-version skew.** `sync.gd` declares wire protocol **0.7** (tracking
-> godot-rl 0.8.x); the course pins godot-rl **0.5.0**, which declares **0.3**. The handshake
-> logs `NcnnSync: minor version mismatch (got 3, expected 7)` and then proceeds — the
-> exchanged messages are compatible. Verified end-to-end: a 2048-step foundations-racer run
-> completed and exported both the `.zip` checkpoint and the ONNX file. Cosmetic, but it is
-> the first thing a student sees, so Unit 0 and Troubleshooting both name it.
+> **One protocol version across both stacks.** `sync.gd` declares wire protocol **0.7**, and
+> so does the `godot_rl_agents` plugin vendored in the example projects. The course therefore
+> pins `godot-rl==0.8.2`, the release that speaks **0.7**. The earlier `0.5.0` pin spoke
+> **0.3** and made every run — native *and* legacy — log
+> `minor version mismatch (got 3, expected 7)`. Verified end-to-end after the bump: a
+> 2048-step foundations-racer run, no warnings, `rollout/ep_rew_mean` printing, checkpoint and
+> ONNX written.
 - Training uses `stable-baselines3` or `cleanrl` (PPO / DQN) with PyTorch
 
 **Inference phase (native):**

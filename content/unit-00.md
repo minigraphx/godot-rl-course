@@ -134,13 +134,8 @@ Godot — open `unit_03_racer/racer_train.tscn`, press **F6** (Play Scene). The 
 
 When the run finishes, the trainer saves a checkpoint and an ONNX export under `examples/neural_foundations/game/unit_03_racer/models/`.
 
-!!! note "One warning is expected — you did not break anything"
-    Godot prints `NcnnSync: minor version mismatch (got 3, expected 7)` with a GDScript
-    backtrace. The addon tracks a newer version of godot-rl's socket protocol than the
-    version this course pins. The handshake continues and training runs normally.
-
 !!! success "Success criteria"
-    Racer visible in Godot; rollout tables print with `ep_rew_mean`; no socket *errors* (the version-mismatch *warning* above is expected); TensorBoard curve optional but recommended.
+    Racer visible in Godot; rollout tables print with `ep_rew_mean`; no warnings, no socket errors; TensorBoard curve optional but recommended.
 
 ---
 
