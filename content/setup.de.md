@@ -93,7 +93,7 @@ pip install -r requirements-course.txt
 `requirements-course.txt` befindet sich im Stammverzeichnis des Kurs-Repos, das du [oben geklont hast](#course-repo) — führe den Befehl von dort aus. Es fixiert alle Pakete auf bekannte, funktionierende Versionen — siehe die [Kompatibilitätstabelle](#kompatibilitatstabelle) unten.
 
 !!! info "Was installiert wird"
-    - `godot-rl` — Python ↔ Godot Socket-Bridge, Stable-Baselines3-Wrapper und die `gdrl`-CLI
+    - `godot-rl` — Python ↔ Godot Socket-Bridge und Stable-Baselines3-Wrapper. Es installiert außerdem einen Befehl `gdrl`, den upstream abgekündigt hat und den dieser Kurs nicht verwendet — siehe [Referenz](reference.md#das-trainingsskript-nicht-gdrl)
     - `stable-baselines3` — PPO, SAC und andere Algorithmen
     - `torch` — PyTorch-Backend für das Training
     - `tensorboard` — Visualisierung der Trainingskurven
