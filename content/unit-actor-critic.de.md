@@ -1,6 +1,6 @@
 # Actor-Critic — Wert-Methoden mit Policy Gradients vereinen
 
-REINFORCE hat die Policy direkt gelernt, aber um den Preis, auf ganze Episoden zu warten und verrauschte Returns zu tolerieren. DQN lernte eine Wertfunktion, aber nur für diskrete Aktionen. **Actor-Critic** vereint beides: ein **Actor** wählt Aktionen wie REINFORCE, während ein **Critic** Returns schätzt wie DQN. Diese Unit führt vom Varianzproblem in REINFORCE bis zu einer vollständigen A2C-Implementierung — dem algorithmischen Rückgrat von PPO, das du seit Unit 2 in `gdrl` laufen lässt.
+REINFORCE hat die Policy direkt gelernt, aber um den Preis, auf ganze Episoden zu warten und verrauschte Returns zu tolerieren. DQN lernte eine Wertfunktion, aber nur für diskrete Aktionen. **Actor-Critic** vereint beides: ein **Actor** wählt Aktionen wie REINFORCE, während ein **Critic** Returns schätzt wie DQN. Diese Unit führt vom Varianzproblem in REINFORCE bis zu einer vollständigen A2C-Implementierung — dem algorithmischen Rückgrat von PPO, das du seit Unit 2 laufen lässt.
 
 [← Policy Gradients](unit-policy-gradients.md) · [Kursstartseite](index.md)
 
@@ -268,7 +268,7 @@ Es gibt ein ganzes Spektrum, wie man den Return für den Critic und den Vorteil 
 
 Größeres `n` nutzt mehr echte Belohnungen und weniger Critic-Vorhersage → weniger Bias, mehr Varianz. Kleineres `n` macht das Gegenteil. `n_steps=128` im Code oben ist ein Mittelweg, den PPO-Familien-Algorithmen bevorzugen.
 
-Das ist **genau der `n_steps`-Parameter, den du in Unit 4 getunt hast** beim Aufruf von `gdrl`. Größeres `n_steps` bedeutet längere Rollouts, weniger Updates, mehr Umgebungsdaten pro Gradientenschritt. PPOs „advantages" werden mit einer Verallgemeinerung berechnet, die **GAE (Generalized Advantage Estimation)** heißt und über einen Parameter `λ` zwischen 1-Schritt und Monte Carlo glatt interpoliert — im Geist aber identisch zu dem, was du hier siehst.
+Das ist **genau der `n_steps`-Parameter, den du in Unit 4 getunt hast** beim Aufruf des Trainingsskripts. Größeres `n_steps` bedeutet längere Rollouts, weniger Updates, mehr Umgebungsdaten pro Gradientenschritt. PPOs „advantages" werden mit einer Verallgemeinerung berechnet, die **GAE (Generalized Advantage Estimation)** heißt und über einen Parameter `λ` zwischen 1-Schritt und Monte Carlo glatt interpoliert — im Geist aber identisch zu dem, was du hier siehst.
 
 ---
 
@@ -290,7 +290,7 @@ Dieser letzte Term ist der **Entropie-Bonus**. Entropie vom Loss abzuziehen ist 
 !!! warning "Entropie-Kollaps sieht aus wie eine festgefahrene Belohnung"
     Eine flache Belohnungskurve mit sehr niedriger Entropie ist die klassische Signatur. Die Policy hat sich früh festgelegt und probiert nichts Neues mehr. Erhöhe `ent_coef`, senke die Lernrate, oder beides.
 
-Das ist derselbe Regler wie das `--ent_coef`-Argument in `gdrl` aus Unit 4. Es ist keine magische Zahl — es ist das Gewicht im Loss, den du gerade gelesen hast.
+Das ist derselbe Regler wie das `--ent_coef`-Argument in `python stable_baselines3_example.py` aus Unit 4. Es ist keine magische Zahl — es ist das Gewicht im Loss, den du gerade gelesen hast.
 
 ---
 
@@ -320,7 +320,7 @@ A2C ist ein vollständiger, funktionierender Algorithmus. Warum nutzt also über
 - Aber hier ist der Haken: nach dem ersten Gradientenschritt hat sich die Policy verschoben. Die Aktionen, die wir während des Rollouts genommen haben, kommen nicht mehr aus der *aktuellen* Policy — sie kamen aus der *alten* Policy. Die Vorteilsschätzungen, die für das erste Update funktionierten, werden für das zweite verzerrt.
 - Naiv mehrere Epochen über das Rollout zu fahren macht A2C instabil. Die Policy kann weit von der datenerzeugenden Verteilung abdriften und alles bricht zusammen.
 
-**PPOs geclipptes Objektiv ist der Fix.** Es führt ein Wahrscheinlichkeits-Verhältnis `r_t(θ) = π_new(a|s) / π_old(a|s)` ein und *clippt* es auf ein kleines Intervall um 1,0, sodass Updates, die die neue Policy zu weit von der alten weg drücken würden, Gradient null bekommen. Dadurch ist es sicher, **mehrere Epochen über ein einzelnes Rollout zu laufen**, was genau das ist, was `n_epochs=10` in deinem Unit-4-`gdrl`-Befehl tut.
+**PPOs geclipptes Objektiv ist der Fix.** Es führt ein Wahrscheinlichkeits-Verhältnis `r_t(θ) = π_new(a|s) / π_old(a|s)` ein und *clippt* es auf ein kleines Intervall um 1,0, sodass Updates, die die neue Policy zu weit von der alten weg drücken würden, Gradient null bekommen. Dadurch ist es sicher, **mehrere Epochen über ein einzelnes Rollout zu laufen**, was genau das ist, was PPOs `n_epochs=10` in den Läufen aus Unit 4 tut.
 
 ---
 
@@ -328,7 +328,7 @@ A2C ist ein vollständiger, funktionierender Algorithmus. Warum nutzt also über
 
 Du hast die ganze Zeit A2C laufen lassen, verkleidet als PPO:
 
-- **`gdrl`** nutzt unter der Haube SB3s PPO. PPO ist A2C plus ein geclipptes Surrogat-Objektiv plus Multi-Epoch-Updates plus GAE.
+- **Das Trainingsskript** nutzt unter der Haube SB3s PPO. PPO ist A2C plus ein geclipptes Surrogat-Objektiv plus Multi-Epoch-Updates plus GAE.
 - Wenn du `n_steps=512` setzt, wählst du **A2Cs Rollout-Länge** aus Abschnitt 7.
 - Wenn du `batch_size=256` setzt, wählst du die **Minibatch-Größe**, mit der PPO ein Rollout für mehrere Gradientenschritte zerhackt.
 - Wenn du `n_epochs=10` setzt, entscheidest du, **wie oft dasselbe Rollout wiederverwendet wird** — das, was A2C nicht sicher kann, PPO aber schon.
@@ -348,7 +348,7 @@ Für Studierende, die vor PPO tiefer graben wollen:
 - **Probier LunarLander-v2.** Eine herausforderndere Umgebung, in der A2C typisch ~2M Schritte braucht. Beobachte die Entropie-Kurve genau — Entropie-Kollaps ist hier viel häufiger.
 - **Visualisiere, was der Critic lernt.** Sample ein Gitter aus Beobachtungen, lass sie durch den Critic laufen, plotte `V(s)` als Heatmap (für 2D-Zustandsräume) oder als 1D-Kurve (für Wagenposition, Stabwinkel). Vergleiche mit den Rollout-Returns an diesen Zuständen.
 - **Ersetze 1-Schritt-TD durch GAE-λ.** Implementiere Generalized Advantage Estimation mit `λ ∈ {0,9, 0,95, 1,0}` und beobachte, wie Varianz und Bias in der Praxis abgewogen werden. Das ist *genau* der Codepfad, der in SB3s PPO ausgeliefert wird.
-- **Steck die Policy zurück in Godot.** Exportiere den Agenten erneut als ONNX und lade ihn in eine Godot-Szene wie in Unit 5, aber mit deinem eigenen A2C-Trainingsskript statt `gdrl`.
+- **Steck die Policy zurück in Godot.** Exportiere den Agenten erneut als ONNX und lade ihn in eine Godot-Szene wie in Unit 5, aber mit deinem eigenen A2C-Trainingsskript statt dem des Kurses.
 
 ---
 
@@ -424,7 +424,7 @@ Jeder Loss-Term aus der kombinierten Loss-Formel in Abschnitt 4 hat ein TensorBo
 
 ## Was kommt als Nächstes
 
-Du hast jetzt jede konzeptionelle Zutat, die PPO braucht. Die nächste Unit nimmt A2Cs Loss, tauscht `A_t · log π_θ(a_t | s_t)` gegen ein geclipptes Wahrscheinlichkeitsverhältnis, erlaubt mehrere Epochen über ein Rollout und geht das vollständige PPO-Update durch — den Algorithmus hinter jedem `gdrl`-Befehl, den du ausgeführt hast.
+Du hast jetzt jede konzeptionelle Zutat, die PPO braucht. Die nächste Unit nimmt A2Cs Loss, tauscht `A_t · log π_θ(a_t | s_t)` gegen ein geclipptes Wahrscheinlichkeitsverhältnis, erlaubt mehrere Epochen über ein Rollout und geht das vollständige PPO-Update durch — den Algorithmus hinter jedem Trainingslauf, den du gestartet hast.
 
 !!! info "Selbstcheck, bevor du weitermachst"
     Kannst du diese Fragen in eigenen Worten beantworten?
@@ -442,6 +442,6 @@ Du hast jetzt jede konzeptionelle Zutat, die PPO braucht. Die nächste Unit nimm
     2. Ein schwacher Critic liefert verrauschte Vorteilsschätzungen, der Actor läuft also faktisch wieder **REINFORCE mit hoher Varianz**. Die TensorBoard-Signatur ist `train/explained_variance` nahe 0 oder negativ — behebe es mit einem höheren `vf_coef`, mehr `n_steps` oder einer niedrigeren Lernrate.
     3. Weil der Critic **bootstrappt**: die 1-Schritt-Schätzung `A_t ≈ r + γ V(s') - V(s)` braucht nur eine echte Belohnung und die Vorhersage des nächsten Zustands. REINFORCEs `G_t` lässt sich schlicht nicht berechnen, bevor jede Belohnung nach Schritt `t` beobachtet wurde.
     4. Der **Entropie-Bonus** verhindert vorzeitigen Policy-Kollaps — dass die Wahrscheinlichkeit einer Aktion früh auf 1,0 gedrückt wird und der Agent für immer aufhört zu erkunden. Ist er zu groß, bleibt die Policy nahezu gleichverteilt (Entropie hängt nahe `ln 2` fest) und legt sich nie fest, die Belohnung bleibt also niedrig.
-    5. A2C kann sicher nur **ein Gradienten-Update pro Rollout** machen — danach sind die Daten off-policy und die Vorteilsschätzungen werden verzerrt. PPOs geclipptes Wahrscheinlichkeitsverhältnis macht mehrere Epochen über dasselbe Rollout sicher, genau das, was `n_epochs=10` in `gdrl` tut.
+    5. A2C kann sicher nur **ein Gradienten-Update pro Rollout** machen — danach sind die Daten off-policy und die Vorteilsschätzungen werden verzerrt. PPOs geclipptes Wahrscheinlichkeitsverhältnis macht mehrere Epochen über dasselbe Rollout sicher, genau das, was PPOs `n_epochs=10` tut.
 
 [← Policy Gradients](unit-policy-gradients.md) · [Kursstartseite](index.md) · [→ PPO Deep Dive](unit-ppo-deep.md)

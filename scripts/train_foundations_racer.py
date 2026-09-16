@@ -11,6 +11,10 @@ def convert_space(space):
     import gym
     import gymnasium as gymnasium
 
+    # godot-rl 0.8.x already hands back gymnasium spaces; only the older releases
+    # return legacy `gym` ones that need converting.
+    if isinstance(space, gymnasium.spaces.Space):
+        return space
     if isinstance(space, gym.spaces.Box):
         return gymnasium.spaces.Box(
             low=space.low,
@@ -112,15 +116,19 @@ def export_policy_onnx(model, onnx_path: Path) -> None:
 def main() -> None:
     from godot_rl.wrappers.stable_baselines_wrapper import StableBaselinesGodotEnv
     from stable_baselines3 import PPO
+    from stable_baselines3.common.vec_env import VecMonitor
 
     args = parse_args()
-    env = GymnasiumSpaceAdapter(StableBaselinesGodotEnv(
+    # VecMonitor is what fills SB3's `rollout/ep_rew_mean`. Without it the log shows only
+    # time/ and train/ sections, and the reward the course tells students to watch never
+    # appears -- no matter how long the run.
+    env = VecMonitor(GymnasiumSpaceAdapter(StableBaselinesGodotEnv(
         env_path=None,
         show_window=False,
         seed=args.seed,
         speedup=args.speedup,
         action_repeat=args.action_repeat,
-    ))
+    )))
     model = PPO(
         "MultiInputPolicy",
         env,

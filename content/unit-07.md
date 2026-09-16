@@ -202,7 +202,7 @@ SB3's `PPO` with `MultiInputPolicy` handles mixed spaces automatically — no ch
 conda activate godot_env
 
 # Export binary first, then:
-gdrl --env_path=./Racer.x86_64 \
+python stable_baselines3_example.py --env_path=./Racer.x86_64 \
   --experiment_name=racer_ppo \
   --timesteps=3_000_000 \
   --n_parallel=4 \
@@ -214,7 +214,7 @@ gdrl --env_path=./Racer.x86_64 \
 **MultiAgentSimple (cooperative, shared policy):**
 
 ```bash
-gdrl --env_path=./MultiAgentSimple.x86_64 \
+python stable_baselines3_example.py --env_path=./MultiAgentSimple.x86_64 \
   --experiment_name=multiagent_coop \
   --timesteps=1_000_000 \
   --n_parallel=8 \
@@ -289,11 +289,16 @@ Self-play is a training technique where an agent's opponent is a copy of the age
 4. Every N episodes (or when win rate exceeds a threshold), copy the learner's weights to the opponent slot
 5. Repeat
 
+!!! warning "Pseudocode"
+    `--opponent_policy` and `--self_play_swap_freq` do not exist. No course tool schedules
+    opponent swaps — that loop is what you build. The real flags are the ones in
+    [Reference](reference.md#common-training-flags); the two invented ones stand in for the
+    wrapper you write around them.
+
 ```bash
-# Pseudocode — actual implementation depends on wrapper
-gdrl --env_path=./AirHockey.x86_64 \
+selfplay_train.py --env_path=./AirHockey.x86_64 \
   --experiment_name=selfplay_v1 \
-  --timesteps=5_000_000 \
+  --timesteps=5000000 \
   --opponent_policy=checkpoints/selfplay_v1_latest.zip \
   --self_play_swap_freq=50000
 ```

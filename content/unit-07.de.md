@@ -202,7 +202,7 @@ SB3s `PPO` mit `MultiInputPolicy` behandelt gemischte Räume automatisch — kei
 conda activate godot_env
 
 # Export binary first, then:
-gdrl --env_path=./Racer.x86_64 \
+python stable_baselines3_example.py --env_path=./Racer.x86_64 \
   --experiment_name=racer_ppo \
   --timesteps=3_000_000 \
   --n_parallel=4 \
@@ -214,7 +214,7 @@ gdrl --env_path=./Racer.x86_64 \
 **MultiAgentSimple (kooperativ, geteilte Policy):**
 
 ```bash
-gdrl --env_path=./MultiAgentSimple.x86_64 \
+python stable_baselines3_example.py --env_path=./MultiAgentSimple.x86_64 \
   --experiment_name=multiagent_coop \
   --timesteps=1_000_000 \
   --n_parallel=8 \
@@ -289,11 +289,16 @@ Self-Play ist eine Trainingstechnik, bei der der Gegner eines Agenten eine Kopie
 4. Alle N Episoden (oder wenn die Siegrate eine Schwelle überschreitet), kopiere die Gewichte des Lerners in den Gegner-Slot
 5. Wiederhole
 
+!!! warning "Pseudocode"
+    `--opponent_policy` und `--self_play_swap_freq` gibt es nicht. Kein Werkzeug dieses
+    Kurses plant Gegner-Wechsel — genau diese Schleife baust du selbst. Die echten Flags
+    stehen in der [Referenz](reference.md#haufige-trainings-flags); die beiden erfundenen
+    stehen stellvertretend für den Wrapper, den du darum herum schreibst.
+
 ```bash
-# Pseudocode — actual implementation depends on wrapper
-gdrl --env_path=./AirHockey.x86_64 \
+selfplay_train.py --env_path=./AirHockey.x86_64 \
   --experiment_name=selfplay_v1 \
-  --timesteps=5_000_000 \
+  --timesteps=5000000 \
   --opponent_policy=checkpoints/selfplay_v1_latest.zip \
   --self_play_swap_freq=50000
 ```

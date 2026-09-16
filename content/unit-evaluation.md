@@ -65,7 +65,7 @@ The minimum bar for any claim about algorithm performance:
 
 ### Training with multiple seeds
 
-The following bash script runs `gdrl` (the godot-rl-agents training command) for seeds 1 through 5, saving each run to a separate log directory. Adapt the environment name and hyperparameters to your project.
+The following bash script runs the SB3 training script for seeds 1 through 5, saving each run to a separate log directory. Adapt the environment name and hyperparameters to your project.
 
 ```bash
 #!/usr/bin/env bash
@@ -77,12 +77,12 @@ TIMESTEPS=500000
 
 for SEED in 1 2 3 4 5; do
     echo "=== Training seed ${SEED} ==="
-    gdrl train \
-        --env-id "${ENV}" \
-        --algo "${ALGO}" \
+    python stable_baselines3_example.py \
+        --env_path "./${ENV}.x86_64" \
         --timesteps "${TIMESTEPS}" \
         --seed "${SEED}" \
-        --log-dir "logs/${ENV}_${ALGO}_seed${SEED}"
+        --experiment_dir "logs/${ENV}_${ALGO}_seed${SEED}" \
+        --save_model_path "logs/${ENV}_${ALGO}_seed${SEED}/model.zip"
 done
 
 echo "All seeds complete."
@@ -483,7 +483,7 @@ The following ~60-line script ties everything together. It loads TensorBoard log
 ```python
 #!/usr/bin/env python3
 """
-evaluate.py — load gdrl TensorBoard logs, compute IQM and 95% CI.
+evaluate.py — load the training run's TensorBoard logs, compute IQM and 95% CI.
 
 Directory layout expected:
     logs/{ENV}_{ALGO}_seed{N}/
@@ -658,23 +658,27 @@ Statistical tables tell you what happened numerically. Video tells you *why*.
 
 After identifying your best and worst seeds from the results table, render a video of each:
 
-```bash
-# Record best seed (seed 3 in this example — replace with your actual best)
-gdrl eval \
-    --env-id FlyBy \
-    --model-path logs/FlyBy_ppo_seed3/best_model.zip \
-    --n-eval-episodes 5 \
-    --record-video \
-    --video-path videos/flyby_ppo_seed3_best.mp4
+Replay each one with `--inference`, which loads a saved model and runs it instead of training:
 
-# Record worst seed (seed 7 in this example — replace with your actual worst)
-gdrl eval \
-    --env-id FlyBy \
-    --model-path logs/FlyBy_ppo_seed7/best_model.zip \
-    --n-eval-episodes 5 \
-    --record-video \
-    --video-path videos/flyby_ppo_seed7_worst.mp4
+```bash
+# Best seed (seed 3 in this example — replace with your actual best)
+python stable_baselines3_example.py \
+    --inference \
+    --resume_model_path logs/FlyBy_ppo_seed3/model.zip \
+    --env_path ./FlyBy.x86_64 \
+    --viz --timesteps 5000
+
+# Worst seed (seed 7 in this example — replace with your actual worst)
+python stable_baselines3_example.py \
+    --inference \
+    --resume_model_path logs/FlyBy_ppo_seed7/model.zip \
+    --env_path ./FlyBy.x86_64 \
+    --viz --timesteps 5000
 ```
+
+!!! note "Recording is on you"
+    The script has no video flag. Capture the Godot window with OBS, QuickTime, or
+    `ffmpeg` — the [Capstone](unit-capstone.md) unit shows an `ffmpeg` one-liner for Linux.
 
 Watch both videos side by side. Questions to answer:
 
@@ -750,7 +754,7 @@ This gives you a live view of statistical significance accumulating as your seed
 
 | Concept | Why it matters | Tool |
 |---|---|---|
-| Multi-seed training | Variance in RL is real; one seed proves nothing | bash loop + gdrl |
+| Multi-seed training | Variance in RL is real; one seed proves nothing | bash loop + training script |
 | IQM | Robust point estimate that resists outlier seeds | numpy |
 | 95% bootstrap CI | Quantifies uncertainty; enables "no overlap = significant" | numpy |
 | Performance profile | Shows full distribution, not just a point | rliable |

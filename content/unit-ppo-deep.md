@@ -24,7 +24,7 @@ This unit does not show you how to *use* PPO — that's the next unit. This unit
 
 ## Why this unit exists
 
-Every time you ran `gdrl` so far, PPO was the algorithm doing the work. You saw `clip_range`, `gae_lambda`, `n_epochs`, `vf_coef` scroll past in the logs and you trusted the defaults. That trust ends here. By the end of this unit you should be able to:
+Every time you ran the training script so far, PPO was the algorithm doing the work. You saw `clip_range`, `gae_lambda`, `n_epochs`, `vf_coef` scroll past in the logs and you trusted the defaults. That trust ends here. By the end of this unit you should be able to:
 
 - Read the original PPO paper (Schulman et al. 2017) without skipping any equation.
 - Open CleanRL's single-file `ppo.py` and recognize every block.
@@ -465,7 +465,7 @@ Related metrics to track:
 
 ### Build it · Clip-range ablation
 
-Don't just read the diagnostics table — generate the data yourself. Train the same environment three times, varying only `clip_range`, and watch §4's trust-region argument show up in the §9 metrics. CartPole-v1 keeps the loop fast; once it works, repeat on your Godot environment with `gdrl --clip_range=...`.
+Don't just read the diagnostics table — generate the data yourself. Train the same environment three times, varying only `clip_range`, and watch §4's trust-region argument show up in the §9 metrics. CartPole-v1 keeps the loop fast; once it works, repeat on your Godot environment with `python stable_baselines3_example.py --clip_range=...`.
 
 ```python
 import gymnasium as gym
@@ -523,28 +523,35 @@ Godot RL Agents wraps your Godot environment in a Gymnasium-compatible interface
 A typical training command:
 
 ```bash
-gdrl --env_path=builds/MyEnv.x86_64 \
+python stable_baselines3_example.py --env_path=builds/MyEnv.x86_64 \
      --n_steps=512 \
      --batch_size=256 \
-     --n_epochs=10 \
-     --gamma=0.99 \
-     --gae_lambda=0.95 \
      --clip_range=0.2 \
      --ent_coef=0.005 \
      --learning_rate=3e-4 \
-     --total_timesteps=1000000
+     --timesteps=1000000
 ```
 
 Every flag is a knob from §8. Reading it left to right:
 
 - `--n_steps=512` — collect 512 steps per environment before each update.
 - `--batch_size=256` — split each rollout into mini-batches of 256.
-- `--n_epochs=10` — 10 passes over each rollout (the PPO data-reuse magic).
-- `--gamma=0.99` — discount factor, ~100-step effective horizon.
-- `--gae_lambda=0.95` — slight bootstrapping bias, lots of variance reduction.
 - `--clip_range=0.2` — standard trust region.
 - `--ent_coef=0.005` — slight exploration bonus (a bit below the SB3 default of 0; Godot environments tend to need a touch of encouragement).
 - `--learning_rate=3e-4` — Adam default.
+- `--timesteps=1000000` — total environment steps.
+
+!!! note "Three knobs the script does not expose"
+    `n_epochs`, `gamma` and `gae_lambda` are PPO's own arguments, and
+    `stable_baselines3_example.py` does not pass them through. To change them, open the
+    script and edit the `PPO(...)` call:
+
+    ```python
+    model = PPO("MultiInputPolicy", env, n_epochs=10, gamma=0.99, gae_lambda=0.95, ...)
+    ```
+
+    That is worth doing at least once: seeing the flags and the constructor side by side is
+    what makes clear that the CLI is a thin wrapper around SB3, not a separate trainer.
 
 ### Tuning workflow when training looks bad
 

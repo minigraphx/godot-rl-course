@@ -345,7 +345,7 @@ Projekt → Exportieren → deine Plattformvorlage hinzufügen → Binary export
 
 ```bash
 conda activate godot_env
-gdrl --env_path=./CrossTheRoad.x86_64 \
+python stable_baselines3_example.py --env_path=./CrossTheRoad.x86_64 \
   --experiment_name=CrossTheRoad_DQN \
   --timesteps=500000 \
   --speedup=8 \
@@ -353,7 +353,7 @@ gdrl --env_path=./CrossTheRoad.x86_64 \
 ```
 
 !!! info "DQN via SB3"
-    Der Standard-`gdrl`-Befehl verwendet PPO. Um DQN zu verwenden, schreibe ein kurzes Trainings-Skript:
+    Das Trainingsskript trainiert PPO. Um DQN zu verwenden, schreibe ein kurzes Trainings-Skript:
 
     ```python
     from stable_baselines3 import DQN

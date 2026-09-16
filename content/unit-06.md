@@ -142,7 +142,7 @@ Place RayCast3D nodes as children of a `Node3D` group, pointing forward/left/rig
 conda activate godot_env
 tensorboard --logdir=logs &
 
-gdrl --env_path=./FlyBy.x86_64 \
+python stable_baselines3_example.py --env_path=./FlyBy.x86_64 \
   --experiment_name=flyby_ppo \
   --timesteps=2_000_000 \
   --n_parallel=8 \
@@ -171,7 +171,7 @@ Continuous tasks typically need more timesteps than discrete ones — 1–5M is 
 After training, re-run with `--viz` or in the editor:
 
 ```bash
-gdrl --env_path=./FlyBy.x86_64 \
+python stable_baselines3_example.py --env_path=./FlyBy.x86_64 \
   --resume_model_path=logs/sb3/flyby_ppo/best_model.zip \
   --inference \
   --viz

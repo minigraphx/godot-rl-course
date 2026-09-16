@@ -77,17 +77,17 @@ conda activate godot_env
 tensorboard --logdir=logs &
 
 # 1 env
-gdrl --env_path=./BallChase.x86_64 \
+python stable_baselines3_example.py --env_path=./BallChase.x86_64 \
   --experiment_name=ballchase_1env \
   --timesteps=500000 --n_parallel=1 --speedup=20
 
 # 4 envs
-gdrl --env_path=./BallChase.x86_64 \
+python stable_baselines3_example.py --env_path=./BallChase.x86_64 \
   --experiment_name=ballchase_4env \
   --timesteps=500000 --n_parallel=4 --speedup=20
 
 # 8 envs
-gdrl --env_path=./BallChase.x86_64 \
+python stable_baselines3_example.py --env_path=./BallChase.x86_64 \
   --experiment_name=ballchase_8env \
   --timesteps=500000 --n_parallel=8 --speedup=20
 ```
@@ -151,7 +151,7 @@ final_rewards = []
 for seed in seeds:
     # Train with this seed
     subprocess.run([
-        "gdrl",
+        "python", "stable_baselines3_example.py",
         "--env_path=./BallChase.x86_64",
         f"--experiment_name=ballchase_seed{seed}",
         "--timesteps=500000",

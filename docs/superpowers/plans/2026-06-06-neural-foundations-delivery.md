@@ -739,6 +739,12 @@ also pass the protocol compatibility suite against the course pin
 `godot-rl==0.5.0` / wire protocol `0.3`; do not upgrade the course dependency
 as part of this task.
 
+> **Superseded 2026-09-09.** The guard above existed to keep this track from
+> disturbing Units 0–10. It turned out to protect the wrong thing: the
+> `godot_rl_agents` plugin vendored in the example projects those units use also
+> declares protocol `0.7`, so the `0.5.0` pin was mismatched against *both*
+> stacks, not just the native one. The course now pins `godot-rl==0.8.2`.
+
 **Files:**
 - Create: `examples/neural_foundations/game/addons/godot_native_rl/`
 - Create: `examples/neural_foundations/game/ncnn_runner.gdextension`

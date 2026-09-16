@@ -29,7 +29,7 @@ Get a second quick win before the Lunar Lander build. Clone [SimpleReachGoal](ht
 
 ```bash
 conda activate godot_env
-gdrl --experiment_name=unit2-warmup --timesteps=100000 --viz
+python stable_baselines3_example.py --experiment_name=unit2-warmup --timesteps=100000 --viz
 ```
 
 Godot — open the SimpleReachGoal training scene, press **F6** (Play Scene).
@@ -54,7 +54,7 @@ Then continue to Phase B — you are copying these patterns, not discovering the
 | Per-step reward logic in Python | Reward shaping in `lander.gd` + `_ai_controller.reward` |
 | `make_vec_env(n_envs=16)` | N copies of env root in `training_scene.tscn` |
 | `PPO("MlpPolicy", env)` | `PPO("MultiInputPolicy", StableBaselinesGodotEnv(...))` |
-| `model.learn(1_000_000)` | `gdrl --timesteps=1_000_000` |
+| `model.learn(1_000_000)` | `python stable_baselines3_example.py --timesteps=1_000_000` |
 | Saved `.zip` model | ONNX model path in Sync node inspector |
 
 !!! info "Phase B — build"
@@ -325,12 +325,18 @@ Move each `Env_N` instance to a different position so they don't overlap visuall
 conda activate godot_env
 ```
 
-**Step 2 — start the gdrl training listener**
+**Step 2 — start the training listener**
 
-`gdrl` is installed with `pip` — there is no script to download:
+The training script is *not* part of the pip package. Fetch it once into this folder:
 
 ```bash
-gdrl --experiment_name=ppo-lunarlander-godot \
+curl -O https://raw.githubusercontent.com/edbeeching/godot_rl_agents/main/examples/stable_baselines3_example.py
+```
+
+Then start it — it opens the socket and waits for Godot:
+
+```bash
+python stable_baselines3_example.py --experiment_name=ppo-lunarlander-godot \
      --timesteps=1_000_000 \
      --save_model_path=lander_ppo \
      --onnx_export_path=lander_ppo.onnx
@@ -340,7 +346,7 @@ The console pauses on `waiting for remote GODOT connection on port 11008` — th
 
 **Step 3 — press Play in Godot to connect**
 
-Switch to the Godot editor, open `training_scene.tscn`, and press **F6** (Play Scene). Godot connects to the waiting `gdrl` process and SB3 starts printing a metrics table.
+Switch to the Godot editor, open `training_scene.tscn`, and press **F6** (Play Scene). Godot connects to the waiting Python process and SB3 starts printing a metrics table.
 
 **What to expect — `ep_rew_mean` milestones**
 
@@ -358,7 +364,7 @@ Switch to the Godot editor, open `training_scene.tscn`, and press **F6** (Play S
 `--save_model_path=lander_ppo` writes `lander_ppo.zip`. To resume:
 
 ```bash
-gdrl --resume_model_path=lander_ppo.zip \
+python stable_baselines3_example.py --resume_model_path=lander_ppo.zip \
      --timesteps=500_000 \
      --onnx_export_path=lander_ppo.onnx
 ```
@@ -469,7 +475,7 @@ chmod +x build/LunarLander/LunarLander.x86_64
 **Train against the binary with `--env_path`**
 
 ```bash
-gdrl --env_path=build/LunarLander/LunarLander.x86_64 \
+python stable_baselines3_example.py --env_path=build/LunarLander/LunarLander.x86_64 \
      --n_parallel=4 \
      --speedup=20 \
      --experiment_name=ppo-lunarlander-godot \
@@ -520,7 +526,7 @@ gdrl --env_path=build/LunarLander/LunarLander.x86_64 \
 | Crash | `− 100.0` | Terminal |
 | Timeout | `0.0` | Terminal |
 
-## Reference: `gdrl` command-line arguments
+## Reference: training-script command-line arguments
 
 | Argument | Default | Description |
 |----------|---------|-------------|

@@ -2,48 +2,63 @@
 
 [Kursstartseite](index.md)
 
-Diese Seite sammelt häufige Fehler, Warnungen und Fragen rund ums Setup und Training von RL-Agenten mit godot-rl-agents, stable-baselines3 und Python. Jeder Eintrag erklärt Ursache und Fix. **Hier zuerst nachsehen, bevor du ein GitHub-Issue öffnest.**
+Diese Seite sammelt häufige Fehler, Warnungen und Fragen rund ums Setup und Training von RL-Agenten mit godot-native-rl, stable-baselines3 und Python — plus die Legacy-Beispiele von godot-rl-agents, die noch nicht migrierte Einheiten nutzen. Jeder Eintrag erklärt Ursache und Fix. **Hier zuerst nachsehen, bevor du ein GitHub-Issue öffnest.**
 
 ---
 
 ## Setup & Installation
 
-### Plugin nicht gefunden / „godot-rl-agents plugin failed to load"
+### `NcnnSync` / `NcnnAIController3D` nicht unter „Node hinzufügen" zu finden
 
-**Ursache:** Das C#-Projekt des Plugins wurde nicht gebaut oder das .NET-SDK ist nicht installiert.
+**Ursache:** Das Addon ist nicht installiert. Es liegt nicht im Kurs-Repo, ein frischer Klon hat also gar kein `addons/godot_native_rl/` — oder du hast ein anderes Projekt geöffnet, oder der erste Projekt-Import ist noch nicht abgeschlossen.
 
 **Fix:**
 ```bash
-# Ensure you have the .NET SDK installed (dotnet --version should work)
-# Then rebuild the plugin in Godot
-# Project → Tools → C# → Build Project
-# Wait for MSBuild to complete; watch the bottom-right notification panel
+scripts/fetch-native-runner.sh            # installiert das gepinnte Addon-Release
+scripts/fetch-native-runner.sh --check    # zeigt gepinnt vs. installiert
 ```
 
-Nach dem Build Godot neu starten.
+Danach in Godot: Import → `godot-rl-course/examples/neural_foundations/game/project.godot`, den ersten Import durchlaufen lassen und erneut Node hinzufügen → `NcnnSync` suchen. Es wird nichts kompiliert, der Import geht also schnell.
+
+Wenn du das Addon in deinem eigenen Projekt nutzt, prüfe, ob `addons/godot_native_rl/` in den `addons/`-Ordner dieses Projekts kopiert wurde.
 
 **Siehe auch:** [Unit 0](unit-00.md) § 3
 
 ---
 
-### Godot 4.0 / 4.1 / 4.2 / 4.3 Kompatibilitätsfehler
+### „NcnnRunner"-Klasse fehlt / native Inferenz lädt nicht
 
-**Ursache:** godot-rl-agents wurde gegen bestimmte Godot-.NET-Versionen gebaut und getestet; abweichende Versionen können C#- oder NuGet-Mismatches verursachen.
+**Ursache:** Die native ncnn-Inferenz benötigt eine Plattform-Bibliothek (GDExtension). Diese Bibliotheken liegen nicht im Kurs-Repo — sie sind größer als alles andere darin — ein frischer Klon hat sie also nicht, bis du sie installierst.
 
-**Fix:**
+**Fix:** Führe den Installer aus dem Repo-Stammverzeichnis aus:
+
 ```bash
-# Check the plugin's README or pyproject.toml for the recommended Godot version
-# Download and use that exact version from godotengine.org
-# (e.g., Godot 4.3 .NET is recommended; 4.0 is no longer supported)
+scripts/fetch-native-runner.sh
+scripts/fetch-native-runner.sh --check    # zeigt gepinnt vs. installiert
 ```
 
-Wenn du eine andere Version nutzen *musst*, prüfe das [godot-rl-agents](https://github.com/edbeeching/godot-rl-agents)-Repo auf bekannte Probleme.
+Er liefert macOS Apple Silicon, Windows x86_64 und Linux x86_64 mit, alle Desktop-Plattformen sind also abgedeckt. Schlägt es danach weiterhin fehl, prüfe deine Godot-Version: die Extension verlangt **4.5 oder neuer** und registriert sich auf älteren Versionen stillschweigend nicht. Das Training ist in jedem Fall nicht betroffen — die Trainings-Bridge ist GDScript und braucht keine native Bibliothek.
 
 ---
 
-### `gdrl: command not found`
+### Godot-Versionskompatibilitätsfehler
 
-**Ursache:** Das Python-Paket `godot-rl` ist nicht installiert oder deine conda-Umgebung ist nicht aktiv.
+**Ursache:** Die gebündelte ncnn-GDExtension deklariert `compatibility_minimum = 4.5`; ältere Godot-Versionen laden das Projekt nicht sauber.
+
+**Fix:**
+```bash
+# Lade Godot 4.5 oder neuer (Standard-Version) von godotengine.org herunter
+# Auf der Kommandozeile prüfen:
+godot --version
+```
+
+Die Legacy-Beispiele von godot-rl-agents, die ab RL Essentials genutzt werden, haben eigene Versionsanforderungen — prüfe das [godot-rl-agents](https://github.com/edbeeching/godot-rl-agents)-Repo, wenn ein Beispielprojekt Probleme macht.
+
+---
+
+### `ModuleNotFoundError: No module named 'godot_rl'` — oder `gdrl: command not found`
+
+**Ursache:** Das Python-Paket `godot-rl` ist nicht installiert oder deine conda-Umgebung ist nicht aktiv. (Der Kurs nutzt den Befehl `gdrl` selbst nicht — siehe [Referenz](reference.md#das-trainingsskript-nicht-gdrl) — sein Fehlen ist aber dasselbe Symptom.)
 
 **Fix:**
 ```bash
@@ -53,8 +68,8 @@ conda activate godot_env
 # Install using the pinned requirements file (recommended)
 pip install -r requirements-course.txt
 
-# Verify
-gdrl --version
+# Verify (expect 0.8.2 — there is no `gdrl --version`)
+python -c "import importlib.metadata as m; print(m.version('godot-rl'))"
 ```
 
 !!! note "Paketname ist `godot-rl`, nicht `godot-rl-agents`"
@@ -126,18 +141,39 @@ pip install onnxruntime-gpu
 
 ## Training startet nicht
 
+### `NcnnSync: minor version mismatch (got 3, expected 7)`
+
+**Ursache:** In deinem `godot_env` steckt noch ein altes `godot-rl`. Protokoll `0.7` sprechen sowohl `NcnnSync` als auch die `godot_rl_agents`-Beispiele; `godot-rl`-Releases vor 0.8 sprechen `0.3`. Der Handshake warnt und läuft weiter, das Training funktioniert also — die Umgebung passt aber nicht mehr zum Kurs.
+
+**Fix:** Installiere die gepinnten Versionen neu:
+
+```bash
+conda activate godot_env
+pip install -r requirements-course.txt
+python -c "import godot_rl.core.godot_env as g; print(g.GodotEnv.MINOR_VERSION)"   # erwartet: 7
+```
+
+Ein echtes *Hängenbleiben* (nach einer Minute keine Rollout-Tabellen) ist ein anderes Problem — siehe den nächsten Eintrag.
+
+**Siehe auch:** [Unit 0](unit-00.md) § 4
+
+---
+
 ### WebSocket-Verbindung verweigert / `ConnectionRefusedError: [Errno 111]`
 
 **Ursache:** Das Python-Skript versucht sich auf Port 11008 (Default) mit Godot zu verbinden, aber Godot läuft nicht, lauscht nicht oder ist auf einem anderen Port.
 
 **Fix:**
 ```bash
-# 1. Start Godot with the training flag or use the visualizer
-gdrl --load_path=examples/BallChase --viz
-
-# 2. Then, in another terminal, run your training script
+# 1. Start the PYTHON side first — it opens the socket and waits.
+#    Godot is the side that connects, so nothing can connect to a server
+#    that is not listening yet.
 conda activate godot_env
-python train.py --env_path=./godot_binary
+python stable_baselines3_example.py --experiment_name=debug --viz
+
+# 2. Wait for "waiting for remote GODOT connection on port 11008",
+#    then press F6 (Play Scene) in the Godot editor — or pass
+#    --env_path=./godot_binary in step 1 to let the script launch it.
 
 # 3. If using a custom port, ensure both sides match
 # In Python: env = GodotEnv(..., port=12000)
@@ -216,8 +252,9 @@ return {"obs": observation_array}
 
 **Fix:**
 ```bash
-# 1. Run Godot in the foreground to see stderr/logs
-gdrl --load_path=examples/BallChase --viz 2>&1 | tee godot.log
+# 1. Run Godot itself in the foreground to see stderr/logs
+#    (`gdrl` is the Python side — it never starts Godot)
+godot --path examples/BallChase 2>&1 | tee godot.log
 
 # 2. Check the Godot log for exceptions
 # Common culprits: accessing null nodes, division by zero, infinite loops in reward calculation
