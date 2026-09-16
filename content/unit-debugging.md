@@ -422,7 +422,7 @@ And add 8 corresponding in-scene instances so each parallel worker has its own.
 
 ```bash
 # Sanity-check training is producing reward at all
-gdrl --env_path=./MyEnv.x86_64 --timesteps=50000 --n_parallel=1 --speedup=20
+python stable_baselines3_example.py --env_path=./MyEnv.x86_64 --timesteps=50000 --n_parallel=1 --speedup=20
 ```
 
 ```python
@@ -445,7 +445,7 @@ env.close()
 
 ```bash
 # Watch 5 episodes of a trained model, deterministically
-gdrl --env_path=./MyEnv.x86_64 \
+python stable_baselines3_example.py --env_path=./MyEnv.x86_64 \
   --resume_model_path=logs/sb3/myenv/best_model.zip \
   --inference --viz --timesteps=5000
 ```

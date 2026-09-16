@@ -270,7 +270,7 @@ Locomotion needs more timesteps than any other example type in this course. Star
 conda activate godot_env
 tensorboard --logdir=logs &
 
-gdrl --env_path=./Walker.x86_64 \
+python stable_baselines3_example.py --env_path=./Walker.x86_64 \
   --experiment_name=walker_ppo \
   --timesteps=10_000_000 \
   --n_parallel=16 \

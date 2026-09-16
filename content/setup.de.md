@@ -144,10 +144,10 @@ godot-rl akzeptiert Schrägstriche (Forward Slashes) unter Windows — bevorzuge
 
 ```bash
 # Empfohlen — Forward Slashes funktionieren überall, auch in PowerShell und cmd
-gdrl --env_path=C:/Users/DeinName/Projekte/mein_spiel/mein_spiel.exe
+python stable_baselines3_example.py --env_path=C:/Users/DeinName/Projekte/mein_spiel/mein_spiel.exe
 
 # Auch gültig — Backslashes, müssen aber escaped oder in Anführungszeichen gesetzt werden
-gdrl --env_path="C:\Users\DeinName\Projekte\mein_spiel\mein_spiel.exe"
+python stable_baselines3_example.py --env_path="C:\Users\DeinName\Projekte\mein_spiel\mein_spiel.exe"
 ```
 
 ### Windows Defender / Antivirusproblem mit Sockets
@@ -158,7 +158,7 @@ Lösung:
 
 1. Öffne **Windows-Sicherheit → Firewall & Netzwerkschutz → App durch Firewall zulassen**.
 2. Füge eine Ausnahme für `python.exe` (das Python deiner Conda-Umgebung) und für die Godot-Anwendung hinzu.
-3. Alternativ: Verwende einen anderen Port: `gdrl --port=12000` (und setze denselben Port am Godot-seitigen Sync-Node).
+3. Den Port zu wechseln ist auf der Python-Seite kein Kommandozeilen-Flag — `GodotEnv` nimmt `port=` im Code entgegen, die Godot-Seite liest `--port=…` von *ihrer* eigenen Kommandozeile. Die Firewall-Ausnahme oben ist der einfachere Weg.
 
 Wenn du ein Antivirusprogramm eines Drittanbieters verwendest, füge den Conda-Umgebungsordner (z. B. `C:\Users\DeinName\miniconda3\envs\godot_env\`) und deinen Godot-Projektordner zur Ausschlussliste hinzu.
 

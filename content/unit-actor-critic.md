@@ -1,6 +1,6 @@
 # Actor-Critic — Combining Value Methods with Policy Gradients
 
-REINFORCE taught the policy directly, but at the cost of waiting for whole episodes and tolerating noisy returns. DQN taught a value function, but only for discrete actions. **Actor-Critic** unifies both ideas: an **actor** picks actions like REINFORCE, while a **critic** estimates returns like DQN. This unit walks from the variance problem in REINFORCE all the way to a complete A2C implementation — the algorithmic backbone of PPO that you have been running in `gdrl` since Unit 2.
+REINFORCE taught the policy directly, but at the cost of waiting for whole episodes and tolerating noisy returns. DQN taught a value function, but only for discrete actions. **Actor-Critic** unifies both ideas: an **actor** picks actions like REINFORCE, while a **critic** estimates returns like DQN. This unit walks from the variance problem in REINFORCE all the way to a complete A2C implementation — the algorithmic backbone of PPO that you have been running since Unit 2.
 
 [← Policy Gradients](unit-policy-gradients.md) · [Course home](index.md)
 
@@ -268,7 +268,7 @@ There is a whole spectrum of ways to estimate the return for the critic and the 
 
 Larger `n` uses more real rewards and less of the critic's prediction → less bias, more variance. Smaller `n` does the opposite. `n_steps=128` in the code above is a middle ground that PPO-family algorithms favour.
 
-This is **exactly the `n_steps` parameter you tuned in Unit 4** when calling `gdrl`. Bigger `n_steps` means longer rollouts, fewer updates, more environment data per gradient step. PPO's "advantages" are computed by a generalization called **GAE (Generalized Advantage Estimation)** that smoothly interpolates between 1-step and Monte Carlo via a parameter `λ` — but the spirit is identical to what you see here.
+This is **exactly the `n_steps` parameter you tuned in Unit 4** when calling the training script. Bigger `n_steps` means longer rollouts, fewer updates, more environment data per gradient step. PPO's "advantages" are computed by a generalization called **GAE (Generalized Advantage Estimation)** that smoothly interpolates between 1-step and Monte Carlo via a parameter `λ` — but the spirit is identical to what you see here.
 
 ---
 
@@ -290,7 +290,7 @@ That last term is the **entropy bonus**. Subtracting entropy from the loss is th
 !!! warning "Entropy collapse looks like a stuck reward"
     A flat reward curve with very low entropy is the classic signature. The policy has committed early and is no longer trying anything new. Increase `ent_coef`, or lower the learning rate, or both.
 
-This is the same knob as the `--ent_coef` argument in `gdrl` from Unit 4. It is not a magic number — it is the weight in the loss you just read.
+This is the same knob as the `--ent_coef` argument in `python stable_baselines3_example.py` from Unit 4. It is not a magic number — it is the weight in the loss you just read.
 
 ---
 
@@ -320,7 +320,7 @@ A2C is a complete, working algorithm. So why does anyone use PPO?
 - But here is the catch: after the first gradient step, the policy has shifted. The actions we took during the rollout are no longer drawn from the *current* policy — they were drawn from the *old* policy. The advantage estimates that worked for the first update become biased for the second.
 - Naïvely doing multiple epochs over the rollout makes A2C unstable. The policy can diverge far from the data-generating distribution and everything breaks.
 
-**PPO's clipped objective is the fix.** It introduces a probability ratio `r_t(θ) = π_new(a|s) / π_old(a|s)` and *clips* it to a small interval around 1.0, so updates that would push the new policy too far from the old one get zero gradient. That makes it safe to run **multiple epochs over a single rollout**, which is exactly what `n_epochs=10` does in your Unit 4 `gdrl` command.
+**PPO's clipped objective is the fix.** It introduces a probability ratio `r_t(θ) = π_new(a|s) / π_old(a|s)` and *clips* it to a small interval around 1.0, so updates that would push the new policy too far from the old one get zero gradient. That makes it safe to run **multiple epochs over a single rollout**, which is exactly what PPO's `n_epochs=10` does in the runs from Unit 4.
 
 ---
 
@@ -328,7 +328,7 @@ A2C is a complete, working algorithm. So why does anyone use PPO?
 
 You have actually been running A2C the whole time, dressed up as PPO:
 
-- **`gdrl`** uses SB3's PPO under the hood. PPO is A2C plus a clipped surrogate objective plus multi-epoch updates plus GAE.
+- **The training script** uses SB3's PPO under the hood. PPO is A2C plus a clipped surrogate objective plus multi-epoch updates plus GAE.
 - When you set `n_steps=512`, you are choosing **A2C's rollout length** from Section 7.
 - When you set `batch_size=256`, you are choosing the **minibatch size** that PPO uses to chop up a rollout for multiple gradient steps.
 - When you set `n_epochs=10`, you are deciding **how many times to reuse the same rollout** — the thing A2C cannot do safely but PPO can.
@@ -348,7 +348,7 @@ For students who want to dig deeper before moving on to PPO:
 - **Try LunarLander-v2.** A more challenging env where A2C typically needs ~2M steps to solve. Watch the entropy curve carefully — entropy collapse is much more common here.
 - **Visualize what the critic learns.** Sample a grid of observations, run them through the critic, plot `V(s)` as a heatmap (for 2D state spaces) or as a 1D curve (for cart position, pole angle). Compare to the rollout returns at those states.
 - **Replace 1-step TD with GAE-λ.** Implement Generalized Advantage Estimation with `λ ∈ {0.9, 0.95, 1.0}` and watch how variance and bias trade off in practice. This is the *exact* code path that ships in SB3's PPO.
-- **Plug the policy back into Godot.** Re-export the agent as ONNX and load it in a Godot scene the way Unit 5 did, but using your own A2C training script instead of `gdrl`.
+- **Plug the policy back into Godot.** Re-export the agent as ONNX and load it in a Godot scene the way Unit 5 did, but using your own A2C training script instead of the course one.
 
 ---
 
@@ -424,7 +424,7 @@ Watching `explained_variance` climb from near-zero toward 0.9+ during a Godot tr
 
 ## What's next
 
-You now have every conceptual ingredient PPO needs. The next unit takes A2C's loss, swaps `A_t · log π_θ(a_t | s_t)` for a clipped probability ratio, allows multiple epochs over one rollout, and walks through the full PPO update — the algorithm behind every `gdrl` command you have run.
+You now have every conceptual ingredient PPO needs. The next unit takes A2C's loss, swaps `A_t · log π_θ(a_t | s_t)` for a clipped probability ratio, allows multiple epochs over one rollout, and walks through the full PPO update — the algorithm behind every training run you have started.
 
 !!! info "Self-check before you move on"
     Can you answer these in your own words?
@@ -442,6 +442,6 @@ You now have every conceptual ingredient PPO needs. The next unit takes A2C's lo
     2. A weak critic produces noisy advantage estimates, so the actor is effectively running **REINFORCE with high variance** again. The TensorBoard signature is `train/explained_variance` near 0 or negative — fix it with a higher `vf_coef`, more `n_steps`, or a lower learning rate.
     3. Because the critic **bootstraps**: the one-step estimate `A_t ≈ r + γ V(s') - V(s)` needs only one real reward and the next state's prediction. REINFORCE's `G_t` literally cannot be computed until every reward after step `t` has been observed.
     4. The **entropy bonus** prevents premature policy collapse — one action's probability getting pushed to 1.0 early so the agent stops exploring forever. Too large, and the policy stays near-uniform (entropy stuck near `ln 2`) and never commits, so reward stays low.
-    5. A2C can safely perform only **one gradient update per rollout** — after that update the data is off-policy and the advantage estimates become biased. PPO's clipped probability ratio makes multiple epochs over the same rollout safe, which is what `n_epochs=10` does in `gdrl`.
+    5. A2C can safely perform only **one gradient update per rollout** — after that update the data is off-policy and the advantage estimates become biased. PPO's clipped probability ratio makes multiple epochs over the same rollout safe, which is what PPO's `n_epochs=10` does.
 
 [← Policy Gradients](unit-policy-gradients.md) · [Course home](index.md) · [→ PPO Deep Dive](unit-ppo-deep.md)

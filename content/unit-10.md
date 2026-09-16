@@ -38,7 +38,7 @@ Before exporting, make sure you have a final saved model. You can also resume tr
 
 ```bash
 # Save with checkpoints every 100k steps and export ONNX at the end
-gdrl --env_path=./BallChase.x86_64 \
+python stable_baselines3_example.py --env_path=./BallChase.x86_64 \
   --experiment_name=ballchase_final \
   --timesteps=1_000_000 \
   --save_model_path=ballchase_final \
@@ -50,7 +50,7 @@ gdrl --env_path=./BallChase.x86_64 \
 
 ```bash
 # Resume from a checkpoint if training was interrupted
-gdrl --env_path=./BallChase.x86_64 \
+python stable_baselines3_example.py --env_path=./BallChase.x86_64 \
   --resume_model_path=ballchase_final.zip \
   --experiment_name=ballchase_resumed \
   --timesteps=500_000 \
@@ -89,10 +89,10 @@ print("Exported: ballchase_final.onnx")
 env.close()
 ```
 
-Alternatively, use the built-in gdrl export:
+Alternatively, let the training script do the export:
 
 ```bash
-gdrl --env_path=./BallChase.x86_64 \
+python stable_baselines3_example.py --env_path=./BallChase.x86_64 \
   --resume_model_path=ballchase_final.zip \
   --onnx_export_path=ballchase_final.onnx \
   --timesteps=0
@@ -132,7 +132,7 @@ Sync node properties:
 The agent runs at game speed. You can add human-controlled characters, obstacles, or UI around the AI agent — it's now just another Godot node.
 
 !!! check "Done when"
-    The scene runs in `ONNX_INFERENCE` mode and the agent plays competently with **no Python process alive** — no `gdrl` in your process list, no conda environment activated, nothing to Ctrl-C. At the Section 9 viz checkpoint the agent shows the same competence it had at the end of training — don't expect frame-identical runs: training sampled actions stochastically, while the exported policy acts deterministically, so slightly smoother, less jittery behavior is normal. An agent that jitters randomly or freezes points to a wrong model path or an observation-shape mismatch (Section 4), not a broken runtime.
+    The scene runs in `ONNX_INFERENCE` mode and the agent plays competently with **no Python process alive** — no Python trainer in your process list, no conda environment activated, nothing to Ctrl-C. At the Section 9 viz checkpoint the agent shows the same competence it had at the end of training — don't expect frame-identical runs: training sampled actions stochastically, while the exported policy acts deterministically, so slightly smoother, less jittery behavior is normal. An agent that jitters randomly or freezes points to a wrong model path or an observation-shape mismatch (Section 4), not a broken runtime.
 
 ---
 

@@ -130,7 +130,7 @@ Starte zuerst mit den Standardwerten. Das gibt dir eine Referenzkurve, die du ü
 conda activate godot_env
 tensorboard --logdir=logs &
 
-gdrl --env_path=./JumperHard.x86_64 \
+python stable_baselines3_example.py --env_path=./JumperHard.x86_64 \
   --experiment_name=jumper_baseline \
   --timesteps=1_000_000 \
   --n_parallel=8 \
@@ -148,19 +148,19 @@ Führe drei Experimente durch und variiere dabei jeweils einen Parameter. Verwen
 
 ```bash
 # Experiment A — larger rollout buffer
-gdrl --env_path=./JumperHard.x86_64 \
+python stable_baselines3_example.py --env_path=./JumperHard.x86_64 \
   --experiment_name=jumper_nsteps512 \
   --n_steps=512 --batch_size=256 \
   --timesteps=1_000_000 --n_parallel=8 --speedup=20
 
 # Experiment B — more exploration
-gdrl --env_path=./JumperHard.x86_64 \
+python stable_baselines3_example.py --env_path=./JumperHard.x86_64 \
   --experiment_name=jumper_entropy \
   --ent_coef=0.01 \
   --timesteps=1_000_000 --n_parallel=8 --speedup=20
 
 # Experiment C — tighter trust region
-gdrl --env_path=./JumperHard.x86_64 \
+python stable_baselines3_example.py --env_path=./JumperHard.x86_64 \
   --experiment_name=jumper_clip01 \
   --clip_range=0.1 \
   --timesteps=1_000_000 --n_parallel=8 --speedup=20
@@ -235,7 +235,7 @@ env.close()
 
 ```bash
 # Save a checkpoint every 100k steps
-gdrl --env_path=./JumperHard.x86_64 \
+python stable_baselines3_example.py --env_path=./JumperHard.x86_64 \
   --experiment_name=jumper_final \
   --timesteps=2_000_000 \
   --save_model_path=jumper_ppo \
@@ -244,7 +244,7 @@ gdrl --env_path=./JumperHard.x86_64 \
   --n_parallel=8 --speedup=20
 
 # Resume if interrupted
-gdrl --env_path=./JumperHard.x86_64 \
+python stable_baselines3_example.py --env_path=./JumperHard.x86_64 \
   --resume_model_path=jumper_ppo.zip \
   --experiment_name=jumper_final_resume \
   --timesteps=1_000_000 \

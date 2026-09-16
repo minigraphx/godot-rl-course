@@ -279,14 +279,15 @@ Kopiere und passe diesen Befehl an. Stelle `n_parallel` auf die Anzahl physische
 ```bash
 # Minimum viable training run (3 seeds, 4 parallel envs each)
 for SEED in 1 2 3; do
-  gdrl train \
-    --config-name=ppo \
-    env.path=./game.x86_64 \
-    env.n_parallel=4 \
-    train.timesteps=3_000_000 \
-    train.seed=$SEED \
-    train.checkpoint_freq=100_000 \
-    hydra.run.dir=runs/seed_${SEED} \
+  python stable_baselines3_example.py \
+    --env_path=./game.x86_64 \
+    --n_parallel=4 \
+    --timesteps=3000000 \
+    --seed=$SEED \
+    --save_checkpoint_frequency=100000 \
+    --experiment_dir=runs/seed_${SEED} \
+    --experiment_name=ppo_seed_${SEED} \
+    --save_model_path=runs/seed_${SEED}/model.zip \
     &
 done
 wait
@@ -295,15 +296,25 @@ echo "All seeds finished"
 
 Für SAC (Single-Process, keine vektorisierten Envs):
 
+!!! warning "Pseudocode"
+    `stable_baselines3_example.py` trainiert ausschließlich PPO — es gibt kein Algorithmus-Flag.
+    Für SAC kopierst du das Skript und tauschst die eine Zeile, die das Modell baut:
+
+    ```python
+    from stable_baselines3 import SAC
+    model = SAC("MultiInputPolicy", env, verbose=1, tensorboard_log=args.experiment_dir)
+    ```
+
+    Danach funktioniert die Schleife unten mit `sac_example.py` statt des PPO-Skripts.
+
 ```bash
 for SEED in 1 2 3; do
-  gdrl train \
-    --config-name=sac \
-    env.path=./game.x86_64 \
-    env.n_parallel=1 \
-    train.timesteps=1_000_000 \
-    train.seed=$SEED \
-    hydra.run.dir=runs/sac_seed_${SEED} \
+  python sac_example.py \
+    --env_path=./game.x86_64 \
+    --n_parallel=1 \
+    --timesteps=1000000 \
+    --seed=$SEED \
+    --experiment_dir=runs/sac_seed_${SEED} \
     &
 done
 wait
@@ -394,12 +405,12 @@ Das **Interquartile Mean** (IQM) schneidet die oberen und unteren 25 % der Episo
 
 ```bash
 # Run a trained checkpoint in render mode and record with OBS or ffmpeg
-gdrl enjoy \
-  --config-name=ppo \
-  enjoy.checkpoint=runs/seed_1/best_model.zip \
-  env.path=./game.x86_64 \
-  env.show_window=true \
-  enjoy.n_episodes=5
+python stable_baselines3_example.py \
+  --inference \
+  --resume_model_path=runs/seed_1/model.zip \
+  --env_path=./game.x86_64 \
+  --viz \
+  --timesteps=5000
 
 # Alternatively, pipe Godot window to ffmpeg (Linux)
 ffmpeg -video_size 1280x720 -framerate 30 -f x11grab -i :0.0 \

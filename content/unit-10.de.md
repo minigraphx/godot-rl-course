@@ -38,7 +38,7 @@ Stelle vor dem Export sicher, dass du ein finales gespeichertes Modell hast. Du 
 
 ```bash
 # Save with checkpoints every 100k steps and export ONNX at the end
-gdrl --env_path=./BallChase.x86_64 \
+python stable_baselines3_example.py --env_path=./BallChase.x86_64 \
   --experiment_name=ballchase_final \
   --timesteps=1_000_000 \
   --save_model_path=ballchase_final \
@@ -50,7 +50,7 @@ gdrl --env_path=./BallChase.x86_64 \
 
 ```bash
 # Resume from a checkpoint if training was interrupted
-gdrl --env_path=./BallChase.x86_64 \
+python stable_baselines3_example.py --env_path=./BallChase.x86_64 \
   --resume_model_path=ballchase_final.zip \
   --experiment_name=ballchase_resumed \
   --timesteps=500_000 \
@@ -89,10 +89,10 @@ print("Exported: ballchase_final.onnx")
 env.close()
 ```
 
-Alternativ den eingebauten gdrl-Export nutzen:
+Alternativ den Export vom Trainingsskript erledigen lassen:
 
 ```bash
-gdrl --env_path=./BallChase.x86_64 \
+python stable_baselines3_example.py --env_path=./BallChase.x86_64 \
   --resume_model_path=ballchase_final.zip \
   --onnx_export_path=ballchase_final.onnx \
   --timesteps=0
@@ -132,7 +132,7 @@ Sync node properties:
 Der Agent läuft mit Spielgeschwindigkeit. Du kannst menschlich gesteuerte Charaktere, Hindernisse oder UI rund um den KI-Agenten ergänzen — er ist jetzt einfach ein weiterer Godot-Node.
 
 !!! check "Fertig, wenn"
-    Die Szene läuft im `ONNX_INFERENCE`-Modus und der Agent spielt kompetent — **ohne einen einzigen laufenden Python-Prozess**: kein `gdrl` in deiner Prozessliste, keine aktivierte conda-Umgebung, nichts zum Abbrechen mit Strg-C. Am Viz-Checkpoint in Abschnitt 9 zeigt der Agent dieselbe Kompetenz wie am Ende des Trainings — erwarte aber keine Frame-für-Frame-identischen Läufe: Das Training hat Aktionen stochastisch gesampelt, die exportierte Policy handelt deterministisch, etwas glatteres, weniger zittriges Verhalten ist also normal. Ein Agent, der zufällig zittert oder einfriert, deutet auf einen falschen Modellpfad oder einen Shape-Mismatch der Beobachtungen hin (Abschnitt 4), nicht auf eine kaputte Runtime.
+    Die Szene läuft im `ONNX_INFERENCE`-Modus und der Agent spielt kompetent — **ohne einen einzigen laufenden Python-Prozess**: kein Trainer in deiner Prozessliste, keine aktivierte conda-Umgebung, nichts zum Abbrechen mit Strg-C. Am Viz-Checkpoint in Abschnitt 9 zeigt der Agent dieselbe Kompetenz wie am Ende des Trainings — erwarte aber keine Frame-für-Frame-identischen Läufe: Das Training hat Aktionen stochastisch gesampelt, die exportierte Policy handelt deterministisch, etwas glatteres, weniger zittriges Verhalten ist also normal. Ein Agent, der zufällig zittert oder einfriert, deutet auf einen falschen Modellpfad oder einen Shape-Mismatch der Beobachtungen hin (Abschnitt 4), nicht auf eine kaputte Runtime.
 
 ---
 

@@ -24,7 +24,7 @@ Diese Unit zeigt dir nicht, wie man PPO *benutzt* — das ist die nächste. Dies
 
 ## Warum es diese Unit gibt
 
-Jedes Mal, wenn du bisher `gdrl` ausgeführt hast, war PPO der Algorithmus, der die Arbeit leistete. Du sahst `clip_range`, `gae_lambda`, `n_epochs`, `vf_coef` in den Logs vorbeiscrollen und hast den Defaults vertraut. Dieses Vertrauen endet hier. Am Ende dieser Unit solltest du folgendes können:
+Jedes Mal, wenn du bisher das Trainingsskript ausgeführt hast, war PPO der Algorithmus, der die Arbeit leistete. Du sahst `clip_range`, `gae_lambda`, `n_epochs`, `vf_coef` in den Logs vorbeiscrollen und hast den Defaults vertraut. Dieses Vertrauen endet hier. Am Ende dieser Unit solltest du folgendes können:
 
 - Das Original-PPO-Paper (Schulman et al. 2017) lesen, ohne Gleichungen zu überspringen.
 - CleanRLs Single-File-`ppo.py` öffnen und jeden Block wiedererkennen.
@@ -465,7 +465,7 @@ Verwandte Metriken, die zu verfolgen sind:
 
 ### Bau es · Clip-Range-Ablation
 
-Lies die Diagnose-Tabelle nicht nur — erzeuge die Daten selbst. Trainiere dieselbe Umgebung dreimal, variiere nur `clip_range`, und sieh zu, wie das Trust-Region-Argument aus §4 in den Metriken aus §9 auftaucht. CartPole-v1 hält die Schleife schnell; sobald es funktioniert, wiederhole es auf deiner Godot-Umgebung mit `gdrl --clip_range=...`.
+Lies die Diagnose-Tabelle nicht nur — erzeuge die Daten selbst. Trainiere dieselbe Umgebung dreimal, variiere nur `clip_range`, und sieh zu, wie das Trust-Region-Argument aus §4 in den Metriken aus §9 auftaucht. CartPole-v1 hält die Schleife schnell; sobald es funktioniert, wiederhole es auf deiner Godot-Umgebung mit `python stable_baselines3_example.py --clip_range=...`.
 
 ```python
 import gymnasium as gym
@@ -523,28 +523,35 @@ Godot RL Agents wrappt deine Godot-Umgebung in ein Gymnasium-kompatibles Interfa
 Ein typischer Trainingsbefehl:
 
 ```bash
-gdrl --env_path=builds/MyEnv.x86_64 \
+python stable_baselines3_example.py --env_path=builds/MyEnv.x86_64 \
      --n_steps=512 \
      --batch_size=256 \
-     --n_epochs=10 \
-     --gamma=0.99 \
-     --gae_lambda=0.95 \
      --clip_range=0.2 \
      --ent_coef=0.005 \
      --learning_rate=3e-4 \
-     --total_timesteps=1000000
+     --timesteps=1000000
 ```
 
 Jedes Flag ist ein Regler aus §8. Von links nach rechts:
 
 - `--n_steps=512` — 512 Schritte pro Umgebung vor jedem Update sammeln.
 - `--batch_size=256` — jedes Rollout in Minibatches von 256 splitten.
-- `--n_epochs=10` — 10 Durchläufe über jedes Rollout (die PPO-Datenwiederverwendungs-Magie).
-- `--gamma=0.99` — Diskontierungsfaktor, ~100-Schritt-effektiver-Horizont.
-- `--gae_lambda=0.95` — leichter Bootstrapping-Bias, viel Varianzreduktion.
 - `--clip_range=0.2` — Standard-Trust-Region.
 - `--ent_coef=0.005` — leichter Erkundungs-Bonus (ein wenig unter dem SB3-Default von 0; Godot-Umgebungen brauchen oft einen Schubser).
 - `--learning_rate=3e-4` — Adam-Default.
+- `--timesteps=1000000` — Gesamtzahl der Umgebungsschritte.
+
+!!! note "Drei Regler, die das Skript nicht durchreicht"
+    `n_epochs`, `gamma` und `gae_lambda` sind Argumente von PPO selbst, und
+    `stable_baselines3_example.py` gibt sie nicht weiter. Um sie zu ändern, öffne das Skript
+    und bearbeite den `PPO(...)`-Aufruf:
+
+    ```python
+    model = PPO("MultiInputPolicy", env, n_epochs=10, gamma=0.99, gae_lambda=0.95, ...)
+    ```
+
+    Das lohnt sich mindestens einmal: Flags und Konstruktor nebeneinander zu sehen macht klar,
+    dass die CLI ein dünner Wrapper um SB3 ist und kein eigener Trainer.
 
 ### Tuning-Workflow, wenn das Training schlecht aussieht
 

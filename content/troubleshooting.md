@@ -56,9 +56,9 @@ The legacy godot-rl-agents examples used from RL Essentials onward have their ow
 
 ---
 
-### `gdrl: command not found`
+### `ModuleNotFoundError: No module named 'godot_rl'` — or `gdrl: command not found`
 
-**Cause:** The Python `godot-rl` package was not installed, or your conda environment is not activated.
+**Cause:** The Python `godot-rl` package was not installed, or your conda environment is not activated. (The course does not use the `gdrl` command itself — see [Reference](reference.md#the-training-script-not-gdrl) — but its absence is the same symptom.)
 
 **Fix:**
 ```bash
@@ -68,8 +68,8 @@ conda activate godot_env
 # Install using the pinned requirements file (recommended)
 pip install -r requirements-course.txt
 
-# Verify
-gdrl --version
+# Verify (expect 0.8.2 — there is no `gdrl --version`)
+python -c "import importlib.metadata as m; print(m.version('godot-rl'))"
 ```
 
 !!! note "Package name is `godot-rl`, not `godot-rl-agents`"
@@ -165,12 +165,15 @@ Treat an actual *stall* (no rollout tables after a minute) as a different proble
 
 **Fix:**
 ```bash
-# 1. Start Godot with the training flag or use the visualizer
-gdrl --load_path=examples/BallChase --viz
-
-# 2. Then, in another terminal, run your training script
+# 1. Start the PYTHON side first — it opens the socket and waits.
+#    Godot is the side that connects, so nothing can connect to a server
+#    that is not listening yet.
 conda activate godot_env
-python train.py --env_path=./godot_binary
+python stable_baselines3_example.py --experiment_name=debug --viz
+
+# 2. Wait for "waiting for remote GODOT connection on port 11008",
+#    then press F6 (Play Scene) in the Godot editor — or pass
+#    --env_path=./godot_binary in step 1 to let the script launch it.
 
 # 3. If using a custom port, ensure both sides match
 # In Python: env = GodotEnv(..., port=12000)
@@ -249,8 +252,9 @@ return {"obs": observation_array}
 
 **Fix:**
 ```bash
-# 1. Run Godot in the foreground to see stderr/logs
-gdrl --load_path=examples/BallChase --viz 2>&1 | tee godot.log
+# 1. Run Godot itself in the foreground to see stderr/logs
+#    (`gdrl` is the Python side — it never starts Godot)
+godot --path examples/BallChase 2>&1 | tee godot.log
 
 # 2. Check the Godot log for exceptions
 # Common culprits: accessing null nodes, division by zero, infinite loops in reward calculation

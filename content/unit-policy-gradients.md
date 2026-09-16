@@ -512,14 +512,14 @@ You will see, with your own eyes, the variance reduction story unfold.
 
 ---
 
-## 11 · REINFORCE and the gdrl Training Loop
+## 11 · REINFORCE and the course training loop
 
-Every time you run `gdrl --env_path=... --timesteps=...`, it runs PPO — which IS a policy gradient method. REINFORCE is the conceptual foundation; PPO is REINFORCE with stability tricks layered on top. The loss you minimized in Section 4 and the loss SB3 optimizes are the same equation.
+Every time you run `python stable_baselines3_example.py --env_path=... --timesteps=...`, it runs PPO — which IS a policy gradient method. REINFORCE is the conceptual foundation; PPO is REINFORCE with stability tricks layered on top. The loss you minimized in Section 4 and the loss SB3 optimizes are the same equation.
 
-### Mapping REINFORCE to what you see in gdrl
+### Mapping REINFORCE to what you see in training
 
 ```
-REINFORCE concept         →  gdrl / SB3 equivalent
+REINFORCE concept         →  script / SB3 equivalent
 ─────────────────────────────────────────────────────
 Episode rollout           →  n_steps rollout collection
 log π(a|s)                →  policy_gradient_loss in TensorBoard
@@ -532,7 +532,7 @@ Exploration via entropy   →  ent_coef parameter
 
 When you look at `train/policy_gradient_loss` in TensorBoard, you are watching REINFORCE's loss — `−Σ G_t · log π(a_t|s_t)` — being minimized. The curve is noisy early on (high variance, like REINFORCE) and smooths out as the policy sharpens and GAE provides better advantage estimates.
 
-The `--ent_coef` flag in `gdrl` is the entropy bonus from Section 10.2 of this unit — the same `−0.01 * entropy` term you added to the CartPole loss. SB3's default is `ent_coef=0.0` for PPO but you have likely raised it (e.g. `--ent_coef 0.01`) to prevent early policy collapse.
+The `--ent_coef` flag in `python stable_baselines3_example.py` is the entropy bonus from Section 10.2 of this unit — the same `−0.01 * entropy` term you added to the CartPole loss. SB3's default is `ent_coef=0.0` for PPO but you have likely raised it (e.g. `--ent_coef 0.01`) to prevent early policy collapse.
 
 ### The key difference: G_t vs GAE
 
@@ -540,7 +540,7 @@ REINFORCE uses the actual `G_t` — a Monte Carlo return computed from the full 
 
 ### Practical comparison
 
-If you trained CartPole with REINFORCE in this unit, you can compare its TensorBoard loss curves to a `gdrl` PPO run — same loss type, smoother in PPO due to GAE and clipping. The shapes should be recognizably similar: a noisy loss that trends downward as the policy improves, with the PolicyGradientLoss sign flipping when the agent starts consistently getting positive advantages.
+If you trained CartPole with REINFORCE in this unit, you can compare its TensorBoard loss curves to a PPO run from the training script — same loss type, smoother in PPO due to GAE and clipping. The shapes should be recognizably similar: a noisy loss that trends downward as the policy improves, with the PolicyGradientLoss sign flipping when the agent starts consistently getting positive advantages.
 
 ---
 

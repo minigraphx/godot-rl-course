@@ -87,7 +87,7 @@ This makes it a good benchmark: if your hyperparameters can solve JumperHard, th
 
 These are the knobs you turn. Defaults work for most tasks; you only need to change one at a time. The theoretical reason for each parameter is listed so you understand *why* a change should help.
 
-| Parameter | gdrl default | Theoretical role | When to change |
+| Parameter | script default | Theoretical role | When to change |
 |-----------|-------------|-----------------|----------------|
 | `--learning_rate` | 0.0003 | Step size in gradient space — controls how far the optimizer moves per update | Lower if reward oscillates; raise if learning is very slow |
 | `--n_steps` | 64 | Rollout length — controls the bias-variance tradeoff in GAE advantage estimates (longer = lower bias, higher variance; see [PPO Deep Dive](unit-ppo-deep.md)) | Raise (256–2048) for longer episodes; needs more memory |
@@ -130,7 +130,7 @@ Run with defaults first. This gives you a reference curve to beat:
 conda activate godot_env
 tensorboard --logdir=logs &
 
-gdrl --env_path=./JumperHard.x86_64 \
+python stable_baselines3_example.py --env_path=./JumperHard.x86_64 \
   --experiment_name=jumper_baseline \
   --timesteps=1_000_000 \
   --n_parallel=8 \
@@ -148,19 +148,19 @@ Run three experiments varying one parameter each. Use distinct `--experiment_nam
 
 ```bash
 # Experiment A — larger rollout buffer
-gdrl --env_path=./JumperHard.x86_64 \
+python stable_baselines3_example.py --env_path=./JumperHard.x86_64 \
   --experiment_name=jumper_nsteps512 \
   --n_steps=512 --batch_size=256 \
   --timesteps=1_000_000 --n_parallel=8 --speedup=20
 
 # Experiment B — more exploration
-gdrl --env_path=./JumperHard.x86_64 \
+python stable_baselines3_example.py --env_path=./JumperHard.x86_64 \
   --experiment_name=jumper_entropy \
   --ent_coef=0.01 \
   --timesteps=1_000_000 --n_parallel=8 --speedup=20
 
 # Experiment C — tighter trust region
-gdrl --env_path=./JumperHard.x86_64 \
+python stable_baselines3_example.py --env_path=./JumperHard.x86_64 \
   --experiment_name=jumper_clip01 \
   --clip_range=0.1 \
   --timesteps=1_000_000 --n_parallel=8 --speedup=20
@@ -235,7 +235,7 @@ env.close()
 
 ```bash
 # Save a checkpoint every 100k steps
-gdrl --env_path=./JumperHard.x86_64 \
+python stable_baselines3_example.py --env_path=./JumperHard.x86_64 \
   --experiment_name=jumper_final \
   --timesteps=2_000_000 \
   --save_model_path=jumper_ppo \
@@ -244,7 +244,7 @@ gdrl --env_path=./JumperHard.x86_64 \
   --n_parallel=8 --speedup=20
 
 # Resume if interrupted
-gdrl --env_path=./JumperHard.x86_64 \
+python stable_baselines3_example.py --env_path=./JumperHard.x86_64 \
   --resume_model_path=jumper_ppo.zip \
   --experiment_name=jumper_final_resume \
   --timesteps=1_000_000 \

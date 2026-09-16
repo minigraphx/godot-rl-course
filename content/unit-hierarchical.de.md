@@ -443,9 +443,15 @@ funktionierenden Worker; Worker braucht Subziele zum Üben):
 
 **Phase 1 — Trainiere den Low-Level-Worker isoliert (≈ 1 M Schritte)**
 
+!!! warning "Pseudocode"
+    Kein Werkzeug dieses Kurses trainiert einen HER-Worker aus einer Konfigurationsdatei.
+    `stable_baselines3_example.py` fährt PPO mit Flags und sonst nichts. Die Konfiguration
+    unten beschreibt, *was* der Lauf braucht; den Runner dafür zu bauen gehört zur Arbeit
+    dieser Unit.
+
 ```bash
 # Use a dedicated scene that spawns random subgoal targets
-gdrl train --config config/low_level_her.yaml
+train_low_level.py --config config/low_level_her.yaml
 ```
 
 In `low_level_her.yaml`:
@@ -461,8 +467,11 @@ reward_signal:
 
 **Phase 2 — Friere Worker ein, trainiere Manager (≈ 500 K Schritte)**
 
+!!! warning "Pseudocode"
+    Wie in Phase 1 — für die Manager/Worker-Trennung gibt es in diesem Kurs keinen fertigen Runner.
+
 ```bash
-gdrl train --config config/high_level_ppo.yaml \
+train_high_level.py --config config/high_level_ppo.yaml \
     --load-worker-checkpoint checkpoints/low_level_her_final.ckpt
 ```
 

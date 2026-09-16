@@ -143,10 +143,10 @@ godot-rl accepts forward slashes on Windows — prefer them over backslashes to 
 
 ```bash
 # Recommended — forward slashes work everywhere, including PowerShell and cmd
-gdrl --env_path=C:/Users/YourName/Projects/my_game/my_game.exe
+python stable_baselines3_example.py --env_path=C:/Users/YourName/Projects/my_game/my_game.exe
 
 # Also valid — backslashes, but must escape or quote
-gdrl --env_path="C:\Users\YourName\Projects\my_game\my_game.exe"
+python stable_baselines3_example.py --env_path="C:\Users\YourName\Projects\my_game\my_game.exe"
 ```
 
 ### Windows Defender / antivirus socket issue
@@ -157,7 +157,7 @@ Fix:
 
 1. Open **Windows Security → Firewall & network protection → Allow an app through firewall**.
 2. Add an exception for `python.exe` (your conda env's Python) and for the Godot executable.
-3. Alternatively, try a different port: `gdrl --port=12000` (and set the same port on the Godot-side sync node).
+3. Changing the port is not a command-line flag on the Python side — `GodotEnv` takes `port=` in code, while the Godot side reads `--port=…` from *its* own command line. The firewall exception above is the simpler fix.
 
 If you use a third-party antivirus, add the conda environment folder (e.g. `C:\Users\YourName\miniconda3\envs\godot_env\`) and your Godot project folder to the exclusion list.
 
