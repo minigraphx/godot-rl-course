@@ -9,6 +9,7 @@ Train the **JumperHard** example — a 3D jumping robot that serves as a standar
     - **[Unit 3](unit-03.md)** — DQN trained on CrossTheRoad; on-policy vs off-policy distinction
     - Comfort reading TensorBoard scalars (`ep_rew_mean`, `approx_kl`, `entropy_loss`)
     - **[Actor-Critic unit](unit-actor-critic.md)** — **do this first if reading straight through:** PPO is an Actor-Critic method, and Section 0 assumes the actor/critic split.
+    - **Legacy stack** — this unit builds on the official `godot_rl_agents` examples, which have not been migrated yet, so it needs the Godot **.NET edition** plus the C# plugin ([Setup → Legacy plugin](setup.md#godot-plugin-godot-rl-agents)). Unit 0 and the Neural Foundations units do not.
 
 !!! info "Time"
     Reading: ~40 min · Training: ~45 min GPU / ~3 h CPU
